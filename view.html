@@ -2,119 +2,33 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>Album Collection</title>
-
+<title>Album View</title>
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
     background:#050505;
     color:white;
-    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    padding:40px;
+    font-family:sans-serif;
+    padding:30px;
 }
-
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:40px;
-}
-
-.page-title{
-    font-size:48px;
-    font-weight:700;
-}
-
-.back-btn{
-    background:#1e1e1e;
-    color:white;
-    border:1px solid rgba(255,255,255,0.15);
-    padding:14px 22px;
-    font-size:16px;
-    cursor:pointer;
-}
-
-.album-grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:30px;
-    max-width:1700px;
-    margin:auto;
-}
-
-.album-card{
-    background:#0b0b0b;
-    border:1px solid rgba(255,255,255,0.12);
-    padding:26px;
-    display:grid;
-    grid-template-columns:260px 1fr;
-    gap:34px;
-}
-
-.cover{
-    width:220px;
-    aspect-ratio:1/1;
-    object-fit:cover;
+.card{
+    border:1px solid #333;
     margin-bottom:20px;
+    padding:20px;
 }
-
-.title{
-    font-size:30px;
-    font-weight:700;
-}
-
-.artist{
-    font-size:24px;
-    color:#6fa8dc;
-    margin-bottom:16px;
-}
-
-.meta{
-    color:#aaa;
-    margin-bottom:24px;
-}
-
-.keyword-text{
-    color:#ddd;
-    line-height:2;
-}
-
-.description-wide{
-    margin-top:10px;
-    padding-top:26px;
-    border-top:1px solid rgba(255,255,255,0.1);
-    grid-column:1/-1;
-    color:#ddd;
-    line-height:2;
-}
-
-.empty{
-    color:#777;
-    font-size:28px;
+img{
+    width:200px;
+    height:200px;
+    object-fit:cover;
 }
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-    <h1 class="page-title">Album Collection</h1>
+<h1>Albums</h1>
+<button onclick="location.href='index.html'">戻る</button>
 
-    <button class="back-btn"
-            onclick="location.href='index.html'">
-        編集ページへ戻る
-    </button>
-</div>
-
-<div class="album-grid" id="albumGrid"></div>
+<div id="grid"></div>
 
 <script type="module">
 
@@ -127,85 +41,29 @@ const firebaseConfig = {
     projectId: "album-49b3e",
     storageBucket: "album-49b3e.firebasestorage.app",
     messagingSenderId: "448724897117",
-    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
-    measurementId: "G-3QFX3GDEXN"
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const albumGrid = document.getElementById("albumGrid");
+const grid = document.getElementById("grid");
 
-function dots(value){
-    let html = "";
-    for(let i=1;i<=5;i++){
-        html += `<div style="
-            width:20px;height:20px;border-radius:50%;
-            border:2px solid #555;
-            ${i <= value ? 'background:#9ed8ff;border-color:#9ed8ff;' : ''}
-        "></div>`;
-    }
-    return html;
-}
+onSnapshot(collection(db,"albums"), (snap)=>{
 
-onSnapshot(collection(db,"albums"), (snapshot)=>{
+    grid.innerHTML = "";
 
-    albumGrid.innerHTML = "";
+    snap.forEach((d)=>{
 
-    if(snapshot.empty){
-        albumGrid.innerHTML = `<div class="empty">保存されたアルバムがありません</div>`;
-        return;
-    }
+        const a = d.data();
 
-    snapshot.forEach((doc)=>{
-
-        const a = doc.data();
-
-        albumGrid.innerHTML += `
-        <div class="album-card">
-
-            <div>
-                <img class="cover" src="${a.cover}">
-                <div class="title">${a.title}</div>
-                <div class="artist">${a.artist}</div>
-                <div class="meta">${a.year}</div>
-
-                <div class="keyword-text">
-                    ${a.keywords || ""}
-                </div>
-            </div>
-
-            <div>
-                <div>暗い→明るい</div>
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    ${dots(a.darkness)}
-                </div>
-
-                <div>静か→激しい</div>
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    ${dots(a.intense)}
-                </div>
-
-                <div>シンプル→複雑</div>
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    ${dots(a.complex)}
-                </div>
-
-                <div>希望→絶望</div>
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    ${dots(a.hope)}
-                </div>
-
-                <div>個人→世界</div>
-                <div style="display:flex;gap:6px;">
-                    ${dots(a.world)}
-                </div>
-            </div>
-
-            <div class="description-wide">
-                ${a.desc}
-            </div>
-
+        grid.innerHTML += `
+        <div class="card">
+            <img src="${a.cover}">
+            <h2>${a.title}</h2>
+            <p>${a.artist}</p>
+            <p>${a.year}</p>
+            <p>${a.desc}</p>
         </div>
         `;
     });
