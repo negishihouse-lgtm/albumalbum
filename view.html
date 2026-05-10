@@ -2,162 +2,213 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-<title>Album View</title>
+<title>Album Collection</title>
 
 <style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
 body{
-    margin:0;
-    padding:40px;
-    background:#0b0b0b;
+    background:#050505;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    padding:40px;
 }
 
-.container{
-    max-width:900px;
-    margin:0 auto;
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:40px;
 }
 
-.album{
-    border:1px solid #333;
-    padding:20px;
-    margin-bottom:25px;
-    background:#151515;
+.page-title{
+    font-size:48px;
+    font-weight:700;
+}
+
+.back-btn{
+    background:#1e1e1e;
+    color:white;
+    border:1px solid rgba(255,255,255,0.15);
+    padding:14px 22px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.album-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:30px;
+    max-width:1700px;
+    margin:auto;
+}
+
+.album-card{
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.12);
+    padding:26px;
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:34px;
 }
 
 .cover{
-    width:100%;
-    max-width:300px;
-    display:block;
-    margin-bottom:15px;
+    width:220px;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    margin-bottom:20px;
 }
 
 .title{
-    font-size:22px;
+    font-size:30px;
     font-weight:700;
 }
 
 .artist{
+    font-size:24px;
+    color:#6fa8dc;
+    margin-bottom:16px;
+}
+
+.meta{
     color:#aaa;
-    margin-bottom:15px;
+    margin-bottom:24px;
 }
 
-.meter{
-    margin:12px 0;
+.keyword-text{
+    color:#ddd;
+    line-height:2;
 }
 
-.labels{
-    display:flex;
-    justify-content:space-between;
-    color:#aaa;
-    font-size:14px;
-    margin-bottom:4px;
+.description-wide{
+    margin-top:10px;
+    padding-top:26px;
+    border-top:1px solid rgba(255,255,255,0.1);
+    grid-column:1/-1;
+    color:#ddd;
+    line-height:2;
 }
 
-.dots{
-    font-size:18px;
-    letter-spacing:3px;
+.empty{
+    color:#777;
+    font-size:28px;
 }
-
-.value{
-    margin-left:10px;
-    color:#666;
-}
-
 </style>
-
 </head>
 
 <body>
 
-<div class="container" id="view"></div>
+<div class="topbar">
+    <h1 class="page-title">Album Collection</h1>
+
+    <button class="back-btn"
+            onclick="location.href='index.html'">
+        編集ページへ戻る
+    </button>
+</div>
+
+<div class="album-grid" id="albumGrid"></div>
 
 <script type="module">
 
-import {
-initializeApp
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
-authDomain: "album-49b3e.firebaseapp.com",
-projectId: "album-49b3e",
-storageBucket: "album-49b3e.firebasestorage.app",
-messagingSenderId: "448724897117",
-appId: "1:448724897117:web:e124ab546bc69aeea7ecb4"
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+    measurementId: "G-3QFX3GDEXN"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const view = document.getElementById("view");
+const albumGrid = document.getElementById("albumGrid");
 
-function renderDots(value){
-  let html = "";
-  for(let i=1;i<=5;i++){
-    html += i <= value ? "●" : "○";
-  }
-  return html;
-}
-
-function renderMeter(left, right, value){
-  return `
-    <div class="meter">
-
-      <div class="labels">
-        <span>${left}</span>
-        <span>${right}</span>
-      </div>
-
-      <div class="dots">
-        ${renderDots(value)}
-        <span class="value">${value}</span>
-      </div>
-
-    </div>
-  `;
-}
-
-function renderAlbum(album){
-  return `
-    <div class="album">
-
-      <img class="cover" src="${album.cover || ''}">
-
-      <div class="title">${album.title || ''}</div>
-      <div class="artist">${album.artist || ''}</div>
-
-      ${renderMeter("希望", "絶望", album.hope)}
-      ${renderMeter("静か", "激しい", album.intense)}
-      ${renderMeter("シンプル", "複雑", album.complex)}
-      ${renderMeter("個人", "世界", album.world)}
-      ${renderMeter("暗い", "明るい", album.darkness)}
-
-      <p style="color:#aaa; margin-top:10px;">
-        ${album.desc || ''}
-      </p>
-
-    </div>
-  `;
+function dots(value){
+    let html = "";
+    for(let i=1;i<=5;i++){
+        html += `<div style="
+            width:20px;height:20px;border-radius:50%;
+            border:2px solid #555;
+            ${i <= value ? 'background:#9ed8ff;border-color:#9ed8ff;' : ''}
+        "></div>`;
+    }
+    return html;
 }
 
 onSnapshot(collection(db,"albums"), (snapshot)=>{
 
-  view.innerHTML = "";
+    albumGrid.innerHTML = "";
 
-  snapshot.forEach(docItem=>{
-    view.innerHTML += renderAlbum(docItem.data());
-  });
+    if(snapshot.empty){
+        albumGrid.innerHTML = `<div class="empty">保存されたアルバムがありません</div>`;
+        return;
+    }
 
+    snapshot.forEach((doc)=>{
+
+        const a = doc.data();
+
+        albumGrid.innerHTML += `
+        <div class="album-card">
+
+            <div>
+                <img class="cover" src="${a.cover}">
+                <div class="title">${a.title}</div>
+                <div class="artist">${a.artist}</div>
+                <div class="meta">${a.year}</div>
+
+                <div class="keyword-text">
+                    ${a.keywords || ""}
+                </div>
+            </div>
+
+            <div>
+                <div>暗い↔︎明るい</div>
+                <div style="display:flex;gap:6px;margin-bottom:10px;">
+                    ${dots(a.darkness)}
+                </div>
+
+                <div>静か↔︎激しい</div>
+                <div style="display:flex;gap:6px;margin-bottom:10px;">
+                    ${dots(a.intense)}
+                </div>
+
+                <div>シンプル↔︎複雑</div>
+                <div style="display:flex;gap:6px;margin-bottom:10px;">
+                    ${dots(a.complex)}
+                </div>
+
+                <div>絶望↔︎希望</div>
+                <div style="display:flex;gap:6px;margin-bottom:10px;">
+                    ${dots(a.hope)}
+                </div>
+
+                <div>個人↔︎世界</div>
+                <div style="display:flex;gap:6px;">
+                    ${dots(a.world)}
+                </div>
+            </div>
+
+            <div class="description-wide">
+                ${a.desc}
+            </div>
+
+        </div>
+        `;
+    });
 });
 
 </script>
