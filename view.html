@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Album Collection</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#050505;
+    color:white;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    padding:40px;
+}
+
+.topbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:40px;
+}
+
+.page-title{
+
+    font-size:48px;
+
+    font-weight:700;
+}
+
+.back-btn{
+
+    background:#1e1e1e;
+
+    color:white;
+
+    border:
+    1px solid rgba(255,255,255,0.15);
+
+    padding:14px 22px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:0.2s;
+}
+
+.back-btn:hover{
+
+    background:#2b2b2b;
+}
+
+.album-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+    gap:30px;
+
+    max-width:1700px;
+
+    margin:auto;
+}
+
+.album-card{
+
+    background:#0b0b0b;
+
+    border:
+    1px solid rgba(255,255,255,0.12);
+
+    padding:26px;
+
+    display:grid;
+
+    grid-template-columns:
+    260px 1fr;
+
+    gap:34px;
+}
+
+.left{
+    width:260px;
+}
+
+.right{
+    flex:1;
+}
+
+.cover{
+
+    width:220px;
+
+    aspect-ratio:1/1;
+
+    object-fit:cover;
+
+    margin-bottom:20px;
+}
+
+.title{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    line-height:1.1;
+
+    margin-bottom:10px;
+}
+
+.artist{
+
+    font-size:24px;
+
+    color:#6fa8dc;
+
+    margin-bottom:16px;
+}
+
+.meta{
+
+    color:#aaa;
+
+    margin-bottom:24px;
+
+    line-height:1.5;
+}
+
+.metric{
+
+    margin-bottom:32px;
+}
+
+.metric-row{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+}
+
+.metric-label{
+
+    width:90px;
+
+    font-size:20px;
+
+    font-weight:600;
+}
+
+.metric-label.right{
+
+    text-align:right;
+}
+
+.dots{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.dot{
+
+    width:24px;
+
+    height:24px;
+
+    border-radius:50%;
+
+    border:2px solid #555;
+}
+
+.dot.active{
+
+    background:#9ed8ff;
+
+    border-color:#9ed8ff;
+}
+
+.keyword-box{
+
+    margin-top:28px;
+
+    padding-top:22px;
+
+    border-top:
+    1px solid rgba(255,255,255,0.1);
+
+    grid-column:1/-1;
+}
+
+.keyword-title{
+
+    color:#6fa8dc;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    margin-bottom:14px;
+}
+
+.keyword-text{
+
+    color:#ddd;
+
+    line-height:2;
+
+    font-size:17px;
+}
+
+.description-wide{
+
+    margin-top:10px;
+
+    padding-top:26px;
+
+    border-top:
+    1px solid rgba(255,255,255,0.1);
+
+    color:#ddd;
+
+    line-height:2;
+
+    font-size:16px;
+
+    grid-column:1/-1;
+}
+
+.empty{
+
+    color:#777;
+
+    font-size:28px;
+}
+
+@media(max-width:1200px){
+
+    .album-grid{
+
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:900px){
+
+    .album-card{
+
+        grid-template-columns:1fr;
+    }
+
+    .left{
+        width:100%;
+    }
+
+    .cover{
+        width:100%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+
+    <h1 class="page-title">
+        Album Collection
+    </h1>
+
+    <button
+        class="back-btn"
+        onclick="location.href='file:edit.html'">
+
+        編集ページへ戻る
+
+    </button>
+
+</div>
+
+<div class="album-grid" id="albumGrid"></div>
+
+<script>
+
+function createMetric(left,right,value){
+
+    let dots = "";
+
+    for(let i=1;i<=5;i++){
+
+        dots += `
+        <div class="dot
+            ${i <= value ? "active" : ""}">
+        </div>
+        `;
+    }
+
+    return `
+
+    <div class="metric">
+
+        <div class="metric-row">
+
+            <div class="metric-label">
+                ${left}
+            </div>
+
+            <div class="dots">
+                ${dots}
+            </div>
+
+            <div class="metric-label right">
+                ${right}
+            </div>
+
+        </div>
+
+    </div>
+    `;
+}
+
+const albumGrid =
+document.getElementById("albumGrid");
+
+const albums =
+JSON.parse(localStorage.getItem("albums")) || [];
+
+if(albums.length === 0){
+
+    albumGrid.innerHTML = `
+    <div class="empty">
+        保存されたアルバムがありません
+    </div>
+    `;
+}
+
+albums.forEach(album=>{
+
+    albumGrid.innerHTML += `
+
+    <div class="album-card">
+
+        <div class="left">
+
+            <img
+                class="cover"
+                src="${album.cover}"
+            >
+
+            <div class="title">
+                ${album.title}
+            </div>
+
+            <div class="artist">
+                ${album.artist}
+            </div>
+
+            <div class="meta">
+                ${album.year}
+            </div>
+
+            <div class="keyword-box">
+
+                <div class="keyword-title">
+                    キーワード
+                </div>
+
+                <div class="keyword-text">
+                    ${album.keywords || ""}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="right">
+
+            ${createMetric("暗い","明るい",album.darkness)}
+
+            ${createMetric("静か","激しい",album.intense)}
+
+            ${createMetric("シンプル","複雑",album.complex)}
+
+            ${createMetric("希望","絶望",album.hope)}
+
+            ${createMetric("個人","世界",album.world)}
+
+        </div>
+
+        <div class="description-wide">
+
+            ${album.desc}
+
+        </div>
+
+    </div>
+    `;
+});
+
+</script>
+
+</body>
+</html>
