@@ -2,8 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Album Editor</title>
 
@@ -82,13 +81,18 @@ body{
     font-size:14px;
 }
 
-.delete-btn{
+.delete-btn, .edit-btn{
     margin-top:8px;
     background:#333;
     border:none;
     color:white;
     padding:6px 10px;
     cursor:pointer;
+    margin-right:5px;
+}
+
+.edit-btn{
+    background:#555;
 }
 
 .main{
@@ -164,15 +168,10 @@ button{
     <div class="sidebar">
 
         <div class="sidebar-header">
-
-            <div class="sidebar-title">
-                Shared Albums
-            </div>
-
+            <div class="sidebar-title">Shared Albums</div>
         </div>
 
-        <div class="album-list"
-             id="albumList"></div>
+        <div class="album-list" id="albumList"></div>
 
     </div>
 
@@ -181,157 +180,76 @@ button{
         <div class="form-area">
 
             <div class="input-group">
-
                 <label>ジャケット画像URL</label>
-
-                <input id="coverInput"
-                       type="text">
-
+                <input id="coverInput" type="text">
             </div>
 
             <div class="input-group">
-
                 <label>アルバム名</label>
-
-                <input id="titleInput"
-                       type="text">
-
+                <input id="titleInput" type="text">
             </div>
 
             <div class="input-group">
-
                 <label>アーティスト名</label>
-
-                <input id="artistInput"
-                       type="text">
-
+                <input id="artistInput" type="text">
             </div>
 
             <div class="input-group">
-
                 <label>発表年</label>
-
-                <input id="yearInput"
-                       type="text">
-
+                <input id="yearInput" type="text">
             </div>
 
             <div class="input-group">
-
                 <label>紹介文</label>
-
                 <textarea id="descInput"></textarea>
-
             </div>
 
             <div class="input-group">
-
                 <label>キーワード</label>
-
-                <input id="keywordsInput"
-                       type="text">
-
+                <input id="keywordsInput" type="text">
             </div>
 
             <div class="input-group">
-
                 <div class="slider-label">
-
-                    <span>暗い</span>
-                    <span>明るい</span>
-
+                    <span>暗い</span><span>明るい</span>
                 </div>
-
-                <input id="darknessInput"
-                       type="range"
-                       min="1"
-                       max="5"
-                       value="3">
-
+                <input id="darknessInput" type="range" min="1" max="5" value="3">
             </div>
 
             <div class="input-group">
-
                 <div class="slider-label">
-
-                    <span>静か</span>
-                    <span>激しい</span>
-
+                    <span>静か</span><span>激しい</span>
                 </div>
-
-                <input id="intenseInput"
-                       type="range"
-                       min="1"
-                       max="5"
-                       value="3">
-
+                <input id="intenseInput" type="range" min="1" max="5" value="3">
             </div>
 
             <div class="input-group">
-
                 <div class="slider-label">
-
-                    <span>シンプル</span>
-                    <span>複雑</span>
-
+                    <span>シンプル</span><span>複雑</span>
                 </div>
-
-                <input id="complexInput"
-                       type="range"
-                       min="1"
-                       max="5"
-                       value="3">
-
+                <input id="complexInput" type="range" min="1" max="5" value="3">
             </div>
 
             <div class="input-group">
-
                 <div class="slider-label">
-
-                    <span>希望</span>
-                    <span>絶望</span>
-
+                    <span>希望</span><span>絶望</span>
                 </div>
-
-                <input id="hopeInput"
-                       type="range"
-                       min="1"
-                       max="5"
-                       value="3">
-
+                <input id="hopeInput" type="range" min="1" max="5" value="3">
             </div>
 
             <div class="input-group">
-
                 <div class="slider-label">
-
-                    <span>個人</span>
-                    <span>世界</span>
-
+                    <span>個人</span><span>世界</span>
                 </div>
-
-                <input id="worldInput"
-                       type="range"
-                       min="1"
-                       max="5"
-                       value="3">
-
+                <input id="worldInput" type="range" min="1" max="5" value="3">
             </div>
 
-            <button
-                class="view-btn"
-                onclick="location.href='view.html'">
-
+            <button class="view-btn" onclick="location.href='view.html'">
                 表示ページへ
-
             </button>
 
-            <button
-                class="save-btn"
-                id="saveBtn">
-
+            <button class="save-btn" id="saveBtn">
                 保存
-
             </button>
 
         </div>
@@ -344,158 +262,106 @@ button{
 
 import {
 initializeApp
-}
-from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
 import {
-
 getFirestore,
 collection,
 addDoc,
 onSnapshot,
 deleteDoc,
-doc
-
-}
-from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+doc,
+updateDoc
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
-
-apiKey:
-"AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
-
-authDomain:
-"album-49b3e.firebaseapp.com",
-
-projectId:
-"album-49b3e",
-
-storageBucket:
-"album-49b3e.firebasestorage.app",
-
-messagingSenderId:
-"448724897117",
-
-appId:
-"1:448724897117:web:e124ab546bc69aeea7ecb4",
-
-measurementId:
-"G-3QFX3GDEXN"
+apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+authDomain: "album-49b3e.firebaseapp.com",
+projectId: "album-49b3e",
+storageBucket: "album-49b3e.firebasestorage.app",
+messagingSenderId: "448724897117",
+appId: "1:448724897117:web:e124ab546bc69aeea7ecb4"
 };
 
-const app =
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-const db =
-getFirestore(app);
+const albumList = document.getElementById("albumList");
 
-const albumList =
-document.getElementById("albumList");
+let editingId = null;
 
 function getFormData(){
-
 return {
-
-cover:
-document.getElementById(
-"coverInput").value,
-
-title:
-document.getElementById(
-"titleInput").value,
-
-artist:
-document.getElementById(
-"artistInput").value,
-
-year:
-document.getElementById(
-"yearInput").value,
-
-desc:
-document.getElementById(
-"descInput").value,
-
-keywords:
-document.getElementById(
-"keywordsInput").value,
-
-darkness:
-document.getElementById(
-"darknessInput").value,
-
-intense:
-document.getElementById(
-"intenseInput").value,
-
-complex:
-document.getElementById(
-"complexInput").value,
-
-hope:
-document.getElementById(
-"hopeInput").value,
-
-world:
-document.getElementById(
-"worldInput").value
+cover: coverInput.value,
+title: titleInput.value,
+artist: artistInput.value,
+year: yearInput.value,
+desc: descInput.value,
+keywords: keywordsInput.value,
+darkness: darknessInput.value,
+intense: intenseInput.value,
+complex: complexInput.value,
+hope: hopeInput.value,
+world: worldInput.value
 };
 }
 
-document
-.getElementById("saveBtn")
+function setFormData(album){
+coverInput.value = album.cover;
+titleInput.value = album.title;
+artistInput.value = album.artist;
+yearInput.value = album.year;
+descInput.value = album.desc;
+keywordsInput.value = album.keywords;
 
-.addEventListener("click",
+darknessInput.value = album.darkness;
+intenseInput.value = album.intense;
+complexInput.value = album.complex;
+hopeInput.value = album.hope;
+worldInput.value = album.world;
+}
 
-async()=>{
+saveBtn.addEventListener("click", async()=>{
 
-const data =
-getFormData();
+const data = getFormData();
 
-await addDoc(
-collection(db,"albums"),
-data
-);
+if(editingId){
+
+await updateDoc(doc(db,"albums",editingId),data);
+editingId = null;
+
+}else{
+
+await addDoc(collection(db,"albums"),data);
+
+}
 
 });
 
-onSnapshot(
-
-collection(db,"albums"),
-
-(snapshot)=>{
+onSnapshot(collection(db,"albums"),(snapshot)=>{
 
 albumList.innerHTML = "";
 
 snapshot.forEach((docItem)=>{
 
-const album =
-docItem.data();
+const album = docItem.data();
 
 albumList.innerHTML += `
-
 <div class="album-card">
 
-<img class="album-thumb"
-     src="${album.cover}">
+<img class="album-thumb" src="${album.cover}">
 
 <div class="album-info">
 
-<div class="album-name">
-${album.title}
-</div>
+<div class="album-name">${album.title}</div>
+<div class="album-artist">${album.artist}</div>
 
-<div class="album-artist">
-${album.artist}
-</div>
+<button class="edit-btn" data-id="${docItem.id}">
+編集
+</button>
 
-<button
-class="delete-btn"
-
-data-id="${docItem.id}">
-
+<button class="delete-btn" data-id="${docItem.id}">
 削除
-
 </button>
 
 </div>
@@ -504,25 +370,18 @@ data-id="${docItem.id}">
 `;
 });
 
-document
-.querySelectorAll(".delete-btn")
-
-.forEach((btn)=>{
-
+document.querySelectorAll(".delete-btn").forEach(btn=>{
 btn.onclick = async()=>{
-
-await deleteDoc(
-
-doc(
-db,
-"albums",
-btn.dataset.id
-)
-
-);
-
+await deleteDoc(doc(db,"albums",btn.dataset.id));
 };
+});
 
+document.querySelectorAll(".edit-btn").forEach(btn=>{
+btn.onclick = ()=>{
+const target = snapshot.docs.find(d=>d.id===btn.dataset.id);
+setFormData(target.data());
+editingId = btn.dataset.id;
+};
 });
 
 });
