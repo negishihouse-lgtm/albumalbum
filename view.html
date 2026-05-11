@@ -151,34 +151,35 @@ body{
 
 .dot-line{
     position:relative;
+    height:26px;
     display:flex;
     justify-content:space-between;
     align-items:center;
     min-width:0;
 }
 
-.dot-line::before{
-    content:"";
+/* 灰色のベース線 */
+.base-line{
     position:absolute;
     left:13px;
     right:13px;
     top:50%;
     height:3px;
     transform:translateY(-50%);
-    background:#3f464d;
-    z-index:0;
+    background:#4a5158;
+    z-index:1;
 }
 
-.dot-line::after{
-    content:"";
+/* 青色のアクティブ線 */
+.active-line{
     position:absolute;
     left:13px;
     top:50%;
     height:3px;
     transform:translateY(-50%);
-    width:var(--active-line-width);
     background:#6fa8dc;
-    z-index:0;
+    width:var(--active-line-width);
+    z-index:2;
 }
 
 .dot{
@@ -188,7 +189,7 @@ body{
     border:2px solid #555;
     background:#0b0b0b;
     position:relative;
-    z-index:1;
+    z-index:3;
     flex-shrink:0;
 }
 
@@ -252,17 +253,21 @@ body{
         font-size:16px;
     }
 
+    .dot-line{
+        height:24px;
+    }
+
     .dot{
         width:24px;
         height:24px;
     }
 
-    .dot-line::before{
+    .base-line{
         left:12px;
         right:12px;
     }
 
-    .dot-line::after{
+    .active-line{
         left:12px;
     }
 }
@@ -334,6 +339,8 @@ function meter(left, right, value){
             <div class="meter-label">${left}</div>
 
             <div class="dot-line" style="--active-line-width:${activeLineWidth};">
+                <div class="base-line"></div>
+                <div class="active-line"></div>
                 ${dotsHTML}
             </div>
 
