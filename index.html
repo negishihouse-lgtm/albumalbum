@@ -133,6 +133,21 @@ textarea{
     line-height:1.8;
 }
 
+.char-count{
+    margin-top:6px;
+    text-align:right;
+    color:#888;
+    font-size:13px;
+}
+
+.char-count.warning{
+    color:#f5c76a;
+}
+
+.char-count.limit{
+    color:#ff7777;
+}
+
 .slider-label{
     display:flex;
     justify-content:space-between;
@@ -201,7 +216,16 @@ button{
 
             <div class="input-group">
                 <label>紹介文</label>
-                <textarea id="descInput"></textarea>
+
+                <textarea
+                    id="descInput"
+                    maxlength="200"
+                    placeholder="紹介文を200字以内で入力"
+                ></textarea>
+
+                <div class="char-count" id="descCountBox">
+                    <span id="descCount">0</span> / 200
+                </div>
             </div>
 
             <div class="input-group">
@@ -288,103 +312,150 @@ const db = getFirestore(app);
 
 const albumList = document.getElementById("albumList");
 
+const coverInput = document.getElementById("coverInput");
+const titleInput = document.getElementById("titleInput");
+const artistInput = document.getElementById("artistInput");
+const yearInput = document.getElementById("yearInput");
+const descInput = document.getElementById("descInput");
+const keywordsInput = document.getElementById("keywordsInput");
+
+const darknessInput = document.getElementById("darknessInput");
+const intenseInput = document.getElementById("intenseInput");
+const complexInput = document.getElementById("complexInput");
+const hopeInput = document.getElementById("hopeInput");
+const worldInput = document.getElementById("worldInput");
+
+const saveBtn = document.getElementById("saveBtn");
+
+const descCount = document.getElementById("descCount");
+const descCountBox = document.getElementById("descCountBox");
+
 let editingId = null;
 
+function updateDescCount(){
+
+    const length = descInput.value.length;
+
+    descCount.textContent = length;
+
+    descCountBox.classList.remove("warning", "limit");
+
+    if(length >= 180 && length < 200){
+        descCountBox.classList.add("warning");
+    }
+
+    if(length >= 200){
+        descCountBox.classList.add("limit");
+    }
+}
+
+descInput.addEventListener("input", updateDescCount);
+
 function getFormData(){
-return {
-cover: coverInput.value,
-title: titleInput.value,
-artist: artistInput.value,
-year: yearInput.value,
-desc: descInput.value,
-keywords: keywordsInput.value,
-darkness: darknessInput.value,
-intense: intenseInput.value,
-complex: complexInput.value,
-hope: hopeInput.value,
-world: worldInput.value
-};
+
+    const descText = descInput.value.slice(0, 200);
+
+    return {
+        cover: coverInput.value,
+        title: titleInput.value,
+        artist: artistInput.value,
+        year: yearInput.value,
+        desc: descText,
+        keywords: keywordsInput.value,
+        darkness: darknessInput.value,
+        intense: intenseInput.value,
+        complex: complexInput.value,
+        hope: hopeInput.value,
+        world: worldInput.value
+    };
 }
 
 function setFormData(album){
-coverInput.value = album.cover;
-titleInput.value = album.title;
-artistInput.value = album.artist;
-yearInput.value = album.year;
-descInput.value = album.desc;
-keywordsInput.value = album.keywords;
 
-darknessInput.value = album.darkness;
-intenseInput.value = album.intense;
-complexInput.value = album.complex;
-hopeInput.value = album.hope;
-worldInput.value = album.world;
+    coverInput.value = album.cover || "";
+    titleInput.value = album.title || "";
+    artistInput.value = album.artist || "";
+    yearInput.value = album.year || "";
+    descInput.value = (album.desc || "").slice(0, 200);
+    keywordsInput.value = album.keywords || "";
+
+    darknessInput.value = album.darkness || 3;
+    intenseInput.value = album.intense || 3;
+    complexInput.value = album.complex || 3;
+    hopeInput.value = album.hope || 3;
+    worldInput.value = album.world || 3;
+
+    updateDescCount();
 }
 
 saveBtn.addEventListener("click", async()=>{
 
-const data = getFormData();
+    const data = getFormData();
 
-if(editingId){
+    if(editingId){
 
-await updateDoc(doc(db,"albums",editingId),data);
-editingId = null;
+        await updateDoc(doc(db,"albums",editingId),data);
+        editingId = null;
 
-}else{
+    }else{
 
-await addDoc(collection(db,"albums"),data);
+        await addDoc(collection(db,"albums"),data);
 
-}
+    }
+
+    updateDescCount();
 
 });
 
 onSnapshot(collection(db,"albums"),(snapshot)=>{
 
-albumList.innerHTML = "";
+    albumList.innerHTML = "";
 
-snapshot.forEach((docItem)=>{
+    snapshot.forEach((docItem)=>{
 
-const album = docItem.data();
+        const album = docItem.data();
 
-albumList.innerHTML += `
-<div class="album-card">
+        albumList.innerHTML += `
+        <div class="album-card">
 
-<img class="album-thumb" src="${album.cover}">
+            <img class="album-thumb" src="${album.cover || ""}">
 
-<div class="album-info">
+            <div class="album-info">
 
-<div class="album-name">${album.title}</div>
-<div class="album-artist">${album.artist}</div>
+                <div class="album-name">${album.title || ""}</div>
+                <div class="album-artist">${album.artist || ""}</div>
 
-<button class="edit-btn" data-id="${docItem.id}">
-編集
-</button>
+                <button class="edit-btn" data-id="${docItem.id}">
+                    編集
+                </button>
 
-<button class="delete-btn" data-id="${docItem.id}">
-削除
-</button>
+                <button class="delete-btn" data-id="${docItem.id}">
+                    削除
+                </button>
 
-</div>
+            </div>
 
-</div>
-`;
+        </div>
+        `;
+    });
+
+    document.querySelectorAll(".delete-btn").forEach(btn=>{
+        btn.onclick = async()=>{
+            await deleteDoc(doc(db,"albums",btn.dataset.id));
+        };
+    });
+
+    document.querySelectorAll(".edit-btn").forEach(btn=>{
+        btn.onclick = ()=>{
+            const target = snapshot.docs.find(d=>d.id===btn.dataset.id);
+            setFormData(target.data());
+            editingId = btn.dataset.id;
+        };
+    });
+
 });
 
-document.querySelectorAll(".delete-btn").forEach(btn=>{
-btn.onclick = async()=>{
-await deleteDoc(doc(db,"albums",btn.dataset.id));
-};
-});
-
-document.querySelectorAll(".edit-btn").forEach(btn=>{
-btn.onclick = ()=>{
-const target = snapshot.docs.find(d=>d.id===btn.dataset.id);
-setFormData(target.data());
-editingId = btn.dataset.id;
-};
-});
-
-});
+updateDescCount();
 
 </script>
 
