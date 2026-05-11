@@ -2,12 +2,12 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-<title>Album View</title>
+<title>Album Collection</title>
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -18,81 +18,116 @@ body{
     background:#050505;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    padding:50px;
-}
-
-.container{
-    max-width:1400px;
-    margin:0 auto;
-}
-
-.album{
-    display:grid;
-    grid-template-columns: 520px 1fr;
-    gap:60px;
-    margin-bottom:80px;
     padding:40px;
-    border:1px solid rgba(255,255,255,0.12);
-    background:#090909;
 }
 
-.left{
+.topbar{
     display:flex;
-    flex-direction:column;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:40px;
+}
+
+.page-title{
+    font-size:48px;
+    font-weight:700;
+}
+
+.back-btn{
+    background:#1e1e1e;
+    color:white;
+    border:1px solid rgba(255,255,255,0.15);
+    padding:14px 22px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.album-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:30px;
+    max-width:1700px;
+    margin:auto;
+}
+
+.album-card{
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.12);
+    padding:26px;
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:34px;
 }
 
 .cover{
-    width:100%;
-    aspect-ratio:1;
+    width:220px;
+    aspect-ratio:1/1;
     object-fit:cover;
-    margin-bottom:25px;
+    margin-bottom:20px;
 }
 
 .title{
-    font-size:72px;
+    font-size:30px;
     font-weight:700;
-    line-height:1;
-    margin-bottom:12px;
 }
 
 .artist{
-    font-size:28px;
-    color:#79a8d8;
-    margin-bottom:18px;
+    font-size:24px;
+    color:#6fa8dc;
+    margin-bottom:16px;
 }
 
-.year{
+.meta{
     color:#aaa;
-    font-size:18px;
-    margin-bottom:28px;
+    margin-bottom:24px;
 }
 
-.desc{
+.keyword-text{
     color:#ddd;
-    font-size:18px;
-    line-height:1.9;
+    line-height:2;
 }
 
-.right{
-    border:1px solid rgba(255,255,255,0.15);
-    padding:35px 40px;
+.description-wide{
+    margin-top:10px;
+    padding-top:26px;
+    border-top:1px solid rgba(255,255,255,0.1);
+    grid-column:1/-1;
+    color:#ddd;
+    line-height:2;
+}
+
+.empty{
+    color:#777;
+    font-size:28px;
+}
+
+/* ここからメーター部分 */
+
+.meter-area{
+    border:1px solid rgba(255,255,255,0.12);
+    padding:24px 26px;
 }
 
 .meter{
     display:grid;
-    grid-template-columns: 140px 1fr 140px;
+    grid-template-columns:90px 1fr 90px;
     align-items:center;
-    gap:30px;
-    margin:38px 0;
+    gap:18px;
+    margin-bottom:26px;
 }
 
-.side-label{
-    font-size:28px;
+.meter:last-child{
+    margin-bottom:0;
+}
+
+.meter-label{
+    font-size:20px;
     font-weight:700;
-    color:#f2f2f2;
+    color:#e8e8e8;
+    white-space:nowrap;
 }
 
-.side-label.right{
+.meter-label.right-label{
     text-align:right;
 }
 
@@ -109,231 +144,183 @@ body{
     left:0;
     right:0;
     top:50%;
-    height:4px;
+    height:3px;
     transform:translateY(-50%);
-    background:#4d5660;
+    background:#3f464d;
+    z-index:0;
+}
+
+.dot-line::after{
+    content:"";
+    position:absolute;
+    left:0;
+    top:50%;
+    height:3px;
+    transform:translateY(-50%);
+    width:var(--active-width);
+    background:#6fa8dc;
     z-index:0;
 }
 
 .dot{
-    width:44px;
-    height:44px;
+    width:30px;
+    height:30px;
     border-radius:50%;
-    border:2px solid #67717a;
-    background:#090909;
+    border:2px solid #555;
+    background:#0b0b0b;
     position:relative;
     z-index:1;
 }
 
 .dot.active{
-    background:#8bb7df;
-    border-color:#8bb7df;
-}
-
-.keyword-box{
-    margin-top:40px;
-    border:1px solid rgba(255,255,255,0.12);
-    display:grid;
-    grid-template-columns: 180px 1fr;
-}
-
-.keyword-title{
-    color:#79a8d8;
-    padding:30px;
-    font-size:28px;
-    border-right:1px solid rgba(255,255,255,0.12);
-}
-
-.keyword-content{
-    padding:30px;
-    font-size:20px;
-    line-height:1.8;
-    color:#ddd;
+    background:#6fa8dc;
+    border-color:#6fa8dc;
 }
 
 @media(max-width:1000px){
 
-    .album{
+    .album-grid{
         grid-template-columns:1fr;
     }
 
-    .title{
-        font-size:50px;
+    .album-card{
+        grid-template-columns:1fr;
+    }
+
+    .cover{
+        width:100%;
+        max-width:320px;
     }
 
     .meter{
-        grid-template-columns:100px 1fr 100px;
-        gap:15px;
+        grid-template-columns:75px 1fr 75px;
+        gap:12px;
     }
 
-    .side-label{
-        font-size:20px;
+    .meter-label{
+        font-size:16px;
     }
 
+    .dot{
+        width:24px;
+        height:24px;
+    }
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="container" id="view"></div>
+<div class="topbar">
+    <h1 class="page-title">Album Collection</h1>
+
+    <button class="back-btn"
+            onclick="location.href='index.html'">
+        編集ページへ戻る
+    </button>
+</div>
+
+<div class="album-grid" id="albumGrid"></div>
 
 <script type="module">
 
-import {
-initializeApp
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
-authDomain: "album-49b3e.firebaseapp.com",
-projectId: "album-49b3e",
-storageBucket: "album-49b3e.firebasestorage.app",
-messagingSenderId: "448724897117",
-appId: "1:448724897117:web:e124ab546bc69aeea7ecb4"
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+    measurementId: "G-3QFX3GDEXN"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const view = document.getElementById("view");
+const albumGrid = document.getElementById("albumGrid");
 
-function renderMeter(left, right, value){
+function meter(left, right, value){
+
+    value = Number(value) || 0;
+    value = Math.max(0, Math.min(5, value));
 
     let dotsHTML = "";
 
     for(let i = 1; i <= 5; i++){
-
         dotsHTML += `
-            <div class="dot ${
-                i <= value ? "active" : ""
-            }"></div>
+            <div class="dot ${i <= value ? "active" : ""}"></div>
         `;
     }
 
+    const activeWidth = value <= 1
+        ? "0%"
+        : `${((value - 1) / 4) * 100}%`;
+
     return `
         <div class="meter">
+            <div class="meter-label">${left}</div>
 
-            <div class="side-label">
-                ${left}
-            </div>
-
-            <div class="dot-line">
+            <div class="dot-line" style="--active-width:${activeWidth};">
                 ${dotsHTML}
             </div>
 
-            <div class="side-label right">
-                ${right}
-            </div>
-
+            <div class="meter-label right-label">${right}</div>
         </div>
     `;
 }
 
-function renderAlbum(album){
+onSnapshot(collection(db,"albums"), (snapshot)=>{
 
-    return `
-        <div class="album">
+    albumGrid.innerHTML = "";
 
-            <div class="left">
-
-                <img
-                    class="cover"
-                    src="${album.cover || ''}"
-                >
-
-                <div class="title">
-                    ${album.title || ''}
-                </div>
-
-                <div class="artist">
-                    ${album.artist || ''}
-                </div>
-
-                <div class="year">
-                    ${album.year || ''}
-                </div>
-
-                <div class="desc">
-                    ${album.desc || ''}
-                </div>
-
-            </div>
-
-            <div class="right">
-
-                ${renderMeter(
-                    "暗い",
-                    "明るい",
-                    album.darkness
-                )}
-
-                ${renderMeter(
-                    "静か",
-                    "激しい",
-                    album.intense
-                )}
-
-                ${renderMeter(
-                    "シンプル",
-                    "複雑",
-                    album.complex
-                )}
-
-                ${renderMeter(
-                    "希望",
-                    "絶望",
-                    album.hope
-                )}
-
-                ${renderMeter(
-                    "個人",
-                    "世界",
-                    album.world
-                )}
-
-                <div class="keyword-box">
-
-                    <div class="keyword-title">
-                        キーワード
-                    </div>
-
-                    <div class="keyword-content">
-                        ${album.keywords || ''}
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-    `;
-}
-
-onSnapshot(
-    collection(db,"albums"),
-    (snapshot)=>{
-
-        view.innerHTML = "";
-
-        snapshot.forEach((docItem)=>{
-
-            view.innerHTML +=
-            renderAlbum(
-                docItem.data()
-            );
-
-        });
-
+    if(snapshot.empty){
+        albumGrid.innerHTML = `<div class="empty">保存されたアルバムがありません</div>`;
+        return;
     }
-);
+
+    snapshot.forEach((doc)=>{
+
+        const a = doc.data();
+
+        albumGrid.innerHTML += `
+        <div class="album-card">
+
+            <div>
+                <img class="cover" src="${a.cover || ""}">
+                <div class="title">${a.title || ""}</div>
+                <div class="artist">${a.artist || ""}</div>
+                <div class="meta">${a.year || ""}</div>
+
+                <div class="keyword-text">
+                    ${a.keywords || ""}
+                </div>
+            </div>
+
+            <div class="meter-area">
+
+                ${meter("暗い", "明るい", a.darkness)}
+
+                ${meter("静か", "激しい", a.intense)}
+
+                ${meter("シンプル", "複雑", a.complex)}
+
+                ${meter("絶望", "希望", a.hope)}
+
+                ${meter("個人", "世界", a.world)}
+
+            </div>
+
+            <div class="description-wide">
+                ${a.desc || ""}
+            </div>
+
+        </div>
+        `;
+    });
+});
 
 </script>
 
