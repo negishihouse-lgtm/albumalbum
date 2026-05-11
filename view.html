@@ -149,10 +149,79 @@ body{
     text-align:right;
 }
 
-.meter-svg{
-    width:100%;
-    height:32px;
-    display:block;
+.meter-graphic{
+    position:relative;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    min-width:0;
+}
+
+/* 灰色の線 */
+.meter-base-line{
+    position:absolute;
+    left:12px;
+    right:12px;
+    top:50%;
+    height:3px;
+    transform:translateY(-50%);
+    background:#4a5158;
+    z-index:1;
+}
+
+/* 青い線 */
+.meter-active-line{
+    position:absolute;
+    left:12px;
+    top:50%;
+    height:3px;
+    transform:translateY(-50%);
+    width:var(--active-line-width);
+    background:linear-gradient(
+        to right,
+        #3f8ec7,
+        #5fa7d8,
+        #82c4ee
+    );
+    z-index:2;
+}
+
+.dot{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    border:2px solid #555;
+    background:#0b0b0b;
+    position:relative;
+    z-index:3;
+    flex-shrink:0;
+}
+
+/* 左ほど濃く、右ほど薄い */
+.dot.active.level-1{
+    background:#3f8ec7;
+    border-color:#3f8ec7;
+}
+
+.dot.active.level-2{
+    background:#4d9bd0;
+    border-color:#4d9bd0;
+}
+
+.dot.active.level-3{
+    background:#5fa7d8;
+    border-color:#5fa7d8;
+}
+
+.dot.active.level-4{
+    background:#73b6e3;
+    border-color:#73b6e3;
+}
+
+.dot.active.level-5{
+    background:#8bc8ef;
+    border-color:#8bc8ef;
 }
 
 /* 画面が少し狭いときは1列にする */
@@ -210,8 +279,22 @@ body{
         font-size:16px;
     }
 
-    .meter-svg{
-        height:30px;
+    .meter-graphic{
+        height:28px;
+    }
+
+    .dot{
+        width:22px;
+        height:22px;
+    }
+
+    .meter-base-line{
+        left:11px;
+        right:11px;
+    }
+
+    .meter-active-line{
+        left:11px;
     }
 }
 </style>
@@ -250,74 +333,42 @@ const db = getFirestore(app);
 
 const albumGrid = document.getElementById("albumGrid");
 
-function meterGraphic(value){
+function meter(left, right, value){
 
     value = Number(value) || 0;
     value = Math.max(0, Math.min(5, value));
 
-    const positions = [10, 30, 50, 70, 90];
-
-    let circles = "";
+    let dotsHTML = "";
 
     for(let i = 1; i <= 5; i++){
-
-        const x = positions[i - 1];
-        const active = i <= value;
-
-        circles += `
-            <circle
-                cx="${x}"
-                cy="16"
-                r="7"
-                fill="${active ? "#6fa8dc" : "#0b0b0b"}"
-                stroke="${active ? "#6fa8dc" : "#555"}"
-                stroke-width="2"
-            />
+        dotsHTML += `
+            <div class="dot level-${i} ${i <= value ? "active" : ""}"></div>
         `;
     }
 
-    const activeEnd = value <= 1
-        ? positions[0]
-        : positions[value - 1];
+    let activeLineWidth = "0%";
 
-    return `
-        <svg class="meter-svg"
-             viewBox="0 0 100 32"
-             preserveAspectRatio="none">
-
-            <line
-                x1="10"
-                y1="16"
-                x2="90"
-                y2="16"
-                stroke="#4a5158"
-                stroke-width="2.5"
-                stroke-linecap="round"
-            />
-
-            <line
-                x1="10"
-                y1="16"
-                x2="${activeEnd}"
-                y2="16"
-                stroke="#6fa8dc"
-                stroke-width="2.5"
-                stroke-linecap="round"
-            />
-
-            ${circles}
-
-        </svg>
-    `;
-}
-
-function meter(left, right, value){
+    if(value === 1){
+        activeLineWidth = "0%";
+    }else if(value === 2){
+        activeLineWidth = "25%";
+    }else if(value === 3){
+        activeLineWidth = "50%";
+    }else if(value === 4){
+        activeLineWidth = "75%";
+    }else if(value === 5){
+        activeLineWidth = "100%";
+    }
 
     return `
         <div class="meter">
             <div class="meter-label">${left}</div>
 
-            ${meterGraphic(value)}
+            <div class="meter-graphic" style="--active-line-width:${activeLineWidth};">
+                <div class="meter-base-line"></div>
+                <div class="meter-active-line"></div>
+                ${dotsHTML}
+            </div>
 
             <div class="meter-label right-label">${right}</div>
         </div>
