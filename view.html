@@ -139,53 +139,30 @@ body{
     text-align:right;
 }
 
+/* 丸と線の全体 */
 .meter-graphic{
-    position:relative;
-    height:24px;
     display:flex;
     align-items:center;
-    justify-content:space-between;
+    width:100%;
     min-width:0;
 }
 
-/* 灰色の線 */
-.meter-base-line{
-    position:absolute;
-    left:10px;
-    right:10px;
-    top:50%;
-    height:3px;
-    transform:translateY(-50%);
-    background:#4a5158;
-    z-index:1;
-}
-
-/* 青い線 */
-.meter-active-line{
-    position:absolute;
-    left:10px;
-    top:50%;
-    height:3px;
-    transform:translateY(-50%);
-    width:var(--active-line-width);
-    background:linear-gradient(
-        to right,
-        #3f8ec7,
-        #5fa7d8,
-        #82c4ee
-    );
-    z-index:2;
-}
-
+/* 丸 */
 .dot{
-    width:20px;
-    height:20px;
+    width:18px;
+    height:18px;
     border-radius:50%;
     border:2px solid #555;
     background:#0b0b0b;
-    position:relative;
-    z-index:3;
     flex-shrink:0;
+}
+
+/* 丸と丸の間の線 */
+.connector{
+    height:3px;
+    background:#4a5158;
+    flex:1;
+    min-width:6px;
 }
 
 /* 左ほど濃く、右ほど薄い */
@@ -212,6 +189,23 @@ body{
 .dot.active.level-5{
     background:#8bc8ef;
     border-color:#8bc8ef;
+}
+
+/* アクティブな線 */
+.connector.active.level-1{
+    background:#3f8ec7;
+}
+
+.connector.active.level-2{
+    background:#4d9bd0;
+}
+
+.connector.active.level-3{
+    background:#5fa7d8;
+}
+
+.connector.active.level-4{
+    background:#73b6e3;
 }
 
 /* キーワード欄 */
@@ -292,22 +286,14 @@ body{
         font-size:16px;
     }
 
-    .meter-graphic{
-        height:22px;
-    }
-
     .dot{
-        width:18px;
-        height:18px;
+        width:16px;
+        height:16px;
     }
 
-    .meter-base-line{
-        left:9px;
-        right:9px;
-    }
-
-    .meter-active-line{
-        left:9px;
+    .connector{
+        height:3px;
+        min-width:4px;
     }
 
     .keyword-title{
@@ -359,36 +345,27 @@ function meter(left, right, value){
     value = Number(value) || 0;
     value = Math.max(0, Math.min(5, value));
 
-    let dotsHTML = "";
+    let graphicHTML = "";
 
     for(let i = 1; i <= 5; i++){
-        dotsHTML += `
+
+        graphicHTML += `
             <div class="dot level-${i} ${i <= value ? "active" : ""}"></div>
         `;
-    }
 
-    let activeLineWidth = "0%";
-
-    if(value === 1){
-        activeLineWidth = "0%";
-    }else if(value === 2){
-        activeLineWidth = "25%";
-    }else if(value === 3){
-        activeLineWidth = "50%";
-    }else if(value === 4){
-        activeLineWidth = "75%";
-    }else if(value === 5){
-        activeLineWidth = "100%";
+        if(i < 5){
+            graphicHTML += `
+                <div class="connector level-${i} ${i < value ? "active" : ""}"></div>
+            `;
+        }
     }
 
     return `
         <div class="meter">
             <div class="meter-label">${left}</div>
 
-            <div class="meter-graphic" style="--active-line-width:${activeLineWidth};">
-                <div class="meter-base-line"></div>
-                <div class="meter-active-line"></div>
-                ${dotsHTML}
+            <div class="meter-graphic">
+                ${graphicHTML}
             </div>
 
             <div class="meter-label right-label">${right}</div>
