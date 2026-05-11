@@ -42,6 +42,10 @@ body{
     cursor:pointer;
 }
 
+.back-btn:hover{
+    background:#2a2a2a;
+}
+
 .album-grid{
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
@@ -55,26 +59,36 @@ body{
     border:1px solid rgba(255,255,255,0.12);
     padding:26px;
     display:grid;
-    grid-template-columns:260px 1fr;
-    gap:34px;
+    grid-template-columns:240px minmax(0,1fr);
+    gap:28px;
+    overflow:hidden;
+}
+
+.album-left{
+    min-width:0;
 }
 
 .cover{
-    width:220px;
+    width:210px;
     aspect-ratio:1/1;
     object-fit:cover;
     margin-bottom:20px;
+    background:#111;
 }
 
 .title{
     font-size:30px;
     font-weight:700;
+    line-height:1.2;
+    margin-bottom:4px;
+    word-break:break-word;
 }
 
 .artist{
     font-size:24px;
     color:#6fa8dc;
     margin-bottom:16px;
+    word-break:break-word;
 }
 
 .meta{
@@ -85,6 +99,7 @@ body{
 .keyword-text{
     color:#ddd;
     line-height:2;
+    word-break:break-word;
 }
 
 .description-wide{
@@ -94,6 +109,7 @@ body{
     grid-column:1/-1;
     color:#ddd;
     line-height:2;
+    word-break:break-word;
 }
 
 .empty{
@@ -101,19 +117,21 @@ body{
     font-size:28px;
 }
 
-/* ここからメーター部分 */
+/* メーター部分 */
 
 .meter-area{
     border:1px solid rgba(255,255,255,0.12);
-    padding:24px 26px;
+    padding:22px 24px;
+    min-width:0;
+    width:100%;
 }
 
 .meter{
     display:grid;
-    grid-template-columns:90px 1fr 90px;
+    grid-template-columns:72px minmax(120px,1fr) 72px;
     align-items:center;
-    gap:18px;
-    margin-bottom:26px;
+    gap:12px;
+    margin-bottom:22px;
 }
 
 .meter:last-child{
@@ -121,13 +139,13 @@ body{
 }
 
 .meter-label{
-    font-size:20px;
+    font-size:18px;
     font-weight:700;
     color:#e8e8e8;
     white-space:nowrap;
 }
 
-.meter-label.right-label{
+.right-label{
     text-align:right;
 }
 
@@ -136,13 +154,14 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    min-width:0;
 }
 
 .dot-line::before{
     content:"";
     position:absolute;
-    left:0;
-    right:0;
+    left:13px;
+    right:13px;
     top:50%;
     height:3px;
     transform:translateY(-50%);
@@ -153,23 +172,24 @@ body{
 .dot-line::after{
     content:"";
     position:absolute;
-    left:0;
+    left:13px;
     top:50%;
     height:3px;
     transform:translateY(-50%);
-    width:var(--active-width);
+    width:var(--active-line-width);
     background:#6fa8dc;
     z-index:0;
 }
 
 .dot{
-    width:30px;
-    height:30px;
+    width:26px;
+    height:26px;
     border-radius:50%;
     border:2px solid #555;
     background:#0b0b0b;
     position:relative;
     z-index:1;
+    flex-shrink:0;
 }
 
 .dot.active{
@@ -177,14 +197,33 @@ body{
     border-color:#6fa8dc;
 }
 
-@media(max-width:1000px){
-
+/* 画面が少し狭いときは1列にする */
+@media(max-width:1300px){
     .album-grid{
         grid-template-columns:1fr;
+    }
+}
+
+/* スマホ対応 */
+@media(max-width:800px){
+
+    body{
+        padding:22px;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    .page-title{
+        font-size:34px;
     }
 
     .album-card{
         grid-template-columns:1fr;
+        padding:22px;
     }
 
     .cover{
@@ -192,9 +231,21 @@ body{
         max-width:320px;
     }
 
+    .title{
+        font-size:28px;
+    }
+
+    .artist{
+        font-size:22px;
+    }
+
+    .meter-area{
+        padding:20px;
+    }
+
     .meter{
-        grid-template-columns:75px 1fr 75px;
-        gap:12px;
+        grid-template-columns:68px minmax(120px,1fr) 68px;
+        gap:10px;
     }
 
     .meter-label{
@@ -204,6 +255,15 @@ body{
     .dot{
         width:24px;
         height:24px;
+    }
+
+    .dot-line::before{
+        left:12px;
+        right:12px;
+    }
+
+    .dot-line::after{
+        left:12px;
     }
 }
 </style>
@@ -255,15 +315,25 @@ function meter(left, right, value){
         `;
     }
 
-    const activeWidth = value <= 1
-        ? "0%"
-        : `${((value - 1) / 4) * 100}%`;
+    let activeLineWidth = "0%";
+
+    if(value === 1){
+        activeLineWidth = "0%";
+    }else if(value === 2){
+        activeLineWidth = "25%";
+    }else if(value === 3){
+        activeLineWidth = "50%";
+    }else if(value === 4){
+        activeLineWidth = "75%";
+    }else if(value === 5){
+        activeLineWidth = "100%";
+    }
 
     return `
         <div class="meter">
             <div class="meter-label">${left}</div>
 
-            <div class="dot-line" style="--active-width:${activeWidth};">
+            <div class="dot-line" style="--active-line-width:${activeLineWidth};">
                 ${dotsHTML}
             </div>
 
@@ -288,11 +358,20 @@ onSnapshot(collection(db,"albums"), (snapshot)=>{
         albumGrid.innerHTML += `
         <div class="album-card">
 
-            <div>
+            <div class="album-left">
                 <img class="cover" src="${a.cover || ""}">
-                <div class="title">${a.title || ""}</div>
-                <div class="artist">${a.artist || ""}</div>
-                <div class="meta">${a.year || ""}</div>
+
+                <div class="title">
+                    ${a.title || ""}
+                </div>
+
+                <div class="artist">
+                    ${a.artist || ""}
+                </div>
+
+                <div class="meta">
+                    ${a.year || ""}
+                </div>
 
                 <div class="keyword-text">
                     ${a.keywords || ""}
