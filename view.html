@@ -2,12 +2,12 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Album Collection</title>
+<title>Album View</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
@@ -18,198 +18,322 @@ body{
     background:#050505;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    padding:50px;
+}
+
+.container{
+    max-width:1400px;
+    margin:0 auto;
+}
+
+.album{
+    display:grid;
+    grid-template-columns: 520px 1fr;
+    gap:60px;
+    margin-bottom:80px;
     padding:40px;
-}
-
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:40px;
-}
-
-.page-title{
-    font-size:48px;
-    font-weight:700;
-}
-
-.back-btn{
-    background:#1e1e1e;
-    color:white;
-    border:1px solid rgba(255,255,255,0.15);
-    padding:14px 22px;
-    font-size:16px;
-    cursor:pointer;
-}
-
-.album-grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:30px;
-    max-width:1700px;
-    margin:auto;
-}
-
-.album-card{
-    background:#0b0b0b;
     border:1px solid rgba(255,255,255,0.12);
-    padding:26px;
-    display:grid;
-    grid-template-columns:260px 1fr;
-    gap:34px;
+    background:#090909;
+}
+
+.left{
+    display:flex;
+    flex-direction:column;
 }
 
 .cover{
-    width:220px;
-    aspect-ratio:1/1;
+    width:100%;
+    aspect-ratio:1;
     object-fit:cover;
-    margin-bottom:20px;
+    margin-bottom:25px;
 }
 
 .title{
-    font-size:30px;
+    font-size:72px;
     font-weight:700;
+    line-height:1;
+    margin-bottom:12px;
 }
 
 .artist{
-    font-size:24px;
-    color:#6fa8dc;
-    margin-bottom:16px;
-}
-
-.meta{
-    color:#aaa;
-    margin-bottom:24px;
-}
-
-.keyword-text{
-    color:#ddd;
-    line-height:2;
-}
-
-.description-wide{
-    margin-top:10px;
-    padding-top:26px;
-    border-top:1px solid rgba(255,255,255,0.1);
-    grid-column:1/-1;
-    color:#ddd;
-    line-height:2;
-}
-
-.empty{
-    color:#777;
     font-size:28px;
+    color:#79a8d8;
+    margin-bottom:18px;
 }
+
+.year{
+    color:#aaa;
+    font-size:18px;
+    margin-bottom:28px;
+}
+
+.desc{
+    color:#ddd;
+    font-size:18px;
+    line-height:1.9;
+}
+
+.right{
+    border:1px solid rgba(255,255,255,0.15);
+    padding:35px 40px;
+}
+
+.meter{
+    display:grid;
+    grid-template-columns: 140px 1fr 140px;
+    align-items:center;
+    gap:30px;
+    margin:38px 0;
+}
+
+.side-label{
+    font-size:28px;
+    font-weight:700;
+    color:#f2f2f2;
+}
+
+.side-label.right{
+    text-align:right;
+}
+
+.dot-line{
+    position:relative;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.dot-line::before{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    height:4px;
+    transform:translateY(-50%);
+    background:#4d5660;
+    z-index:0;
+}
+
+.dot{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    border:2px solid #67717a;
+    background:#090909;
+    position:relative;
+    z-index:1;
+}
+
+.dot.active{
+    background:#8bb7df;
+    border-color:#8bb7df;
+}
+
+.keyword-box{
+    margin-top:40px;
+    border:1px solid rgba(255,255,255,0.12);
+    display:grid;
+    grid-template-columns: 180px 1fr;
+}
+
+.keyword-title{
+    color:#79a8d8;
+    padding:30px;
+    font-size:28px;
+    border-right:1px solid rgba(255,255,255,0.12);
+}
+
+.keyword-content{
+    padding:30px;
+    font-size:20px;
+    line-height:1.8;
+    color:#ddd;
+}
+
+@media(max-width:1000px){
+
+    .album{
+        grid-template-columns:1fr;
+    }
+
+    .title{
+        font-size:50px;
+    }
+
+    .meter{
+        grid-template-columns:100px 1fr 100px;
+        gap:15px;
+    }
+
+    .side-label{
+        font-size:20px;
+    }
+
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-    <h1 class="page-title">Album Collection</h1>
-
-    <button class="back-btn"
-            onclick="location.href='index.html'">
-        編集ページへ戻る
-    </button>
-</div>
-
-<div class="album-grid" id="albumGrid"></div>
+<div class="container" id="view"></div>
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+import {
+initializeApp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
-    authDomain: "album-49b3e.firebaseapp.com",
-    projectId: "album-49b3e",
-    storageBucket: "album-49b3e.firebasestorage.app",
-    messagingSenderId: "448724897117",
-    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
-    measurementId: "G-3QFX3GDEXN"
+apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+authDomain: "album-49b3e.firebaseapp.com",
+projectId: "album-49b3e",
+storageBucket: "album-49b3e.firebasestorage.app",
+messagingSenderId: "448724897117",
+appId: "1:448724897117:web:e124ab546bc69aeea7ecb4"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const albumGrid = document.getElementById("albumGrid");
+const view = document.getElementById("view");
 
-function dots(value){
-    let html = "";
-    for(let i=1;i<=5;i++){
-        html += `<div style="
-            width:20px;height:20px;border-radius:50%;
-            border:2px solid #555;
-            ${i <= value ? 'background:#9ed8ff;border-color:#9ed8ff;' : ''}
-        "></div>`;
-    }
-    return html;
-}
+function renderMeter(left, right, value){
 
-onSnapshot(collection(db,"albums"), (snapshot)=>{
+    let dotsHTML = "";
 
-    albumGrid.innerHTML = "";
+    for(let i = 1; i <= 5; i++){
 
-    if(snapshot.empty){
-        albumGrid.innerHTML = `<div class="empty">保存されたアルバムがありません</div>`;
-        return;
+        dotsHTML += `
+            <div class="dot ${
+                i <= value ? "active" : ""
+            }"></div>
+        `;
     }
 
-    snapshot.forEach((doc)=>{
+    return `
+        <div class="meter">
 
-        const a = doc.data();
-
-        albumGrid.innerHTML += `
-        <div class="album-card">
-
-            <div>
-                <img class="cover" src="${a.cover}">
-                <div class="title">${a.title}</div>
-                <div class="artist">${a.artist}</div>
-                <div class="meta">${a.year}</div>
-
-                <div class="keyword-text">
-                    ${a.keywords || ""}
-                </div>
+            <div class="side-label">
+                ${left}
             </div>
 
-            <div>
-                <div>暗い↔︎明るい</div>
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    ${dots(a.darkness)}
-                </div>
-
-                <div>静か↔︎激しい</div>
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    ${dots(a.intense)}
-                </div>
-
-                <div>シンプル↔︎複雑</div>
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    ${dots(a.complex)}
-                </div>
-
-                <div>絶望↔︎希望</div>
-                <div style="display:flex;gap:6px;margin-bottom:10px;">
-                    ${dots(a.hope)}
-                </div>
-
-                <div>個人↔︎世界</div>
-                <div style="display:flex;gap:6px;">
-                    ${dots(a.world)}
-                </div>
+            <div class="dot-line">
+                ${dotsHTML}
             </div>
 
-            <div class="description-wide">
-                ${a.desc}
+            <div class="side-label right">
+                ${right}
             </div>
 
         </div>
-        `;
-    });
-});
+    `;
+}
+
+function renderAlbum(album){
+
+    return `
+        <div class="album">
+
+            <div class="left">
+
+                <img
+                    class="cover"
+                    src="${album.cover || ''}"
+                >
+
+                <div class="title">
+                    ${album.title || ''}
+                </div>
+
+                <div class="artist">
+                    ${album.artist || ''}
+                </div>
+
+                <div class="year">
+                    ${album.year || ''}
+                </div>
+
+                <div class="desc">
+                    ${album.desc || ''}
+                </div>
+
+            </div>
+
+            <div class="right">
+
+                ${renderMeter(
+                    "暗い",
+                    "明るい",
+                    album.darkness
+                )}
+
+                ${renderMeter(
+                    "静か",
+                    "激しい",
+                    album.intense
+                )}
+
+                ${renderMeter(
+                    "シンプル",
+                    "複雑",
+                    album.complex
+                )}
+
+                ${renderMeter(
+                    "希望",
+                    "絶望",
+                    album.hope
+                )}
+
+                ${renderMeter(
+                    "個人",
+                    "世界",
+                    album.world
+                )}
+
+                <div class="keyword-box">
+
+                    <div class="keyword-title">
+                        キーワード
+                    </div>
+
+                    <div class="keyword-content">
+                        ${album.keywords || ''}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+onSnapshot(
+    collection(db,"albums"),
+    (snapshot)=>{
+
+        view.innerHTML = "";
+
+        snapshot.forEach((docItem)=>{
+
+            view.innerHTML +=
+            renderAlbum(
+                docItem.data()
+            );
+
+        });
+
+    }
+);
 
 </script>
 
