@@ -139,7 +139,6 @@ body{
     text-align:right;
 }
 
-/* 丸と線の全体 */
 .meter-graphic{
     display:flex;
     align-items:center;
@@ -147,7 +146,6 @@ body{
     min-width:0;
 }
 
-/* 丸 */
 .dot{
     width:18px;
     height:18px;
@@ -157,7 +155,6 @@ body{
     flex-shrink:0;
 }
 
-/* 丸と丸の間の線 */
 .connector{
     height:3px;
     background:#4a5158;
@@ -165,7 +162,6 @@ body{
     min-width:6px;
 }
 
-/* 左ほど濃く、右ほど薄い */
 .dot.active.level-1{
     background:#3f8ec7;
     border-color:#3f8ec7;
@@ -191,7 +187,6 @@ body{
     border-color:#8bc8ef;
 }
 
-/* アクティブな線 */
 .connector.active.level-1{
     background:#3f8ec7;
 }
@@ -207,8 +202,6 @@ body{
 .connector.active.level-4{
     background:#73b6e3;
 }
-
-/* キーワード欄 */
 
 .keyword-box{
     margin-top:24px;
@@ -230,14 +223,12 @@ body{
     word-break:break-word;
 }
 
-/* 画面が少し狭いときは1列にする */
 @media(max-width:1300px){
     .album-grid{
         grid-template-columns:1fr;
     }
 }
 
-/* スマホ対応 */
 @media(max-width:800px){
 
     body{
@@ -313,7 +304,7 @@ body{
     <h1 class="page-title">Album Collection</h1>
 
     <button class="back-btn"
-            onclick="location.href='index.html'">
+            onclick="location.href='Album Editor.html'">
         編集ページへ戻る
     </button>
 </div>
@@ -323,7 +314,13 @@ body{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+import {
+    getFirestore,
+    collection,
+    onSnapshot,
+    query,
+    where
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
@@ -339,6 +336,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const albumGrid = document.getElementById("albumGrid");
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
 function meter(left, right, value){
 
@@ -362,18 +368,28 @@ function meter(left, right, value){
 
     return `
         <div class="meter">
-            <div class="meter-label">${left}</div>
+            <div class="meter-label">${escapeHTML(left)}</div>
 
             <div class="meter-graphic">
                 ${graphicHTML}
             </div>
 
-            <div class="meter-label right-label">${right}</div>
+            <div class="meter-label right-label">${escapeHTML(right)}</div>
         </div>
     `;
 }
 
-onSnapshot(collection(db,"albums"), (snapshot)=>{
+/*
+  公開アルバムだけ表示する。
+  既存データに isPublic が付いていない場合は表示されない。
+  既存データも表示したい場合は、一時的に下の q を collection(db,"albums") に戻してください。
+*/
+const q = query(
+    collection(db, "albums"),
+    where("isPublic", "==", true)
+);
+
+onSnapshot(q, (snapshot)=>{
 
     albumGrid.innerHTML = "";
 
@@ -390,18 +406,18 @@ onSnapshot(collection(db,"albums"), (snapshot)=>{
         <div class="album-card">
 
             <div class="album-left">
-                <img class="cover" src="${a.cover || ""}">
+                <img class="cover" src="${escapeHTML(a.cover || "")}" alt="">
 
                 <div class="title">
-                    ${a.title || ""}
+                    ${escapeHTML(a.title || "")}
                 </div>
 
                 <div class="artist">
-                    ${a.artist || ""}
+                    ${escapeHTML(a.artist || "")}
                 </div>
 
                 <div class="meta">
-                    ${a.year || ""}
+                    ${escapeHTML(a.year || "")}
                 </div>
             </div>
 
@@ -423,19 +439,21 @@ onSnapshot(collection(db,"albums"), (snapshot)=>{
                     </div>
 
                     <div class="keyword-text">
-                        ${a.keywords || ""}
+                        ${escapeHTML(a.keywords || "")}
                     </div>
                 </div>
 
             </div>
 
             <div class="description-wide">
-                ${a.desc || ""}
+                ${escapeHTML(a.desc || "")}
             </div>
 
         </div>
         `;
     });
+}, (error) => {
+    albumGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`;
 });
 
 </script>
