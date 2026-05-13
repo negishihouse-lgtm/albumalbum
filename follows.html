@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>フォロー一覧 - Album Collection</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#050505;
+    color:white;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    padding:40px;
+    padding-left:280px;
+}
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    background:#0b0b0b;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:30px 20px;
+    overflow-y:auto;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:10px;
+}
+
+.sidebar a:hover{
+    background:#1a1a1a;
+}
+
+.page-title{
+    font-size:46px;
+    margin-bottom:30px;
+}
+
+.user-list{
+    max-width:720px;
+}
+
+.user-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    cursor:pointer;
+}
+
+.user-card:hover{
+    border-color:rgba(111,168,220,0.5);
+}
+
+.user-avatar{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.12);
+    flex-shrink:0;
+}
+
+.user-name{
+    font-size:18px;
+    font-weight:700;
+}
+
+.user-email{
+    font-size:14px;
+    color:#999;
+    margin-top:4px;
+}
+
+.empty{
+    color:#777;
+    font-size:22px;
+    margin-top:20px;
+}
+
+@media(max-width:900px){
+    body{
+        padding:22px;
+    }
+
+    .sidebar{
+        position:static;
+        width:100%;
+        height:auto;
+        margin-bottom:24px;
+    }
+
+    .page-title{
+        font-size:34px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="sidebar">
+    <div class="logo">Album Collection</div>
+
+    <a href="index.html">🏠 ホーム</a>
+    <a href="editor.html">✍️ 投稿する</a>
+    <a id="myPageLink" href="login.html">👤 マイページ</a>
+    <a href="profile-edit.html">⚙️ プロフィール編集</a>
+    <a href="login.html">🔐 ログイン</a>
+</nav>
+
+<h1 id="pageTitle" class="page-title">読み込み中...</h1>
+
+<div id="userList" class="user-list"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+    initializeFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+    measurementId: "G-3QFX3GDEXN"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling: true
+});
+
+const auth = getAuth(app);
+
+const pageTitle = document.getElementById("pageTitle");
+const userList = document.getElementById("userList");
+const myPageLink = document.getElementById("myPageLink");
+
+const params = new URLSearchParams(location.search);
+const uid = params.get("uid");
+const type = params.get("type"); // following or followers
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function getDisplayName(user){
+    return (
+        user.nickname ||
+        user.userName ||
+        user.displayName ||
+        user.email ||
+        "匿名ユーザー"
+    );
+}
+
+function getPhotoURL(user){
+    return (
+        user.photoURL ||
+        user.iconURL ||
+        "https://placehold.co/200x200/111111/ffffff?text=User"
+    );
+}
+
+onAuthStateChanged(auth, (user) => {
+    if(user){
+        myPageLink.href = `profile.html?uid=${user.uid}`;
+    }else{
+        myPageLink.href = "login.html";
+    }
+});
+
+async function loadUsers(){
+
+    if(!uid || !type){
+        pageTitle.textContent = "エラー";
+        userList.innerHTML = `<div class="empty">URLが不正です。</div>`;
+        return;
+    }
+
+    pageTitle.textContent =
+        type === "following" ? "フォロー中" : "フォロワー";
+
+    let q;
+
+    if(type === "following"){
+        q = query(
+            collection(db, "follows"),
+            where("followerId", "==", uid)
+        );
+    }else{
+        q = query(
+            collection(db, "follows"),
+            where("followingId", "==", uid)
+        );
+    }
+
+    const followSnap = await getDocs(q);
+
+    if(followSnap.empty){
+        userList.innerHTML =
+            `<div class="empty">ユーザーがいません。</div>`;
+        return;
+    }
+
+    const userIds = [];
+
+    followSnap.forEach((docSnap) => {
+        const data = docSnap.data();
+
+        if(type === "following"){
+            userIds.push(data.followingId);
+        }else{
+            userIds.push(data.followerId);
+        }
+    });
+
+    for(const userId of userIds){
+
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+
+        if(!userSnap.exists()) continue;
+
+        const user = userSnap.data();
+
+        userList.innerHTML += `
+            <div class="user-card"
+                 onclick="location.href='profile.html?uid=${escapeHTML(userId)}'">
+
+                <img class="user-avatar"
+                     src="${escapeHTML(getPhotoURL(user))}"
+                     alt="">
+
+                <div>
+                    <div class="user-name">
+                        ${escapeHTML(getDisplayName(user))}
+                    </div>
+                    <div class="user-email">
+                        ${escapeHTML(user.email || "")}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+loadUsers();
+
+</script>
+
+</body>
+</html>
