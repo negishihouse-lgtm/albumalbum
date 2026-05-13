@@ -20,8 +20,6 @@ body{
     padding-left:280px;
 }
 
-/* サイドバー */
-
 .sidebar{
     position:fixed;
     top:0;
@@ -52,8 +50,6 @@ body{
 .sidebar a:hover{
     background:#1a1a1a;
 }
-
-/* 上部 */
 
 .topbar{
     display:flex;
@@ -88,25 +84,36 @@ body{
     color:white;
 }
 
-/* 投稿一覧（2列表示） */
-
 .album-grid{
     display:grid;
-    grid-template-columns:repeat(3, minmax(0, 1fr));
-    gap:22px;
-    max-width:1600px;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:24px;
+    max-width:1400px;
     margin:0 auto;
 }
 
 .album-card{
-    display:grid;
-    grid-template-columns:42% 58%;
-    gap:18px;
     background:#0b0b0b;
     border:1px solid rgba(255,255,255,0.14);
     border-radius:18px;
-    padding:18px;
-    min-height:430px;
+    padding:22px;
+    display:grid;
+    grid-template-columns:38% 62%;
+    gap:20px;
+    cursor:pointer;
+    overflow:hidden;
+}
+
+.album-card:hover{
+    border-color:rgba(111,168,220,0.55);
+}
+
+.album-info{
+    min-width:0;
+}
+
+.album-analysis{
+    min-width:0;
 }
 
 .cover{
@@ -115,45 +122,160 @@ body{
     object-fit:cover;
     background:#111;
     margin-bottom:16px;
+    border:1px solid rgba(255,255,255,0.18);
 }
 
 .title{
     font-size:28px;
     font-weight:800;
     line-height:1.15;
+    margin-bottom:6px;
+    word-break:break-word;
 }
 
 .artist{
     color:#6fa8dc;
-    font-size:18px;
-    margin-top:6px;
+    font-size:19px;
+    margin-bottom:8px;
+    word-break:break-word;
 }
 
 .meta{
     color:#aaa;
-    margin-top:8px;
-    font-size:14px;
+    font-size:15px;
+    margin-bottom:12px;
+    word-break:break-word;
 }
 
-.description-wide{
-    margin-top:16px;
+.description{
+    color:#ddd;
+    font-size:15px;
+    line-height:1.7;
+    margin-top:14px;
     padding-top:14px;
     border-top:1px solid rgba(255,255,255,0.1);
+    word-break:break-word;
+}
+
+.creator{
+    margin-top:10px;
+    color:#ccc;
     font-size:14px;
-    line-height:1.7;
+    line-height:1.5;
+    word-break:break-word;
+}
+
+.creator a{
+    color:#6fa8dc;
+    text-decoration:none;
+}
+
+.creator a:hover{
+    text-decoration:underline;
+}
+
+.like-area{
+    margin-top:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
     color:#ddd;
+}
+
+.like-btn{
+    padding:12px 18px;
+    font-size:15px;
+}
+
+.like-count{
+    font-size:15px;
+}
+
+.comment-count{
+    margin-top:10px;
+    color:#aaa;
+    font-size:15px;
 }
 
 .meter-area{
     border:1px solid rgba(255,255,255,0.14);
     border-radius:14px;
     padding:16px;
+    min-width:0;
 }
 
 .meter{
-    grid-template-columns:56px minmax(0,1fr) 56px;
+    display:grid;
+    grid-template-columns:58px minmax(0,1fr) 58px;
+    align-items:center;
     gap:8px;
     margin-bottom:14px;
+    min-width:0;
+}
+
+.meter-label{
+    font-size:14px;
+    font-weight:700;
+    color:#e8e8e8;
+    white-space:nowrap;
+}
+
+.right-label{
+    text-align:right;
+}
+
+.meter-graphic{
+    display:flex;
+    align-items:center;
+    width:100%;
+    min-width:0;
+    overflow:hidden;
+}
+
+.dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    border:2px solid #555;
+    background:#0b0b0b;
+    flex-shrink:0;
+}
+
+.connector{
+    height:3px;
+    background:#4a5158;
+    flex:1;
+    min-width:0;
+}
+
+.dot.active.level-1,
+.connector.active.level-1{
+    background:#3f8ec7;
+    border-color:#3f8ec7;
+}
+
+.dot.active.level-2,
+.connector.active.level-2{
+    background:#4d9bd0;
+    border-color:#4d9bd0;
+}
+
+.dot.active.level-3,
+.connector.active.level-3{
+    background:#5fa7d8;
+    border-color:#5fa7d8;
+}
+
+.dot.active.level-4,
+.connector.active.level-4{
+    background:#73b6e3;
+    border-color:#73b6e3;
+}
+
+.dot.active.level-5{
+    background:#8bc8ef;
+    border-color:#8bc8ef;
 }
 
 .keyword-box{
@@ -163,13 +285,57 @@ body{
     padding:14px;
 }
 
-@media(max-width:1400px){
+.keyword-title{
+    color:#6fa8dc;
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.keyword-text{
+    color:#ddd;
+    font-size:14px;
+    line-height:1.6;
+    word-break:break-word;
+}
+
+.empty{
+    color:#777;
+    font-size:28px;
+}
+
+@media(max-width:1300px){
     .album-grid{
-        grid-template-columns:repeat(2, minmax(0, 1fr));
+        grid-template-columns:1fr;
+    }
+
+    .album-card{
+        grid-template-columns:38% 62%;
     }
 }
 
 @media(max-width:900px){
+    body{
+        padding:22px;
+    }
+
+    .sidebar{
+        position:static;
+        width:100%;
+        height:auto;
+        margin-bottom:24px;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    .page-title{
+        font-size:34px;
+    }
+
     .album-grid{
         grid-template-columns:1fr;
     }
@@ -177,15 +343,13 @@ body{
     .album-card{
         grid-template-columns:1fr;
     }
-}
 
     .cover{
-        width:100%;
         max-width:260px;
     }
 
     .meter{
-        grid-template-columns:48px minmax(0,1fr) 48px;
+        grid-template-columns:50px minmax(0,1fr) 50px;
     }
 
     .meter-label{
@@ -331,8 +495,6 @@ function meter(left, right, value){
     `;
 }
 
-/* いいね機能 */
-
 function getLikeId(userId, albumId){
     return `${userId}_${albumId}`;
 }
@@ -406,8 +568,6 @@ function updateLikeDisplays(){
     });
 }
 
-/* コメント数表示 */
-
 onSnapshot(collection(db, "comments"), (snapshot) => {
     allComments = [];
 
@@ -435,8 +595,6 @@ function updateCommentDisplays(){
     });
 }
 
-/* 投稿一覧 */
-
 const q = query(
     collection(db, "albums"),
     where("isPublic", "==", true)
@@ -458,23 +616,74 @@ onSnapshot(q, (snapshot)=>{
         const albumId = docSnap.id;
 
         albumGrid.innerHTML += `
-       <div class="album-card">
-    <div class="album-info">
-        <img class="cover">
-        <div class="title"></div>
-        <div class="artist"></div>
-        <div class="meta"></div>
-        <div class="description"></div>
-    </div>
+        <div class="album-card"
+             onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
 
-    <div class="album-analysis">
-        <div class="meter-area"></div>
-        <div class="keyword-box"></div>
-    </div>
-</div>
+            <div class="album-info">
+                <img class="cover"
+                     src="${escapeHTML(a.cover || "")}"
+                     alt="">
 
-            <div class="description-wide">
-                ${escapeHTML(a.desc || "")}
+                <div class="title">
+                    ${escapeHTML(a.title || "")}
+                </div>
+
+                <div class="artist">
+                    ${escapeHTML(a.artist || "")}
+                </div>
+
+                <div class="meta">
+                    ${escapeHTML(a.year || "")}
+                </div>
+
+                <div class="creator">
+                    投稿者：
+                    <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
+                       onclick="event.stopPropagation();">
+                        ${escapeHTML(
+                            a.userName ||
+                            a.userEmail ||
+                            "匿名ユーザー"
+                        )}
+                    </a>
+                </div>
+
+                <div class="like-area"
+                     data-like-area
+                     data-album-id="${escapeHTML(albumId)}">
+                    <button class="like-btn"
+                            onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
+                        ♡ いいね
+                    </button>
+                    <span class="like-count">0件</span>
+                </div>
+
+                <div class="comment-count"
+                     data-comment-count
+                     data-album-id="${escapeHTML(albumId)}">
+                    コメント 0件
+                </div>
+
+                <div class="description">
+                    ${escapeHTML(a.desc || "")}
+                </div>
+            </div>
+
+            <div class="album-analysis">
+                <div class="meter-area">
+                    ${meter("暗い", "明るい", a.darkness)}
+                    ${meter("静か", "激しい", a.intense)}
+                    ${meter("シンプル", "複雑", a.complex)}
+                    ${meter("絶望", "希望", a.hope)}
+                    ${meter("個人", "世界", a.world)}
+
+                    <div class="keyword-box">
+                        <div class="keyword-title">キーワード</div>
+                        <div class="keyword-text">
+                            ${escapeHTML(a.keywords || "")}
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
