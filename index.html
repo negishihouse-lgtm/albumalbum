@@ -107,22 +107,20 @@ body{
 
 .album-grid{
     display:grid;
-    grid-template-columns:1fr;
+    grid-template-columns:repeat(3, 1fr);
     gap:26px;
-    max-width:1180px;
+    max-width:1400px;
     margin:0 auto;
 }
 
 .album-card{
     background:#0b0b0b;
     border:1px solid rgba(255,255,255,0.12);
-    padding:24px;
-    display:grid;
-    grid-template-columns:220px minmax(0,1fr);
-    gap:24px;
+    padding:20px;
+    display:block;
     overflow:hidden;
     cursor:pointer;
-    align-items:start;
+    border-radius:16px;
 }
 
 .album-card:hover{
@@ -136,11 +134,12 @@ body{
 /* ジャケット */
 
 .cover{
-    width:190px;
+    width:100%;
     aspect-ratio:1/1;
     object-fit:cover;
     margin-bottom:16px;
     background:#111;
+    border-radius:12px;
 }
 
 .title{
@@ -302,6 +301,10 @@ body{
 /* スマホ対応 */
 
 @media(max-width:900px){
+
+    .album-grid{
+    grid-template-columns:1fr;
+}
 
     body{
         padding:22px;
