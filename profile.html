@@ -104,7 +104,7 @@ a:hover{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-  getFirestore,
+  initializeFirestore,
   doc,
   getDoc,
   collection,
@@ -133,7 +133,11 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+
+const db = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true
+});
+
 const auth = getAuth(app);
 
 const params = new URLSearchParams(location.search);
@@ -154,48 +158,66 @@ if (!uid) {
   throw new Error("uid is missing");
 }
 
-const userDoc = await getDoc(doc(db, "users", uid));
+async function loadProfile() {
+  try {
+    const userDoc = await getDoc(doc(db, "users", uid));
 
-if (userDoc.exists()) {
-  const user = userDoc.data();
+    if (userDoc.exists()) {
+      const user = userDoc.data();
 
-  profileName.textContent =
-    user.displayName || user.userName || "名無しユーザー";
+      profileName.textContent =
+        user.displayName || user.userName || "名無しユーザー";
 
-  profileEmail.textContent =
-    user.email || "";
-} else {
-  profileName.textContent = "ユーザーが見つかりません";
-  profileEmail.textContent = "";
+      profileEmail.textContent =
+        user.email || "";
+    } else {
+      profileName.textContent = "ユーザーが見つかりません";
+      profileEmail.textContent = "";
+      followBtn.style.display = "none";
+    }
+  } catch (error) {
+    console.error("プロフィール取得失敗:", error);
+    alert("プロフィール取得失敗: " + error.message);
+  }
 }
 
-const albumsQuery = query(
-  collection(db, "albums"),
-  where("userId", "==", uid),
-  where("isPublic", "==", true),
-  orderBy("createdAt", "desc")
-);
+async function loadAlbums() {
+  try {
+    const albumsQuery = query(
+      collection(db, "albums"),
+      where("userId", "==", uid),
+      where("isPublic", "==", true),
+      orderBy("createdAt", "desc")
+    );
 
-const snapshot = await getDocs(albumsQuery);
+    const snapshot = await getDocs(albumsQuery);
 
-if (snapshot.empty) {
-  albumGrid.innerHTML = "<p>まだ投稿がありません。</p>";
-} else {
-  snapshot.forEach((docSnap) => {
-    const album = docSnap.data();
+    if (snapshot.empty) {
+      albumGrid.innerHTML = "<p>まだ投稿がありません。</p>";
+      return;
+    }
 
-    const card = document.createElement("div");
-    card.className = "album-card";
+    albumGrid.innerHTML = "";
 
-    card.innerHTML = `
-      <img class="cover" src="${album.cover || ""}" alt="">
-      <div class="title">${album.title || ""}</div>
-      <div class="artist">${album.artist || ""}</div>
-      <div class="description">${album.desc || ""}</div>
-    `;
+    snapshot.forEach((docSnap) => {
+      const album = docSnap.data();
 
-    albumGrid.appendChild(card);
-  });
+      const card = document.createElement("div");
+      card.className = "album-card";
+
+      card.innerHTML = `
+        <img class="cover" src="${album.cover || ""}" alt="">
+        <div class="title">${album.title || ""}</div>
+        <div class="artist">${album.artist || ""}</div>
+        <div class="description">${album.desc || ""}</div>
+      `;
+
+      albumGrid.appendChild(card);
+    });
+  } catch (error) {
+    console.error("投稿取得失敗:", error);
+    albumGrid.innerHTML = "<p>投稿の読み込みに失敗しました。</p>";
+  }
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -217,16 +239,19 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   followBtn.style.display = "inline-block";
-
-  await checkFollowStatus();
+  followBtn.textContent = "フォロー";
 
   followBtn.onclick = async () => {
+    console.log("follow button clicked");
+
     if (isFollowing) {
       await unfollowUser();
     } else {
       await followUser();
     }
   };
+
+  await checkFollowStatus();
 });
 
 async function checkFollowStatus() {
@@ -250,7 +275,9 @@ async function checkFollowStatus() {
     }
   } catch (error) {
     console.error("フォロー状態確認失敗:", error);
-    alert("フォロー状態確認失敗: " + error.message);
+    followDocId = null;
+    isFollowing = false;
+    followBtn.textContent = "フォロー";
   }
 }
 
@@ -297,7 +324,10 @@ async function followUser() {
 }
 
 async function unfollowUser() {
-  if (!followDocId) return;
+  if (!followDocId) {
+    alert("フォロー情報が見つかりません");
+    return;
+  }
 
   try {
     followBtn.disabled = true;
@@ -319,6 +349,9 @@ async function unfollowUser() {
     followBtn.disabled = false;
   }
 }
+
+await loadProfile();
+await loadAlbums();
 </script>
 
 </body>
