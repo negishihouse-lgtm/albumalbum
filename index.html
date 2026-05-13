@@ -5,15 +5,54 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Album Collection</title>
 
-<style>
-*{ margin:0; padding:0; box-sizing:border-box; }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
 body{
     background:#050505;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
     padding:40px;
+    padding-left:280px;
 }
+
+/* ===== サイドバー ===== */
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    background:#0b0b0b;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:30px 20px;
+    overflow-y:auto;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:10px;
+}
+
+.sidebar a:hover{
+    background:#1a1a1a;
+}
+
+/* ===== 上部 ===== */
 
 .topbar{
     display:flex;
@@ -27,7 +66,8 @@ body{
     font-weight:700;
 }
 
-.back-btn,.like-btn{
+.back-btn,
+.like-btn{
     background:#1e1e1e;
     color:white;
     border:1px solid rgba(255,255,255,0.15);
@@ -36,7 +76,8 @@ body{
     cursor:pointer;
 }
 
-.back-btn:hover,.like-btn:hover{
+.back-btn:hover,
+.like-btn:hover{
     background:#2a2a2a;
 }
 
@@ -44,6 +85,8 @@ body{
     background:#6fa8dc;
     color:white;
 }
+
+/* ===== いいね・コメント ===== */
 
 .like-area{
     margin-top:18px;
@@ -58,6 +101,8 @@ body{
     color:#aaa;
     font-size:15px;
 }
+
+/* ===== 投稿一覧 ===== */
 
 .album-grid{
     display:grid;
@@ -79,6 +124,16 @@ body{
     align-items:start;
 }
 
+.album-card:hover{
+    border-color:rgba(111,168,220,0.45);
+}
+
+.album-left{
+    min-width:0;
+}
+
+/* ===== ジャケット ===== */
+
 .cover{
     width:190px;
     aspect-ratio:1/1;
@@ -89,12 +144,38 @@ body{
 
 .title{
     font-size:26px;
+    font-weight:700;
+    line-height:1.2;
+    margin-bottom:4px;
+    word-break:break-word;
 }
 
 .artist{
     font-size:21px;
+    color:#6fa8dc;
     margin-bottom:12px;
+    word-break:break-word;
 }
+
+.meta{
+    color:#aaa;
+}
+
+.creator{
+    margin-top:10px;
+    color:#ccc;
+}
+
+.creator a{
+    color:#6fa8dc;
+    text-decoration:none;
+}
+
+.creator a:hover{
+    text-decoration:underline;
+}
+
+/* ===== メーター ===== */
 
 .meter-area{
     border:1px solid rgba(255,255,255,0.12);
@@ -118,6 +199,10 @@ body{
     font-weight:700;
     color:#e8e8e8;
     white-space:nowrap;
+}
+
+.right-label{
+    text-align:right;
 }
 
 .meter-graphic{
@@ -144,6 +229,37 @@ body{
     min-width:0;
 }
 
+.dot.active.level-1,
+.connector.active.level-1{
+    background:#3f8ec7;
+    border-color:#3f8ec7;
+}
+
+.dot.active.level-2,
+.connector.active.level-2{
+    background:#4d9bd0;
+    border-color:#4d9bd0;
+}
+
+.dot.active.level-3,
+.connector.active.level-3{
+    background:#5fa7d8;
+    border-color:#5fa7d8;
+}
+
+.dot.active.level-4,
+.connector.active.level-4{
+    background:#73b6e3;
+    border-color:#73b6e3;
+}
+
+.dot.active.level-5{
+    background:#8bc8ef;
+    border-color:#8bc8ef;
+}
+
+/* ===== キーワード ===== */
+
 .keyword-box{
     margin-top:14px;
     border-top:1px solid rgba(255,255,255,0.12);
@@ -151,26 +267,40 @@ body{
 }
 
 .keyword-title{
+    color:#6fa8dc;
     font-size:15px;
+    font-weight:700;
     margin-bottom:6px;
 }
 
 .keyword-text{
+    color:#ddd;
     font-size:15px;
     line-height:1.6;
+    word-break:break-word;
 }
+
+/* ===== 紹介文 ===== */
 
 .description-wide{
     margin-top:0;
     padding-top:20px;
     border-top:1px solid rgba(255,255,255,0.1);
-    grid-column:1/-1;
+    grid-column:1 / -1;
     color:#ddd;
     line-height:1.8;
     word-break:break-word;
 }
 
+.empty{
+    color:#777;
+    font-size:28px;
+}
+
+/* ===== スマホ対応 ===== */
+
 @media(max-width:900px){
+
     body{
         padding:22px;
         padding-left:22px;
@@ -181,6 +311,16 @@ body{
         width:100%;
         height:auto;
         margin-bottom:24px;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    .page-title{
+        font-size:34px;
     }
 
     .album-card{
@@ -206,8 +346,15 @@ body{
         width:12px;
         height:12px;
     }
+
+    .keyword-title{
+        font-size:14px;
+    }
+
+    .keyword-text{
+        font-size:14px;
+    }
 }
-</style>
 </head>
 
 <body>
