@@ -174,26 +174,48 @@ body{
     text-decoration:underline;
 }
 
-.like-area{
+.reaction-row{
     margin-top:14px;
     display:flex;
     align-items:center;
-    gap:10px;
-    flex-wrap:wrap;
-    color:#ddd;
+    gap:16px;
+    color:#aaa;
+    font-size:15px;
+}
+
+.like-area{
+    display:flex;
+    align-items:center;
+    gap:6px;
 }
 
 .like-btn{
-    padding:12px 18px;
-    font-size:15px;
+    background:none;
+    border:none;
+    color:#aaa;
+    padding:0;
+    font-size:20px;
+    cursor:pointer;
+    border-radius:0;
+}
+
+.like-btn:hover{
+    background:none;
+    color:white;
+}
+
+.like-btn.liked{
+    background:none;
+    color:white;
 }
 
 .like-count{
     font-size:15px;
+    color:#aaa;
 }
 
 .comment-count{
-    margin-top:10px;
+    margin-top:0;
     color:#aaa;
     font-size:15px;
 }
@@ -557,8 +579,8 @@ function updateLikeDisplays(){
         const count = getLikeCount(albumId);
         const liked = isLikedByMe(albumId);
 
-        countSpan.textContent = `${count}件`;
-        button.textContent = liked ? "♥ いいね済み" : "♡ いいね";
+        countSpan.textContent = count;
+button.textContent = liked ? "♥" : "♡";
 
         if(liked){
             button.classList.add("liked");
@@ -633,9 +655,7 @@ onSnapshot(q, (snapshot)=>{
             ${escapeHTML(a.artist || "")}
         </div>
 
-        <div class="meta">
-            ${escapeHTML(a.year || "")}
-        </div>
+       
 
         <div class="creator">
             投稿者：
@@ -649,22 +669,23 @@ onSnapshot(q, (snapshot)=>{
             </a>
         </div>
 
-        <div class="like-area"
-             data-like-area
-             data-album-id="${escapeHTML(albumId)}">
-            <button class="like-btn"
-                    onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
-                ♡ いいね
-            </button>
-            <span class="like-count">0件</span>
-        </div>
-
-        <div class="comment-count"
-             data-comment-count
-             data-album-id="${escapeHTML(albumId)}">
-            コメント 0件
-        </div>
+ <div class="reaction-row">
+    <div class="like-area"
+         data-like-area
+         data-album-id="${escapeHTML(albumId)}">
+        <button class="like-btn"
+                onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
+            ♡
+        </button>
+        <span class="like-count">0</span>
     </div>
+
+    <div class="comment-count"
+         data-comment-count
+         data-album-id="${escapeHTML(albumId)}">
+        コメント 0件
+    </div>
+</div>
 
     <!-- 右側 -->
     <div class="album-analysis">
