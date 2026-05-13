@@ -206,12 +206,13 @@ onAuthStateChanged(auth, async (user) => {
   currentUser = user;
 
   if (!currentUser) {
-    followBtn.textContent = "ログインしてフォロー";
-    followBtn.onclick = () => {
-      location.href = "login.html";
-    };
-    return;
-  }
+  followBtn.textContent = "ログインしてフォロー";
+  followBtn.onclick = () => {
+    location.href =
+      `login.html?redirect=${encodeURIComponent(location.href)}`;
+  };
+  return;
+}
 
   if (currentUser.uid === uid) {
     followBtn.style.display = "none";
@@ -250,15 +251,47 @@ async function checkFollowStatus() {
 }
 
 async function followUser() {
-  const docRef = await addDoc(collection(db, "follows"), {
-    followerId: currentUser.uid,
-    followingId: uid,
-    createdAt: serverTimestamp()
-  });
+  console.log("followUser called");
+  console.log("currentUser:", currentUser);
+  console.log("profile uid:", uid);
 
-  followDocId = docRef.id;
-  isFollowing = true;
-  followBtn.textContent = "フォロー中";
+  if (!currentUser) {
+    alert("ログインが必要です");
+    location.href =
+      `login.html?redirect=${encodeURIComponent(location.href)}`;
+    return;
+  }
+
+  if (currentUser.uid === uid) {
+    alert("自分自身はフォローできません");
+    return;
+  }
+
+  try {
+    followBtn.disabled = true;
+    followBtn.textContent = "処理中...";
+
+    const docRef = await addDoc(collection(db, "follows"), {
+      followerId: currentUser.uid,
+      followingId: uid,
+      createdAt: serverTimestamp()
+    });
+
+    console.log("follow created:", docRef.id);
+
+    followDocId = docRef.id;
+    isFollowing = true;
+    followBtn.textContent = "フォロー中";
+
+    alert("フォローしました");
+
+  } catch (error) {
+    console.error("フォロー失敗:", error);
+    alert("フォロー失敗: " + error.message);
+    followBtn.textContent = "フォロー";
+  } finally {
+    followBtn.disabled = false;
+  }
 }
 
 async function unfollowUser() {
