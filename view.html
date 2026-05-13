@@ -418,6 +418,12 @@ onSnapshot(q, (snapshot)=>{
                 <div class="meta">
                     ${escapeHTML(a.year || "")}
                 </div>
+                <div class="creator">
+  投稿者：
+  <a href="profile.html?uid=${a.userId}">
+    ${a.userName || a.userEmail || "匿名ユーザー"}
+  </a>
+</div>
             </div>
 
             <div class="meter-area">
