@@ -303,9 +303,18 @@ body{
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
 
-    <button class="back-btn" onclick="location.href='./editor.html'">
-  編集ページへ戻る
-</button>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button id="mypageBtn"
+                class="back-btn"
+                style="display:none;">
+            マイページ
+        </button>
+
+        <button class="back-btn"
+                onclick="location.href='./editor.html'">
+            編集ページへ戻る
+        </button>
+    </div>
 </div>
 
 <div class="album-grid" id="albumGrid"></div>
