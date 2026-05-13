@@ -255,10 +255,53 @@ body{
     .keyword-title{ font-size:16px; }
     .keyword-text{ font-size:15px; }
 }
+    .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    background:#0b0b0b;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:30px 20px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:10px;
+}
+
+.sidebar a:hover{
+    background:#1a1a1a;
+}
+
+body{
+    padding-left:280px;
+}
 </style>
 </head>
 
 <body>
+
+    <nav class="sidebar">
+    <div class="logo">Album Collection</div>
+
+    <a href="index.html">🏠 ホーム</a>
+    <a href="editor.html">✍️ 投稿する</a>
+    <a id="myPageLink" href="login.html">👤 マイページ</a>
+    <a href="profile-edit.html">⚙️ プロフィール編集</a>
+    <a href="login.html">🔐 ログイン</a>
+</nav>
 
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
@@ -332,6 +375,17 @@ onAuthStateChanged(auth, (user) => {
         };
     } else {
         mypageBtn.style.display = "none";
+    }
+
+    // サイドバーの「マイページ」リンクを設定
+    const myPageLink = document.getElementById("myPageLink");
+
+    if (myPageLink) {
+        if (user) {
+            myPageLink.href = `profile.html?uid=${user.uid}`;
+        } else {
+            myPageLink.href = "login.html";
+        }
     }
 
     updateLikeDisplays();
