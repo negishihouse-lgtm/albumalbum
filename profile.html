@@ -1,1 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile</title>
 
+<style>
+body{
+    background:#050505;
+    color:white;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    padding:40px;
+}
+
+a{
+    color:#6fa8dc;
+    text-decoration:none;
+}
+
+a:hover{
+    text-decoration:underline;
+}
+
+.profile-header{
+    margin-bottom:40px;
+}
+
+.profile-name{
+    font-size:42px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.profile-email{
+    color:#aaa;
+    margin-bottom:20px;
+}
+
+.follow-btn{
+    background:#6fa8dc;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.album-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+    gap:24px;
+}
+
+.album-card{
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.1);
+    padding:20px;
+}
+
+.cover{
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    margin-bottom:15px;
+    background:#111;
+}
+
+.title{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.artist{
+    color:#6fa8dc;
+    margin-bottom:10px;
+}
+
+.description{
+    color:#ddd;
+    line-height:1.8;
+}
+</style>
+</head>
+<body>
+
+<p><a href="index.html">← ホームへ戻る</a></p>
+
+<div class="profile-header">
+    <div class="profile-name" id="profileName">読み込み中...</div>
+    <div class="profile-email" id="profileEmail"></div>
+    <button class="follow-btn" id="followBtn">フォロー</button>
+</div>
+
+<div class="album-grid" id="albumGrid"></div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const uid = params.get("uid");
+
+document.getElementById("profileName").textContent =
+    uid ? "ユーザープロフィール" : "ユーザーが指定されていません";
+
+document.getElementById("profileEmail").textContent =
+    uid ? `UID: ${uid}` : "";
+
+document.getElementById("followBtn").addEventListener("click", () => {
+    alert("今後フォロー機能を実装します");
+});
+</script>
+
+</body>
+</html>
