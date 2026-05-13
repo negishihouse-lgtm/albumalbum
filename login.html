@@ -117,23 +117,38 @@ const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const message = document.getElementById("message");
 
+const params = new URLSearchParams(location.search);
+const redirect = params.get("redirect") || "index.html";
+
+function goRedirect(){
+  location.href = redirect;
+}
+
+async function saveUser(user, isNewUser = false){
+  await setDoc(doc(db, "users", user.uid), {
+    uid: user.uid,
+    email: user.email,
+    userName: user.email.split("@")[0],
+    updatedAt: serverTimestamp(),
+    ...(isNewUser ? { createdAt: serverTimestamp() } : {})
+  }, { merge: true });
+}
+
 document.getElementById("signupBtn").addEventListener("click", async () => {
-  const email = emailInput.value;
+  const email = emailInput.value.trim();
   const password = passwordInput.value;
+
+  if (!email || !password) {
+    message.textContent = "メールアドレスとパスワードを入力してください。";
+    return;
+  }
 
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    await saveUser(userCredential.user, true);
 
-    await setDoc(doc(db, "users", user.uid), {
-      uid: user.uid,
-      email: user.email,
-      userName: user.email.split("@")[0],
-      createdAt: serverTimestamp()
-    });
-
-    message.textContent = "新規登録しました。ホームへ移動します。";
-    location.href = "index.html";
+    message.textContent = "新規登録しました。移動します。";
+    goRedirect();
 
   } catch (error) {
     message.textContent = "新規登録エラー：" + error.message;
@@ -141,22 +156,20 @@ document.getElementById("signupBtn").addEventListener("click", async () => {
 });
 
 document.getElementById("loginBtn").addEventListener("click", async () => {
-  const email = emailInput.value;
+  const email = emailInput.value.trim();
   const password = passwordInput.value;
+
+  if (!email || !password) {
+    message.textContent = "メールアドレスとパスワードを入力してください。";
+    return;
+  }
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    await saveUser(userCredential.user, false);
 
-    await setDoc(doc(db, "users", user.uid), {
-      uid: user.uid,
-      email: user.email,
-      userName: user.email.split("@")[0],
-      updatedAt: serverTimestamp()
-    }, { merge: true });
-
-    message.textContent = "ログインしました。ホームへ移動します。";
-    location.href = "index.html";
+    message.textContent = "ログインしました。移動します。";
+    goRedirect();
 
   } catch (error) {
     message.textContent = "ログインエラー：" + error.message;
