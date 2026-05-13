@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Album Collection</title>
 
+<style>
 *{
     margin:0;
     padding:0;
@@ -19,7 +20,7 @@ body{
     padding-left:280px;
 }
 
-/* ===== サイドバー ===== */
+/* サイドバー */
 
 .sidebar{
     position:fixed;
@@ -52,7 +53,7 @@ body{
     background:#1a1a1a;
 }
 
-/* ===== 上部 ===== */
+/* 上部 */
 
 .topbar{
     display:flex;
@@ -86,7 +87,7 @@ body{
     color:white;
 }
 
-/* ===== いいね・コメント ===== */
+/* いいね・コメント */
 
 .like-area{
     margin-top:18px;
@@ -102,7 +103,7 @@ body{
     font-size:15px;
 }
 
-/* ===== 投稿一覧 ===== */
+/* 投稿一覧 */
 
 .album-grid{
     display:grid;
@@ -132,7 +133,7 @@ body{
     min-width:0;
 }
 
-/* ===== ジャケット ===== */
+/* ジャケット */
 
 .cover{
     width:190px;
@@ -159,6 +160,7 @@ body{
 
 .meta{
     color:#aaa;
+    margin-bottom:0;
 }
 
 .creator{
@@ -175,7 +177,7 @@ body{
     text-decoration:underline;
 }
 
-/* ===== メーター ===== */
+/* メーター */
 
 .meter-area{
     border:1px solid rgba(255,255,255,0.12);
@@ -258,7 +260,7 @@ body{
     border-color:#8bc8ef;
 }
 
-/* ===== キーワード ===== */
+/* キーワード */
 
 .keyword-box{
     margin-top:14px;
@@ -280,13 +282,13 @@ body{
     word-break:break-word;
 }
 
-/* ===== 紹介文 ===== */
+/* 紹介文 */
 
 .description-wide{
     margin-top:0;
     padding-top:20px;
     border-top:1px solid rgba(255,255,255,0.1);
-    grid-column:1 / -1;
+    grid-column:1/-1;
     color:#ddd;
     line-height:1.8;
     word-break:break-word;
@@ -297,7 +299,7 @@ body{
     font-size:28px;
 }
 
-/* ===== スマホ対応 ===== */
+/* スマホ対応 */
 
 @media(max-width:900px){
 
@@ -355,11 +357,12 @@ body{
         font-size:14px;
     }
 }
+</style>
 </head>
 
 <body>
 
-    <nav class="sidebar">
+<nav class="sidebar">
     <div class="logo">Album Collection</div>
 
     <a href="index.html">🏠 ホーム</a>
@@ -443,7 +446,6 @@ onAuthStateChanged(auth, (user) => {
         mypageBtn.style.display = "none";
     }
 
-    // サイドバーの「マイページ」リンクを設定
     const myPageLink = document.getElementById("myPageLink");
 
     if (myPageLink) {
@@ -495,6 +497,7 @@ function meter(left, right, value){
 }
 
 /* いいね機能 */
+
 function getLikeId(userId, albumId){
     return `${userId}_${albumId}`;
 }
@@ -569,6 +572,7 @@ function updateLikeDisplays(){
 }
 
 /* コメント数表示 */
+
 onSnapshot(collection(db, "comments"), (snapshot) => {
     allComments = [];
 
@@ -597,6 +601,7 @@ function updateCommentDisplays(){
 }
 
 /* 投稿一覧 */
+
 const q = query(
     collection(db, "albums"),
     where("isPublic", "==", true)
