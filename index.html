@@ -75,6 +75,11 @@ body{
     grid-template-columns:240px minmax(0,1fr);
     gap:28px;
     overflow:hidden;
+    cursor:pointer;
+}
+
+.album-card:hover{
+    border-color:rgba(111,168,220,0.45);
 }
 
 .album-left{ min-width:0; }
@@ -493,7 +498,8 @@ onSnapshot(q, (snapshot)=>{
         const albumId = docSnap.id;
 
         albumGrid.innerHTML += `
-        <div class="album-card">
+        <div class="album-card"
+             onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
 
             <div class="album-left">
                 <img class="cover"
@@ -514,7 +520,8 @@ onSnapshot(q, (snapshot)=>{
 
                 <div class="creator">
                     投稿者：
-                    <a href="profile.html?uid=${escapeHTML(a.userId || "")}">
+                    <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
+                       onclick="event.stopPropagation();">
                         ${escapeHTML(
                             a.userName ||
                             a.userEmail ||
@@ -527,7 +534,7 @@ onSnapshot(q, (snapshot)=>{
                      data-like-area
                      data-album-id="${escapeHTML(albumId)}">
                     <button class="like-btn"
-                            onclick="toggleLike('${escapeHTML(albumId)}')">
+                            onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
                         ♡ いいね
                     </button>
                     <span class="like-count">0件</span>
