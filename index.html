@@ -61,120 +61,76 @@ body{
 
 .album-grid{
     display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:30px;
-    max-width:1700px;
-    margin:auto;
+    grid-template-columns:1fr;
+    gap:26px;
+    max-width:1180px;
+    margin:0 auto;
 }
 
 .album-card{
     background:#0b0b0b;
     border:1px solid rgba(255,255,255,0.12);
-    padding:26px;
+    padding:24px;
     display:grid;
-    grid-template-columns:240px minmax(0,1fr);
-    gap:28px;
+    grid-template-columns:220px minmax(0,1fr);
+    gap:24px;
     overflow:hidden;
     cursor:pointer;
+    align-items:start;
 }
-
-.album-card:hover{
-    border-color:rgba(111,168,220,0.45);
-}
-
-.album-left{ min-width:0; }
 
 .cover{
-    width:210px;
+    width:190px;
     aspect-ratio:1/1;
     object-fit:cover;
-    margin-bottom:20px;
+    margin-bottom:16px;
     background:#111;
 }
 
 .title{
-    font-size:30px;
-    font-weight:700;
-    line-height:1.2;
-    margin-bottom:4px;
-    word-break:break-word;
+    font-size:26px;
 }
 
 .artist{
-    font-size:24px;
-    color:#6fa8dc;
-    margin-bottom:16px;
-    word-break:break-word;
-}
-
-.meta{
-    color:#aaa;
-    margin-bottom:0;
-}
-
-.creator{
-    margin-top:10px;
-    color:#ccc;
-}
-
-.creator a{
-    color:#6fa8dc;
-    text-decoration:none;
-}
-
-.creator a:hover{
-    text-decoration:underline;
-}
-
-.description-wide{
-    margin-top:10px;
-    padding-top:26px;
-    border-top:1px solid rgba(255,255,255,0.1);
-    grid-column:1/-1;
-    color:#ddd;
-    line-height:2;
-    word-break:break-word;
-}
-
-.empty{
-    color:#777;
-    font-size:28px;
+    font-size:21px;
+    margin-bottom:12px;
 }
 
 .meter-area{
     border:1px solid rgba(255,255,255,0.12);
-    padding:22px 24px;
+    padding:18px;
     min-width:0;
     width:100%;
+    align-self:start;
 }
 
 .meter{
     display:grid;
-    grid-template-columns:72px minmax(120px,1fr) 72px;
+    grid-template-columns:64px minmax(0,1fr) 64px;
     align-items:center;
-    gap:12px;
-    margin-bottom:19px;
+    gap:8px;
+    margin-bottom:14px;
+    min-width:0;
 }
 
 .meter-label{
-    font-size:18px;
+    font-size:15px;
     font-weight:700;
     color:#e8e8e8;
     white-space:nowrap;
 }
-
-.right-label{ text-align:right; }
 
 .meter-graphic{
     display:flex;
     align-items:center;
     width:100%;
     min-width:0;
+    overflow:hidden;
 }
 
 .dot{
-    width:18px;
-    height:18px;
+    width:14px;
+    height:14px;
     border-radius:50%;
     border:2px solid #555;
     background:#0b0b0b;
@@ -185,108 +141,71 @@ body{
     height:3px;
     background:#4a5158;
     flex:1;
-    min-width:6px;
+    min-width:0;
 }
 
-.dot.active.level-1,.connector.active.level-1{ background:#3f8ec7; border-color:#3f8ec7; }
-.dot.active.level-2,.connector.active.level-2{ background:#4d9bd0; border-color:#4d9bd0; }
-.dot.active.level-3,.connector.active.level-3{ background:#5fa7d8; border-color:#5fa7d8; }
-.dot.active.level-4,.connector.active.level-4{ background:#73b6e3; border-color:#73b6e3; }
-.dot.active.level-5{ background:#8bc8ef; border-color:#8bc8ef; }
-
 .keyword-box{
-    margin-top:24px;
+    margin-top:14px;
     border-top:1px solid rgba(255,255,255,0.12);
-    padding-top:18px;
+    padding-top:12px;
 }
 
 .keyword-title{
-    color:#6fa8dc;
-    font-size:17px;
-    font-weight:700;
-    margin-bottom:8px;
+    font-size:15px;
+    margin-bottom:6px;
 }
 
 .keyword-text{
+    font-size:15px;
+    line-height:1.6;
+}
+
+.description-wide{
+    margin-top:0;
+    padding-top:20px;
+    border-top:1px solid rgba(255,255,255,0.1);
+    grid-column:1/-1;
     color:#ddd;
-    font-size:16px;
     line-height:1.8;
     word-break:break-word;
 }
 
-@media(max-width:1300px){
-    .album-grid{ grid-template-columns:1fr; }
-}
-
-@media(max-width:800px){
-    body{ padding:22px; }
-
-    .topbar{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:20px;
+@media(max-width:900px){
+    body{
+        padding:22px;
+        padding-left:22px;
     }
 
-    .page-title{ font-size:34px; }
+    .sidebar{
+        position:static;
+        width:100%;
+        height:auto;
+        margin-bottom:24px;
+    }
 
     .album-card{
         grid-template-columns:1fr;
-        padding:22px;
+        padding:20px;
     }
 
     .cover{
         width:100%;
-        max-width:320px;
+        max-width:260px;
     }
-
-    .title{ font-size:28px; }
-    .artist{ font-size:22px; }
-    .meter-area{ padding:20px; }
 
     .meter{
-        grid-template-columns:68px minmax(120px,1fr) 68px;
-        gap:10px;
-        margin-bottom:18px;
+        grid-template-columns:56px minmax(0,1fr) 56px;
+        gap:6px;
     }
 
-    .meter-label{ font-size:16px; }
-    .dot{ width:16px; height:16px; }
-    .connector{ height:3px; min-width:4px; }
-    .keyword-title{ font-size:16px; }
-    .keyword-text{ font-size:15px; }
-}
-    .sidebar{
-    position:fixed;
-    top:0;
-    left:0;
-    width:240px;
-    height:100vh;
-    background:#0b0b0b;
-    border-right:1px solid rgba(255,255,255,0.1);
-    padding:30px 20px;
-}
+    .meter-label{
+        font-size:14px;
+    }
 
-.logo{
-    font-size:28px;
-    font-weight:700;
-    margin-bottom:30px;
-}
-
-.sidebar a{
-    display:block;
-    color:white;
-    text-decoration:none;
-    padding:14px 16px;
-    margin-bottom:8px;
-    border-radius:10px;
-}
-
-.sidebar a:hover{
-    background:#1a1a1a;
-}
-
-body{
-    padding-left:280px;
+    .dot{
+        width:12px;
+        height:12px;
+    }
 }
 </style>
 </head>
