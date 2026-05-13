@@ -110,6 +110,11 @@ import {
   deleteDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 // Firebase設定（editor.htmlやindex.htmlと同じものを貼る）
 const firebaseConfig = {
   // あなたの設定をここに貼る
@@ -117,6 +122,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 const params = new URLSearchParams(location.search);
 const uid = params.get("uid");
@@ -185,9 +191,78 @@ if (snapshot.empty) {
 // =========================
 // フォローボタン（仮実装）
 // =========================
-followBtn.addEventListener("click", () => {
-  alert("次のステップでフォロー機能を実装します。");
+let currentUser = null;
+let followDocId = null;
+let isFollowing = false;
+
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+
+  if (!currentUser) {
+    followBtn.textContent = "ログインしてフォロー";
+    followBtn.onclick = () => {
+      location.href = "login.html";
+    };
+    return;
+  }
+
+  if (currentUser.uid === uid) {
+    followBtn.style.display = "none";
+    return;
+  }
+
+  await checkFollowStatus();
+
+  followBtn.onclick = async () => {
+    if (isFollowing) {
+      await unfollowUser();
+    } else {
+      await followUser();
+    }
+  };
 });
+
+async function checkFollowStatus() {
+  const q = query(
+    collection(db, "follows"),
+    where("followerId", "==", currentUser.uid),
+    where("followingId", "==", uid)
+  );
+
+  const snapshot = await getDocs(q);
+
+  if (!snapshot.empty) {
+    followDocId = snapshot.docs[0].id;
+    isFollowing = true;
+    followBtn.textContent = "フォロー中";
+  } else {
+    followDocId = null;
+    isFollowing = false;
+    followBtn.textContent = "フォロー";
+  }
+}
+
+async function followUser() {
+  const docRef = await addDoc(collection(db, "follows"), {
+    followerId: currentUser.uid,
+    followingId: uid,
+    createdAt: serverTimestamp()
+  });
+
+  followDocId = docRef.id;
+  isFollowing = true;
+  followBtn.textContent = "フォロー中";
+}
+
+async function unfollowUser() {
+  if (!followDocId) return;
+
+  await deleteDoc(doc(db, "follows", followDocId));
+
+  followDocId = null;
+  isFollowing = false;
+  followBtn.textContent = "フォロー";
+}
 </script>
 
 </body>
