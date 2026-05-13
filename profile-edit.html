@@ -1,1 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プロフィール編集 - Album Collection</title>
 
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#050505;
+    color:white;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    padding:40px;
+    padding-left:280px;
+}
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    background:#0b0b0b;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:30px 20px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:10px;
+}
+
+.sidebar a:hover{
+    background:#1a1a1a;
+}
+
+.page-title{
+    font-size:46px;
+    margin-bottom:30px;
+}
+
+.edit-box{
+    max-width:620px;
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:18px;
+    padding:28px;
+}
+
+.avatar-preview{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.18);
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    color:#aaa;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin-bottom:20px;
+    background:#111;
+    color:white;
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    padding:14px 22px;
+    background:#6fa8dc;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+.sub-btn{
+    background:#1e1e1e;
+    border:1px solid rgba(255,255,255,0.15);
+    margin-left:10px;
+}
+
+.message{
+    margin-top:18px;
+    color:#aaa;
+    font-size:15px;
+}
+
+@media(max-width:900px){
+    body{
+        padding:22px;
+    }
+
+    .sidebar{
+        position:static;
+        width:100%;
+        height:auto;
+        margin-bottom:24px;
+    }
+
+    .page-title{
+        font-size:34px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="sidebar">
+    <div class="logo">Album Collection</div>
+
+    <a href="index.html">🏠 ホーム</a>
+    <a href="editor.html">✍️ 投稿する</a>
+    <a id="myPageLink" href="login.html">👤 マイページ</a>
+    <a href="profile-edit.html">⚙️ プロフィール編集</a>
+    <a href="login.html">🔐 ログイン</a>
+</nav>
+
+<h1 class="page-title">プロフィール編集</h1>
+
+<div class="edit-box">
+
+    <img id="avatarPreview" class="avatar-preview" src="" alt="アイコン">
+
+    <label>アイコン画像URL</label>
+    <input id="photoURL" type="url" placeholder="https://example.com/icon.jpg">
+
+    <label>ニックネーム</label>
+    <input id="nickname" type="text" placeholder="例：岡">
+
+    <label>生年月日</label>
+    <input id="birthdate" type="date">
+
+    <button id="saveBtn">保存する</button>
+    <button class="sub-btn" id="backBtn">マイページへ戻る</button>
+
+    <div id="message" class="message"></div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+    initializeFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp,
+    collection,
+    query,
+    where,
+    getDocs,
+    writeBatch
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+    measurementId: "G-3QFX3GDEXN"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling: true
+});
+
+const auth = getAuth(app);
+
+const photoURLInput = document.getElementById("photoURL");
+const nicknameInput = document.getElementById("nickname");
+const birthdateInput = document.getElementById("birthdate");
+const avatarPreview = document.getElementById("avatarPreview");
+const saveBtn = document.getElementById("saveBtn");
+const backBtn = document.getElementById("backBtn");
+const message = document.getElementById("message");
+const myPageLink = document.getElementById("myPageLink");
+
+let currentUser = null;
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function setDefaultAvatar(){
+    avatarPreview.src =
+        "https://placehold.co/300x300/111111/ffffff?text=User";
+}
+
+photoURLInput.addEventListener("input", () => {
+    const url = photoURLInput.value.trim();
+
+    if(url){
+        avatarPreview.src = url;
+    } else {
+        setDefaultAvatar();
+    }
+});
+
+avatarPreview.addEventListener("error", () => {
+    setDefaultAvatar();
+});
+
+onAuthStateChanged(auth, async (user) => {
+    if(!user){
+        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
+        return;
+    }
+
+    currentUser = user;
+
+    myPageLink.href = `profile.html?uid=${user.uid}`;
+    backBtn.onclick = () => {
+        location.href = `profile.html?uid=${user.uid}`;
+    };
+
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if(userSnap.exists()){
+        const data = userSnap.data();
+
+        photoURLInput.value = data.photoURL || data.iconURL || "";
+        nicknameInput.value = data.nickname || data.userName || data.displayName || "";
+        birthdateInput.value = data.birthdate || "";
+
+        if(photoURLInput.value){
+            avatarPreview.src = photoURLInput.value;
+        } else {
+            setDefaultAvatar();
+        }
+    } else {
+        setDefaultAvatar();
+
+        await setDoc(userRef, {
+            uid: user.uid,
+            email: user.email || "",
+            nickname: "",
+            userName: "",
+            displayName: "",
+            photoURL: "",
+            iconURL: "",
+            birthdate: "",
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        }, { merge:true });
+    }
+});
+
+saveBtn.addEventListener("click", async () => {
+    if(!currentUser) return;
+
+    const photoURL = photoURLInput.value.trim();
+    const nickname = nicknameInput.value.trim();
+    const birthdate = birthdateInput.value;
+
+    if(!nickname){
+        message.textContent = "ニックネームを入力してください。";
+        return;
+    }
+
+    message.textContent = "保存中...";
+
+    const userRef = doc(db, "users", currentUser.uid);
+
+    await setDoc(userRef, {
+        uid: currentUser.uid,
+        email: currentUser.email || "",
+        nickname: nickname,
+        userName: nickname,
+        displayName: nickname,
+        photoURL: photoURL,
+        iconURL: photoURL,
+        birthdate: birthdate,
+        updatedAt: serverTimestamp()
+    }, { merge:true });
+
+    const albumQuery = query(
+        collection(db, "albums"),
+        where("userId", "==", currentUser.uid)
+    );
+
+    const albumSnap = await getDocs(albumQuery);
+    const batch = writeBatch(db);
+
+    albumSnap.forEach((docSnap) => {
+        batch.update(docSnap.ref, {
+            userName: nickname,
+            userPhotoURL: photoURL
+        });
+    });
+
+    await batch.commit();
+
+    message.textContent = "保存しました。";
+});
+
+</script>
+
+</body>
+</html>
