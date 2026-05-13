@@ -34,7 +34,15 @@ a:hover{
 
 .profile-email{
     color:#aaa;
+    margin-bottom:14px;
+}
+
+.follow-stats{
+    display:flex;
+    gap:18px;
+    color:#ddd;
     margin-bottom:20px;
+    font-size:15px;
 }
 
 .follow-btn{
@@ -95,6 +103,12 @@ a:hover{
 <div class="profile-header">
     <div class="profile-name" id="profileName">読み込み中...</div>
     <div class="profile-email" id="profileEmail"></div>
+
+    <div class="follow-stats">
+        <span id="followingCount">フォロー中 0</span>
+        <span id="followerCount">フォロワー 0</span>
+    </div>
+
     <button class="follow-btn" id="followBtn">フォロー</button>
 </div>
 
@@ -147,6 +161,8 @@ const profileName = document.getElementById("profileName");
 const profileEmail = document.getElementById("profileEmail");
 const albumGrid = document.getElementById("albumGrid");
 const followBtn = document.getElementById("followBtn");
+const followingCount = document.getElementById("followingCount");
+const followerCount = document.getElementById("followerCount");
 
 let currentUser = null;
 let followDocId = null;
@@ -220,6 +236,29 @@ async function loadAlbums() {
   }
 }
 
+async function loadFollowCounts() {
+  try {
+    const followingQuery = query(
+      collection(db, "follows"),
+      where("followerId", "==", uid)
+    );
+
+    const followerQuery = query(
+      collection(db, "follows"),
+      where("followingId", "==", uid)
+    );
+
+    const followingSnapshot = await getDocs(followingQuery);
+    const followerSnapshot = await getDocs(followerQuery);
+
+    followingCount.textContent = `フォロー中 ${followingSnapshot.size}`;
+    followerCount.textContent = `フォロワー ${followerSnapshot.size}`;
+
+  } catch (error) {
+    console.error("フォロー数取得失敗:", error);
+  }
+}
+
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
 
@@ -283,8 +322,6 @@ async function checkFollowStatus() {
 
 async function followUser() {
   console.log("followUser called");
-  console.log("currentUser:", currentUser);
-  console.log("profile uid:", uid);
 
   if (!currentUser) {
     alert("ログインが必要です");
@@ -311,6 +348,8 @@ async function followUser() {
     followDocId = docRef.id;
     isFollowing = true;
     followBtn.textContent = "フォロー中";
+
+    await loadFollowCounts();
 
     alert("フォローしました");
 
@@ -339,6 +378,8 @@ async function unfollowUser() {
     isFollowing = false;
     followBtn.textContent = "フォロー";
 
+    await loadFollowCounts();
+
     alert("フォローを解除しました");
 
   } catch (error) {
@@ -352,6 +393,7 @@ async function unfollowUser() {
 
 await loadProfile();
 await loadAlbums();
+await loadFollowCounts();
 </script>
 
 </body>
