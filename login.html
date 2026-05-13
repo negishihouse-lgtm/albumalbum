@@ -1,1 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Album Collection</title>
 
+<style>
+body{
+  background:#050505;
+  color:white;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  padding:40px;
+}
+
+.login-box{
+  max-width:420px;
+  margin:80px auto;
+  background:#0b0b0b;
+  border:1px solid rgba(255,255,255,0.12);
+  padding:32px;
+}
+
+h1{
+  font-size:36px;
+  margin-bottom:24px;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  margin-bottom:14px;
+  background:#111;
+  color:white;
+  border:1px solid rgba(255,255,255,0.2);
+  font-size:16px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  background:#6fa8dc;
+  color:white;
+  border:none;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.sub-btn{
+  background:#222;
+}
+
+.message{
+  margin-top:16px;
+  color:#aaa;
+  line-height:1.7;
+}
+
+a{
+  color:#6fa8dc;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<p><a href="index.html">← ホームへ戻る</a></p>
+
+<div class="login-box">
+  <h1>Login</h1>
+
+  <input type="email" id="email" placeholder="メールアドレス">
+  <input type="password" id="password" placeholder="パスワード">
+
+  <button id="loginBtn">ログイン</button>
+  <button class="sub-btn" id="signupBtn">新規登録</button>
+  <button class="sub-btn" id="logoutBtn">ログアウト</button>
+
+  <div class="message" id="message"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+  authDomain: "album-49b3e.firebaseapp.com",
+  projectId: "album-49b3e",
+  storageBucket: "album-49b3e.firebasestorage.app",
+  messagingSenderId: "448724897117",
+  appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+  measurementId: "G-3QFX3GDEXN"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const message = document.getElementById("message");
+
+document.getElementById("signupBtn").addEventListener("click", async () => {
+  const email = emailInput.value;
+  const password = passwordInput.value;
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      email: user.email,
+      userName: user.email.split("@")[0],
+      createdAt: serverTimestamp()
+    });
+
+    message.textContent = "新規登録しました。ホームへ移動します。";
+    location.href = "index.html";
+
+  } catch (error) {
+    message.textContent = "新規登録エラー：" + error.message;
+  }
+});
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = emailInput.value;
+  const password = passwordInput.value;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      email: user.email,
+      userName: user.email.split("@")[0],
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    message.textContent = "ログインしました。ホームへ移動します。";
+    location.href = "index.html";
+
+  } catch (error) {
+    message.textContent = "ログインエラー：" + error.message;
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await signOut(auth);
+  message.textContent = "ログアウトしました。";
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    message.textContent = `ログイン中：${user.email}`;
+  } else {
+    message.textContent = "ログインしていません。";
+  }
+});
+</script>
+
+</body>
+</html>
