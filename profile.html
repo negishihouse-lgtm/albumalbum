@@ -105,9 +105,11 @@ import {
   query,
   where,
   orderBy,
-  getDocs
+  getDocs,
+  addDoc,
+  deleteDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 // Firebase設定（editor.htmlやindex.htmlと同じものを貼る）
 const firebaseConfig = {
   // あなたの設定をここに貼る
