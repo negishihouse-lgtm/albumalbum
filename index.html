@@ -322,13 +322,19 @@ body{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
 import {
-    getFirestore,
+    initializeFirestore,
     collection,
     onSnapshot,
     query,
     where
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
@@ -341,10 +347,32 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
+/* Safari 対応 */
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling: true
+});
+
+const auth = getAuth(app);
+
+/* 要素取得 */
 const albumGrid = document.getElementById("albumGrid");
+const mypageBtn = document.getElementById("mypageBtn");
 
+/* マイページボタン */
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        mypageBtn.style.display = "inline-block";
+
+        mypageBtn.onclick = () => {
+            location.href = `profile.html?uid=${user.uid}`;
+        };
+    } else {
+        mypageBtn.style.display = "none";
+    }
+});
+
+/* HTMLエスケープ */
 function escapeHTML(value){
     return String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -354,6 +382,7 @@ function escapeHTML(value){
         .replaceAll("'", "&#039;");
 }
 
+/* メーター描画 */
 function meter(left, right, value){
 
     value = Number(value) || 0;
@@ -387,22 +416,20 @@ function meter(left, right, value){
     `;
 }
 
-/*
-  公開アルバムだけ表示する。
-  既存データに isPublic が付いていない場合は表示されない。
-  既存データも表示したい場合は、一時的に下の q を collection(db,"albums") に戻してください。
-*/
+/* 公開投稿のみ取得 */
 const q = query(
     collection(db, "albums"),
     where("isPublic", "==", true)
 );
 
+/* 投稿一覧表示 */
 onSnapshot(q, (snapshot)=>{
 
     albumGrid.innerHTML = "";
 
     if(snapshot.empty){
-        albumGrid.innerHTML = `<div class="empty">保存されたアルバムがありません</div>`;
+        albumGrid.innerHTML =
+            `<div class="empty">保存されたアルバムがありません</div>`;
         return;
     }
 
@@ -414,7 +441,9 @@ onSnapshot(q, (snapshot)=>{
         <div class="album-card">
 
             <div class="album-left">
-                <img class="cover" src="${escapeHTML(a.cover || "")}" alt="">
+                <img class="cover"
+                     src="${escapeHTML(a.cover || "")}"
+                     alt="">
 
                 <div class="title">
                     ${escapeHTML(a.title || "")}
@@ -427,24 +456,25 @@ onSnapshot(q, (snapshot)=>{
                 <div class="meta">
                     ${escapeHTML(a.year || "")}
                 </div>
+
                 <div class="creator">
-  投稿者：
-  <a href="profile.html?uid=${a.userId}">
-    ${a.userName || a.userEmail || "匿名ユーザー"}
-  </a>
-</div>
+                    投稿者：
+                    <a href="profile.html?uid=${a.userId}">
+                        ${escapeHTML(
+                            a.userName ||
+                            a.userEmail ||
+                            "匿名ユーザー"
+                        )}
+                    </a>
+                </div>
             </div>
 
             <div class="meter-area">
 
                 ${meter("暗い", "明るい", a.darkness)}
-
                 ${meter("静か", "激しい", a.intense)}
-
                 ${meter("シンプル", "複雑", a.complex)}
-
                 ${meter("絶望", "希望", a.hope)}
-
                 ${meter("個人", "世界", a.world)}
 
                 <div class="keyword-box">
@@ -466,8 +496,10 @@ onSnapshot(q, (snapshot)=>{
         </div>
         `;
     });
+
 }, (error) => {
-    albumGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`;
+    albumGrid.innerHTML =
+        `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`;
 });
 
 </script>
