@@ -2,17 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Album Collection</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+*{ margin:0; padding:0; box-sizing:border-box; }
 
 body{
     background:#050505;
@@ -33,7 +27,7 @@ body{
     font-weight:700;
 }
 
-.back-btn{
+.back-btn,.like-btn{
     background:#1e1e1e;
     color:white;
     border:1px solid rgba(255,255,255,0.15);
@@ -42,8 +36,21 @@ body{
     cursor:pointer;
 }
 
-.back-btn:hover{
+.back-btn:hover,.like-btn:hover{
     background:#2a2a2a;
+}
+
+.like-btn.liked{
+    background:#6fa8dc;
+    color:white;
+}
+
+.like-area{
+    margin-top:18px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#ddd;
 }
 
 .album-grid{
@@ -64,9 +71,7 @@ body{
     overflow:hidden;
 }
 
-.album-left{
-    min-width:0;
-}
+.album-left{ min-width:0; }
 
 .cover{
     width:210px;
@@ -96,6 +101,20 @@ body{
     margin-bottom:0;
 }
 
+.creator{
+    margin-top:10px;
+    color:#ccc;
+}
+
+.creator a{
+    color:#6fa8dc;
+    text-decoration:none;
+}
+
+.creator a:hover{
+    text-decoration:underline;
+}
+
 .description-wide{
     margin-top:10px;
     padding-top:26px;
@@ -110,8 +129,6 @@ body{
     color:#777;
     font-size:28px;
 }
-
-/* メーター部分 */
 
 .meter-area{
     border:1px solid rgba(255,255,255,0.12);
@@ -135,9 +152,7 @@ body{
     white-space:nowrap;
 }
 
-.right-label{
-    text-align:right;
-}
+.right-label{ text-align:right; }
 
 .meter-graphic{
     display:flex;
@@ -162,46 +177,11 @@ body{
     min-width:6px;
 }
 
-.dot.active.level-1{
-    background:#3f8ec7;
-    border-color:#3f8ec7;
-}
-
-.dot.active.level-2{
-    background:#4d9bd0;
-    border-color:#4d9bd0;
-}
-
-.dot.active.level-3{
-    background:#5fa7d8;
-    border-color:#5fa7d8;
-}
-
-.dot.active.level-4{
-    background:#73b6e3;
-    border-color:#73b6e3;
-}
-
-.dot.active.level-5{
-    background:#8bc8ef;
-    border-color:#8bc8ef;
-}
-
-.connector.active.level-1{
-    background:#3f8ec7;
-}
-
-.connector.active.level-2{
-    background:#4d9bd0;
-}
-
-.connector.active.level-3{
-    background:#5fa7d8;
-}
-
-.connector.active.level-4{
-    background:#73b6e3;
-}
+.dot.active.level-1,.connector.active.level-1{ background:#3f8ec7; border-color:#3f8ec7; }
+.dot.active.level-2,.connector.active.level-2{ background:#4d9bd0; border-color:#4d9bd0; }
+.dot.active.level-3,.connector.active.level-3{ background:#5fa7d8; border-color:#5fa7d8; }
+.dot.active.level-4,.connector.active.level-4{ background:#73b6e3; border-color:#73b6e3; }
+.dot.active.level-5{ background:#8bc8ef; border-color:#8bc8ef; }
 
 .keyword-box{
     margin-top:24px;
@@ -224,16 +204,11 @@ body{
 }
 
 @media(max-width:1300px){
-    .album-grid{
-        grid-template-columns:1fr;
-    }
+    .album-grid{ grid-template-columns:1fr; }
 }
 
 @media(max-width:800px){
-
-    body{
-        padding:22px;
-    }
+    body{ padding:22px; }
 
     .topbar{
         flex-direction:column;
@@ -241,9 +216,7 @@ body{
         gap:20px;
     }
 
-    .page-title{
-        font-size:34px;
-    }
+    .page-title{ font-size:34px; }
 
     .album-card{
         grid-template-columns:1fr;
@@ -255,17 +228,9 @@ body{
         max-width:320px;
     }
 
-    .title{
-        font-size:28px;
-    }
-
-    .artist{
-        font-size:22px;
-    }
-
-    .meter-area{
-        padding:20px;
-    }
+    .title{ font-size:28px; }
+    .artist{ font-size:22px; }
+    .meter-area{ padding:20px; }
 
     .meter{
         grid-template-columns:68px minmax(120px,1fr) 68px;
@@ -273,27 +238,11 @@ body{
         margin-bottom:18px;
     }
 
-    .meter-label{
-        font-size:16px;
-    }
-
-    .dot{
-        width:16px;
-        height:16px;
-    }
-
-    .connector{
-        height:3px;
-        min-width:4px;
-    }
-
-    .keyword-title{
-        font-size:16px;
-    }
-
-    .keyword-text{
-        font-size:15px;
-    }
+    .meter-label{ font-size:16px; }
+    .dot{ width:16px; height:16px; }
+    .connector{ height:3px; min-width:4px; }
+    .keyword-title{ font-size:16px; }
+    .keyword-text{ font-size:15px; }
 }
 </style>
 </head>
@@ -304,14 +253,11 @@ body{
     <h1 class="page-title">Album Collection</h1>
 
     <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <button id="mypageBtn"
-                class="back-btn"
-                style="display:none;">
+        <button id="mypageBtn" class="back-btn" style="display:none;">
             マイページ
         </button>
 
-        <button class="back-btn"
-                onclick="location.href='./editor.html'">
+        <button class="back-btn" onclick="location.href='./editor.html'">
             編集ページへ戻る
         </button>
     </div>
@@ -328,7 +274,11 @@ import {
     collection,
     onSnapshot,
     query,
-    where
+    where,
+    doc,
+    setDoc,
+    deleteDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 import {
@@ -348,22 +298,23 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-/* Safari 対応 */
 const db = initializeFirestore(app, {
     experimentalAutoDetectLongPolling: true
 });
 
 const auth = getAuth(app);
 
-/* 要素取得 */
 const albumGrid = document.getElementById("albumGrid");
 const mypageBtn = document.getElementById("mypageBtn");
 
-/* マイページボタン */
+let currentUser = null;
+let allLikes = [];
+
 onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+
     if (user) {
         mypageBtn.style.display = "inline-block";
-
         mypageBtn.onclick = () => {
             location.href = `profile.html?uid=${user.uid}`;
         };
@@ -372,7 +323,6 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-/* HTMLエスケープ */
 function escapeHTML(value){
     return String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -382,16 +332,13 @@ function escapeHTML(value){
         .replaceAll("'", "&#039;");
 }
 
-/* メーター描画 */
 function meter(left, right, value){
-
     value = Number(value) || 0;
     value = Math.max(0, Math.min(5, value));
 
     let graphicHTML = "";
 
     for(let i = 1; i <= 5; i++){
-
         graphicHTML += `
             <div class="dot level-${i} ${i <= value ? "active" : ""}"></div>
         `;
@@ -406,23 +353,90 @@ function meter(left, right, value){
     return `
         <div class="meter">
             <div class="meter-label">${escapeHTML(left)}</div>
-
-            <div class="meter-graphic">
-                ${graphicHTML}
-            </div>
-
+            <div class="meter-graphic">${graphicHTML}</div>
             <div class="meter-label right-label">${escapeHTML(right)}</div>
         </div>
     `;
 }
 
-/* 公開投稿のみ取得 */
+function getLikeId(userId, albumId){
+    return `${userId}_${albumId}`;
+}
+
+function getLikeCount(albumId){
+    return allLikes.filter(like => like.albumId === albumId).length;
+}
+
+function isLikedByMe(albumId){
+    if(!currentUser) return false;
+
+    return allLikes.some(like =>
+        like.albumId === albumId &&
+        like.userId === currentUser.uid
+    );
+}
+
+async function toggleLike(albumId){
+    if(!currentUser){
+        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
+        return;
+    }
+
+    const likeId = getLikeId(currentUser.uid, albumId);
+    const likeRef = doc(db, "likes", likeId);
+
+    if(isLikedByMe(albumId)){
+        await deleteDoc(likeRef);
+    } else {
+        await setDoc(likeRef, {
+            userId: currentUser.uid,
+            albumId: albumId,
+            createdAt: serverTimestamp()
+        });
+    }
+}
+
+window.toggleLike = toggleLike;
+
+const likesQuery = collection(db, "likes");
+
+onSnapshot(likesQuery, (snapshot) => {
+    allLikes = [];
+
+    snapshot.forEach((doc) => {
+        allLikes.push(doc.data());
+    });
+
+    updateLikeDisplays();
+});
+
+function updateLikeDisplays(){
+    const likeAreas = document.querySelectorAll("[data-like-area]");
+
+    likeAreas.forEach((area) => {
+        const albumId = area.dataset.albumId;
+        const countSpan = area.querySelector(".like-count");
+        const button = area.querySelector(".like-btn");
+
+        const count = getLikeCount(albumId);
+        const liked = isLikedByMe(albumId);
+
+        countSpan.textContent = `${count}件`;
+        button.textContent = liked ? "♥ いいね済み" : "♡ いいね";
+
+        if(liked){
+            button.classList.add("liked");
+        } else {
+            button.classList.remove("liked");
+        }
+    });
+}
+
 const q = query(
     collection(db, "albums"),
     where("isPublic", "==", true)
 );
 
-/* 投稿一覧表示 */
 onSnapshot(q, (snapshot)=>{
 
     albumGrid.innerHTML = "";
@@ -433,9 +447,10 @@ onSnapshot(q, (snapshot)=>{
         return;
     }
 
-    snapshot.forEach((doc)=>{
+    snapshot.forEach((docSnap)=>{
 
-        const a = doc.data();
+        const a = docSnap.data();
+        const albumId = docSnap.id;
 
         albumGrid.innerHTML += `
         <div class="album-card">
@@ -459,13 +474,23 @@ onSnapshot(q, (snapshot)=>{
 
                 <div class="creator">
                     投稿者：
-                    <a href="profile.html?uid=${a.userId}">
+                    <a href="profile.html?uid=${escapeHTML(a.userId || "")}">
                         ${escapeHTML(
                             a.userName ||
                             a.userEmail ||
                             "匿名ユーザー"
                         )}
                     </a>
+                </div>
+
+                <div class="like-area"
+                     data-like-area
+                     data-album-id="${escapeHTML(albumId)}">
+                    <button class="like-btn"
+                            onclick="toggleLike('${escapeHTML(albumId)}')">
+                        ♡ いいね
+                    </button>
+                    <span class="like-count">0件</span>
                 </div>
             </div>
 
@@ -478,10 +503,7 @@ onSnapshot(q, (snapshot)=>{
                 ${meter("個人", "世界", a.world)}
 
                 <div class="keyword-box">
-                    <div class="keyword-title">
-                        キーワード
-                    </div>
-
+                    <div class="keyword-title">キーワード</div>
                     <div class="keyword-text">
                         ${escapeHTML(a.keywords || "")}
                     </div>
@@ -496,6 +518,8 @@ onSnapshot(q, (snapshot)=>{
         </div>
         `;
     });
+
+    updateLikeDisplays();
 
 }, (error) => {
     albumGrid.innerHTML =
