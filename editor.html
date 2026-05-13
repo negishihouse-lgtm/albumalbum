@@ -49,6 +49,31 @@ body{
     word-break:break-word;
 }
 
+.side-menu{
+    padding:15px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.side-menu button{
+    width:100%;
+    padding:13px;
+    margin-bottom:10px;
+    border:none;
+    background:#1c1c1c;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    text-align:left;
+}
+
+.side-menu button:hover{
+    background:#2a2a2a;
+}
+
+.side-menu .active{
+    background:#6fa8dc;
+}
+
 .album-list{
     padding:15px;
 }
@@ -238,7 +263,7 @@ button:disabled{
 
     .sidebar{
         width:100%;
-        max-height:320px;
+        max-height:420px;
         border-right:none;
         border-bottom:1px solid rgba(255,255,255,0.08);
     }
@@ -261,8 +286,16 @@ button:disabled{
     <div class="sidebar">
 
         <div class="sidebar-header">
-            <div class="sidebar-title">My Albums</div>
+            <div class="sidebar-title">Album Collection</div>
             <div class="login-status-sidebar" id="sidebarLoginStatus">未ログイン</div>
+        </div>
+
+        <div class="side-menu">
+            <button onclick="location.href='./index.html'">ホーム</button>
+            <button class="active">投稿作成・編集</button>
+            <button id="myPageBtn">マイページ</button>
+            <button onclick="location.href='./profile-edit.html'">プロフィール編集</button>
+            <button onclick="location.href='./login.html'">ログイン / 新規登録</button>
         </div>
 
         <div class="album-list" id="albumList"></div>
@@ -406,7 +439,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
 import {
-    getFirestore,
+    initializeFirestore,
     collection,
     addDoc,
     onSnapshot,
@@ -436,7 +469,11 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling: true
+});
+
 const auth = getAuth(app);
 
 const albumList = document.getElementById("albumList");
@@ -448,6 +485,7 @@ const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const loginStatus = document.getElementById("loginStatus");
 const sidebarLoginStatus = document.getElementById("sidebarLoginStatus");
+const myPageBtn = document.getElementById("myPageBtn");
 
 const coverInput = document.getElementById("coverInput");
 const titleInput = document.getElementById("titleInput");
@@ -710,6 +748,18 @@ function listenMyAlbums(user){
         albumList.innerHTML = `<div style="color:#ff7777;padding:10px;line-height:1.7;">読み込みエラー：${escapeHTML(error.message)}</div>`;
     });
 }
+
+myPageBtn.addEventListener("click", () => {
+    const user = auth.currentUser;
+
+    if(!user){
+        alert("ログインするとマイページを開けます");
+        location.href = "./login.html";
+        return;
+    }
+
+    location.href = `./profile.html?uid=${encodeURIComponent(user.uid)}`;
+});
 
 onAuthStateChanged(auth, (user) => {
     if(user){
