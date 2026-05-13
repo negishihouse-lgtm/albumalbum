@@ -46,6 +46,11 @@ a:hover{
     cursor:pointer;
 }
 
+.follow-btn:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+}
+
 .album-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
@@ -97,6 +102,7 @@ a:hover{
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import {
   getFirestore,
   doc,
@@ -115,17 +121,16 @@ import {
   getAuth,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-// Firebase設定（editor.htmlやindex.htmlと同じものを貼る）
-const firebaseConfig = {
-    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
-    authDomain: "album-49b3e.firebaseapp.com",
-    projectId: "album-49b3e",
-    storageBucket: "album-49b3e.firebasestorage.app",
-    messagingSenderId: "448724897117",
-    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
-    measurementId: "G-3QFX3GDEXN"
-};
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+  authDomain: "album-49b3e.firebaseapp.com",
+  projectId: "album-49b3e",
+  storageBucket: "album-49b3e.firebasestorage.app",
+  messagingSenderId: "448724897117",
+  appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+  measurementId: "G-3QFX3GDEXN"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -139,15 +144,16 @@ const profileEmail = document.getElementById("profileEmail");
 const albumGrid = document.getElementById("albumGrid");
 const followBtn = document.getElementById("followBtn");
 
+let currentUser = null;
+let followDocId = null;
+let isFollowing = false;
+
 if (!uid) {
   profileName.textContent = "ユーザーが指定されていません";
   followBtn.style.display = "none";
   throw new Error("uid is missing");
 }
 
-// =========================
-// ユーザー情報を取得
-// =========================
 const userDoc = await getDoc(doc(db, "users", uid));
 
 if (userDoc.exists()) {
@@ -163,17 +169,14 @@ if (userDoc.exists()) {
   profileEmail.textContent = "";
 }
 
-// =========================
-// 投稿一覧を取得
-// =========================
-const q = query(
+const albumsQuery = query(
   collection(db, "albums"),
   where("userId", "==", uid),
   where("isPublic", "==", true),
   orderBy("createdAt", "desc")
 );
 
-const snapshot = await getDocs(q);
+const snapshot = await getDocs(albumsQuery);
 
 if (snapshot.empty) {
   albumGrid.innerHTML = "<p>まだ投稿がありません。</p>";
@@ -195,29 +198,25 @@ if (snapshot.empty) {
   });
 }
 
-// =========================
-// フォローボタン（仮実装）
-// =========================
-let currentUser = null;
-let followDocId = null;
-let isFollowing = false;
-
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
 
   if (!currentUser) {
-  followBtn.textContent = "ログインしてフォロー";
-  followBtn.onclick = () => {
-    location.href =
-      `login.html?redirect=${encodeURIComponent(location.href)}`;
-  };
-  return;
-}
+    followBtn.style.display = "inline-block";
+    followBtn.textContent = "ログインしてフォロー";
+    followBtn.onclick = () => {
+      location.href =
+        `login.html?redirect=${encodeURIComponent(location.href)}`;
+    };
+    return;
+  }
 
   if (currentUser.uid === uid) {
     followBtn.style.display = "none";
     return;
   }
+
+  followBtn.style.display = "inline-block";
 
   await checkFollowStatus();
 
@@ -231,22 +230,27 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 async function checkFollowStatus() {
-  const q = query(
-    collection(db, "follows"),
-    where("followerId", "==", currentUser.uid),
-    where("followingId", "==", uid)
-  );
+  try {
+    const followsQuery = query(
+      collection(db, "follows"),
+      where("followerId", "==", currentUser.uid),
+      where("followingId", "==", uid)
+    );
 
-  const snapshot = await getDocs(q);
+    const snapshot = await getDocs(followsQuery);
 
-  if (!snapshot.empty) {
-    followDocId = snapshot.docs[0].id;
-    isFollowing = true;
-    followBtn.textContent = "フォロー中";
-  } else {
-    followDocId = null;
-    isFollowing = false;
-    followBtn.textContent = "フォロー";
+    if (!snapshot.empty) {
+      followDocId = snapshot.docs[0].id;
+      isFollowing = true;
+      followBtn.textContent = "フォロー中";
+    } else {
+      followDocId = null;
+      isFollowing = false;
+      followBtn.textContent = "フォロー";
+    }
+  } catch (error) {
+    console.error("フォロー状態確認失敗:", error);
+    alert("フォロー状態確認失敗: " + error.message);
   }
 }
 
@@ -277,8 +281,6 @@ async function followUser() {
       createdAt: serverTimestamp()
     });
 
-    console.log("follow created:", docRef.id);
-
     followDocId = docRef.id;
     isFollowing = true;
     followBtn.textContent = "フォロー中";
@@ -297,11 +299,25 @@ async function followUser() {
 async function unfollowUser() {
   if (!followDocId) return;
 
-  await deleteDoc(doc(db, "follows", followDocId));
+  try {
+    followBtn.disabled = true;
+    followBtn.textContent = "処理中...";
 
-  followDocId = null;
-  isFollowing = false;
-  followBtn.textContent = "フォロー";
+    await deleteDoc(doc(db, "follows", followDocId));
+
+    followDocId = null;
+    isFollowing = false;
+    followBtn.textContent = "フォロー";
+
+    alert("フォローを解除しました");
+
+  } catch (error) {
+    console.error("解除失敗:", error);
+    alert("解除失敗: " + error.message);
+    followBtn.textContent = "フォロー中";
+  } finally {
+    followBtn.disabled = false;
+  }
 }
 </script>
 
