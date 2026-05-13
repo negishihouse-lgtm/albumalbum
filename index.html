@@ -92,283 +92,84 @@ body{
 
 .album-grid{
     display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap:24px;
-    max-width:1320px;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:22px;
+    max-width:1600px;
     margin:0 auto;
 }
 
-/* 投稿カード */
-
 .album-card{
-    background:#0b0b0b;
-    border:1px solid rgba(255,255,255,0.12);
-    padding:20px;
     display:grid;
-    grid-template-columns:180px minmax(0,1fr);
+    grid-template-columns:42% 58%;
     gap:18px;
-    overflow:hidden;
-    cursor:pointer;
-    align-items:start;
-    border-radius:16px;
-    transition:0.2s;
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:18px;
+    padding:18px;
+    min-height:430px;
 }
-
-.album-card:hover{
-    border-color:rgba(111,168,220,0.45);
-    transform:translateY(-2px);
-}
-
-/* 左側 */
-
-.album-left{
-    min-width:0;
-}
-
-/* ジャケット画像 */
 
 .cover{
-    width:160px;
+    width:100%;
     aspect-ratio:1/1;
     object-fit:cover;
-    margin-bottom:14px;
     background:#111;
-    border-radius:10px;
+    margin-bottom:16px;
 }
-
-/* タイトル */
 
 .title{
-    font-size:24px;
-    font-weight:700;
-    line-height:1.2;
-    margin-bottom:4px;
-    word-break:break-word;
+    font-size:28px;
+    font-weight:800;
+    line-height:1.15;
 }
-
-/* アーティスト名 */
 
 .artist{
-    font-size:18px;
     color:#6fa8dc;
-    margin-bottom:10px;
-    word-break:break-word;
+    font-size:18px;
+    margin-top:6px;
 }
-
-/* 年 */
 
 .meta{
     color:#aaa;
-    margin-bottom:0;
-}
-
-/* 投稿者 */
-
-.creator{
-    margin-top:10px;
-    color:#ccc;
-    font-size:15px;
-    line-height:1.5;
-}
-
-.creator a{
-    color:#6fa8dc;
-    text-decoration:none;
-}
-
-.creator a:hover{
-    text-decoration:underline;
-}
-
-/* いいね */
-
-.like-area{
-    margin-top:16px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex-wrap:wrap;
-    color:#ddd;
-}
-
-.like-count{
-    font-size:15px;
-}
-
-/* コメント数 */
-
-.comment-count{
-    margin-top:10px;
-    color:#aaa;
-    font-size:15px;
-}
-
-/* メーター全体 */
-
-.meter-area{
-    border:1px solid rgba(255,255,255,0.12);
-    padding:14px;
-    min-width:0;
-    width:100%;
-    align-self:start;
-    border-radius:12px;
-}
-
-/* 各メーター */
-
-.meter{
-    display:grid;
-    grid-template-columns:54px minmax(0,1fr) 54px;
-    align-items:center;
-    gap:6px;
-    margin-bottom:12px;
-    min-width:0;
-}
-
-.meter-label{
+    margin-top:8px;
     font-size:14px;
-    font-weight:700;
-    color:#e8e8e8;
-    white-space:nowrap;
 }
-
-.right-label{
-    text-align:right;
-}
-
-/* メーターグラフィック */
-
-.meter-graphic{
-    display:flex;
-    align-items:center;
-    width:100%;
-    min-width:0;
-    overflow:hidden;
-}
-
-.dot{
-    width:12px;
-    height:12px;
-    border-radius:50%;
-    border:2px solid #555;
-    background:#0b0b0b;
-    flex-shrink:0;
-}
-
-.connector{
-    height:3px;
-    background:#4a5158;
-    flex:1;
-    min-width:0;
-}
-
-/* レベル色 */
-
-.dot.active.level-1,
-.connector.active.level-1{
-    background:#3f8ec7;
-    border-color:#3f8ec7;
-}
-
-.dot.active.level-2,
-.connector.active.level-2{
-    background:#4d9bd0;
-    border-color:#4d9bd0;
-}
-
-.dot.active.level-3,
-.connector.active.level-3{
-    background:#5fa7d8;
-    border-color:#5fa7d8;
-}
-
-.dot.active.level-4,
-.connector.active.level-4{
-    background:#73b6e3;
-    border-color:#73b6e3;
-}
-
-.dot.active.level-5{
-    background:#8bc8ef;
-    border-color:#8bc8ef;
-}
-
-/* キーワード */
-
-.keyword-box{
-    margin-top:12px;
-    border-top:1px solid rgba(255,255,255,0.12);
-    padding-top:10px;
-}
-
-.keyword-title{
-    color:#6fa8dc;
-    font-size:14px;
-    font-weight:700;
-    margin-bottom:4px;
-}
-
-.keyword-text{
-    color:#ddd;
-    font-size:14px;
-    line-height:1.5;
-    word-break:break-word;
-}
-
-/* 紹介文 */
 
 .description-wide{
-    grid-column:1;
-    margin-top:4px;
+    margin-top:16px;
     padding-top:14px;
     border-top:1px solid rgba(255,255,255,0.1);
+    font-size:14px;
+    line-height:1.7;
     color:#ddd;
-    line-height:1.6;
-    word-break:break-word;
-    font-size:15px;
 }
 
-/* 空状態 */
-
-.empty{
-    color:#777;
-    font-size:28px;
+.meter-area{
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:14px;
+    padding:16px;
 }
 
-/* タブレット */
+.meter{
+    grid-template-columns:56px minmax(0,1fr) 56px;
+    gap:8px;
+    margin-bottom:14px;
+}
 
-@media(max-width:1200px){
+.keyword-box{
+    margin-top:14px;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:12px;
+    padding:14px;
+}
+
+@media(max-width:1400px){
     .album-grid{
-        grid-template-columns:1fr;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
     }
 }
-
-/* スマホ */
 
 @media(max-width:900px){
-
-    body{
-        padding:22px;
-        padding-left:22px;
-    }
-
-    .sidebar{
-        position:static;
-        width:100%;
-        height:auto;
-        margin-bottom:24px;
-    }
-
-    .topbar{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:20px;
-    }
-
-    .page-title{
-        font-size:34px;
-    }
-
     .album-grid{
         grid-template-columns:1fr;
     }
@@ -376,6 +177,7 @@ body{
     .album-card{
         grid-template-columns:1fr;
     }
+}
 
     .cover{
         width:100%;
@@ -656,71 +458,20 @@ onSnapshot(q, (snapshot)=>{
         const albumId = docSnap.id;
 
         albumGrid.innerHTML += `
-        <div class="album-card"
-             onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
+       <div class="album-card">
+    <div class="album-info">
+        <img class="cover">
+        <div class="title"></div>
+        <div class="artist"></div>
+        <div class="meta"></div>
+        <div class="description"></div>
+    </div>
 
-            <div class="album-left">
-                <img class="cover"
-                     src="${escapeHTML(a.cover || "")}"
-                     alt="">
-
-                <div class="title">
-                    ${escapeHTML(a.title || "")}
-                </div>
-
-                <div class="artist">
-                    ${escapeHTML(a.artist || "")}
-                </div>
-
-                <div class="meta">
-                    ${escapeHTML(a.year || "")}
-                </div>
-
-                <div class="creator">
-                    投稿者：
-                    <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
-                       onclick="event.stopPropagation();">
-                        ${escapeHTML(
-                            a.userName ||
-                            a.userEmail ||
-                            "匿名ユーザー"
-                        )}
-                    </a>
-                </div>
-
-                <div class="like-area"
-                     data-like-area
-                     data-album-id="${escapeHTML(albumId)}">
-                    <button class="like-btn"
-                            onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
-                        ♡ いいね
-                    </button>
-                    <span class="like-count">0件</span>
-                </div>
-
-                <div class="comment-count"
-                     data-comment-count
-                     data-album-id="${escapeHTML(albumId)}">
-                    コメント 0件
-                </div>
-            </div>
-
-            <div class="meter-area">
-
-                ${meter("暗い", "明るい", a.darkness)}
-                ${meter("静か", "激しい", a.intense)}
-                ${meter("シンプル", "複雑", a.complex)}
-                ${meter("絶望", "希望", a.hope)}
-                ${meter("個人", "世界", a.world)}
-
-                <div class="keyword-box">
-                    <div class="keyword-title">キーワード</div>
-                    <div class="keyword-text">
-                        ${escapeHTML(a.keywords || "")}
-                    </div>
-                </div>
-
-            </div>
+    <div class="album-analysis">
+        <div class="meter-area"></div>
+        <div class="keyword-box"></div>
+    </div>
+</div>
 
             <div class="description-wide">
                 ${escapeHTML(a.desc || "")}
