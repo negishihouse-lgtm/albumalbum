@@ -95,18 +95,96 @@ a:hover{
 
 <div class="album-grid" id="albumGrid"></div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  orderBy,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Firebase設定（editor.htmlやindex.htmlと同じものを貼る）
+const firebaseConfig = {
+  // あなたの設定をここに貼る
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const params = new URLSearchParams(location.search);
 const uid = params.get("uid");
 
-document.getElementById("profileName").textContent =
-    uid ? "ユーザープロフィール" : "ユーザーが指定されていません";
+const profileName = document.getElementById("profileName");
+const profileEmail = document.getElementById("profileEmail");
+const albumGrid = document.getElementById("albumGrid");
+const followBtn = document.getElementById("followBtn");
 
-document.getElementById("profileEmail").textContent =
-    uid ? `UID: ${uid}` : "";
+if (!uid) {
+  profileName.textContent = "ユーザーが指定されていません";
+  followBtn.style.display = "none";
+  throw new Error("uid is missing");
+}
 
-document.getElementById("followBtn").addEventListener("click", () => {
-    alert("今後フォロー機能を実装します");
+// =========================
+// ユーザー情報を取得
+// =========================
+const userDoc = await getDoc(doc(db, "users", uid));
+
+if (userDoc.exists()) {
+  const user = userDoc.data();
+
+  profileName.textContent =
+    user.displayName || user.userName || "名無しユーザー";
+
+  profileEmail.textContent =
+    user.email || "";
+} else {
+  profileName.textContent = "ユーザーが見つかりません";
+  profileEmail.textContent = "";
+}
+
+// =========================
+// 投稿一覧を取得
+// =========================
+const q = query(
+  collection(db, "albums"),
+  where("userId", "==", uid),
+  where("isPublic", "==", true),
+  orderBy("createdAt", "desc")
+);
+
+const snapshot = await getDocs(q);
+
+if (snapshot.empty) {
+  albumGrid.innerHTML = "<p>まだ投稿がありません。</p>";
+} else {
+  snapshot.forEach((docSnap) => {
+    const album = docSnap.data();
+
+    const card = document.createElement("div");
+    card.className = "album-card";
+
+    card.innerHTML = `
+      <img class="cover" src="${album.cover || ""}" alt="">
+      <div class="title">${album.title || ""}</div>
+      <div class="artist">${album.artist || ""}</div>
+      <div class="description">${album.desc || ""}</div>
+    `;
+
+    albumGrid.appendChild(card);
+  });
+}
+
+// =========================
+// フォローボタン（仮実装）
+// =========================
+followBtn.addEventListener("click", () => {
+  alert("次のステップでフォロー機能を実装します。");
 });
 </script>
 
