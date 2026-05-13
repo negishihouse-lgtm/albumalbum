@@ -347,10 +347,6 @@ button:disabled{
                 <input id="artistInput" type="text">
             </div>
 
-            <div class="input-group">
-                <label>発表年</label>
-                <input id="yearInput" type="text">
-            </div>
 
             <div class="input-group">
                 <label>紹介文</label>
@@ -490,7 +486,7 @@ const myPageBtn = document.getElementById("myPageBtn");
 const coverInput = document.getElementById("coverInput");
 const titleInput = document.getElementById("titleInput");
 const artistInput = document.getElementById("artistInput");
-const yearInput = document.getElementById("yearInput");
+
 const descInput = document.getElementById("descInput");
 const keywordsInput = document.getElementById("keywordsInput");
 const isPublicInput = document.getElementById("isPublicInput");
@@ -551,7 +547,7 @@ function getFormData(){
         cover: coverInput.value.trim(),
         title: titleInput.value.trim(),
         artist: artistInput.value.trim(),
-        year: yearInput.value.trim(),
+       
         desc: descText,
         keywords: keywordsInput.value.trim(),
         isPublic: isPublicInput.value === "true",
@@ -568,7 +564,7 @@ function setFormData(album){
     coverInput.value = album.cover || "";
     titleInput.value = album.title || "";
     artistInput.value = album.artist || "";
-    yearInput.value = album.year || "";
+   
     descInput.value = (album.desc || "").slice(0, 200);
     keywordsInput.value = album.keywords || "";
     isPublicInput.value = album.isPublic === false ? "false" : "true";
@@ -588,7 +584,7 @@ function clearForm(){
     coverInput.value = "";
     titleInput.value = "";
     artistInput.value = "";
-    yearInput.value = "";
+    
     descInput.value = "";
     keywordsInput.value = "";
     isPublicInput.value = "true";
