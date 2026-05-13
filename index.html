@@ -27,7 +27,7 @@ body{
     font-weight:700;
 }
 
-.back-btn,.like-btn,.comment-btn,.delete-comment-btn{
+.back-btn,.like-btn{
     background:#1e1e1e;
     color:white;
     border:1px solid rgba(255,255,255,0.15);
@@ -36,7 +36,7 @@ body{
     cursor:pointer;
 }
 
-.back-btn:hover,.like-btn:hover,.comment-btn:hover,.delete-comment-btn:hover{
+.back-btn:hover,.like-btn:hover{
     background:#2a2a2a;
 }
 
@@ -51,6 +51,12 @@ body{
     align-items:center;
     gap:12px;
     color:#ddd;
+}
+
+.comment-count{
+    margin-top:10px;
+    color:#aaa;
+    font-size:15px;
 }
 
 .album-grid{
@@ -203,75 +209,6 @@ body{
     word-break:break-word;
 }
 
-/* コメント */
-.comment-section{
-    margin-top:24px;
-    padding-top:22px;
-    border-top:1px solid rgba(255,255,255,0.12);
-    grid-column:1/-1;
-}
-
-.comment-title{
-    font-size:18px;
-    font-weight:700;
-    color:#6fa8dc;
-    margin-bottom:12px;
-}
-
-.comment-form{
-    display:flex;
-    gap:10px;
-    margin-bottom:16px;
-}
-
-.comment-input{
-    flex:1;
-    padding:12px;
-    background:#111;
-    color:white;
-    border:1px solid rgba(255,255,255,0.15);
-    font-size:15px;
-}
-
-.comment-btn{
-    width:auto;
-    padding:12px 18px;
-}
-
-.comment-list{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
-.comment-item{
-    background:#111;
-    border:1px solid rgba(255,255,255,0.1);
-    padding:12px;
-}
-
-.comment-meta{
-    color:#888;
-    font-size:13px;
-    margin-bottom:6px;
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.comment-text{
-    color:#ddd;
-    line-height:1.7;
-    word-break:break-word;
-}
-
-.delete-comment-btn{
-    width:auto;
-    padding:4px 8px;
-    font-size:12px;
-    background:#333;
-}
-
 @media(max-width:1300px){
     .album-grid{ grid-template-columns:1fr; }
 }
@@ -312,14 +249,6 @@ body{
     .connector{ height:3px; min-width:4px; }
     .keyword-title{ font-size:16px; }
     .keyword-text{ font-size:15px; }
-
-    .comment-form{
-        flex-direction:column;
-    }
-
-    .comment-btn{
-        width:100%;
-    }
 }
 </style>
 </head>
@@ -355,7 +284,6 @@ import {
     doc,
     setDoc,
     deleteDoc,
-    addDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -515,52 +443,7 @@ function updateLikeDisplays(){
     });
 }
 
-/* コメント機能 */
-async function addComment(albumId){
-    if(!currentUser){
-        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
-        return;
-    }
-
-    const input = document.getElementById(`commentInput-${albumId}`);
-    const text = input.value.trim();
-
-    if(!text){
-        alert("コメントを入力してください");
-        return;
-    }
-
-    if(text.length > 200){
-        alert("コメントは200文字以内にしてください");
-        return;
-    }
-
-    await addDoc(collection(db, "comments"), {
-        albumId: albumId,
-        userId: currentUser.uid,
-        userEmail: currentUser.email,
-        text: text,
-        createdAt: serverTimestamp()
-    });
-
-    input.value = "";
-}
-
-async function deleteComment(commentId){
-    if(!currentUser){
-        return;
-    }
-
-    if(!confirm("このコメントを削除しますか？")){
-        return;
-    }
-
-    await deleteDoc(doc(db, "comments", commentId));
-}
-
-window.addComment = addComment;
-window.deleteComment = deleteComment;
-
+/* コメント数表示 */
 onSnapshot(collection(db, "comments"), (snapshot) => {
     allComments = [];
 
@@ -574,54 +457,17 @@ onSnapshot(collection(db, "comments"), (snapshot) => {
     updateCommentDisplays();
 });
 
-function getComments(albumId){
-    return allComments
-        .filter(comment => comment.albumId === albumId)
-        .sort((a, b) => {
-            const aTime = a.createdAt?.seconds || 0;
-            const bTime = b.createdAt?.seconds || 0;
-            return aTime - bTime;
-        });
+function getCommentCount(albumId){
+    return allComments.filter(comment => comment.albumId === albumId).length;
 }
 
 function updateCommentDisplays(){
-    const commentLists = document.querySelectorAll("[data-comment-list]");
+    const commentCounts = document.querySelectorAll("[data-comment-count]");
 
-    commentLists.forEach((list) => {
-        const albumId = list.dataset.albumId;
-        const comments = getComments(albumId);
-
-        if(comments.length === 0){
-            list.innerHTML = `<div style="color:#777;font-size:14px;">まだコメントはありません</div>`;
-            return;
-        }
-
-        list.innerHTML = comments.map((comment) => {
-            const canDelete =
-                currentUser &&
-                currentUser.uid === comment.userId;
-
-            return `
-                <div class="comment-item">
-                    <div class="comment-meta">
-                        <span>${escapeHTML(comment.userEmail || "匿名ユーザー")}</span>
-
-                        ${
-                            canDelete
-                            ? `<button class="delete-comment-btn"
-                                       onclick="deleteComment('${escapeHTML(comment.id)}')">
-                                    削除
-                               </button>`
-                            : ""
-                        }
-                    </div>
-
-                    <div class="comment-text">
-                        ${escapeHTML(comment.text || "")}
-                    </div>
-                </div>
-            `;
-        }).join("");
+    commentCounts.forEach((countEl) => {
+        const albumId = countEl.dataset.albumId;
+        const count = getCommentCount(albumId);
+        countEl.textContent = `コメント ${count}件`;
     });
 }
 
@@ -686,6 +532,12 @@ onSnapshot(q, (snapshot)=>{
                     </button>
                     <span class="like-count">0件</span>
                 </div>
+
+                <div class="comment-count"
+                     data-comment-count
+                     data-album-id="${escapeHTML(albumId)}">
+                    コメント 0件
+                </div>
             </div>
 
             <div class="meter-area">
@@ -707,35 +559,6 @@ onSnapshot(q, (snapshot)=>{
 
             <div class="description-wide">
                 ${escapeHTML(a.desc || "")}
-            </div>
-
-            <div class="comment-section">
-                <div class="comment-title">コメント</div>
-
-                <div class="comment-form">
-                    <input
-                        id="commentInput-${escapeHTML(albumId)}"
-                        class="comment-input"
-                        type="text"
-                        maxlength="200"
-                        placeholder="コメントを書く"
-                    >
-
-                    <button
-                        class="comment-btn"
-                        onclick="addComment('${escapeHTML(albumId)}')">
-                        送信
-                    </button>
-                </div>
-
-                <div
-                    class="comment-list"
-                    data-comment-list
-                    data-album-id="${escapeHTML(albumId)}">
-                    <div style="color:#777;font-size:14px;">
-                        コメントを読み込み中...
-                    </div>
-                </div>
             </div>
 
         </div>
