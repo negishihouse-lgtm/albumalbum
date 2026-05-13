@@ -1,1 +1,738 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Album Editor</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0b0b0b;
+    color:white;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+.wrapper{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:320px;
+    background:#111;
+    border-right:1px solid rgba(255,255,255,0.08);
+    overflow-y:auto;
+}
+
+.sidebar-header{
+    padding:25px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-title{
+    font-size:26px;
+    font-weight:700;
+}
+
+.login-status-sidebar{
+    color:#aaa;
+    font-size:14px;
+    margin-top:10px;
+    line-height:1.6;
+    word-break:break-word;
+}
+
+.album-list{
+    padding:15px;
+}
+
+.album-card{
+    display:flex;
+    gap:15px;
+    padding:12px;
+    border:1px solid rgba(255,255,255,0.08);
+    margin-bottom:12px;
+    cursor:pointer;
+    background:#151515;
+}
+
+.album-card:hover{
+    background:#1d1d1d;
+}
+
+.album-thumb{
+    width:70px;
+    height:70px;
+    object-fit:cover;
+    background:#222;
+}
+
+.album-info{
+    flex:1;
+    min-width:0;
+}
+
+.album-name{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:6px;
+    word-break:break-word;
+}
+
+.album-artist{
+    color:#aaa;
+    font-size:14px;
+    word-break:break-word;
+}
+
+.delete-btn, .edit-btn{
+    margin-top:8px;
+    background:#333;
+    border:none;
+    color:white;
+    padding:6px 10px;
+    cursor:pointer;
+    margin-right:5px;
+    width:auto;
+    font-size:13px;
+}
+
+.edit-btn{
+    background:#555;
+}
+
+.main{
+    flex:1;
+    padding:40px;
+}
+
+.form-area{
+    width:520px;
+    background:#151515;
+    padding:30px;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.section-title{
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:18px;
+}
+
+.input-group{
+    margin-bottom:22px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    color:#aaa;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    padding:14px;
+    background:#0f0f0f;
+    border:1px solid #333;
+    color:white;
+    font-size:15px;
+}
+
+textarea{
+    height:160px;
+    resize:none;
+    line-height:1.8;
+}
+
+.char-count{
+    margin-top:6px;
+    text-align:right;
+    color:#888;
+    font-size:13px;
+}
+
+.char-count.warning{
+    color:#f5c76a;
+}
+
+.char-count.limit{
+    color:#ff7777;
+}
+
+.slider-label{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    color:#aaa;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:12px;
+    border:none;
+    cursor:pointer;
+    color:white;
+    font-size:16px;
+}
+
+button:disabled{
+    opacity:0.45;
+    cursor:not-allowed;
+}
+
+.auth-btn{
+    background:#333;
+}
+
+.logout-btn{
+    background:#555;
+}
+
+.view-btn{
+    background:#6fa8dc;
+}
+
+.save-btn{
+    background:#4caf50;
+}
+
+.clear-btn{
+    background:#444;
+}
+
+.auth-box{
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    margin-bottom:26px;
+    padding-bottom:26px;
+}
+
+.login-status{
+    margin:12px 0;
+    color:#aaa;
+    font-size:14px;
+    line-height:1.6;
+    word-break:break-word;
+}
+
+.notice{
+    color:#aaa;
+    font-size:13px;
+    line-height:1.7;
+    margin-top:12px;
+}
+
+@media(max-width:900px){
+    .wrapper{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        max-height:320px;
+        border-right:none;
+        border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    .main{
+        padding:22px;
+    }
+
+    .form-area{
+        width:100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="sidebar">
+
+        <div class="sidebar-header">
+            <div class="sidebar-title">My Albums</div>
+            <div class="login-status-sidebar" id="sidebarLoginStatus">未ログイン</div>
+        </div>
+
+        <div class="album-list" id="albumList"></div>
+
+    </div>
+
+    <div class="main">
+
+        <div class="form-area">
+
+            <div class="auth-box">
+                <div class="section-title">Login</div>
+
+                <div class="input-group">
+                    <label>メールアドレス</label>
+                    <input id="emailInput" type="email" autocomplete="email">
+                </div>
+
+                <div class="input-group">
+                    <label>パスワード</label>
+                    <input id="passwordInput" type="password" autocomplete="current-password">
+                </div>
+
+                <button class="auth-btn" id="signupBtn">新規登録</button>
+                <button class="auth-btn" id="loginBtn">ログイン</button>
+                <button class="logout-btn" id="logoutBtn">ログアウト</button>
+
+                <div class="login-status" id="loginStatus">未ログイン</div>
+
+                <div class="notice">
+                    ログイン中のユーザーだけが、アルバムを保存・編集・削除できます。
+                </div>
+            </div>
+
+            <div class="section-title">Album Form</div>
+
+            <div class="input-group">
+                <label>ジャケット画像URL</label>
+                <input id="coverInput" type="text">
+            </div>
+
+            <div class="input-group">
+                <label>曲名 / アルバム名</label>
+                <input id="titleInput" type="text">
+            </div>
+
+            <div class="input-group">
+                <label>アーティスト名</label>
+                <input id="artistInput" type="text">
+            </div>
+
+            <div class="input-group">
+                <label>発表年</label>
+                <input id="yearInput" type="text">
+            </div>
+
+            <div class="input-group">
+                <label>紹介文</label>
+
+                <textarea
+                    id="descInput"
+                    maxlength="200"
+                    placeholder="紹介文を200字以内で入力"
+                ></textarea>
+
+                <div class="char-count" id="descCountBox">
+                    <span id="descCount">0</span> / 200
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>キーワード</label>
+                <input id="keywordsInput" type="text" placeholder="例：都会的, 管楽器, 明るい">
+            </div>
+
+            <div class="input-group">
+                <label>公開設定</label>
+                <select id="isPublicInput">
+                    <option value="true">公開</option>
+                    <option value="false">非公開</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <div class="slider-label">
+                    <span>暗い</span><span>明るい</span>
+                </div>
+                <input id="darknessInput" type="range" min="1" max="5" value="3">
+            </div>
+
+            <div class="input-group">
+                <div class="slider-label">
+                    <span>静か</span><span>激しい</span>
+                </div>
+                <input id="intenseInput" type="range" min="1" max="5" value="3">
+            </div>
+
+            <div class="input-group">
+                <div class="slider-label">
+                    <span>シンプル</span><span>複雑</span>
+                </div>
+                <input id="complexInput" type="range" min="1" max="5" value="3">
+            </div>
+
+            <div class="input-group">
+                <div class="slider-label">
+                    <span>絶望</span><span>希望</span>
+                </div>
+                <input id="hopeInput" type="range" min="1" max="5" value="3">
+            </div>
+
+            <div class="input-group">
+                <div class="slider-label">
+                    <span>個人</span><span>世界</span>
+                </div>
+                <input id="worldInput" type="range" min="1" max="5" value="3">
+            </div>
+
+            <button class="view-btn" onclick="location.href='./view.html'">
+                表示ページへ
+            </button>
+
+            <button class="save-btn" id="saveBtn">
+                保存
+            </button>
+
+            <button class="clear-btn" id="clearBtn">
+                入力欄をクリア
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    onSnapshot,
+    deleteDoc,
+    doc,
+    updateDoc,
+    query,
+    where,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const albumList = document.getElementById("albumList");
+
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+const signupBtn = document.getElementById("signupBtn");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const loginStatus = document.getElementById("loginStatus");
+const sidebarLoginStatus = document.getElementById("sidebarLoginStatus");
+
+const coverInput = document.getElementById("coverInput");
+const titleInput = document.getElementById("titleInput");
+const artistInput = document.getElementById("artistInput");
+const yearInput = document.getElementById("yearInput");
+const descInput = document.getElementById("descInput");
+const keywordsInput = document.getElementById("keywordsInput");
+const isPublicInput = document.getElementById("isPublicInput");
+
+const darknessInput = document.getElementById("darknessInput");
+const intenseInput = document.getElementById("intenseInput");
+const complexInput = document.getElementById("complexInput");
+const hopeInput = document.getElementById("hopeInput");
+const worldInput = document.getElementById("worldInput");
+
+const saveBtn = document.getElementById("saveBtn");
+const clearBtn = document.getElementById("clearBtn");
+
+const descCount = document.getElementById("descCount");
+const descCountBox = document.getElementById("descCountBox");
+
+let editingId = null;
+let unsubscribeAlbums = null;
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function updateDescCount(){
+    const length = descInput.value.length;
+
+    descCount.textContent = length;
+    descCountBox.classList.remove("warning", "limit");
+
+    if(length >= 180 && length < 200){
+        descCountBox.classList.add("warning");
+    }
+
+    if(length >= 200){
+        descCountBox.classList.add("limit");
+    }
+}
+
+descInput.addEventListener("input", updateDescCount);
+
+function getFormData(){
+    const user = auth.currentUser;
+
+    if(!user){
+        throw new Error("ログインしてください");
+    }
+
+    const descText = descInput.value.slice(0, 200);
+
+    return {
+        userId: user.uid,
+        userEmail: user.email,
+        cover: coverInput.value.trim(),
+        title: titleInput.value.trim(),
+        artist: artistInput.value.trim(),
+        year: yearInput.value.trim(),
+        desc: descText,
+        keywords: keywordsInput.value.trim(),
+        isPublic: isPublicInput.value === "true",
+        darkness: Number(darknessInput.value),
+        intense: Number(intenseInput.value),
+        complex: Number(complexInput.value),
+        hope: Number(hopeInput.value),
+        world: Number(worldInput.value),
+        updatedAt: serverTimestamp()
+    };
+}
+
+function setFormData(album){
+    coverInput.value = album.cover || "";
+    titleInput.value = album.title || "";
+    artistInput.value = album.artist || "";
+    yearInput.value = album.year || "";
+    descInput.value = (album.desc || "").slice(0, 200);
+    keywordsInput.value = album.keywords || "";
+    isPublicInput.value = album.isPublic === false ? "false" : "true";
+
+    darknessInput.value = album.darkness || 3;
+    intenseInput.value = album.intense || 3;
+    complexInput.value = album.complex || 3;
+    hopeInput.value = album.hope || 3;
+    worldInput.value = album.world || 3;
+
+    updateDescCount();
+}
+
+function clearForm(){
+    editingId = null;
+
+    coverInput.value = "";
+    titleInput.value = "";
+    artistInput.value = "";
+    yearInput.value = "";
+    descInput.value = "";
+    keywordsInput.value = "";
+    isPublicInput.value = "true";
+
+    darknessInput.value = 3;
+    intenseInput.value = 3;
+    complexInput.value = 3;
+    hopeInput.value = 3;
+    worldInput.value = 3;
+
+    saveBtn.textContent = "保存";
+    updateDescCount();
+}
+
+clearBtn.addEventListener("click", clearForm);
+
+signupBtn.addEventListener("click", async () => {
+    try {
+        await createUserWithEmailAndPassword(
+            auth,
+            emailInput.value.trim(),
+            passwordInput.value
+        );
+        alert("登録しました");
+    } catch (e) {
+        alert(e.message);
+    }
+});
+
+loginBtn.addEventListener("click", async () => {
+    try {
+        await signInWithEmailAndPassword(
+            auth,
+            emailInput.value.trim(),
+            passwordInput.value
+        );
+        alert("ログインしました");
+    } catch (e) {
+        alert(e.message);
+    }
+});
+
+logoutBtn.addEventListener("click", async () => {
+    try {
+        await signOut(auth);
+        clearForm();
+    } catch (e) {
+        alert(e.message);
+    }
+});
+
+saveBtn.addEventListener("click", async () => {
+    try {
+        const user = auth.currentUser;
+
+        if(!user){
+            alert("ログインしてください");
+            return;
+        }
+
+        if(!titleInput.value.trim()){
+            alert("曲名 / アルバム名を入力してください");
+            return;
+        }
+
+        const data = getFormData();
+
+        if(editingId){
+            await updateDoc(doc(db, "albums", editingId), data);
+            alert("更新しました");
+        }else{
+            await addDoc(collection(db, "albums"), {
+                ...data,
+                createdAt: serverTimestamp()
+            });
+            alert("保存しました");
+        }
+
+        clearForm();
+
+    } catch (e) {
+        alert(e.message);
+    }
+});
+
+function listenMyAlbums(user){
+    if(unsubscribeAlbums){
+        unsubscribeAlbums();
+        unsubscribeAlbums = null;
+    }
+
+    albumList.innerHTML = "";
+
+    if(!user){
+        albumList.innerHTML = `<div style="color:#777;padding:10px;line-height:1.7;">ログインすると、自分のアルバム一覧が表示されます。</div>`;
+        return;
+    }
+
+    const q = query(
+        collection(db, "albums"),
+        where("userId", "==", user.uid)
+    );
+
+    unsubscribeAlbums = onSnapshot(q, (snapshot) => {
+        albumList.innerHTML = "";
+
+        if(snapshot.empty){
+            albumList.innerHTML = `<div style="color:#777;padding:10px;">保存されたアルバムがありません</div>`;
+            return;
+        }
+
+        snapshot.forEach((docItem) => {
+            const album = docItem.data();
+
+            const card = document.createElement("div");
+            card.className = "album-card";
+
+            card.innerHTML = `
+                <img class="album-thumb" src="${escapeHTML(album.cover || "")}" alt="">
+
+                <div class="album-info">
+                    <div class="album-name">${escapeHTML(album.title || "")}</div>
+                    <div class="album-artist">${escapeHTML(album.artist || "")}</div>
+
+                    <button class="edit-btn" type="button" data-id="${escapeHTML(docItem.id)}">
+                        編集
+                    </button>
+
+                    <button class="delete-btn" type="button" data-id="${escapeHTML(docItem.id)}">
+                        削除
+                    </button>
+                </div>
+            `;
+
+            card.querySelector(".edit-btn").addEventListener("click", () => {
+                setFormData(album);
+                editingId = docItem.id;
+                saveBtn.textContent = "更新";
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+
+            card.querySelector(".delete-btn").addEventListener("click", async () => {
+                if(!confirm("このアルバムを削除しますか？")){
+                    return;
+                }
+
+                try {
+                    await deleteDoc(doc(db, "albums", docItem.id));
+                } catch (e) {
+                    alert(e.message);
+                }
+            });
+
+            albumList.appendChild(card);
+        });
+    }, (error) => {
+        albumList.innerHTML = `<div style="color:#ff7777;padding:10px;line-height:1.7;">読み込みエラー：${escapeHTML(error.message)}</div>`;
+    });
+}
+
+onAuthStateChanged(auth, (user) => {
+    if(user){
+        loginStatus.textContent = `ログイン中: ${user.email}`;
+        sidebarLoginStatus.textContent = `ログイン中: ${user.email}`;
+        saveBtn.disabled = false;
+        clearBtn.disabled = false;
+        logoutBtn.disabled = false;
+        listenMyAlbums(user);
+    }else{
+        loginStatus.textContent = "未ログイン";
+        sidebarLoginStatus.textContent = "未ログイン";
+        saveBtn.disabled = true;
+        clearBtn.disabled = true;
+        logoutBtn.disabled = true;
+        listenMyAlbums(null);
+    }
+});
+
+updateDescCount();
+clearForm();
+
+</script>
+
+</body>
+</html>
