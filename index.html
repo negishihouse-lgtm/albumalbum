@@ -75,6 +75,7 @@ body{
     padding:14px 22px;
     font-size:16px;
     cursor:pointer;
+    border-radius:10px;
 }
 
 .back-btn:hover,
@@ -87,53 +88,44 @@ body{
     color:white;
 }
 
-/* いいね・コメント */
-
-.like-area{
-    margin-top:18px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    color:#ddd;
-}
-
-.comment-count{
-    margin-top:10px;
-    color:#aaa;
-    font-size:15px;
-}
-
-/* 投稿一覧 */
+/* 投稿一覧（2列表示） */
 
 .album-grid{
     display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:22px;
-    max-width:1180px;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:24px;
+    max-width:1320px;
     margin:0 auto;
 }
+
+/* 投稿カード */
 
 .album-card{
     background:#0b0b0b;
     border:1px solid rgba(255,255,255,0.12);
-    padding:22px;
+    padding:20px;
     display:grid;
     grid-template-columns:180px minmax(0,1fr);
-    gap:20px;
+    gap:18px;
     overflow:hidden;
     cursor:pointer;
     align-items:start;
+    border-radius:16px;
+    transition:0.2s;
 }
 
 .album-card:hover{
     border-color:rgba(111,168,220,0.45);
+    transform:translateY(-2px);
 }
+
+/* 左側 */
 
 .album-left{
     min-width:0;
 }
 
-/* ジャケット */
+/* ジャケット画像 */
 
 .cover{
     width:160px;
@@ -141,31 +133,42 @@ body{
     object-fit:cover;
     margin-bottom:14px;
     background:#111;
+    border-radius:10px;
 }
 
+/* タイトル */
+
 .title{
-    font-size:26px;
+    font-size:24px;
     font-weight:700;
     line-height:1.2;
     margin-bottom:4px;
     word-break:break-word;
 }
 
+/* アーティスト名 */
+
 .artist{
-    font-size:21px;
+    font-size:18px;
     color:#6fa8dc;
-    margin-bottom:12px;
+    margin-bottom:10px;
     word-break:break-word;
 }
+
+/* 年 */
 
 .meta{
     color:#aaa;
     margin-bottom:0;
 }
 
+/* 投稿者 */
+
 .creator{
     margin-top:10px;
     color:#ccc;
+    font-size:15px;
+    line-height:1.5;
 }
 
 .creator a{
@@ -177,27 +180,53 @@ body{
     text-decoration:underline;
 }
 
-/* メーター */
+/* いいね */
+
+.like-area{
+    margin-top:16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    color:#ddd;
+}
+
+.like-count{
+    font-size:15px;
+}
+
+/* コメント数 */
+
+.comment-count{
+    margin-top:10px;
+    color:#aaa;
+    font-size:15px;
+}
+
+/* メーター全体 */
 
 .meter-area{
     border:1px solid rgba(255,255,255,0.12);
-    padding:18px;
+    padding:14px;
     min-width:0;
     width:100%;
     align-self:start;
+    border-radius:12px;
 }
+
+/* 各メーター */
 
 .meter{
     display:grid;
-    grid-template-columns:64px minmax(0,1fr) 64px;
+    grid-template-columns:54px minmax(0,1fr) 54px;
     align-items:center;
-    gap:8px;
-    margin-bottom:14px;
+    gap:6px;
+    margin-bottom:12px;
     min-width:0;
 }
 
 .meter-label{
-    font-size:15px;
+    font-size:14px;
     font-weight:700;
     color:#e8e8e8;
     white-space:nowrap;
@@ -206,6 +235,8 @@ body{
 .right-label{
     text-align:right;
 }
+
+/* メーターグラフィック */
 
 .meter-graphic{
     display:flex;
@@ -216,8 +247,8 @@ body{
 }
 
 .dot{
-    width:14px;
-    height:14px;
+    width:12px;
+    height:12px;
     border-radius:50%;
     border:2px solid #555;
     background:#0b0b0b;
@@ -230,6 +261,8 @@ body{
     flex:1;
     min-width:0;
 }
+
+/* レベル色 */
 
 .dot.active.level-1,
 .connector.active.level-1{
@@ -263,49 +296,56 @@ body{
 /* キーワード */
 
 .keyword-box{
-    margin-top:14px;
+    margin-top:12px;
     border-top:1px solid rgba(255,255,255,0.12);
-    padding-top:12px;
+    padding-top:10px;
 }
 
 .keyword-title{
     color:#6fa8dc;
-    font-size:15px;
+    font-size:14px;
     font-weight:700;
-    margin-bottom:6px;
+    margin-bottom:4px;
 }
 
 .keyword-text{
     color:#ddd;
-    font-size:15px;
-    line-height:1.6;
+    font-size:14px;
+    line-height:1.5;
     word-break:break-word;
 }
 
 /* 紹介文 */
 
 .description-wide{
-    margin-top:0;
-    padding-top:20px;
+    grid-column:1 / -1;
+    margin-top:4px;
+    padding-top:14px;
     border-top:1px solid rgba(255,255,255,0.1);
-    grid-column:1/-1;
     color:#ddd;
-    line-height:1.8;
+    line-height:1.6;
     word-break:break-word;
+    font-size:15px;
 }
+
+/* 空状態 */
 
 .empty{
     color:#777;
     font-size:28px;
 }
 
-/* スマホ対応 */
+/* タブレット */
+
+@media(max-width:1200px){
+    .album-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+/* スマホ */
 
 @media(max-width:900px){
-
-    .album-grid{
-    grid-template-columns:1fr;
-}
 
     body{
         padding:22px;
@@ -329,9 +369,12 @@ body{
         font-size:34px;
     }
 
+    .album-grid{
+        grid-template-columns:1fr;
+    }
+
     .album-card{
         grid-template-columns:1fr;
-        padding:20px;
     }
 
     .cover{
@@ -340,25 +383,11 @@ body{
     }
 
     .meter{
-        grid-template-columns:56px minmax(0,1fr) 56px;
-        gap:6px;
+        grid-template-columns:48px minmax(0,1fr) 48px;
     }
 
     .meter-label{
-        font-size:14px;
-    }
-
-    .dot{
-        width:12px;
-        height:12px;
-    }
-
-    .keyword-title{
-        font-size:14px;
-    }
-
-    .keyword-text{
-        font-size:14px;
+        font-size:13px;
     }
 }
 </style>
