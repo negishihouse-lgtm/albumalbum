@@ -1,1 +1,727 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Album Detail - Album Collection</title>
 
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+    background:#050505;
+    color:white;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    padding:40px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:40px;
+}
+
+.page-title{
+    font-size:42px;
+    font-weight:700;
+}
+
+.btn,.like-btn,.comment-btn,.delete-comment-btn{
+    background:#1e1e1e;
+    color:white;
+    border:1px solid rgba(255,255,255,0.15);
+    padding:13px 20px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.btn:hover,.like-btn:hover,.comment-btn:hover,.delete-comment-btn:hover{
+    background:#2a2a2a;
+}
+
+.like-btn.liked{
+    background:#6fa8dc;
+}
+
+.detail-wrap{
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.album-card{
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.12);
+    padding:30px;
+}
+
+.album-main{
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:32px;
+}
+
+.cover{
+    width:240px;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    background:#111;
+}
+
+.title{
+    font-size:38px;
+    font-weight:700;
+    line-height:1.2;
+    margin-bottom:8px;
+    word-break:break-word;
+}
+
+.artist{
+    font-size:28px;
+    color:#6fa8dc;
+    margin-bottom:16px;
+    word-break:break-word;
+}
+
+.meta{
+    color:#aaa;
+    margin-bottom:12px;
+}
+
+.creator{
+    color:#ccc;
+    margin-bottom:20px;
+}
+
+.creator a{
+    color:#6fa8dc;
+    text-decoration:none;
+}
+
+.creator a:hover{
+    text-decoration:underline;
+}
+
+.like-area{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#ddd;
+    margin-top:18px;
+}
+
+.section{
+    margin-top:30px;
+    padding-top:26px;
+    border-top:1px solid rgba(255,255,255,0.12);
+}
+
+.section-title{
+    color:#6fa8dc;
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:14px;
+}
+
+.description{
+    color:#ddd;
+    line-height:2;
+    word-break:break-word;
+}
+
+.keyword-tags{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.keyword-tag{
+    background:#111;
+    border:1px solid rgba(255,255,255,0.15);
+    color:#ddd;
+    padding:8px 12px;
+    border-radius:999px;
+    font-size:14px;
+}
+
+.meter-area{
+    border:1px solid rgba(255,255,255,0.12);
+    padding:24px;
+}
+
+.meter{
+    display:grid;
+    grid-template-columns:72px minmax(120px,1fr) 72px;
+    align-items:center;
+    gap:12px;
+    margin-bottom:19px;
+}
+
+.meter:last-child{
+    margin-bottom:0;
+}
+
+.meter-label{
+    font-size:18px;
+    font-weight:700;
+    color:#e8e8e8;
+    white-space:nowrap;
+}
+
+.right-label{ text-align:right; }
+
+.meter-graphic{
+    display:flex;
+    align-items:center;
+    width:100%;
+}
+
+.dot{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    border:2px solid #555;
+    background:#0b0b0b;
+    flex-shrink:0;
+}
+
+.connector{
+    height:3px;
+    background:#4a5158;
+    flex:1;
+    min-width:6px;
+}
+
+.dot.active.level-1,.connector.active.level-1{ background:#3f8ec7; border-color:#3f8ec7; }
+.dot.active.level-2,.connector.active.level-2{ background:#4d9bd0; border-color:#4d9bd0; }
+.dot.active.level-3,.connector.active.level-3{ background:#5fa7d8; border-color:#5fa7d8; }
+.dot.active.level-4,.connector.active.level-4{ background:#73b6e3; border-color:#73b6e3; }
+.dot.active.level-5{ background:#8bc8ef; border-color:#8bc8ef; }
+
+.comment-form{
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.comment-input{
+    flex:1;
+    padding:13px;
+    background:#111;
+    color:white;
+    border:1px solid rgba(255,255,255,0.15);
+    font-size:15px;
+}
+
+.comment-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.comment-item{
+    background:#111;
+    border:1px solid rgba(255,255,255,0.1);
+    padding:14px;
+}
+
+.comment-meta{
+    color:#888;
+    font-size:13px;
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.comment-text{
+    color:#ddd;
+    line-height:1.7;
+    word-break:break-word;
+}
+
+.delete-comment-btn{
+    padding:4px 8px;
+    font-size:12px;
+    background:#333;
+}
+
+.empty{
+    color:#777;
+    font-size:22px;
+}
+
+@media(max-width:800px){
+    body{ padding:22px; }
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:18px;
+    }
+
+    .page-title{ font-size:32px; }
+
+    .album-main{
+        grid-template-columns:1fr;
+    }
+
+    .cover{
+        width:100%;
+        max-width:320px;
+    }
+
+    .title{ font-size:31px; }
+    .artist{ font-size:23px; }
+
+    .comment-form{
+        flex-direction:column;
+    }
+
+    .comment-btn{
+        width:100%;
+    }
+
+    .meter{
+        grid-template-columns:68px minmax(100px,1fr) 68px;
+    }
+
+    .meter-label{ font-size:16px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <h1 class="page-title">Album Detail</h1>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn" onclick="location.href='./index.html'">
+            一覧へ戻る
+        </button>
+
+        <button id="mypageBtn" class="btn" style="display:none;">
+            マイページ
+        </button>
+    </div>
+</div>
+
+<div class="detail-wrap" id="detailWrap">
+    <div class="empty">読み込み中...</div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+    initializeFirestore,
+    collection,
+    doc,
+    getDoc,
+    onSnapshot,
+    query,
+    where,
+    setDoc,
+    deleteDoc,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+    measurementId: "G-3QFX3GDEXN"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling: true
+});
+
+const auth = getAuth(app);
+
+const detailWrap = document.getElementById("detailWrap");
+const mypageBtn = document.getElementById("mypageBtn");
+
+const params = new URLSearchParams(location.search);
+const albumId = params.get("id");
+
+let currentUser = null;
+let albumData = null;
+let allLikes = [];
+let allComments = [];
+
+onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+
+    if(user){
+        mypageBtn.style.display = "inline-block";
+        mypageBtn.onclick = () => {
+            location.href = `profile.html?uid=${user.uid}`;
+        };
+    } else {
+        mypageBtn.style.display = "none";
+    }
+
+    renderDetail();
+});
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function meter(left, right, value){
+    value = Number(value) || 0;
+    value = Math.max(0, Math.min(5, value));
+
+    let graphicHTML = "";
+
+    for(let i = 1; i <= 5; i++){
+        graphicHTML += `
+            <div class="dot level-${i} ${i <= value ? "active" : ""}"></div>
+        `;
+
+        if(i < 5){
+            graphicHTML += `
+                <div class="connector level-${i} ${i < value ? "active" : ""}"></div>
+            `;
+        }
+    }
+
+    return `
+        <div class="meter">
+            <div class="meter-label">${escapeHTML(left)}</div>
+            <div class="meter-graphic">${graphicHTML}</div>
+            <div class="meter-label right-label">${escapeHTML(right)}</div>
+        </div>
+    `;
+}
+
+function getLikeId(userId, albumId){
+    return `${userId}_${albumId}`;
+}
+
+function getLikeCount(){
+    return allLikes.filter(like => like.albumId === albumId).length;
+}
+
+function isLikedByMe(){
+    if(!currentUser) return false;
+
+    return allLikes.some(like =>
+        like.albumId === albumId &&
+        like.userId === currentUser.uid
+    );
+}
+
+async function toggleLike(){
+    if(!currentUser){
+        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
+        return;
+    }
+
+    const likeId = getLikeId(currentUser.uid, albumId);
+    const likeRef = doc(db, "likes", likeId);
+
+    if(isLikedByMe()){
+        await deleteDoc(likeRef);
+    } else {
+        await setDoc(likeRef, {
+            userId: currentUser.uid,
+            albumId: albumId,
+            createdAt: serverTimestamp()
+        });
+    }
+}
+
+window.toggleLike = toggleLike;
+
+async function addComment(){
+    if(!currentUser){
+        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
+        return;
+    }
+
+    const input = document.getElementById("commentInput");
+    const text = input.value.trim();
+
+    if(!text){
+        alert("コメントを入力してください");
+        return;
+    }
+
+    if(text.length > 200){
+        alert("コメントは200文字以内にしてください");
+        return;
+    }
+
+    await addDoc(collection(db, "comments"), {
+        albumId: albumId,
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        text: text,
+        createdAt: serverTimestamp()
+    });
+
+    input.value = "";
+}
+
+window.addComment = addComment;
+
+async function deleteComment(commentId){
+    if(!currentUser) return;
+
+    if(!confirm("このコメントを削除しますか？")){
+        return;
+    }
+
+    await deleteDoc(doc(db, "comments", commentId));
+}
+
+window.deleteComment = deleteComment;
+
+function getComments(){
+    return allComments
+        .filter(comment => comment.albumId === albumId)
+        .sort((a,b) => {
+            const aTime = a.createdAt?.seconds || 0;
+            const bTime = b.createdAt?.seconds || 0;
+            return aTime - bTime;
+        });
+}
+
+function renderKeywords(keywords){
+    const raw = String(keywords || "").trim();
+
+    if(!raw){
+        return `<div style="color:#777;">キーワードはありません</div>`;
+    }
+
+    const tags = raw
+        .split(/[、,\s]+/)
+        .map(tag => tag.trim())
+        .filter(Boolean);
+
+    return `
+        <div class="keyword-tags">
+            ${tags.map(tag => `
+                <span class="keyword-tag">#${escapeHTML(tag.replace(/^#/, ""))}</span>
+            `).join("")}
+        </div>
+    `;
+}
+
+function renderComments(){
+    const comments = getComments();
+
+    if(comments.length === 0){
+        return `<div style="color:#777;">まだコメントはありません</div>`;
+    }
+
+    return comments.map((comment) => {
+        const canDelete =
+            currentUser &&
+            currentUser.uid === comment.userId;
+
+        return `
+            <div class="comment-item">
+                <div class="comment-meta">
+                    <span>${escapeHTML(comment.userEmail || "匿名ユーザー")}</span>
+
+                    ${
+                        canDelete
+                        ? `<button class="delete-comment-btn"
+                                   onclick="deleteComment('${escapeHTML(comment.id)}')">
+                                削除
+                           </button>`
+                        : ""
+                    }
+                </div>
+
+                <div class="comment-text">
+                    ${escapeHTML(comment.text || "")}
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+function renderDetail(){
+    if(!albumId){
+        detailWrap.innerHTML = `<div class="empty">投稿IDがありません</div>`;
+        return;
+    }
+
+    if(!albumData){
+        return;
+    }
+
+    const liked = isLikedByMe();
+    const likeCount = getLikeCount();
+
+    detailWrap.innerHTML = `
+        <div class="album-card">
+
+            <div class="album-main">
+                <div>
+                    <img class="cover"
+                         src="${escapeHTML(albumData.cover || "")}"
+                         alt="">
+                </div>
+
+                <div>
+                    <div class="title">
+                        ${escapeHTML(albumData.title || "")}
+                    </div>
+
+                    <div class="artist">
+                        ${escapeHTML(albumData.artist || "")}
+                    </div>
+
+                    <div class="meta">
+                        ${escapeHTML(albumData.year || "")}
+                    </div>
+
+                    <div class="creator">
+                        投稿者：
+                        <a href="profile.html?uid=${escapeHTML(albumData.userId || "")}">
+                            ${escapeHTML(
+                                albumData.userName ||
+                                albumData.userEmail ||
+                                "匿名ユーザー"
+                            )}
+                        </a>
+                    </div>
+
+                    <div class="like-area">
+                        <button class="like-btn ${liked ? "liked" : ""}"
+                                onclick="toggleLike()">
+                            ${liked ? "♥ いいね済み" : "♡ いいね"}
+                        </button>
+
+                        <span>${likeCount}件</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">レビュー</div>
+                <div class="description">
+                    ${escapeHTML(albumData.desc || "本文はありません")}
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">キーワード</div>
+                ${renderKeywords(albumData.keywords)}
+            </div>
+
+            <div class="section">
+                <div class="section-title">評価</div>
+
+                <div class="meter-area">
+                    ${meter("暗い", "明るい", albumData.darkness)}
+                    ${meter("静か", "激しい", albumData.intense)}
+                    ${meter("シンプル", "複雑", albumData.complex)}
+                    ${meter("絶望", "希望", albumData.hope)}
+                    ${meter("個人", "世界", albumData.world)}
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    コメント ${getComments().length}件
+                </div>
+
+                <div class="comment-form">
+                    <input
+                        id="commentInput"
+                        class="comment-input"
+                        type="text"
+                        maxlength="200"
+                        placeholder="コメントを書く"
+                    >
+
+                    <button class="comment-btn" onclick="addComment()">
+                        送信
+                    </button>
+                </div>
+
+                <div class="comment-list">
+                    ${renderComments()}
+                </div>
+            </div>
+
+        </div>
+    `;
+}
+
+async function loadAlbum(){
+    if(!albumId){
+        renderDetail();
+        return;
+    }
+
+    const albumRef = doc(db, "albums", albumId);
+    const albumSnap = await getDoc(albumRef);
+
+    if(!albumSnap.exists()){
+        detailWrap.innerHTML = `<div class="empty">投稿が見つかりません</div>`;
+        return;
+    }
+
+    albumData = albumSnap.data();
+    renderDetail();
+}
+
+onSnapshot(collection(db, "likes"), (snapshot) => {
+    allLikes = [];
+
+    snapshot.forEach((docSnap) => {
+        allLikes.push(docSnap.data());
+    });
+
+    renderDetail();
+});
+
+const commentsQuery = query(
+    collection(db, "comments"),
+    where("albumId", "==", albumId || "__none__")
+);
+
+onSnapshot(commentsQuery, (snapshot) => {
+    allComments = [];
+
+    snapshot.forEach((docSnap) => {
+        allComments.push({
+            id: docSnap.id,
+            ...docSnap.data()
+        });
+    });
+
+    renderDetail();
+});
+
+loadAlbum();
+
+</script>
+
+</body>
+</html>
