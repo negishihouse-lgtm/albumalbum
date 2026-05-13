@@ -6,20 +6,59 @@
 <title>Profile</title>
 
 <style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
     background:#050505;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+.wrapper{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:280px;
+    background:#111;
+    border-right:1px solid rgba(255,255,255,0.08);
+    padding:24px;
+}
+
+.sidebar-title{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.side-menu button{
+    width:100%;
+    padding:13px;
+    margin-bottom:10px;
+    border:none;
+    background:#1c1c1c;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    text-align:left;
+}
+
+.side-menu button:hover{
+    background:#2a2a2a;
+}
+
+.side-menu .active{
+    background:#6fa8dc;
+}
+
+.main{
+    flex:1;
     padding:40px;
-}
-
-a{
-    color:#6fa8dc;
-    text-decoration:none;
-}
-
-a:hover{
-    text-decoration:underline;
 }
 
 .profile-header{
@@ -94,25 +133,60 @@ a:hover{
     color:#ddd;
     line-height:1.8;
 }
+
+@media(max-width:900px){
+    .wrapper{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    .main{
+        padding:24px;
+    }
+}
 </style>
 </head>
+
 <body>
 
-<p><a href="index.html">← ホームへ戻る</a></p>
+<div class="wrapper">
 
-<div class="profile-header">
-    <div class="profile-name" id="profileName">読み込み中...</div>
-    <div class="profile-email" id="profileEmail"></div>
+    <div class="sidebar">
+        <div class="sidebar-title">Album Collection</div>
 
-    <div class="follow-stats">
-        <span id="followingCount">フォロー中 0</span>
-        <span id="followerCount">フォロワー 0</span>
+        <div class="side-menu">
+            <button onclick="location.href='./index.html'">ホーム</button>
+            <button onclick="location.href='./Album%20Editor.html'">投稿作成・編集</button>
+            <button class="active">マイページ</button>
+            <button onclick="location.href='./profile-edit.html'">プロフィール編集</button>
+            <button onclick="location.href='./login.html'">ログイン / 新規登録</button>
+        </div>
     </div>
 
-    <button class="follow-btn" id="followBtn">フォロー</button>
-</div>
+    <div class="main">
 
-<div class="album-grid" id="albumGrid"></div>
+        <div class="profile-header">
+            <div class="profile-name" id="profileName">読み込み中...</div>
+            <div class="profile-email" id="profileEmail"></div>
+
+            <div class="follow-stats">
+                <span id="followingCount">フォロー中 0</span>
+                <span id="followerCount">フォロワー 0</span>
+            </div>
+
+            <button class="follow-btn" id="followBtn">フォロー</button>
+        </div>
+
+        <div class="album-grid" id="albumGrid"></div>
+
+    </div>
+
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -155,7 +229,7 @@ const db = initializeFirestore(app, {
 const auth = getAuth(app);
 
 const params = new URLSearchParams(location.search);
-const uid = params.get("uid");
+let uid = params.get("uid");
 
 const profileName = document.getElementById("profileName");
 const profileEmail = document.getElementById("profileEmail");
@@ -168,10 +242,13 @@ let currentUser = null;
 let followDocId = null;
 let isFollowing = false;
 
-if (!uid) {
-  profileName.textContent = "ユーザーが指定されていません";
-  followBtn.style.display = "none";
-  throw new Error("uid is missing");
+function escapeHTML(value){
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 async function loadProfile() {
@@ -222,10 +299,10 @@ async function loadAlbums() {
       card.className = "album-card";
 
       card.innerHTML = `
-        <img class="cover" src="${album.cover || ""}" alt="">
-        <div class="title">${album.title || ""}</div>
-        <div class="artist">${album.artist || ""}</div>
-        <div class="description">${album.desc || ""}</div>
+        <img class="cover" src="${escapeHTML(album.cover || "")}" alt="">
+        <div class="title">${escapeHTML(album.title || "")}</div>
+        <div class="artist">${escapeHTML(album.artist || "")}</div>
+        <div class="description">${escapeHTML(album.desc || "")}</div>
       `;
 
       albumGrid.appendChild(card);
@@ -259,40 +336,6 @@ async function loadFollowCounts() {
   }
 }
 
-onAuthStateChanged(auth, async (user) => {
-  currentUser = user;
-
-  if (!currentUser) {
-    followBtn.style.display = "inline-block";
-    followBtn.textContent = "ログインしてフォロー";
-    followBtn.onclick = () => {
-      location.href =
-        `login.html?redirect=${encodeURIComponent(location.href)}`;
-    };
-    return;
-  }
-
-  if (currentUser.uid === uid) {
-    followBtn.style.display = "none";
-    return;
-  }
-
-  followBtn.style.display = "inline-block";
-  followBtn.textContent = "フォロー";
-
-  followBtn.onclick = async () => {
-    console.log("follow button clicked");
-
-    if (isFollowing) {
-      await unfollowUser();
-    } else {
-      await followUser();
-    }
-  };
-
-  await checkFollowStatus();
-});
-
 async function checkFollowStatus() {
   try {
     const followsQuery = query(
@@ -321,8 +364,6 @@ async function checkFollowStatus() {
 }
 
 async function followUser() {
-  console.log("followUser called");
-
   if (!currentUser) {
     alert("ログインが必要です");
     location.href =
@@ -391,9 +432,52 @@ async function unfollowUser() {
   }
 }
 
-await loadProfile();
-await loadAlbums();
-await loadFollowCounts();
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+
+  if (!uid && currentUser) {
+    uid = currentUser.uid;
+  }
+
+  if (!uid) {
+    profileName.textContent = "ユーザーが指定されていません";
+    albumGrid.innerHTML = "<p>ログインしていないため、マイページを表示できません。</p>";
+    followBtn.style.display = "none";
+    return;
+  }
+
+  await loadProfile();
+  await loadAlbums();
+  await loadFollowCounts();
+
+  if (!currentUser) {
+    followBtn.style.display = "inline-block";
+    followBtn.textContent = "ログインしてフォロー";
+    followBtn.onclick = () => {
+      location.href =
+        `login.html?redirect=${encodeURIComponent(location.href)}`;
+    };
+    return;
+  }
+
+  if (currentUser.uid === uid) {
+    followBtn.style.display = "none";
+    return;
+  }
+
+  followBtn.style.display = "inline-block";
+  followBtn.textContent = "フォロー";
+
+  followBtn.onclick = async () => {
+    if (isFollowing) {
+      await unfollowUser();
+    } else {
+      await followUser();
+    }
+  };
+
+  await checkFollowStatus();
+});
 </script>
 
 </body>
