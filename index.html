@@ -616,77 +616,79 @@ onSnapshot(q, (snapshot)=>{
         const albumId = docSnap.id;
 
         albumGrid.innerHTML += `
-        <div class="album-card"
-             onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
+       <div class="album-card"
+     onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
 
-            <div class="album-info">
-                <img class="cover"
-                     src="${escapeHTML(a.cover || "")}"
-                     alt="">
+    <!-- 左側 -->
+    <div class="album-info">
+        <img class="cover"
+             src="${escapeHTML(a.cover || "")}"
+             alt="">
 
-                <div class="title">
-                    ${escapeHTML(a.title || "")}
-                </div>
-
-                <div class="artist">
-                    ${escapeHTML(a.artist || "")}
-                </div>
-
-                <div class="meta">
-                    ${escapeHTML(a.year || "")}
-                </div>
-
-                <div class="creator">
-                    投稿者：
-                    <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
-                       onclick="event.stopPropagation();">
-                        ${escapeHTML(
-                            a.userName ||
-                            a.userEmail ||
-                            "匿名ユーザー"
-                        )}
-                    </a>
-                </div>
-
-                <div class="like-area"
-                     data-like-area
-                     data-album-id="${escapeHTML(albumId)}">
-                    <button class="like-btn"
-                            onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
-                        ♡ いいね
-                    </button>
-                    <span class="like-count">0件</span>
-                </div>
-
-                <div class="comment-count"
-                     data-comment-count
-                     data-album-id="${escapeHTML(albumId)}">
-                    コメント 0件
-                </div>
-
-                <div class="description">
-                    ${escapeHTML(a.desc || "")}
-                </div>
-            </div>
-
-            <div class="album-analysis">
-                <div class="meter-area">
-                    ${meter("暗い", "明るい", a.darkness)}
-                    ${meter("静か", "激しい", a.intense)}
-                    ${meter("シンプル", "複雑", a.complex)}
-                    ${meter("絶望", "希望", a.hope)}
-                    ${meter("個人", "世界", a.world)}
-
-                    <div class="keyword-box">
-                        <div class="keyword-title">キーワード</div>
-                        <div class="keyword-text">
-                            ${escapeHTML(a.keywords || "")}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="title">
+            ${escapeHTML(a.title || "")}
         </div>
+
+        <div class="artist">
+            ${escapeHTML(a.artist || "")}
+        </div>
+
+        <div class="meta">
+            ${escapeHTML(a.year || "")}
+        </div>
+
+        <div class="creator">
+            投稿者：
+            <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
+               onclick="event.stopPropagation();">
+                ${escapeHTML(
+                    a.userName ||
+                    a.userEmail ||
+                    "匿名ユーザー"
+                )}
+            </a>
+        </div>
+
+        <div class="like-area"
+             data-like-area
+             data-album-id="${escapeHTML(albumId)}">
+            <button class="like-btn"
+                    onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
+                ♡ いいね
+            </button>
+            <span class="like-count">0件</span>
+        </div>
+
+        <div class="comment-count"
+             data-comment-count
+             data-album-id="${escapeHTML(albumId)}">
+            コメント 0件
+        </div>
+    </div>
+
+    <!-- 右側 -->
+    <div class="album-analysis">
+        <div class="meter-area">
+            ${meter("暗い", "明るい", a.darkness)}
+            ${meter("静か", "激しい", a.intense)}
+            ${meter("シンプル", "複雑", a.complex)}
+            ${meter("絶望", "希望", a.hope)}
+            ${meter("個人", "世界", a.world)}
+
+            <div class="keyword-box">
+                <div class="keyword-title">キーワード</div>
+                <div class="keyword-text">
+                    ${escapeHTML(a.keywords || "")}
+                </div>
+            </div>
+
+            <div class="description">
+                ${escapeHTML(a.desc || "")}
+            </div>
+        </div>
+    </div>
+
+</div>
         `;
     });
 
