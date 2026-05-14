@@ -393,38 +393,6 @@ body{
     word-break:break-word;
 }
 
-/* ===== コメント表示 ===== */
-.comment-preview{
-    margin-top:12px;
-    padding-top:12px;
-    border-top:1px solid rgba(255,255,255,0.1);
-}
-
-.comment-preview-title{
-    color:#6fa8dc;
-    font-size:13px;
-    font-weight:700;
-    margin-bottom:8px;
-}
-
-.comment-item{
-    color:#ccc;
-    font-size:13px;
-    line-height:1.6;
-    margin-bottom:6px;
-    word-break:break-word;
-}
-
-.comment-user{
-    color:#aaa;
-    font-weight:700;
-}
-
-.no-comment{
-    color:#777;
-    font-size:13px;
-}
-
 .empty{
     color:#777;
     font-size:24px;
@@ -583,21 +551,6 @@ body{
         line-height:1.6;
         margin-top:10px;
         padding-top:10px;
-    }
-
-    .comment-preview{
-        margin-top:10px;
-        padding-top:10px;
-    }
-
-    .comment-preview-title{
-        font-size:12px;
-        margin-bottom:6px;
-    }
-
-    .comment-item,
-    .no-comment{
-        font-size:12px;
     }
 
     .fab{
@@ -820,36 +773,6 @@ function getCommentCount(albumId){
     return allComments.filter(comment => comment.albumId === albumId).length;
 }
 
-function getCommentsForAlbum(albumId){
-    return allComments
-        .filter(comment => comment.albumId === albumId)
-        .sort((a, b) => {
-            const aTime = a.createdAt?.seconds || 0;
-            const bTime = b.createdAt?.seconds || 0;
-            return bTime - aTime;
-        })
-        .slice(0, 3);
-}
-
-function getCommentText(comment){
-    return (
-        comment.text ||
-        comment.comment ||
-        comment.body ||
-        comment.content ||
-        ""
-    );
-}
-
-function getCommentUser(comment){
-    return (
-        comment.userName ||
-        comment.userEmail ||
-        comment.displayName ||
-        "匿名"
-    );
-}
-
 function isLikedByMe(albumId){
     if(!currentUser) return false;
 
@@ -913,31 +836,6 @@ function updateCommentDisplays(){
         const count = getCommentCount(albumId);
         countEl.textContent = `コメント ${count}件`;
     });
-}
-
-function renderComments(albumId){
-    const comments = getCommentsForAlbum(albumId);
-
-    if(comments.length === 0){
-        return `
-            <div class="comment-preview">
-                <div class="comment-preview-title">コメント</div>
-                <div class="no-comment">まだコメントはありません</div>
-            </div>
-        `;
-    }
-
-    return `
-        <div class="comment-preview">
-            <div class="comment-preview-title">コメント</div>
-            ${comments.map(comment => `
-                <div class="comment-item">
-                    <span class="comment-user">${escapeHTML(getCommentUser(comment))}：</span>
-                    ${escapeHTML(getCommentText(comment))}
-                </div>
-            `).join("")}
-        </div>
-    `;
 }
 
 function renderAlbums(){
@@ -1027,8 +925,6 @@ function renderAlbums(){
     <div class="description">
         ${escapeHTML(album.desc || "")}
     </div>
-
-    ${renderComments(albumId)}
 
 </div>
         `;
@@ -1121,7 +1017,7 @@ function listenComments(){
             });
         });
 
-        renderAlbums();
+        updateCommentDisplays();
 
     }, (error) => {
         console.error("コメント取得失敗:", error);
