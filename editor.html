@@ -17,6 +17,7 @@ body{
     background:#0b0b0b;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    padding-bottom:100px;
 }
 
 .wrapper{
@@ -117,7 +118,8 @@ body{
     word-break:break-word;
 }
 
-.delete-btn, .edit-btn{
+.delete-btn,
+.edit-btn{
     margin-top:8px;
     background:#333;
     border:none;
@@ -215,14 +217,6 @@ button:disabled{
     cursor:not-allowed;
 }
 
-.auth-btn{
-    background:#333;
-}
-
-.logout-btn{
-    background:#555;
-}
-
 .view-btn{
     background:#6fa8dc;
 }
@@ -235,45 +229,102 @@ button:disabled{
     background:#444;
 }
 
-.auth-box{
-    border-bottom:1px solid rgba(255,255,255,0.1);
-    margin-bottom:26px;
-    padding-bottom:26px;
-}
-
 .login-status{
-    margin:12px 0;
+    margin:0 0 24px;
     color:#aaa;
     font-size:14px;
     line-height:1.6;
     word-break:break-word;
+    padding:14px;
+    background:#0f0f0f;
+    border:1px solid rgba(255,255,255,0.08);
 }
 
 .notice{
     color:#aaa;
     font-size:13px;
     line-height:1.7;
-    margin-top:12px;
+    margin-bottom:24px;
+}
+
+/* ===== スマホ用下部タブバー ===== */
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#999;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:#6fa8dc;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
 }
 
 @media(max-width:900px){
+    body{
+        padding-bottom:110px;
+    }
+
     .wrapper{
         flex-direction:column;
     }
 
     .sidebar{
         width:100%;
-        max-height:420px;
+        max-height:260px;
         border-right:none;
         border-bottom:1px solid rgba(255,255,255,0.08);
     }
 
+    .side-menu{
+        display:none;
+    }
+
+    .sidebar-header{
+        padding:18px;
+    }
+
+    .sidebar-title{
+        font-size:24px;
+    }
+
+    .album-list{
+        padding:12px;
+    }
+
     .main{
-        padding:22px;
+        padding:18px;
     }
 
     .form-area{
         width:100%;
+        padding:22px;
+    }
+
+    .mobile-tabbar{
+        display:flex;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:#0b0b0b;
+        border-top:1px solid rgba(255,255,255,0.1);
+        z-index:999;
+        padding-bottom:env(safe-area-inset-bottom);
     }
 }
 </style>
@@ -292,7 +343,7 @@ button:disabled{
 
         <div class="side-menu">
             <button onclick="location.href='./index.html'">ホーム</button>
-            <button class="active">投稿作成・編集</button>
+            <button class="active">投稿する</button>
             <button id="myPageBtn">マイページ</button>
             <button onclick="location.href='./profile-edit.html'">プロフィール編集</button>
             <button onclick="location.href='./login.html'">ログイン / 新規登録</button>
@@ -306,31 +357,13 @@ button:disabled{
 
         <div class="form-area">
 
-            <div class="auth-box">
-                <div class="section-title">Login</div>
-
-                <div class="input-group">
-                    <label>メールアドレス</label>
-                    <input id="emailInput" type="email" autocomplete="email">
-                </div>
-
-                <div class="input-group">
-                    <label>パスワード</label>
-                    <input id="passwordInput" type="password" autocomplete="current-password">
-                </div>
-
-                <button class="auth-btn" id="signupBtn">新規登録</button>
-                <button class="auth-btn" id="loginBtn">ログイン</button>
-                <button class="logout-btn" id="logoutBtn">ログアウト</button>
-
-                <div class="login-status" id="loginStatus">未ログイン</div>
-
-                <div class="notice">
-                    ログイン中のユーザーだけが、アルバムを保存・編集・削除できます。
-                </div>
-            </div>
-
             <div class="section-title">Album Form</div>
+
+            <div class="login-status" id="loginStatus">未ログイン</div>
+
+            <div class="notice">
+                投稿・編集・削除にはログインが必要です。未ログインの場合は、ログインページからログインしてください。
+            </div>
 
             <div class="input-group">
                 <label>ジャケット画像URL</label>
@@ -346,7 +379,6 @@ button:disabled{
                 <label>アーティスト名</label>
                 <input id="artistInput" type="text">
             </div>
-
 
             <div class="input-group">
                 <label>紹介文</label>
@@ -428,6 +460,34 @@ button:disabled{
 
 </div>
 
+<!-- スマホ用下部タブバー -->
+<nav class="mobile-tabbar">
+    <a href="index.html">
+        <div class="icon">🏠</div>
+        <div>ホーム</div>
+    </a>
+
+    <a href="search.html">
+        <div class="icon">🔍</div>
+        <div>さがす</div>
+    </a>
+
+    <a href="editor.html" class="active">
+        <div class="icon">➕</div>
+        <div>投稿</div>
+    </a>
+
+    <a href="notifications.html">
+        <div class="icon">🔔</div>
+        <div>通知</div>
+    </a>
+
+    <a id="mobileMyPageLink" href="login.html">
+        <div class="icon">👤</div>
+        <div>マイページ</div>
+    </a>
+</nav>
+
 <script type="module">
 
 import {
@@ -449,9 +509,6 @@ import {
 
 import {
     getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
@@ -474,14 +531,10 @@ const auth = getAuth(app);
 
 const albumList = document.getElementById("albumList");
 
-const emailInput = document.getElementById("emailInput");
-const passwordInput = document.getElementById("passwordInput");
-const signupBtn = document.getElementById("signupBtn");
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
 const loginStatus = document.getElementById("loginStatus");
 const sidebarLoginStatus = document.getElementById("sidebarLoginStatus");
 const myPageBtn = document.getElementById("myPageBtn");
+const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 
 const coverInput = document.getElementById("coverInput");
 const titleInput = document.getElementById("titleInput");
@@ -547,7 +600,6 @@ function getFormData(){
         cover: coverInput.value.trim(),
         title: titleInput.value.trim(),
         artist: artistInput.value.trim(),
-       
         desc: descText,
         keywords: keywordsInput.value.trim(),
         isPublic: isPublicInput.value === "true",
@@ -564,7 +616,6 @@ function setFormData(album){
     coverInput.value = album.cover || "";
     titleInput.value = album.title || "";
     artistInput.value = album.artist || "";
-   
     descInput.value = (album.desc || "").slice(0, 200);
     keywordsInput.value = album.keywords || "";
     isPublicInput.value = album.isPublic === false ? "false" : "true";
@@ -584,7 +635,6 @@ function clearForm(){
     coverInput.value = "";
     titleInput.value = "";
     artistInput.value = "";
-    
     descInput.value = "";
     keywordsInput.value = "";
     isPublicInput.value = "true";
@@ -601,47 +651,13 @@ function clearForm(){
 
 clearBtn.addEventListener("click", clearForm);
 
-signupBtn.addEventListener("click", async () => {
-    try {
-        await createUserWithEmailAndPassword(
-            auth,
-            emailInput.value.trim(),
-            passwordInput.value
-        );
-        alert("登録しました");
-    } catch (e) {
-        alert(e.message);
-    }
-});
-
-loginBtn.addEventListener("click", async () => {
-    try {
-        await signInWithEmailAndPassword(
-            auth,
-            emailInput.value.trim(),
-            passwordInput.value
-        );
-        alert("ログインしました");
-    } catch (e) {
-        alert(e.message);
-    }
-});
-
-logoutBtn.addEventListener("click", async () => {
-    try {
-        await signOut(auth);
-        clearForm();
-    } catch (e) {
-        alert(e.message);
-    }
-});
-
 saveBtn.addEventListener("click", async () => {
     try {
         const user = auth.currentUser;
 
         if(!user){
-            alert("ログインしてください");
+            alert("ログインしてください。ログインページに移動します。");
+            location.href = `./login.html?redirect=${encodeURIComponent(location.href)}`;
             return;
         }
 
@@ -679,7 +695,11 @@ function listenMyAlbums(user){
     albumList.innerHTML = "";
 
     if(!user){
-        albumList.innerHTML = `<div style="color:#777;padding:10px;line-height:1.7;">ログインすると、自分のアルバム一覧が表示されます。</div>`;
+        albumList.innerHTML = `
+            <div style="color:#777;padding:10px;line-height:1.7;">
+                ログインすると、自分のアルバム一覧が表示されます。
+            </div>
+        `;
         return;
     }
 
@@ -692,7 +712,11 @@ function listenMyAlbums(user){
         albumList.innerHTML = "";
 
         if(snapshot.empty){
-            albumList.innerHTML = `<div style="color:#777;padding:10px;">保存されたアルバムがありません</div>`;
+            albumList.innerHTML = `
+                <div style="color:#777;padding:10px;">
+                    保存されたアルバムがありません
+                </div>
+            `;
             return;
         }
 
@@ -741,7 +765,11 @@ function listenMyAlbums(user){
             albumList.appendChild(card);
         });
     }, (error) => {
-        albumList.innerHTML = `<div style="color:#ff7777;padding:10px;line-height:1.7;">読み込みエラー：${escapeHTML(error.message)}</div>`;
+        albumList.innerHTML = `
+            <div style="color:#ff7777;padding:10px;line-height:1.7;">
+                読み込みエラー：${escapeHTML(error.message)}
+            </div>
+        `;
     });
 }
 
@@ -749,7 +777,6 @@ myPageBtn.addEventListener("click", () => {
     const user = auth.currentUser;
 
     if(!user){
-        alert("ログインするとマイページを開けます");
         location.href = "./login.html";
         return;
     }
@@ -763,14 +790,22 @@ onAuthStateChanged(auth, (user) => {
         sidebarLoginStatus.textContent = `ログイン中: ${user.email}`;
         saveBtn.disabled = false;
         clearBtn.disabled = false;
-        logoutBtn.disabled = false;
+
+        if(mobileMyPageLink){
+            mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+        }
+
         listenMyAlbums(user);
     }else{
-        loginStatus.textContent = "未ログイン";
+        loginStatus.textContent = "未ログイン：投稿するにはログインページからログインしてください。";
         sidebarLoginStatus.textContent = "未ログイン";
         saveBtn.disabled = true;
         clearBtn.disabled = true;
-        logoutBtn.disabled = true;
+
+        if(mobileMyPageLink){
+            mobileMyPageLink.href = "login.html";
+        }
+
         listenMyAlbums(null);
     }
 });
