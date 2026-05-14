@@ -17,7 +17,6 @@ body{
     background:#0b0b0b;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    padding-bottom:100px;
 }
 
 .wrapper{
@@ -25,11 +24,17 @@ body{
     min-height:100vh;
 }
 
+/* =====================
+   PC Sidebar
+===================== */
+
 .sidebar{
-    width:320px;
+    width:300px;
     background:#111;
     border-right:1px solid rgba(255,255,255,0.08);
-    overflow-y:auto;
+    min-height:100vh;
+    position:sticky;
+    top:0;
 }
 
 .sidebar-header{
@@ -52,7 +57,6 @@ body{
 
 .side-menu{
     padding:15px;
-    border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
 .side-menu button{
@@ -65,6 +69,7 @@ body{
     cursor:pointer;
     font-size:15px;
     text-align:left;
+    border-radius:10px;
 }
 
 .side-menu button:hover{
@@ -75,65 +80,9 @@ body{
     background:#6fa8dc;
 }
 
-.album-list{
-    padding:15px;
-}
-
-.album-card{
-    display:flex;
-    gap:15px;
-    padding:12px;
-    border:1px solid rgba(255,255,255,0.08);
-    margin-bottom:12px;
-    cursor:pointer;
-    background:#151515;
-}
-
-.album-card:hover{
-    background:#1d1d1d;
-}
-
-.album-thumb{
-    width:70px;
-    height:70px;
-    object-fit:cover;
-    background:#222;
-}
-
-.album-info{
-    flex:1;
-    min-width:0;
-}
-
-.album-name{
-    font-size:16px;
-    font-weight:700;
-    margin-bottom:6px;
-    word-break:break-word;
-}
-
-.album-artist{
-    color:#aaa;
-    font-size:14px;
-    word-break:break-word;
-}
-
-.delete-btn,
-.edit-btn{
-    margin-top:8px;
-    background:#333;
-    border:none;
-    color:white;
-    padding:6px 10px;
-    cursor:pointer;
-    margin-right:5px;
-    width:auto;
-    font-size:13px;
-}
-
-.edit-btn{
-    background:#555;
-}
+/* =====================
+   Main
+===================== */
 
 .main{
     flex:1;
@@ -141,10 +90,40 @@ body{
 }
 
 .form-area{
-    width:520px;
+    width:560px;
+    max-width:100%;
     background:#151515;
     padding:30px;
     border:1px solid rgba(255,255,255,0.1);
+    border-radius:18px;
+}
+
+.page-title{
+    font-size:28px;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.page-subtitle{
+    color:#aaa;
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:24px;
+}
+
+.mode-badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#222;
+    color:#ddd;
+    font-size:13px;
+    margin-bottom:18px;
+}
+
+.mode-badge.edit{
+    background:#315b7a;
+    color:white;
 }
 
 .section-title{
@@ -161,6 +140,7 @@ body{
     display:block;
     margin-bottom:8px;
     color:#aaa;
+    font-size:14px;
 }
 
 input,
@@ -172,6 +152,14 @@ select{
     border:1px solid #333;
     color:white;
     font-size:15px;
+    border-radius:10px;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    outline:none;
+    border-color:#6fa8dc;
 }
 
 textarea{
@@ -200,6 +188,7 @@ textarea{
     justify-content:space-between;
     margin-bottom:8px;
     color:#aaa;
+    font-size:14px;
 }
 
 button{
@@ -210,6 +199,7 @@ button{
     cursor:pointer;
     color:white;
     font-size:16px;
+    border-radius:12px;
 }
 
 button:disabled{
@@ -229,80 +219,98 @@ button:disabled{
     background:#444;
 }
 
+.profile-btn{
+    background:#333;
+}
+
 .login-status{
-    margin:0 0 24px;
+    margin:12px 0 22px;
     color:#aaa;
     font-size:14px;
     line-height:1.6;
     word-break:break-word;
-    padding:14px;
-    background:#0f0f0f;
-    border:1px solid rgba(255,255,255,0.08);
 }
 
 .notice{
     color:#aaa;
     font-size:13px;
     line-height:1.7;
-    margin-bottom:24px;
+    margin-bottom:22px;
+    padding:14px;
+    background:#101010;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
 }
 
-/* ===== スマホ用下部タブバー ===== */
-.mobile-tabbar{
+.error-box{
+    display:none;
+    color:#ff9999;
+    background:#241111;
+    border:1px solid rgba(255,120,120,0.3);
+    padding:14px;
+    border-radius:12px;
+    margin-bottom:18px;
+    line-height:1.7;
+    font-size:14px;
+}
+
+.loading-box{
+    color:#aaa;
+    background:#101010;
+    border:1px solid rgba(255,255,255,0.08);
+    padding:14px;
+    border-radius:12px;
+    margin-bottom:18px;
+    line-height:1.7;
+    font-size:14px;
+}
+
+/* =====================
+   Floating Post Button
+===================== */
+
+.floating-post-btn{
+    position:fixed;
+    right:28px;
+    bottom:28px;
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    background:#6fa8dc;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    font-weight:300;
+    text-decoration:none;
+    box-shadow:0 12px 30px rgba(0,0,0,0.45);
+    z-index:50;
+}
+
+/* =====================
+   Mobile Bottom Tab
+===================== */
+
+.bottom-tab{
     display:none;
 }
 
-.mobile-tabbar a{
-    color:#999;
-    text-decoration:none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    font-size:11px;
-    flex:1;
-}
-
-.mobile-tabbar a.active{
-    color:#6fa8dc;
-}
-
-.mobile-tabbar .icon{
-    font-size:22px;
-    line-height:1;
-}
+/* =====================
+   Mobile
+===================== */
 
 @media(max-width:900px){
     body{
-        padding-bottom:110px;
+        padding-bottom:86px;
     }
 
     .wrapper{
-        flex-direction:column;
+        display:block;
     }
 
     .sidebar{
-        width:100%;
-        max-height:260px;
-        border-right:none;
-        border-bottom:1px solid rgba(255,255,255,0.08);
-    }
-
-    .side-menu{
         display:none;
-    }
-
-    .sidebar-header{
-        padding:18px;
-    }
-
-    .sidebar-title{
-        font-size:24px;
-    }
-
-    .album-list{
-        padding:12px;
     }
 
     .main{
@@ -312,19 +320,59 @@ button:disabled{
     .form-area{
         width:100%;
         padding:22px;
+        border-radius:16px;
     }
 
-    .mobile-tabbar{
-        display:flex;
+    .page-title{
+        font-size:24px;
+    }
+
+    .floating-post-btn{
+        right:18px;
+        bottom:86px;
+        width:54px;
+        height:54px;
+        font-size:32px;
+    }
+
+    .bottom-tab{
         position:fixed;
         left:0;
         right:0;
         bottom:0;
-        height:72px;
-        background:#0b0b0b;
+        height:68px;
+        background:#111;
         border-top:1px solid rgba(255,255,255,0.1);
-        z-index:999;
-        padding-bottom:env(safe-area-inset-bottom);
+        display:flex;
+        justify-content:space-around;
+        align-items:center;
+        z-index:100;
+    }
+
+    .bottom-tab button{
+        width:auto;
+        flex:1;
+        height:68px;
+        margin:0;
+        padding:6px 0;
+        background:transparent;
+        color:#aaa;
+        border-radius:0;
+        font-size:11px;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:4px;
+    }
+
+    .bottom-tab button.active{
+        color:#6fa8dc;
+    }
+
+    .tab-icon{
+        font-size:20px;
+        line-height:1;
     }
 }
 </style>
@@ -334,8 +382,7 @@ button:disabled{
 
 <div class="wrapper">
 
-    <div class="sidebar">
-
+    <aside class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-title">Album Collection</div>
             <div class="login-status-sidebar" id="sidebarLoginStatus">未ログイン</div>
@@ -343,41 +390,54 @@ button:disabled{
 
         <div class="side-menu">
             <button onclick="location.href='./index.html'">ホーム</button>
-            <button class="active">投稿する</button>
+            <button onclick="location.href='./search.html'">さがす</button>
+            <button class="active" onclick="location.href='./editor.html'">投稿作成</button>
+            <button onclick="location.href='./notifications.html'">通知</button>
             <button id="myPageBtn">マイページ</button>
             <button onclick="location.href='./profile-edit.html'">プロフィール編集</button>
             <button onclick="location.href='./login.html'">ログイン / 新規登録</button>
         </div>
+    </aside>
 
-        <div class="album-list" id="albumList"></div>
-
-    </div>
-
-    <div class="main">
+    <main class="main">
 
         <div class="form-area">
 
-            <div class="section-title">Album Form</div>
+            <div class="page-title" id="pageTitle">投稿作成</div>
+            <div class="page-subtitle" id="pageSubtitle">
+                新しいアルバム・曲のコレクションを作成します。
+            </div>
 
-            <div class="login-status" id="loginStatus">未ログイン</div>
+            <div class="mode-badge" id="modeBadge">新規投稿モード</div>
+
+            <div class="login-status" id="loginStatus">ログイン状態を確認中...</div>
 
             <div class="notice">
-                投稿・編集・削除にはログインが必要です。未ログインの場合は、ログインページからログインしてください。
+                過去の投稿を編集・削除する場合は、マイページから自分の投稿を開いてください。
+                自分の投稿には「編集」「削除」ボタンが表示される想定です。
             </div>
+
+            <div class="loading-box" id="loadingBox" style="display:none;">
+                投稿データを読み込み中...
+            </div>
+
+            <div class="error-box" id="errorBox"></div>
+
+            <div class="section-title">Album Form</div>
 
             <div class="input-group">
                 <label>ジャケット画像URL</label>
-                <input id="coverInput" type="text">
+                <input id="coverInput" type="text" placeholder="https://...">
             </div>
 
             <div class="input-group">
                 <label>曲名 / アルバム名</label>
-                <input id="titleInput" type="text">
+                <input id="titleInput" type="text" placeholder="例：HELP EVER HURT NEVER">
             </div>
 
             <div class="input-group">
                 <label>アーティスト名</label>
-                <input id="artistInput" type="text">
+                <input id="artistInput" type="text" placeholder="例：藤井風">
             </div>
 
             <div class="input-group">
@@ -443,7 +503,11 @@ button:disabled{
             </div>
 
             <button class="view-btn" onclick="location.href='./index.html'">
-                表示ページへ
+                ホームへ
+            </button>
+
+            <button class="profile-btn" id="goMyPageBtn">
+                マイページへ
             </button>
 
             <button class="save-btn" id="saveBtn">
@@ -456,36 +520,37 @@ button:disabled{
 
         </div>
 
-    </div>
+    </main>
 
 </div>
 
-<!-- スマホ用下部タブバー -->
-<nav class="mobile-tabbar">
-    <a href="index.html">
-        <div class="icon">🏠</div>
-        <div>ホーム</div>
-    </a>
+<a class="floating-post-btn" href="./editor.html" aria-label="投稿作成">＋</a>
 
-    <a href="search.html">
-        <div class="icon">🔍</div>
-        <div>さがす</div>
-    </a>
+<nav class="bottom-tab">
+    <button type="button" onclick="location.href='./index.html'">
+        <span class="tab-icon">⌂</span>
+        <span>ホーム</span>
+    </button>
 
-    <a href="editor.html" class="active">
-        <div class="icon">➕</div>
-        <div>投稿</div>
-    </a>
+    <button type="button" onclick="location.href='./search.html'">
+        <span class="tab-icon">⌕</span>
+        <span>さがす</span>
+    </button>
 
-    <a href="notifications.html">
-        <div class="icon">🔔</div>
-        <div>通知</div>
-    </a>
+    <button type="button" class="active" onclick="location.href='./editor.html'">
+        <span class="tab-icon">＋</span>
+        <span>投稿</span>
+    </button>
 
-    <a id="mobileMyPageLink" href="login.html">
-        <div class="icon">👤</div>
-        <div>マイページ</div>
-    </a>
+    <button type="button" onclick="location.href='./notifications.html'">
+        <span class="tab-icon">♡</span>
+        <span>通知</span>
+    </button>
+
+    <button type="button" id="bottomMyPageBtn">
+        <span class="tab-icon">◯</span>
+        <span>マイページ</span>
+    </button>
 </nav>
 
 <script type="module">
@@ -498,12 +563,9 @@ import {
     initializeFirestore,
     collection,
     addDoc,
-    onSnapshot,
-    deleteDoc,
     doc,
+    getDoc,
     updateDoc,
-    query,
-    where,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -529,17 +591,25 @@ const db = initializeFirestore(app, {
 
 const auth = getAuth(app);
 
-const albumList = document.getElementById("albumList");
+const params = new URLSearchParams(location.search);
+const editingIdFromUrl = params.get("id");
+
+const pageTitle = document.getElementById("pageTitle");
+const pageSubtitle = document.getElementById("pageSubtitle");
+const modeBadge = document.getElementById("modeBadge");
 
 const loginStatus = document.getElementById("loginStatus");
 const sidebarLoginStatus = document.getElementById("sidebarLoginStatus");
+const errorBox = document.getElementById("errorBox");
+const loadingBox = document.getElementById("loadingBox");
+
 const myPageBtn = document.getElementById("myPageBtn");
-const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const bottomMyPageBtn = document.getElementById("bottomMyPageBtn");
+const goMyPageBtn = document.getElementById("goMyPageBtn");
 
 const coverInput = document.getElementById("coverInput");
 const titleInput = document.getElementById("titleInput");
 const artistInput = document.getElementById("artistInput");
-
 const descInput = document.getElementById("descInput");
 const keywordsInput = document.getElementById("keywordsInput");
 const isPublicInput = document.getElementById("isPublicInput");
@@ -556,8 +626,9 @@ const clearBtn = document.getElementById("clearBtn");
 const descCount = document.getElementById("descCount");
 const descCountBox = document.getElementById("descCountBox");
 
-let editingId = null;
-let unsubscribeAlbums = null;
+let editingId = editingIdFromUrl;
+let currentLoadedAlbum = null;
+let authReady = false;
 
 function escapeHTML(value){
     return String(value ?? "")
@@ -566,6 +637,20 @@ function escapeHTML(value){
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+function showError(message){
+    errorBox.style.display = "block";
+    errorBox.innerHTML = escapeHTML(message);
+}
+
+function clearError(){
+    errorBox.style.display = "none";
+    errorBox.innerHTML = "";
+}
+
+function setLoading(isLoading){
+    loadingBox.style.display = isLoading ? "block" : "none";
 }
 
 function updateDescCount(){
@@ -584,6 +669,31 @@ function updateDescCount(){
 }
 
 descInput.addEventListener("input", updateDescCount);
+
+function setPageMode(){
+    if(editingId){
+        pageTitle.textContent = "投稿を編集";
+        pageSubtitle.textContent = "マイページから選択した投稿を編集します。";
+        modeBadge.textContent = "編集モード";
+        modeBadge.classList.add("edit");
+        saveBtn.textContent = "更新";
+    }else{
+        pageTitle.textContent = "投稿作成";
+        pageSubtitle.textContent = "新しいアルバム・曲のコレクションを作成します。";
+        modeBadge.textContent = "新規投稿モード";
+        modeBadge.classList.remove("edit");
+        saveBtn.textContent = "保存";
+    }
+}
+
+function getRedirectLoginUrl(){
+    const currentUrl = location.pathname.split("/").pop() + location.search;
+    return `./login.html?redirect=${encodeURIComponent(currentUrl)}`;
+}
+
+function goLoginWithRedirect(){
+    location.href = getRedirectLoginUrl();
+}
 
 function getFormData(){
     const user = auth.currentUser;
@@ -630,7 +740,18 @@ function setFormData(album){
 }
 
 function clearForm(){
-    editingId = null;
+    if(editingId){
+        const ok = confirm("編集中の内容を初期状態に戻しますか？");
+        if(!ok){
+            return;
+        }
+
+        if(currentLoadedAlbum){
+            setFormData(currentLoadedAlbum);
+        }
+
+        return;
+    }
 
     coverInput.value = "";
     titleInput.value = "";
@@ -645,19 +766,58 @@ function clearForm(){
     hopeInput.value = 3;
     worldInput.value = 3;
 
-    saveBtn.textContent = "保存";
     updateDescCount();
 }
 
 clearBtn.addEventListener("click", clearForm);
 
+async function loadEditAlbum(user){
+    if(!editingId){
+        return;
+    }
+
+    clearError();
+    setLoading(true);
+
+    try {
+        const ref = doc(db, "albums", editingId);
+        const snap = await getDoc(ref);
+
+        if(!snap.exists()){
+            showError("編集対象の投稿が見つかりません。削除された可能性があります。");
+            saveBtn.disabled = true;
+            return;
+        }
+
+        const album = snap.data();
+
+        if(album.userId !== user.uid){
+            showError("この投稿はあなたの投稿ではないため、編集できません。");
+            saveBtn.disabled = true;
+            return;
+        }
+
+        currentLoadedAlbum = album;
+        setFormData(album);
+        saveBtn.disabled = false;
+
+    } catch (e) {
+        showError(`読み込みエラー：${e.message}`);
+        saveBtn.disabled = true;
+    } finally {
+        setLoading(false);
+    }
+}
+
 saveBtn.addEventListener("click", async () => {
     try {
+        clearError();
+
         const user = auth.currentUser;
 
         if(!user){
-            alert("ログインしてください。ログインページに移動します。");
-            location.href = `./login.html?redirect=${encodeURIComponent(location.href)}`;
+            alert("ログインしてください");
+            goLoginWithRedirect();
             return;
         }
 
@@ -669,111 +829,61 @@ saveBtn.addEventListener("click", async () => {
         const data = getFormData();
 
         if(editingId){
-            await updateDoc(doc(db, "albums", editingId), data);
+            const ref = doc(db, "albums", editingId);
+
+            const latestSnap = await getDoc(ref);
+
+            if(!latestSnap.exists()){
+                alert("編集対象の投稿が見つかりません");
+                return;
+            }
+
+            const latestAlbum = latestSnap.data();
+
+            if(latestAlbum.userId !== user.uid){
+                alert("この投稿はあなたの投稿ではないため、更新できません");
+                return;
+            }
+
+            await updateDoc(ref, data);
             alert("更新しました");
+
+            location.href = `./profile.html?uid=${encodeURIComponent(user.uid)}`;
+
         }else{
             await addDoc(collection(db, "albums"), {
                 ...data,
                 createdAt: serverTimestamp()
             });
-            alert("保存しました");
-        }
 
-        clearForm();
+            alert("保存しました");
+
+            clearNewPostFormOnly();
+        }
 
     } catch (e) {
         alert(e.message);
     }
 });
 
-function listenMyAlbums(user){
-    if(unsubscribeAlbums){
-        unsubscribeAlbums();
-        unsubscribeAlbums = null;
-    }
+function clearNewPostFormOnly(){
+    coverInput.value = "";
+    titleInput.value = "";
+    artistInput.value = "";
+    descInput.value = "";
+    keywordsInput.value = "";
+    isPublicInput.value = "true";
 
-    albumList.innerHTML = "";
+    darknessInput.value = 3;
+    intenseInput.value = 3;
+    complexInput.value = 3;
+    hopeInput.value = 3;
+    worldInput.value = 3;
 
-    if(!user){
-        albumList.innerHTML = `
-            <div style="color:#777;padding:10px;line-height:1.7;">
-                ログインすると、自分のアルバム一覧が表示されます。
-            </div>
-        `;
-        return;
-    }
-
-    const q = query(
-        collection(db, "albums"),
-        where("userId", "==", user.uid)
-    );
-
-    unsubscribeAlbums = onSnapshot(q, (snapshot) => {
-        albumList.innerHTML = "";
-
-        if(snapshot.empty){
-            albumList.innerHTML = `
-                <div style="color:#777;padding:10px;">
-                    保存されたアルバムがありません
-                </div>
-            `;
-            return;
-        }
-
-        snapshot.forEach((docItem) => {
-            const album = docItem.data();
-
-            const card = document.createElement("div");
-            card.className = "album-card";
-
-            card.innerHTML = `
-                <img class="album-thumb" src="${escapeHTML(album.cover || "")}" alt="">
-
-                <div class="album-info">
-                    <div class="album-name">${escapeHTML(album.title || "")}</div>
-                    <div class="album-artist">${escapeHTML(album.artist || "")}</div>
-
-                    <button class="edit-btn" type="button" data-id="${escapeHTML(docItem.id)}">
-                        編集
-                    </button>
-
-                    <button class="delete-btn" type="button" data-id="${escapeHTML(docItem.id)}">
-                        削除
-                    </button>
-                </div>
-            `;
-
-            card.querySelector(".edit-btn").addEventListener("click", () => {
-                setFormData(album);
-                editingId = docItem.id;
-                saveBtn.textContent = "更新";
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            });
-
-            card.querySelector(".delete-btn").addEventListener("click", async () => {
-                if(!confirm("このアルバムを削除しますか？")){
-                    return;
-                }
-
-                try {
-                    await deleteDoc(doc(db, "albums", docItem.id));
-                } catch (e) {
-                    alert(e.message);
-                }
-            });
-
-            albumList.appendChild(card);
-        });
-    }, (error) => {
-        albumList.innerHTML = `
-            <div style="color:#ff7777;padding:10px;line-height:1.7;">
-                読み込みエラー：${escapeHTML(error.message)}
-            </div>
-        `;
-    });
+    updateDescCount();
 }
 
-myPageBtn.addEventListener("click", () => {
+function goMyPage(){
     const user = auth.currentUser;
 
     if(!user){
@@ -782,36 +892,41 @@ myPageBtn.addEventListener("click", () => {
     }
 
     location.href = `./profile.html?uid=${encodeURIComponent(user.uid)}`;
-});
+}
 
-onAuthStateChanged(auth, (user) => {
+myPageBtn.addEventListener("click", goMyPage);
+bottomMyPageBtn.addEventListener("click", goMyPage);
+goMyPageBtn.addEventListener("click", goMyPage);
+
+onAuthStateChanged(auth, async (user) => {
+    authReady = true;
+
     if(user){
         loginStatus.textContent = `ログイン中: ${user.email}`;
         sidebarLoginStatus.textContent = `ログイン中: ${user.email}`;
+
         saveBtn.disabled = false;
         clearBtn.disabled = false;
 
-        if(mobileMyPageLink){
-            mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+        if(editingId){
+            await loadEditAlbum(user);
         }
 
-        listenMyAlbums(user);
     }else{
-        loginStatus.textContent = "未ログイン：投稿するにはログインページからログインしてください。";
+        loginStatus.textContent = "未ログイン：投稿するにはログインしてください";
         sidebarLoginStatus.textContent = "未ログイン";
-        saveBtn.disabled = true;
-        clearBtn.disabled = true;
 
-        if(mobileMyPageLink){
-            mobileMyPageLink.href = "login.html";
+        saveBtn.disabled = false;
+        clearBtn.disabled = false;
+
+        if(editingId){
+            showError("編集するにはログインが必要です。ログイン後、このページに戻ります。");
         }
-
-        listenMyAlbums(null);
     }
 });
 
+setPageMode();
 updateDescCount();
-clearForm();
 
 </script>
 
