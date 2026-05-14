@@ -157,12 +157,16 @@ body{
     border-color:rgba(111,168,220,0.55);
 }
 
-/* 上段（画像・情報・分析） */
+/* 上段：画像 / 基本情報 / メーター */
 .card-top{
     display:grid;
     grid-template-columns:120px 1fr 260px;
     gap:18px;
     align-items:start;
+}
+
+.cover-wrap{
+    min-width:0;
 }
 
 .cover{
@@ -172,6 +176,7 @@ body{
     background:#111;
     border-radius:10px;
     border:1px solid rgba(255,255,255,0.18);
+    display:block;
 }
 
 .album-info,
@@ -199,11 +204,16 @@ body{
     color:#ccc;
     font-size:14px;
     line-height:1.5;
+    word-break:break-word;
 }
 
 .creator a{
     color:#6fa8dc;
     text-decoration:none;
+}
+
+.creator a:hover{
+    text-decoration:underline;
 }
 
 .reaction-row{
@@ -227,6 +237,8 @@ body{
     color:#aaa;
     padding:0;
     font-size:20px;
+    cursor:pointer;
+    border-radius:0;
 }
 
 .like-btn:hover{
@@ -249,6 +261,7 @@ body{
     border:1px solid rgba(255,255,255,0.14);
     border-radius:14px;
     padding:12px;
+    min-width:0;
 }
 
 .meter{
@@ -257,6 +270,7 @@ body{
     align-items:center;
     gap:6px;
     margin-bottom:10px;
+    min-width:0;
 }
 
 .meter-label{
@@ -275,6 +289,7 @@ body{
     align-items:center;
     width:100%;
     min-width:0;
+    overflow:hidden;
 }
 
 .dot{
@@ -290,17 +305,37 @@ body{
     height:2px;
     background:#4a5158;
     flex:1;
+    min-width:0;
 }
 
 .dot.active.level-1,
-.connector.active.level-1{ background:#3f8ec7; border-color:#3f8ec7; }
+.connector.active.level-1{
+    background:#3f8ec7;
+    border-color:#3f8ec7;
+}
+
 .dot.active.level-2,
-.connector.active.level-2{ background:#4d9bd0; border-color:#4d9bd0; }
+.connector.active.level-2{
+    background:#4d9bd0;
+    border-color:#4d9bd0;
+}
+
 .dot.active.level-3,
-.connector.active.level-3{ background:#5fa7d8; border-color:#5fa7d8; }
+.connector.active.level-3{
+    background:#5fa7d8;
+    border-color:#5fa7d8;
+}
+
 .dot.active.level-4,
-.connector.active.level-4{ background:#73b6e3; border-color:#73b6e3; }
-.dot.active.level-5{ background:#8bc8ef; border-color:#8bc8ef; }
+.connector.active.level-4{
+    background:#73b6e3;
+    border-color:#73b6e3;
+}
+
+.dot.active.level-5{
+    background:#8bc8ef;
+    border-color:#8bc8ef;
+}
 
 .keyword-box{
     margin-top:10px;
@@ -323,7 +358,7 @@ body{
     word-break:break-word;
 }
 
-/* 下段の紹介文 */
+/* 下段：紹介文 */
 .description{
     color:#ddd;
     font-size:14px;
@@ -344,6 +379,10 @@ body{
     .album-grid{
         grid-template-columns:1fr;
     }
+
+    .card-top{
+        grid-template-columns:120px 1fr 260px;
+    }
 }
 
 /* ===== スマホUI ===== */
@@ -354,12 +393,12 @@ body{
         padding-bottom:110px;
     }
 
-    /* サイドバー非表示 */
+    /* スマホではサイドバー非表示 */
     .sidebar{
         display:none;
     }
 
-    /* 下部タブバー表示 */
+    /* スマホでは下部タブバー表示 */
     .mobile-tabbar{
         display:flex;
         position:fixed;
@@ -373,7 +412,6 @@ body{
         padding-bottom:env(safe-area-inset-bottom);
     }
 
-    /* タイトルを小さく */
     .page-title{
         font-size:30px;
     }
@@ -387,22 +425,21 @@ body{
         display:none !important;
     }
 
-    /* 1列表示 */
     .album-grid{
         grid-template-columns:1fr;
         gap:14px;
     }
 
-    /* カードをコンパクト化 */
     .album-card{
         padding:14px;
         border-radius:14px;
     }
 
-    /* 横型レイアウト */
+    /* スマホだけ横型コンパクト */
     .card-top{
-        grid-template-columns:72px 1fr 120px;
+        grid-template-columns:72px minmax(0,1fr) 120px;
         gap:10px;
+        align-items:start;
     }
 
     .title{
@@ -419,6 +456,7 @@ body{
     .creator{
         font-size:11px;
         margin-bottom:6px;
+        line-height:1.4;
     }
 
     .reaction-row{
@@ -440,7 +478,7 @@ body{
     }
 
     .meter{
-        grid-template-columns:26px 1fr 26px;
+        grid-template-columns:26px minmax(0,1fr) 26px;
         gap:3px;
         margin-bottom:5px;
     }
@@ -481,7 +519,7 @@ body{
         padding-top:10px;
     }
 
-    /* 投稿ボタンをタブバーの上に */
+    /* スマホでは投稿ボタンを下部タブバーの上に */
     .fab{
         right:16px;
         bottom:88px;
@@ -490,13 +528,47 @@ body{
         font-size:32px;
     }
 }
+
+/* かなり狭いスマホ用 */
+@media(max-width:390px){
+    .card-top{
+        grid-template-columns:64px minmax(0,1fr) 110px;
+        gap:8px;
+    }
+
+    .title{
+        font-size:15px;
+    }
+
+    .artist{
+        font-size:12px;
+    }
+
+    .meter-area{
+        padding:6px;
+    }
+
+    .meter{
+        grid-template-columns:24px minmax(0,1fr) 24px;
+    }
+
+    .meter-label{
+        font-size:7px;
+    }
+
+    .keyword-text{
+        font-size:8px;
+    }
+}
 </style>
 </head>
+
 <body>
 
 <!-- PC用サイドバー -->
 <nav class="sidebar">
     <div class="logo">Album Collection</div>
+
     <a href="index.html">ホーム</a>
     <a href="editor.html">投稿する</a>
     <a id="myPageLink" href="login.html">マイページ</a>
@@ -510,33 +582,39 @@ body{
         <div class="icon">🏠</div>
         <div>ホーム</div>
     </a>
+
     <a href="search.html">
         <div class="icon">🔍</div>
         <div>さがす</div>
     </a>
+
     <a href="editor.html">
         <div class="icon">➕</div>
         <div>投稿</div>
     </a>
+
     <a href="notifications.html">
         <div class="icon">🔔</div>
         <div>通知</div>
     </a>
+
     <a id="mobileMyPageLink" href="login.html">
         <div class="icon">👤</div>
         <div>マイページ</div>
     </a>
 </nav>
 
-<!-- 右下投稿ボタン -->
+<!-- PC / スマホ両方に表示される右下投稿ボタン -->
 <a href="editor.html" class="fab">＋</a>
 
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
+
     <div style="display:flex; gap:12px; flex-wrap:wrap;">
         <button id="mypageBtn" class="back-btn" style="display:none;">
             マイページ
         </button>
+
         <button class="back-btn" onclick="location.href='./editor.html'">
             編集ページへ戻る
         </button>
@@ -544,19 +622,6 @@ body{
 </div>
 
 <div class="album-grid" id="albumGrid"></div>
-
-<!-- ここに元の JavaScript をそのまま貼り付ける -->
-<script type="module">
-// あなたの現在の script 部分をそのまま使用してください。
-// HTML構造の変更点は以下です。
-// 1. album-card 内で .card-top を使う
-// 2. description は meter-area の外に配置する
-</script>
-
-</body>
-</html>
-```
-
 
 <script type="module">
 
@@ -623,6 +688,16 @@ onAuthStateChanged(auth, (user) => {
             myPageLink.href = `profile.html?uid=${user.uid}`;
         } else {
             myPageLink.href = "login.html";
+        }
+    }
+
+    const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+
+    if (mobileMyPageLink) {
+        if (user) {
+            mobileMyPageLink.href = `profile.html?uid=${user.uid}`;
+        } else {
+            mobileMyPageLink.href = "login.html";
         }
     }
 
@@ -729,7 +804,7 @@ function updateLikeDisplays(){
         const liked = isLikedByMe(albumId);
 
         countSpan.textContent = count;
-button.textContent = liked ? "♥" : "♡";
+        button.textContent = liked ? "♥" : "♡";
 
         if(liked){
             button.classList.add("liked");
@@ -787,76 +862,78 @@ onSnapshot(q, (snapshot)=>{
         const albumId = docSnap.id;
 
         albumGrid.innerHTML += `
-       <div class="album-card"
+<div class="album-card"
      onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
 
-    <!-- 左側 -->
-    <div class="album-info">
-        <img class="cover"
-             src="${escapeHTML(a.cover || "")}"
-             alt="">
+    <div class="card-top">
 
-        <div class="title">
-            ${escapeHTML(a.title || "")}
+        <div class="cover-wrap">
+            <img class="cover"
+                 src="${escapeHTML(a.cover || "")}"
+                 alt="">
         </div>
 
-        <div class="artist">
-            ${escapeHTML(a.artist || "")}
-        </div>
+        <div class="album-info">
+            <div class="title">
+                ${escapeHTML(a.title || "")}
+            </div>
 
-       
+            <div class="artist">
+                ${escapeHTML(a.artist || "")}
+            </div>
 
-        <div class="creator">
-            投稿者：
-            <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
-               onclick="event.stopPropagation();">
-                ${escapeHTML(
-                    a.userName ||
-                    a.userEmail ||
-                    "匿名ユーザー"
-                )}
-            </a>
-        </div>
+            <div class="creator">
+                投稿者：
+                <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
+                   onclick="event.stopPropagation();">
+                    ${escapeHTML(
+                        a.userName ||
+                        a.userEmail ||
+                        "匿名ユーザー"
+                    )}
+                </a>
+            </div>
 
- <div class="reaction-row">
-    <div class="like-area"
-         data-like-area
-         data-album-id="${escapeHTML(albumId)}">
-        <button class="like-btn"
-                onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
-            ♡
-        </button>
-        <span class="like-count">0</span>
-    </div>
+            <div class="reaction-row">
+                <div class="like-area"
+                     data-like-area
+                     data-album-id="${escapeHTML(albumId)}">
+                    <button class="like-btn"
+                            onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
+                        ♡
+                    </button>
+                    <span class="like-count">0</span>
+                </div>
 
-    <div class="comment-count"
-         data-comment-count
-         data-album-id="${escapeHTML(albumId)}">
-        コメント 0件
-    </div>
-</div>
-</div>
-
-    <!-- 右側 -->
-    <div class="album-analysis">
-        <div class="meter-area">
-            ${meter("暗い", "明るい", a.darkness)}
-            ${meter("静か", "激しい", a.intense)}
-            ${meter("シンプル", "複雑", a.complex)}
-            ${meter("絶望", "希望", a.hope)}
-            ${meter("個人", "世界", a.world)}
-
-            <div class="keyword-box">
-                <div class="keyword-title">キーワード</div>
-                <div class="keyword-text">
-                    ${escapeHTML(a.keywords || "")}
+                <div class="comment-count"
+                     data-comment-count
+                     data-album-id="${escapeHTML(albumId)}">
+                    コメント 0件
                 </div>
             </div>
+        </div>
 
-            <div class="description">
-                ${escapeHTML(a.desc || "")}
+        <div class="album-analysis">
+            <div class="meter-area">
+                ${meter("暗い", "明るい", a.darkness)}
+                ${meter("静か", "激しい", a.intense)}
+                ${meter("シンプル", "複雑", a.complex)}
+                ${meter("絶望", "希望", a.hope)}
+                ${meter("個人", "世界", a.world)}
+
+                <div class="keyword-box">
+                    <div class="keyword-title">キーワード</div>
+                    <div class="keyword-text">
+                        ${escapeHTML(a.keywords || "")}
+                    </div>
+                </div>
             </div>
         </div>
+
+    </div>
+
+    <div class="description">
+        ${escapeHTML(a.desc || "")}
     </div>
 
 </div>
