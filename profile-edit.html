@@ -18,7 +18,12 @@ body{
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
     padding:40px;
     padding-left:280px;
+    padding-bottom:120px;
 }
+
+/* =====================
+   PC Sidebar
+===================== */
 
 .sidebar{
     position:fixed;
@@ -29,6 +34,7 @@ body{
     background:#0b0b0b;
     border-right:1px solid rgba(255,255,255,0.1);
     padding:30px 20px;
+    z-index:100;
 }
 
 .logo{
@@ -44,11 +50,20 @@ body{
     padding:14px 16px;
     margin-bottom:8px;
     border-radius:10px;
+    font-size:15px;
 }
 
 .sidebar a:hover{
     background:#1a1a1a;
 }
+
+.sidebar a.active{
+    background:#6fa8dc;
+}
+
+/* =====================
+   Main
+===================== */
 
 .page-title{
     font-size:46px;
@@ -91,6 +106,17 @@ input{
     font-size:16px;
 }
 
+input:focus{
+    outline:none;
+    border-color:#6fa8dc;
+}
+
+.button-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
 button{
     padding:14px 22px;
     background:#6fa8dc;
@@ -108,29 +134,138 @@ button:hover{
 .sub-btn{
     background:#1e1e1e;
     border:1px solid rgba(255,255,255,0.15);
-    margin-left:10px;
 }
 
 .message{
     margin-top:18px;
     color:#aaa;
     font-size:15px;
+    line-height:1.7;
 }
+
+/* =====================
+   Floating Post Button
+===================== */
+
+.fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:#6fa8dc;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    z-index:1000;
+}
+
+.fab:hover{
+    background:#84b7e4;
+}
+
+/* =====================
+   Mobile Tab Bar
+===================== */
+
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#999;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:#6fa8dc;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+/* =====================
+   Mobile
+===================== */
 
 @media(max-width:900px){
     body{
-        padding:22px;
+        padding:18px;
+        padding-bottom:110px;
     }
 
     .sidebar{
-        position:static;
-        width:100%;
-        height:auto;
-        margin-bottom:24px;
+        display:none;
     }
 
     .page-title{
-        font-size:34px;
+        font-size:32px;
+        margin-bottom:20px;
+    }
+
+    .edit-box{
+        max-width:100%;
+        border-radius:16px;
+        padding:22px;
+    }
+
+    .avatar-preview{
+        width:104px;
+        height:104px;
+    }
+
+    input{
+        font-size:15px;
+        padding:13px;
+    }
+
+    .button-row{
+        display:block;
+    }
+
+    button{
+        width:100%;
+        margin-bottom:10px;
+        font-size:15px;
+    }
+
+    .message{
+        font-size:14px;
+    }
+
+    .mobile-tabbar{
+        display:flex;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:#0b0b0b;
+        border-top:1px solid rgba(255,255,255,0.1);
+        z-index:999;
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .fab{
+        right:16px;
+        bottom:88px;
+        width:58px;
+        height:58px;
+        font-size:32px;
     }
 }
 </style>
@@ -138,15 +273,49 @@ button:hover{
 
 <body>
 
+<!-- PC用サイドバー -->
 <nav class="sidebar">
     <div class="logo">Album Collection</div>
 
     <a href="index.html">🏠 ホーム</a>
+    <a href="search.html">🔍 さがす</a>
     <a href="editor.html">✍️ 投稿する</a>
+    <a href="notifications.html">🔔 通知</a>
     <a id="myPageLink" href="login.html">👤 マイページ</a>
-    <a href="profile-edit.html">⚙️ プロフィール編集</a>
+    <a href="profile-edit.html" class="active">⚙️ プロフィール編集</a>
     <a href="login.html">🔐 ログイン</a>
 </nav>
+
+<!-- スマホ用下部タブバー -->
+<nav class="mobile-tabbar">
+    <a href="index.html">
+        <div class="icon">🏠</div>
+        <div>ホーム</div>
+    </a>
+
+    <a href="search.html">
+        <div class="icon">🔍</div>
+        <div>さがす</div>
+    </a>
+
+    <a href="editor.html">
+        <div class="icon">➕</div>
+        <div>投稿</div>
+    </a>
+
+    <a href="notifications.html">
+        <div class="icon">🔔</div>
+        <div>通知</div>
+    </a>
+
+    <a id="mobileMyPageLink" href="login.html" class="active">
+        <div class="icon">👤</div>
+        <div>マイページ</div>
+    </a>
+</nav>
+
+<!-- PC / スマホ両方に表示される右下投稿ボタン -->
+<a href="editor.html" class="fab">＋</a>
 
 <h1 class="page-title">プロフィール編集</h1>
 
@@ -163,8 +332,10 @@ button:hover{
     <label>生年月日</label>
     <input id="birthdate" type="date">
 
-    <button id="saveBtn">保存する</button>
-    <button class="sub-btn" id="backBtn">マイページへ戻る</button>
+    <div class="button-row">
+        <button id="saveBtn">保存する</button>
+        <button class="sub-btn" id="backBtn">マイページへ戻る</button>
+    </div>
 
     <div id="message" class="message"></div>
 
@@ -218,21 +389,22 @@ const saveBtn = document.getElementById("saveBtn");
 const backBtn = document.getElementById("backBtn");
 const message = document.getElementById("message");
 const myPageLink = document.getElementById("myPageLink");
+const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 
 let currentUser = null;
-
-function escapeHTML(value){
-    return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
 
 function setDefaultAvatar(){
     avatarPreview.src =
         "https://placehold.co/300x300/111111/ffffff?text=User";
+}
+
+function goMyPage(){
+    if(!currentUser){
+        location.href = "login.html";
+        return;
+    }
+
+    location.href = `profile.html?uid=${encodeURIComponent(currentUser.uid)}`;
 }
 
 photoURLInput.addEventListener("input", () => {
@@ -257,10 +429,10 @@ onAuthStateChanged(auth, async (user) => {
 
     currentUser = user;
 
-    myPageLink.href = `profile.html?uid=${user.uid}`;
-    backBtn.onclick = () => {
-        location.href = `profile.html?uid=${user.uid}`;
-    };
+    myPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+    mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+
+    backBtn.onclick = goMyPage;
 
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
@@ -307,40 +479,49 @@ saveBtn.addEventListener("click", async () => {
         return;
     }
 
-    message.textContent = "保存中...";
+    try {
+        saveBtn.disabled = true;
+        message.textContent = "保存中...";
 
-    const userRef = doc(db, "users", currentUser.uid);
+        const userRef = doc(db, "users", currentUser.uid);
 
-    await setDoc(userRef, {
-        uid: currentUser.uid,
-        email: currentUser.email || "",
-        nickname: nickname,
-        userName: nickname,
-        displayName: nickname,
-        photoURL: photoURL,
-        iconURL: photoURL,
-        birthdate: birthdate,
-        updatedAt: serverTimestamp()
-    }, { merge:true });
-
-    const albumQuery = query(
-        collection(db, "albums"),
-        where("userId", "==", currentUser.uid)
-    );
-
-    const albumSnap = await getDocs(albumQuery);
-    const batch = writeBatch(db);
-
-    albumSnap.forEach((docSnap) => {
-        batch.update(docSnap.ref, {
+        await setDoc(userRef, {
+            uid: currentUser.uid,
+            email: currentUser.email || "",
+            nickname: nickname,
             userName: nickname,
-            userPhotoURL: photoURL
+            displayName: nickname,
+            photoURL: photoURL,
+            iconURL: photoURL,
+            birthdate: birthdate,
+            updatedAt: serverTimestamp()
+        }, { merge:true });
+
+        const albumQuery = query(
+            collection(db, "albums"),
+            where("userId", "==", currentUser.uid)
+        );
+
+        const albumSnap = await getDocs(albumQuery);
+        const batch = writeBatch(db);
+
+        albumSnap.forEach((docSnap) => {
+            batch.update(docSnap.ref, {
+                userName: nickname,
+                userPhotoURL: photoURL
+            });
         });
-    });
 
-    await batch.commit();
+        await batch.commit();
 
-    message.textContent = "保存しました。";
+        message.textContent = "保存しました。";
+
+    } catch (error) {
+        console.error("保存失敗:", error);
+        message.textContent = "保存に失敗しました：" + error.message;
+    } finally {
+        saveBtn.disabled = false;
+    }
 });
 
 </script>
