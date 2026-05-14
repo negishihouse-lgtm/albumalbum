@@ -16,81 +16,148 @@ body{
     background:#050505;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    padding:40px;
-    padding-left:280px;
+    padding-bottom:120px;
 }
 
+.wrapper{
+    display:flex;
+    min-height:100vh;
+}
+
+/* ===== PC用サイドバー ===== */
 .sidebar{
-    position:fixed;
-    top:0;
-    left:0;
-    width:240px;
-    height:100vh;
+    width:280px;
     background:#0b0b0b;
     border-right:1px solid rgba(255,255,255,0.1);
     padding:30px 20px;
-    overflow-y:auto;
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    z-index:100;
 }
 
-.logo{
-    font-size:28px;
-    font-weight:700;
-    margin-bottom:30px;
+.sidebar-title{
+    font-size:26px;
+    font-weight:800;
+    margin-bottom:28px;
 }
 
-.sidebar a{
-    display:block;
-    color:white;
-    text-decoration:none;
+.side-menu button{
+    width:100%;
     padding:14px 16px;
     margin-bottom:8px;
+    border:none;
     border-radius:10px;
+    background:transparent;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    text-align:left;
 }
 
-.sidebar a:hover{
+.side-menu button:hover{
     background:#1a1a1a;
 }
 
+.side-menu .active{
+    background:#6fa8dc;
+}
+
+/* ===== スマホ用下部タブバー ===== */
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#999;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:#6fa8dc;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+/* ===== 右下投稿ボタン ===== */
+.fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:#6fa8dc;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    z-index:1000;
+}
+
+.fab:hover{
+    background:#84b7e4;
+}
+
+/* ===== メイン ===== */
+.main{
+    flex:1;
+    margin-left:280px;
+    padding:40px;
+}
+
 .profile-header{
-    margin-bottom:40px;
+    margin-bottom:34px;
+    padding-bottom:24px;
+    border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
 .profile-name{
     font-size:42px;
-    font-weight:700;
+    font-weight:800;
     margin-bottom:10px;
 }
 
 .profile-email{
     color:#aaa;
     margin-bottom:14px;
+    word-break:break-word;
 }
 
 .follow-stats{
     display:flex;
     gap:18px;
+    color:#ddd;
     margin-bottom:20px;
     font-size:15px;
-}
-
-.follow-stats a{
-    color:#ddd;
-    text-decoration:none;
-    cursor:pointer;
-}
-
-.follow-stats a:hover{
-    color:#6fa8dc;
 }
 
 .follow-btn{
     background:#6fa8dc;
     color:white;
     border:none;
+    border-radius:10px;
     padding:12px 20px;
     font-size:16px;
     cursor:pointer;
-    border-radius:10px;
+}
+
+.follow-btn:hover{
+    background:#84b7e4;
 }
 
 .follow-btn:disabled{
@@ -98,11 +165,7 @@ body{
     cursor:not-allowed;
 }
 
-.section-title{
-    font-size:28px;
-    margin-bottom:20px;
-}
-
+/* ===== 投稿カード ===== */
 .album-grid{
     display:grid;
     grid-template-columns:repeat(2, minmax(0, 1fr));
@@ -114,10 +177,7 @@ body{
     background:#0b0b0b;
     border:1px solid rgba(255,255,255,0.14);
     border-radius:18px;
-    padding:22px;
-    display:grid;
-    grid-template-columns:38% 62%;
-    gap:20px;
+    padding:18px;
     cursor:pointer;
     overflow:hidden;
 }
@@ -126,8 +186,14 @@ body{
     border-color:rgba(111,168,220,0.55);
 }
 
-.album-info,
-.album-analysis{
+.card-top{
+    display:grid;
+    grid-template-columns:120px 1fr 260px;
+    gap:18px;
+    align-items:start;
+}
+
+.cover-wrap{
     min-width:0;
 }
 
@@ -136,53 +202,104 @@ body{
     aspect-ratio:1/1;
     object-fit:cover;
     background:#111;
-    margin-bottom:16px;
+    border-radius:10px;
     border:1px solid rgba(255,255,255,0.18);
+    display:block;
+}
+
+.album-info,
+.album-analysis{
+    min-width:0;
 }
 
 .title{
-    font-size:28px;
+    font-size:24px;
     font-weight:800;
-    line-height:1.15;
+    line-height:1.2;
     margin-bottom:6px;
     word-break:break-word;
 }
 
 .artist{
     color:#6fa8dc;
-    font-size:19px;
+    font-size:18px;
     margin-bottom:8px;
     word-break:break-word;
 }
 
-.description{
-    color:#ddd;
-    font-size:15px;
-    line-height:1.7;
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1px solid rgba(255,255,255,0.1);
+.creator{
+    margin-bottom:10px;
+    color:#ccc;
+    font-size:14px;
+    line-height:1.5;
     word-break:break-word;
+}
+
+.creator a{
+    color:#6fa8dc;
+    text-decoration:none;
+}
+
+.creator a:hover{
+    text-decoration:underline;
+}
+
+.reaction-row{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    color:#aaa;
+    font-size:14px;
+    flex-wrap:wrap;
+}
+
+.like-area{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.like-btn{
+    background:none;
+    border:none;
+    color:#aaa;
+    padding:0;
+    font-size:20px;
+    cursor:pointer;
+}
+
+.like-btn:hover{
+    color:white;
+}
+
+.like-btn.liked{
+    color:white;
+}
+
+.like-count,
+.comment-count{
+    font-size:14px;
+    color:#aaa;
 }
 
 .meter-area{
     border:1px solid rgba(255,255,255,0.14);
     border-radius:14px;
-    padding:16px;
+    padding:12px;
     min-width:0;
 }
 
 .meter{
     display:grid;
-    grid-template-columns:58px minmax(0,1fr) 58px;
+    grid-template-columns:46px minmax(0,1fr) 46px;
     align-items:center;
-    gap:8px;
-    margin-bottom:14px;
+    gap:6px;
+    margin-bottom:10px;
     min-width:0;
 }
 
 .meter-label{
-    font-size:14px;
+    font-size:11px;
     font-weight:700;
     color:#e8e8e8;
     white-space:nowrap;
@@ -201,8 +318,8 @@ body{
 }
 
 .dot{
-    width:12px;
-    height:12px;
+    width:8px;
+    height:8px;
     border-radius:50%;
     border:2px solid #555;
     background:#0b0b0b;
@@ -210,7 +327,7 @@ body{
 }
 
 .connector{
-    height:3px;
+    height:2px;
     background:#4a5158;
     flex:1;
     min-width:0;
@@ -246,67 +363,281 @@ body{
 }
 
 .keyword-box{
-    margin-top:14px;
+    margin-top:10px;
     border:1px solid rgba(255,255,255,0.14);
     border-radius:12px;
-    padding:14px;
+    padding:10px;
 }
 
 .keyword-title{
     color:#6fa8dc;
-    font-size:15px;
+    font-size:12px;
     font-weight:700;
-    margin-bottom:8px;
+    margin-bottom:4px;
 }
 
 .keyword-text{
     color:#ddd;
-    font-size:14px;
-    line-height:1.6;
+    font-size:12px;
+    line-height:1.5;
     word-break:break-word;
+}
+
+.description{
+    color:#ddd;
+    font-size:14px;
+    line-height:1.7;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid rgba(255,255,255,0.1);
+    word-break:break-word;
+}
+
+/* ===== コメント表示 ===== */
+.comment-preview{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,0.1);
+}
+
+.comment-preview-title{
+    color:#6fa8dc;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.comment-item{
+    color:#ccc;
+    font-size:13px;
+    line-height:1.6;
+    margin-bottom:6px;
+    word-break:break-word;
+}
+
+.comment-user{
+    color:#aaa;
+    font-weight:700;
+}
+
+.no-comment{
+    color:#777;
+    font-size:13px;
 }
 
 .empty{
     color:#777;
-    font-size:22px;
+    font-size:24px;
 }
 
+/* ===== タブレット以下 ===== */
 @media(max-width:1300px){
     .album-grid{
         grid-template-columns:1fr;
     }
 }
 
+/* ===== スマホUI ===== */
 @media(max-width:900px){
     body{
-        padding:22px;
+        padding-bottom:110px;
+    }
+
+    .wrapper{
+        display:block;
     }
 
     .sidebar{
-        position:static;
-        width:100%;
-        height:auto;
-        margin-bottom:24px;
+        display:none;
+    }
+
+    .mobile-tabbar{
+        display:flex;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:#0b0b0b;
+        border-top:1px solid rgba(255,255,255,0.1);
+        z-index:999;
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .main{
+        margin-left:0;
+        padding:16px;
+    }
+
+    .profile-header{
+        margin-bottom:20px;
+        padding-bottom:18px;
     }
 
     .profile-name{
-        font-size:34px;
+        font-size:30px;
+    }
+
+    .profile-email{
+        font-size:13px;
+    }
+
+    .follow-stats{
+        font-size:13px;
+        gap:14px;
+    }
+
+    .follow-btn{
+        font-size:14px;
+        padding:10px 16px;
+    }
+
+    .album-grid{
+        grid-template-columns:1fr;
+        gap:14px;
     }
 
     .album-card{
-        grid-template-columns:1fr;
+        padding:14px;
+        border-radius:14px;
     }
 
-    .cover{
-        max-width:260px;
+    .card-top{
+        grid-template-columns:72px minmax(0,1fr) 120px;
+        gap:10px;
+        align-items:start;
+    }
+
+    .title{
+        font-size:16px;
+        margin-bottom:4px;
+        line-height:1.3;
+    }
+
+    .artist{
+        font-size:13px;
+        margin-bottom:4px;
+    }
+
+    .creator{
+        font-size:11px;
+        margin-bottom:6px;
+        line-height:1.4;
+    }
+
+    .reaction-row{
+        gap:8px;
+        font-size:11px;
+    }
+
+    .like-btn{
+        font-size:16px;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:11px;
+    }
+
+    .meter-area{
+        padding:8px;
     }
 
     .meter{
-        grid-template-columns:50px minmax(0,1fr) 50px;
+        grid-template-columns:26px minmax(0,1fr) 26px;
+        gap:3px;
+        margin-bottom:5px;
     }
 
     .meter-label{
-        font-size:13px;
+        font-size:8px;
+    }
+
+    .dot{
+        width:5px;
+        height:5px;
+        border-width:1px;
+    }
+
+    .connector{
+        height:1px;
+    }
+
+    .keyword-box{
+        margin-top:6px;
+        padding:6px;
+    }
+
+    .keyword-title{
+        font-size:9px;
+        margin-bottom:2px;
+    }
+
+    .keyword-text{
+        font-size:9px;
+        line-height:1.3;
+    }
+
+    .description{
+        font-size:12px;
+        line-height:1.6;
+        margin-top:10px;
+        padding-top:10px;
+    }
+
+    .comment-preview{
+        margin-top:10px;
+        padding-top:10px;
+    }
+
+    .comment-preview-title{
+        font-size:12px;
+        margin-bottom:6px;
+    }
+
+    .comment-item,
+    .no-comment{
+        font-size:12px;
+    }
+
+    .fab{
+        right:16px;
+        bottom:88px;
+        width:58px;
+        height:58px;
+        font-size:32px;
+    }
+}
+
+/* かなり狭いスマホ用 */
+@media(max-width:390px){
+    .card-top{
+        grid-template-columns:64px minmax(0,1fr) 110px;
+        gap:8px;
+    }
+
+    .title{
+        font-size:15px;
+    }
+
+    .artist{
+        font-size:12px;
+    }
+
+    .meter-area{
+        padding:6px;
+    }
+
+    .meter{
+        grid-template-columns:24px minmax(0,1fr) 24px;
+    }
+
+    .meter-label{
+        font-size:7px;
+    }
+
+    .keyword-text{
+        font-size:8px;
     }
 }
 </style>
@@ -314,30 +645,71 @@ body{
 
 <body>
 
-<nav class="sidebar">
-    <div class="logo">Album Collection</div>
+<div class="wrapper">
 
-    <a href="index.html">ホーム</a>
-    <a href="editor.html">投稿する</a>
-    <a id="myPageLink" href="login.html">マイページ</a>
-    <a href="profile-edit.html">プロフィール編集</a>
-    <a href="login.html">ログイン</a>
-</nav>
+    <!-- PC用サイドバー -->
+    <div class="sidebar">
+        <div class="sidebar-title">Album Collection</div>
 
-<div class="profile-header">
-    <div class="profile-name" id="profileName">読み込み中...</div>
-    <div class="profile-email" id="profileEmail"></div>
-
-    <div class="follow-stats">
-        <a id="followingCount" href="#">フォロー中 0</a>
-        <a id="followerCount" href="#">フォロワー 0</a>
+        <div class="side-menu">
+            <button onclick="location.href='./index.html'">ホーム</button>
+            <button onclick="location.href='./editor.html'">投稿する</button>
+            <button class="active">マイページ</button>
+            <button onclick="location.href='./profile-edit.html'">プロフィール編集</button>
+            <button onclick="location.href='./login.html'">ログイン / 新規登録</button>
+        </div>
     </div>
 
-    <button class="follow-btn" id="followBtn">フォロー</button>
-</div>
+    <!-- スマホ用下部タブバー -->
+    <nav class="mobile-tabbar">
+        <a href="index.html">
+            <div class="icon">🏠</div>
+            <div>ホーム</div>
+        </a>
 
-<h2 class="section-title">作成したコレクション</h2>
-<div class="album-grid" id="albumGrid"></div>
+        <a href="search.html">
+            <div class="icon">🔍</div>
+            <div>さがす</div>
+        </a>
+
+        <a href="editor.html">
+            <div class="icon">➕</div>
+            <div>投稿</div>
+        </a>
+
+        <a href="notifications.html">
+            <div class="icon">🔔</div>
+            <div>通知</div>
+        </a>
+
+        <a id="mobileMyPageLink" href="login.html" class="active">
+            <div class="icon">👤</div>
+            <div>マイページ</div>
+        </a>
+    </nav>
+
+    <!-- PC / スマホ両方に表示される右下投稿ボタン -->
+    <a href="editor.html" class="fab">＋</a>
+
+    <main class="main">
+
+        <div class="profile-header">
+            <div class="profile-name" id="profileName">読み込み中...</div>
+            <div class="profile-email" id="profileEmail"></div>
+
+            <div class="follow-stats">
+                <span id="followingCount">フォロー中 0</span>
+                <span id="followerCount">フォロワー 0</span>
+            </div>
+
+            <button class="follow-btn" id="followBtn">フォロー</button>
+        </div>
+
+        <div class="album-grid" id="albumGrid"></div>
+
+    </main>
+
+</div>
 
 <script type="module">
 
@@ -350,10 +722,11 @@ import {
     collection,
     query,
     where,
-    orderBy,
     getDocs,
     addDoc,
     deleteDoc,
+    setDoc,
+    onSnapshot,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -389,11 +762,15 @@ const albumGrid = document.getElementById("albumGrid");
 const followBtn = document.getElementById("followBtn");
 const followingCount = document.getElementById("followingCount");
 const followerCount = document.getElementById("followerCount");
-const myPageLink = document.getElementById("myPageLink");
+const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 
 let currentUser = null;
 let followDocId = null;
 let isFollowing = false;
+
+let profileAlbums = [];
+let allLikes = [];
+let allComments = [];
 
 function escapeHTML(value){
     return String(value ?? "")
@@ -431,106 +808,328 @@ function meter(left, right, value){
     `;
 }
 
-async function loadProfile(){
-    try{
+function getLikeId(userId, albumId){
+    return `${userId}_${albumId}`;
+}
+
+function getLikeCount(albumId){
+    return allLikes.filter(like => like.albumId === albumId).length;
+}
+
+function getCommentCount(albumId){
+    return allComments.filter(comment => comment.albumId === albumId).length;
+}
+
+function getCommentsForAlbum(albumId){
+    return allComments
+        .filter(comment => comment.albumId === albumId)
+        .sort((a, b) => {
+            const aTime = a.createdAt?.seconds || 0;
+            const bTime = b.createdAt?.seconds || 0;
+            return bTime - aTime;
+        })
+        .slice(0, 3);
+}
+
+function getCommentText(comment){
+    return (
+        comment.text ||
+        comment.comment ||
+        comment.body ||
+        comment.content ||
+        ""
+    );
+}
+
+function getCommentUser(comment){
+    return (
+        comment.userName ||
+        comment.userEmail ||
+        comment.displayName ||
+        "匿名"
+    );
+}
+
+function isLikedByMe(albumId){
+    if(!currentUser) return false;
+
+    return allLikes.some(like =>
+        like.albumId === albumId &&
+        like.userId === currentUser.uid
+    );
+}
+
+async function toggleLike(albumId){
+    if(!currentUser){
+        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
+        return;
+    }
+
+    const likeId = getLikeId(currentUser.uid, albumId);
+    const likeRef = doc(db, "likes", likeId);
+
+    if(isLikedByMe(albumId)){
+        await deleteDoc(likeRef);
+    } else {
+        await setDoc(likeRef, {
+            userId: currentUser.uid,
+            albumId: albumId,
+            createdAt: serverTimestamp()
+        });
+    }
+}
+
+window.toggleLike = toggleLike;
+
+function updateLikeDisplays(){
+    const likeAreas = document.querySelectorAll("[data-like-area]");
+
+    likeAreas.forEach((area) => {
+        const albumId = area.dataset.albumId;
+        const countSpan = area.querySelector(".like-count");
+        const button = area.querySelector(".like-btn");
+
+        if(!countSpan || !button) return;
+
+        const count = getLikeCount(albumId);
+        const liked = isLikedByMe(albumId);
+
+        countSpan.textContent = count;
+        button.textContent = liked ? "♥" : "♡";
+
+        if(liked){
+            button.classList.add("liked");
+        } else {
+            button.classList.remove("liked");
+        }
+    });
+}
+
+function updateCommentDisplays(){
+    const commentCounts = document.querySelectorAll("[data-comment-count]");
+
+    commentCounts.forEach((countEl) => {
+        const albumId = countEl.dataset.albumId;
+        const count = getCommentCount(albumId);
+        countEl.textContent = `コメント ${count}件`;
+    });
+}
+
+function renderComments(albumId){
+    const comments = getCommentsForAlbum(albumId);
+
+    if(comments.length === 0){
+        return `
+            <div class="comment-preview">
+                <div class="comment-preview-title">コメント</div>
+                <div class="no-comment">まだコメントはありません</div>
+            </div>
+        `;
+    }
+
+    return `
+        <div class="comment-preview">
+            <div class="comment-preview-title">コメント</div>
+            ${comments.map(comment => `
+                <div class="comment-item">
+                    <span class="comment-user">${escapeHTML(getCommentUser(comment))}：</span>
+                    ${escapeHTML(getCommentText(comment))}
+                </div>
+            `).join("")}
+        </div>
+    `;
+}
+
+function renderAlbums(){
+    if(!uid) return;
+
+    if(profileAlbums.length === 0){
+        albumGrid.innerHTML = `<div class="empty">まだ投稿がありません。</div>`;
+        return;
+    }
+
+    albumGrid.innerHTML = "";
+
+    profileAlbums.forEach((album) => {
+        const albumId = album.id;
+
+        albumGrid.innerHTML += `
+<div class="album-card"
+     onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
+
+    <div class="card-top">
+
+        <div class="cover-wrap">
+            <img class="cover"
+                 src="${escapeHTML(album.cover || "")}"
+                 alt="">
+        </div>
+
+        <div class="album-info">
+            <div class="title">
+                ${escapeHTML(album.title || "")}
+            </div>
+
+            <div class="artist">
+                ${escapeHTML(album.artist || "")}
+            </div>
+
+            <div class="creator">
+                投稿者：
+                <a href="profile.html?uid=${escapeHTML(album.userId || "")}"
+                   onclick="event.stopPropagation();">
+                    ${escapeHTML(
+                        album.userName ||
+                        album.userEmail ||
+                        "匿名ユーザー"
+                    )}
+                </a>
+            </div>
+
+            <div class="reaction-row">
+                <div class="like-area"
+                     data-like-area
+                     data-album-id="${escapeHTML(albumId)}">
+                    <button class="like-btn"
+                            onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
+                        ♡
+                    </button>
+                    <span class="like-count">0</span>
+                </div>
+
+                <div class="comment-count"
+                     data-comment-count
+                     data-album-id="${escapeHTML(albumId)}">
+                    コメント 0件
+                </div>
+            </div>
+        </div>
+
+        <div class="album-analysis">
+            <div class="meter-area">
+                ${meter("暗い", "明るい", album.darkness)}
+                ${meter("静か", "激しい", album.intense)}
+                ${meter("シンプル", "複雑", album.complex)}
+                ${meter("絶望", "希望", album.hope)}
+                ${meter("個人", "世界", album.world)}
+
+                <div class="keyword-box">
+                    <div class="keyword-title">キーワード</div>
+                    <div class="keyword-text">
+                        ${escapeHTML(album.keywords || "")}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="description">
+        ${escapeHTML(album.desc || "")}
+    </div>
+
+    ${renderComments(albumId)}
+
+</div>
+        `;
+    });
+
+    updateLikeDisplays();
+    updateCommentDisplays();
+}
+
+async function loadProfile() {
+    try {
         const userDoc = await getDoc(doc(db, "users", uid));
 
-        if(userDoc.exists()){
+        if (userDoc.exists()) {
             const user = userDoc.data();
 
             profileName.textContent =
-                user.nickname ||
-                user.displayName ||
-                user.userName ||
-                "名無しユーザー";
+                user.displayName || user.userName || "名無しユーザー";
 
             profileEmail.textContent =
                 user.email || "";
-        }else{
+        } else {
             profileName.textContent = "ユーザーが見つかりません";
             profileEmail.textContent = "";
             followBtn.style.display = "none";
         }
-    }catch(error){
+    } catch (error) {
         console.error("プロフィール取得失敗:", error);
         profileName.textContent = "プロフィール取得失敗";
     }
 }
 
-async function loadAlbums(){
-    try{
-        const albumsQuery = query(
-            collection(db, "albums"),
-            where("userId", "==", uid),
-            where("isPublic", "==", true),
-            orderBy("createdAt", "desc")
-        );
+function listenAlbums(){
+    const albumsQuery = query(
+        collection(db, "albums"),
+        where("userId", "==", uid),
+        where("isPublic", "==", true)
+    );
 
-        const snapshot = await getDocs(albumsQuery);
-
-        if(snapshot.empty){
-            albumGrid.innerHTML =
-                `<div class="empty">まだ投稿がありません。</div>`;
-            return;
-        }
-
-        albumGrid.innerHTML = "";
+    onSnapshot(albumsQuery, (snapshot) => {
+        profileAlbums = [];
 
         snapshot.forEach((docSnap) => {
-            const album = docSnap.data();
-            const albumId = docSnap.id;
-
-            albumGrid.innerHTML += `
-                <div class="album-card"
-                     onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
-
-                    <div class="album-info">
-                        <img class="cover"
-                             src="${escapeHTML(album.cover || "")}"
-                             alt="">
-
-                        <div class="title">
-                            ${escapeHTML(album.title || "")}
-                        </div>
-
-                        <div class="artist">
-                            ${escapeHTML(album.artist || "")}
-                        </div>
-                    </div>
-
-                    <div class="album-analysis">
-                        <div class="meter-area">
-                            ${meter("暗い", "明るい", album.darkness)}
-                            ${meter("静か", "激しい", album.intense)}
-                            ${meter("シンプル", "複雑", album.complex)}
-                            ${meter("絶望", "希望", album.hope)}
-                            ${meter("個人", "世界", album.world)}
-
-                            <div class="keyword-box">
-                                <div class="keyword-title">キーワード</div>
-                                <div class="keyword-text">
-                                    ${escapeHTML(album.keywords || "")}
-                                </div>
-                            </div>
-
-                            <div class="description">
-                                ${escapeHTML(album.desc || "")}
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            `;
+            profileAlbums.push({
+                id: docSnap.id,
+                ...docSnap.data()
+            });
         });
-    }catch(error){
+
+        profileAlbums.sort((a, b) => {
+            const aTime = a.createdAt?.seconds || 0;
+            const bTime = b.createdAt?.seconds || 0;
+            return bTime - aTime;
+        });
+
+        renderAlbums();
+
+    }, (error) => {
         console.error("投稿取得失敗:", error);
-        albumGrid.innerHTML =
-            `<div class="empty">投稿の読み込みに失敗しました。</div>`;
-    }
+        albumGrid.innerHTML = `<div class="empty">投稿の読み込みに失敗しました。</div>`;
+    });
 }
 
-async function loadFollowCounts(){
-    try{
+function listenLikes(){
+    onSnapshot(collection(db, "likes"), (snapshot) => {
+        allLikes = [];
+
+        snapshot.forEach((docSnap) => {
+            allLikes.push({
+                id: docSnap.id,
+                ...docSnap.data()
+            });
+        });
+
+        updateLikeDisplays();
+
+    }, (error) => {
+        console.error("いいね取得失敗:", error);
+    });
+}
+
+function listenComments(){
+    onSnapshot(collection(db, "comments"), (snapshot) => {
+        allComments = [];
+
+        snapshot.forEach((docSnap) => {
+            allComments.push({
+                id: docSnap.id,
+                ...docSnap.data()
+            });
+        });
+
+        renderAlbums();
+
+    }, (error) => {
+        console.error("コメント取得失敗:", error);
+    });
+}
+
+async function loadFollowCounts() {
+    try {
         const followingQuery = query(
             collection(db, "follows"),
             where("followerId", "==", uid)
@@ -547,19 +1146,13 @@ async function loadFollowCounts(){
         followingCount.textContent = `フォロー中 ${followingSnapshot.size}`;
         followerCount.textContent = `フォロワー ${followerSnapshot.size}`;
 
-        followingCount.href =
-            `follows.html?uid=${encodeURIComponent(uid)}&type=following`;
-
-        followerCount.href =
-            `follows.html?uid=${encodeURIComponent(uid)}&type=followers`;
-
-    }catch(error){
+    } catch (error) {
         console.error("フォロー数取得失敗:", error);
     }
 }
 
-async function checkFollowStatus(){
-    try{
+async function checkFollowStatus() {
+    try {
         const followsQuery = query(
             collection(db, "follows"),
             where("followerId", "==", currentUser.uid),
@@ -568,16 +1161,16 @@ async function checkFollowStatus(){
 
         const snapshot = await getDocs(followsQuery);
 
-        if(!snapshot.empty){
+        if (!snapshot.empty) {
             followDocId = snapshot.docs[0].id;
             isFollowing = true;
             followBtn.textContent = "フォロー中";
-        }else{
+        } else {
             followDocId = null;
             isFollowing = false;
             followBtn.textContent = "フォロー";
         }
-    }catch(error){
+    } catch (error) {
         console.error("フォロー状態確認失敗:", error);
         followDocId = null;
         isFollowing = false;
@@ -585,19 +1178,19 @@ async function checkFollowStatus(){
     }
 }
 
-async function followUser(){
-    if(!currentUser){
+async function followUser() {
+    if (!currentUser) {
         location.href =
             `login.html?redirect=${encodeURIComponent(location.href)}`;
         return;
     }
 
-    if(currentUser.uid === uid){
+    if (currentUser.uid === uid) {
         alert("自分自身はフォローできません");
         return;
     }
 
-    try{
+    try {
         followBtn.disabled = true;
         followBtn.textContent = "処理中...";
 
@@ -613,22 +1206,21 @@ async function followUser(){
 
         await loadFollowCounts();
 
-    }catch(error){
+    } catch (error) {
         console.error("フォロー失敗:", error);
         alert("フォロー失敗: " + error.message);
         followBtn.textContent = "フォロー";
-    }finally{
+    } finally {
         followBtn.disabled = false;
     }
 }
 
-async function unfollowUser(){
-    if(!followDocId){
-        alert("フォロー情報が見つかりません");
+async function unfollowUser() {
+    if (!followDocId) {
         return;
     }
 
-    try{
+    try {
         followBtn.disabled = true;
         followBtn.textContent = "処理中...";
 
@@ -640,11 +1232,11 @@ async function unfollowUser(){
 
         await loadFollowCounts();
 
-    }catch(error){
+    } catch (error) {
         console.error("解除失敗:", error);
         alert("解除失敗: " + error.message);
         followBtn.textContent = "フォロー中";
-    }finally{
+    } finally {
         followBtn.disabled = false;
     }
 }
@@ -652,17 +1244,19 @@ async function unfollowUser(){
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
 
-    if(user){
-        myPageLink.href = `profile.html?uid=${user.uid}`;
-    }else{
-        myPageLink.href = "login.html";
-    }
-
-    if(!uid && currentUser){
+    if (!uid && currentUser) {
         uid = currentUser.uid;
     }
 
-    if(!uid){
+    if (mobileMyPageLink) {
+        if (currentUser) {
+            mobileMyPageLink.href = `profile.html?uid=${currentUser.uid}`;
+        } else {
+            mobileMyPageLink.href = "login.html";
+        }
+    }
+
+    if (!uid) {
         profileName.textContent = "ユーザーが指定されていません";
         albumGrid.innerHTML =
             `<div class="empty">ログインしていないため、マイページを表示できません。</div>`;
@@ -671,10 +1265,13 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     await loadProfile();
-    await loadAlbums();
     await loadFollowCounts();
 
-    if(!currentUser){
+    listenAlbums();
+    listenLikes();
+    listenComments();
+
+    if (!currentUser) {
         followBtn.style.display = "inline-block";
         followBtn.textContent = "ログインしてフォロー";
         followBtn.onclick = () => {
@@ -684,7 +1281,7 @@ onAuthStateChanged(auth, async (user) => {
         return;
     }
 
-    if(currentUser.uid === uid){
+    if (currentUser.uid === uid) {
         followBtn.style.display = "none";
         return;
     }
@@ -693,9 +1290,9 @@ onAuthStateChanged(auth, async (user) => {
     followBtn.textContent = "フォロー";
 
     followBtn.onclick = async () => {
-        if(isFollowing){
+        if (isFollowing) {
             await unfollowUser();
-        }else{
+        } else {
             await followUser();
         }
     };
