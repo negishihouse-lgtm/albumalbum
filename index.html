@@ -1,3 +1,8 @@
+# Album Collection 修正版コード
+
+以下のファイルを `index.html` にそのまま貼り付けてください。
+
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -18,8 +23,10 @@ body{
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
     padding:40px;
     padding-left:280px;
+    padding-bottom:120px;
 }
 
+/* ===== PC用サイドバー ===== */
 .sidebar{
     position:fixed;
     top:0;
@@ -30,6 +37,7 @@ body{
     border-right:1px solid rgba(255,255,255,0.1);
     padding:30px 20px;
     overflow-y:auto;
+    z-index:100;
 }
 
 .logo{
@@ -51,11 +59,60 @@ body{
     background:#1a1a1a;
 }
 
+/* ===== スマホ用下部タブバー ===== */
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#999;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:#6fa8dc;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+/* ===== 右下の投稿ボタン ===== */
+.fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:#6fa8dc;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    z-index:1000;
+}
+
+.fab:hover{
+    background:#84b7e4;
+}
+
 .topbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:40px;
+    margin-bottom:32px;
 }
 
 .page-title{
@@ -96,10 +153,7 @@ body{
     background:#0b0b0b;
     border:1px solid rgba(255,255,255,0.14);
     border-radius:18px;
-    padding:22px;
-    display:grid;
-    grid-template-columns:38% 62%;
-    gap:20px;
+    padding:18px;
     cursor:pointer;
     overflow:hidden;
 }
@@ -108,12 +162,12 @@ body{
     border-color:rgba(111,168,220,0.55);
 }
 
-.album-info{
-    min-width:0;
-}
-
-.album-analysis{
-    min-width:0;
+/* 上段（画像・情報・分析） */
+.card-top{
+    display:grid;
+    grid-template-columns:120px 1fr 260px;
+    gap:18px;
+    align-items:start;
 }
 
 .cover{
@@ -121,48 +175,35 @@ body{
     aspect-ratio:1/1;
     object-fit:cover;
     background:#111;
-    margin-bottom:16px;
+    border-radius:10px;
     border:1px solid rgba(255,255,255,0.18);
 }
 
+.album-info,
+.album-analysis{
+    min-width:0;
+}
+
 .title{
-    font-size:28px;
+    font-size:24px;
     font-weight:800;
-    line-height:1.15;
+    line-height:1.2;
     margin-bottom:6px;
     word-break:break-word;
 }
 
 .artist{
     color:#6fa8dc;
-    font-size:19px;
+    font-size:18px;
     margin-bottom:8px;
     word-break:break-word;
 }
 
-.meta{
-    color:#aaa;
-    font-size:15px;
-    margin-bottom:12px;
-    word-break:break-word;
-}
-
-.description{
-    color:#ddd;
-    font-size:15px;
-    line-height:1.7;
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1px solid rgba(255,255,255,0.1);
-    word-break:break-word;
-}
-
 .creator{
-    margin-top:10px;
+    margin-bottom:10px;
     color:#ccc;
     font-size:14px;
     line-height:1.5;
-    word-break:break-word;
 }
 
 .creator a{
@@ -170,17 +211,13 @@ body{
     text-decoration:none;
 }
 
-.creator a:hover{
-    text-decoration:underline;
-}
-
 .reaction-row{
-    margin-top:14px;
     display:flex;
     align-items:center;
     gap:16px;
     color:#aaa;
-    font-size:15px;
+    font-size:14px;
+    flex-wrap:wrap;
 }
 
 .like-area{
@@ -195,8 +232,6 @@ body{
     color:#aaa;
     padding:0;
     font-size:20px;
-    cursor:pointer;
-    border-radius:0;
 }
 
 .like-btn:hover{
@@ -209,35 +244,28 @@ body{
     color:white;
 }
 
-.like-count{
-    font-size:15px;
-    color:#aaa;
-}
-
+.like-count,
 .comment-count{
-    margin-top:0;
+    font-size:14px;
     color:#aaa;
-    font-size:15px;
 }
 
 .meter-area{
     border:1px solid rgba(255,255,255,0.14);
     border-radius:14px;
-    padding:16px;
-    min-width:0;
+    padding:12px;
 }
 
 .meter{
     display:grid;
-    grid-template-columns:58px minmax(0,1fr) 58px;
+    grid-template-columns:46px minmax(0,1fr) 46px;
     align-items:center;
-    gap:8px;
-    margin-bottom:14px;
-    min-width:0;
+    gap:6px;
+    margin-bottom:10px;
 }
 
 .meter-label{
-    font-size:14px;
+    font-size:11px;
     font-weight:700;
     color:#e8e8e8;
     white-space:nowrap;
@@ -252,12 +280,11 @@ body{
     align-items:center;
     width:100%;
     min-width:0;
-    overflow:hidden;
 }
 
 .dot{
-    width:12px;
-    height:12px;
+    width:8px;
+    height:8px;
     border-radius:50%;
     border:2px solid #555;
     background:#0b0b0b;
@@ -265,59 +292,50 @@ body{
 }
 
 .connector{
-    height:3px;
+    height:2px;
     background:#4a5158;
     flex:1;
-    min-width:0;
 }
 
 .dot.active.level-1,
-.connector.active.level-1{
-    background:#3f8ec7;
-    border-color:#3f8ec7;
-}
-
+.connector.active.level-1{ background:#3f8ec7; border-color:#3f8ec7; }
 .dot.active.level-2,
-.connector.active.level-2{
-    background:#4d9bd0;
-    border-color:#4d9bd0;
-}
-
+.connector.active.level-2{ background:#4d9bd0; border-color:#4d9bd0; }
 .dot.active.level-3,
-.connector.active.level-3{
-    background:#5fa7d8;
-    border-color:#5fa7d8;
-}
-
+.connector.active.level-3{ background:#5fa7d8; border-color:#5fa7d8; }
 .dot.active.level-4,
-.connector.active.level-4{
-    background:#73b6e3;
-    border-color:#73b6e3;
-}
-
-.dot.active.level-5{
-    background:#8bc8ef;
-    border-color:#8bc8ef;
-}
+.connector.active.level-4{ background:#73b6e3; border-color:#73b6e3; }
+.dot.active.level-5{ background:#8bc8ef; border-color:#8bc8ef; }
 
 .keyword-box{
-    margin-top:14px;
+    margin-top:10px;
     border:1px solid rgba(255,255,255,0.14);
     border-radius:12px;
-    padding:14px;
+    padding:10px;
 }
 
 .keyword-title{
     color:#6fa8dc;
-    font-size:15px;
+    font-size:12px;
     font-weight:700;
-    margin-bottom:8px;
+    margin-bottom:4px;
 }
 
 .keyword-text{
     color:#ddd;
+    font-size:12px;
+    line-height:1.5;
+    word-break:break-word;
+}
+
+/* 下段の紹介文 */
+.description{
+    color:#ddd;
     font-size:14px;
-    line-height:1.6;
+    line-height:1.7;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid rgba(255,255,255,0.1);
     word-break:break-word;
 }
 
@@ -326,66 +344,164 @@ body{
     font-size:28px;
 }
 
+/* ===== タブレット以下 ===== */
 @media(max-width:1300px){
     .album-grid{
         grid-template-columns:1fr;
     }
-
-    .album-card{
-        grid-template-columns:38% 62%;
-    }
 }
 
+/* ===== スマホUI ===== */
 @media(max-width:900px){
     body{
-        padding:22px;
+        padding:16px;
+        padding-left:16px;
+        padding-bottom:110px;
     }
 
+    /* サイドバー非表示 */
     .sidebar{
-        position:static;
-        width:100%;
-        height:auto;
-        margin-bottom:24px;
+        display:none;
+    }
+
+    /* 下部タブバー表示 */
+    .mobile-tabbar{
+        display:flex;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:#0b0b0b;
+        border-top:1px solid rgba(255,255,255,0.1);
+        z-index:999;
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    /* タイトルを小さく */
+    .page-title{
+        font-size:30px;
     }
 
     .topbar{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:20px;
+        margin-bottom:20px;
     }
 
-    .page-title{
-        font-size:34px;
+    /* スマホでは上部ボタンを隠す */
+    .topbar > div{
+        display:none !important;
     }
 
+    /* 1列表示 */
     .album-grid{
         grid-template-columns:1fr;
+        gap:14px;
     }
 
+    /* カードをコンパクト化 */
     .album-card{
-        grid-template-columns:1fr;
+        padding:14px;
+        border-radius:14px;
     }
 
-    .cover{
-        max-width:260px;
+    /* 横型レイアウト */
+    .card-top{
+        grid-template-columns:72px 1fr 120px;
+        gap:10px;
+    }
+
+    .title{
+        font-size:16px;
+        margin-bottom:4px;
+        line-height:1.3;
+    }
+
+    .artist{
+        font-size:13px;
+        margin-bottom:4px;
+    }
+
+    .creator{
+        font-size:11px;
+        margin-bottom:6px;
+    }
+
+    .reaction-row{
+        gap:8px;
+        font-size:11px;
+    }
+
+    .like-btn{
+        font-size:16px;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:11px;
+    }
+
+    .meter-area{
+        padding:8px;
     }
 
     .meter{
-        grid-template-columns:50px minmax(0,1fr) 50px;
+        grid-template-columns:26px 1fr 26px;
+        gap:3px;
+        margin-bottom:5px;
     }
 
     .meter-label{
-        font-size:13px;
+        font-size:8px;
+    }
+
+    .dot{
+        width:5px;
+        height:5px;
+        border-width:1px;
+    }
+
+    .connector{
+        height:1px;
+    }
+
+    .keyword-box{
+        margin-top:6px;
+        padding:6px;
+    }
+
+    .keyword-title{
+        font-size:9px;
+        margin-bottom:2px;
+    }
+
+    .keyword-text{
+        font-size:9px;
+        line-height:1.3;
+    }
+
+    .description{
+        font-size:12px;
+        line-height:1.6;
+        margin-top:10px;
+        padding-top:10px;
+    }
+
+    /* 投稿ボタンをタブバーの上に */
+    .fab{
+        right:16px;
+        bottom:88px;
+        width:58px;
+        height:58px;
+        font-size:32px;
     }
 }
 </style>
 </head>
-
 <body>
 
+<!-- PC用サイドバー -->
 <nav class="sidebar">
     <div class="logo">Album Collection</div>
-
     <a href="index.html">ホーム</a>
     <a href="editor.html">投稿する</a>
     <a id="myPageLink" href="login.html">マイページ</a>
@@ -393,14 +509,39 @@ body{
     <a href="login.html">ログイン</a>
 </nav>
 
+<!-- スマホ用下部タブバー -->
+<nav class="mobile-tabbar">
+    <a href="index.html" class="active">
+        <div class="icon">🏠</div>
+        <div>ホーム</div>
+    </a>
+    <a href="search.html">
+        <div class="icon">🔍</div>
+        <div>さがす</div>
+    </a>
+    <a href="editor.html">
+        <div class="icon">➕</div>
+        <div>投稿</div>
+    </a>
+    <a href="notifications.html">
+        <div class="icon">🔔</div>
+        <div>通知</div>
+    </a>
+    <a id="mobileMyPageLink" href="login.html">
+        <div class="icon">👤</div>
+        <div>マイページ</div>
+    </a>
+</nav>
+
+<!-- 右下投稿ボタン -->
+<a href="editor.html" class="fab">＋</a>
+
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
-
     <div style="display:flex; gap:12px; flex-wrap:wrap;">
         <button id="mypageBtn" class="back-btn" style="display:none;">
             マイページ
         </button>
-
         <button class="back-btn" onclick="location.href='./editor.html'">
             編集ページへ戻る
         </button>
@@ -408,6 +549,19 @@ body{
 </div>
 
 <div class="album-grid" id="albumGrid"></div>
+
+<!-- ここに元の JavaScript をそのまま貼り付ける -->
+<script type="module">
+// あなたの現在の script 部分をそのまま使用してください。
+// HTML構造の変更点は以下です。
+// 1. album-card 内で .card-top を使う
+// 2. description は meter-area の外に配置する
+</script>
+
+</body>
+</html>
+```
+
 
 <script type="module">
 
@@ -726,4 +880,3 @@ onSnapshot(q, (snapshot)=>{
 
 </body>
 </html>
-ああああ
