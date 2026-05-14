@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search - Album Collection</title>
+
+  <style>
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      background:#050505;
+      color:#fff;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    button{
+      font-family:inherit;
+    }
+
+    .sidebar{
+      position:fixed;
+      left:0;
+      top:0;
+      width:220px;
+      height:100vh;
+      border-right:1px solid rgba(255,255,255,0.12);
+      background:#050505;
+      padding:28px 22px;
+      z-index:10;
+    }
+
+    .brand{
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      margin-bottom:36px;
+    }
+
+    .side-nav{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .side-link{
+      display:block;
+      padding:13px 14px;
+      border-radius:999px;
+      color:rgba(255,255,255,0.82);
+      font-size:16px;
+    }
+
+    .side-link:hover,
+    .side-link.active{
+      background:rgba(255,255,255,0.1);
+      color:#fff;
+    }
+
+    .main{
+      width:min(760px, calc(100% - 220px));
+      margin-left:220px;
+      min-height:100vh;
+      border-right:1px solid rgba(255,255,255,0.08);
+    }
+
+    .page-header{
+      position:sticky;
+      top:0;
+      z-index:5;
+      backdrop-filter:blur(18px);
+      background:rgba(5,5,5,0.86);
+      border-bottom:1px solid rgba(255,255,255,0.1);
+      padding:18px 22px;
+    }
+
+    .page-title{
+      margin:0;
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+    }
+
+    .search-area{
+      padding:18px 22px 14px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    .search-box{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .search-input{
+      flex:1;
+      width:100%;
+      border:1px solid rgba(255,255,255,0.14);
+      background:#101010;
+      color:white;
+      border-radius:999px;
+      padding:14px 18px;
+      font-size:16px;
+      outline:none;
+    }
+
+    .search-input:focus{
+      border-color:rgba(111,168,220,0.75);
+      box-shadow:0 0 0 3px rgba(111,168,220,0.18);
+    }
+
+    .search-button{
+      border:0;
+      border-radius:999px;
+      padding:14px 18px;
+      background:#6fa8dc;
+      color:#fff;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .search-button:hover{
+      filter:brightness(1.08);
+    }
+
+    .hint{
+      margin:10px 2px 0;
+      color:rgba(255,255,255,0.55);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .status{
+      padding:18px 22px;
+      color:rgba(255,255,255,0.64);
+      font-size:14px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    .results{
+      padding-bottom:100px;
+    }
+
+    .album-card{
+      display:grid;
+      grid-template-columns:96px 1fr;
+      gap:16px;
+      padding:18px 22px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      cursor:pointer;
+      transition:background 0.15s ease;
+    }
+
+    .album-card:hover{
+      background:rgba(255,255,255,0.04);
+    }
+
+    .cover{
+      width:96px;
+      height:96px;
+      background:#171717;
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:14px;
+      overflow:hidden;
+      flex-shrink:0;
+    }
+
+    .cover img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .no-cover{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(255,255,255,0.35);
+      font-size:12px;
+      text-align:center;
+      padding:8px;
+    }
+
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:4px;
+    }
+
+    .album-title{
+      margin:0;
+      font-size:19px;
+      font-weight:800;
+      line-height:1.3;
+      letter-spacing:-0.02em;
+    }
+
+    .year{
+      color:rgba(255,255,255,0.45);
+      font-size:13px;
+      white-space:nowrap;
+      padding-top:3px;
+    }
+
+    .artist{
+      margin:0 0 6px;
+      color:rgba(255,255,255,0.72);
+      font-size:14px;
+      line-height:1.4;
+    }
+
+    .user-name{
+      display:inline-flex;
+      align-items:center;
+      max-width:100%;
+      margin-bottom:8px;
+      color:#9bc7ef;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .desc{
+      margin:0 0 10px;
+      color:rgba(255,255,255,0.68);
+      font-size:14px;
+      line-height:1.6;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .keywords{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-bottom:10px;
+    }
+
+    .keyword{
+      padding:4px 9px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.08);
+      color:rgba(255,255,255,0.76);
+      font-size:12px;
+    }
+
+    .meta{
+      display:flex;
+      gap:14px;
+      color:rgba(255,255,255,0.52);
+      font-size:13px;
+    }
+
+    .empty{
+      padding:42px 22px;
+      color:rgba(255,255,255,0.58);
+      text-align:center;
+      line-height:1.8;
+    }
+
+    .post-fab{
+      position:fixed;
+      right:28px;
+      bottom:28px;
+      width:58px;
+      height:58px;
+      border-radius:50%;
+      background:#6fa8dc;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:34px;
+      font-weight:500;
+      box-shadow:0 12px 30px rgba(0,0,0,0.35);
+      z-index:30;
+    }
+
+    .bottom-tab{
+      display:none;
+    }
+
+    @media (max-width:760px){
+      body{
+        padding-bottom:78px;
+      }
+
+      .sidebar{
+        display:none;
+      }
+
+      .main{
+        width:100%;
+        margin-left:0;
+        border-right:0;
+      }
+
+      .page-header{
+        padding:14px 16px;
+      }
+
+      .page-title{
+        font-size:22px;
+      }
+
+      .search-area{
+        padding:14px 16px 12px;
+      }
+
+      .search-box{
+        gap:8px;
+      }
+
+      .search-input{
+        padding:13px 15px;
+        font-size:15px;
+      }
+
+      .search-button{
+        padding:13px 15px;
+        font-size:14px;
+      }
+
+      .status{
+        padding:14px 16px;
+      }
+
+      .album-card{
+        grid-template-columns:76px 1fr;
+        gap:12px;
+        padding:14px 16px;
+      }
+
+      .cover{
+        width:76px;
+        height:76px;
+        border-radius:12px;
+      }
+
+      .album-title{
+        font-size:16px;
+      }
+
+      .artist,
+      .desc{
+        font-size:13px;
+      }
+
+      .desc{
+        -webkit-line-clamp:2;
+      }
+
+      .keywords{
+        gap:5px;
+      }
+
+      .keyword{
+        font-size:11px;
+        padding:3px 7px;
+      }
+
+      .post-fab{
+        right:18px;
+        bottom:88px;
+        width:54px;
+        height:54px;
+        font-size:32px;
+      }
+
+      .bottom-tab{
+        position:fixed;
+        left:0;
+        bottom:0;
+        width:100%;
+        height:70px;
+        background:rgba(5,5,5,0.96);
+        backdrop-filter:blur(18px);
+        border-top:1px solid rgba(255,255,255,0.12);
+        display:grid;
+        grid-template-columns:repeat(5,1fr);
+        z-index:25;
+      }
+
+      .tab-link{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:3px;
+        color:rgba(255,255,255,0.64);
+        font-size:11px;
+      }
+
+      .tab-link span{
+        font-size:21px;
+        line-height:1;
+      }
+
+      .tab-link.active{
+        color:#fff;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="brand">Album Collection</div>
+    <nav class="side-nav">
+      <a class="side-link" href="index.html">ホーム</a>
+      <a class="side-link active" href="search.html">さがす</a>
+      <a class="side-link" href="editor.html">投稿</a>
+      <a class="side-link" href="notifications.html">通知</a>
+      <a class="side-link" id="sideMyPageLink" href="login.html">マイページ</a>
+      <a class="side-link" href="login.html">ログイン</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <h1 class="page-title">さがす</h1>
+    </header>
+
+    <section class="search-area">
+      <div class="search-box">
+        <input
+          id="searchInput"
+          class="search-input"
+          type="search"
+          placeholder="アルバム名・アーティスト名・投稿者・キーワードで検索"
+          autocomplete="off"
+        />
+        <button id="searchButton" class="search-button" type="button">検索</button>
+      </div>
+      <p class="hint">公開投稿のみ検索します。入力なしの場合は最近の公開投稿を表示します。</p>
+    </section>
+
+    <div id="status" class="status">読み込み中...</div>
+    <section id="results" class="results"></section>
+  </main>
+
+  <a class="post-fab" href="editor.html" aria-label="投稿する">＋</a>
+
+  <nav class="bottom-tab">
+    <a class="tab-link" href="index.html"><span>⌂</span>ホーム</a>
+    <a class="tab-link active" href="search.html"><span>⌕</span>さがす</a>
+    <a class="tab-link" href="editor.html"><span>＋</span>投稿</a>
+    <a class="tab-link" href="notifications.html"><span>♡</span>通知</a>
+    <a class="tab-link" id="bottomMyPageLink" href="login.html"><span>◉</span>マイページ</a>
+  </nav>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+    import {
+      initializeFirestore,
+      collection,
+      getDocs,
+      query,
+      where,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+      authDomain: "album-49b3e.firebaseapp.com",
+      projectId: "album-49b3e",
+      storageBucket: "album-49b3e.firebasestorage.app",
+      messagingSenderId: "448724897117",
+      appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+      measurementId: "G-3QFX3GDEXN"
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = initializeFirestore(app, {
+      experimentalAutoDetectLongPolling: true
+    });
+
+    const auth = getAuth(app);
+
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+    const statusEl = document.getElementById("status");
+    const resultsEl = document.getElementById("results");
+    const sideMyPageLink = document.getElementById("sideMyPageLink");
+    const bottomMyPageLink = document.getElementById("bottomMyPageLink");
+
+    let currentUser = null;
+    let publicAlbums = [];
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+
+      if(user){
+        const myPageUrl = `profile.html?uid=${user.uid}`;
+        sideMyPageLink.href = myPageUrl;
+        bottomMyPageLink.href = myPageUrl;
+      }else{
+        sideMyPageLink.href = "login.html";
+        bottomMyPageLink.href = "login.html";
+      }
+    });
+
+    function normalizeText(value){
+      return String(value || "")
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .trim();
+    }
+
+    function getKeywordText(keywords){
+      if(Array.isArray(keywords)){
+        return keywords.join(" ");
+      }
+
+      if(typeof keywords === "string"){
+        return keywords;
+      }
+
+      return "";
+    }
+
+    function escapeHtml(value){
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatKeywords(keywords){
+      if(!keywords) return "";
+
+      let list = [];
+
+      if(Array.isArray(keywords)){
+        list = keywords;
+      }else if(typeof keywords === "string"){
+        list = keywords
+          .split(/[、,\s]+/)
+          .map((item) => item.trim())
+          .filter(Boolean);
+      }
+
+      return list
+        .slice(0, 6)
+        .map((keyword) => `<span class="keyword">${escapeHtml(keyword)}</span>`)
+        .join("");
+    }
+
+    function getCommentCount(album){
+      if(typeof album.commentCount === "number") return album.commentCount;
+      if(typeof album.commentsCount === "number") return album.commentsCount;
+      return 0;
+    }
+
+    function getLikeCount(album){
+      if(typeof album.likeCount === "number") return album.likeCount;
+      if(typeof album.likesCount === "number") return album.likesCount;
+      return 0;
+    }
+
+    function renderAlbums(albums, keyword){
+      resultsEl.innerHTML = "";
+
+      if(albums.length === 0){
+        resultsEl.innerHTML = `
+          <div class="empty">
+            該当する投稿がありません。<br>
+            別のキーワードで検索してみてください。
+          </div>
+        `;
+        statusEl.textContent = keyword
+          ? `「${keyword}」の検索結果：0件`
+          : "公開投稿：0件";
+        return;
+      }
+
+      statusEl.textContent = keyword
+        ? `「${keyword}」の検索結果：${albums.length}件`
+        : `最近の公開投稿：${albums.length}件`;
+
+      albums.forEach((item) => {
+        const album = item.data;
+        const card = document.createElement("article");
+        card.className = "album-card";
+        card.addEventListener("click", () => {
+          location.href = `detail.html?id=${item.id}`;
+        });
+
+        const coverHtml = album.cover
+          ? `<img src="${escapeHtml(album.cover)}" alt="${escapeHtml(album.title || "album cover")}" loading="lazy">`
+          : `<div class="no-cover">No Cover</div>`;
+
+        const userName = album.userName || album.nickname || album.userEmail || "Unknown User";
+        const profileUrl = album.userId ? `profile.html?uid=${album.userId}` : "#";
+        const keywordsHtml = formatKeywords(album.keywords);
+
+        card.innerHTML = `
+          <div class="cover">${coverHtml}</div>
+          <div class="card-body">
+            <div class="card-top">
+              <h2 class="album-title">${escapeHtml(album.title || "Untitled")}</h2>
+              <div class="year">${escapeHtml(album.year || "")}</div>
+            </div>
+
+            <p class="artist">${escapeHtml(album.artist || "Unknown Artist")}</p>
+
+            <a class="user-name" href="${escapeHtml(profileUrl)}" onclick="event.stopPropagation();">
+              @${escapeHtml(userName)}
+            </a>
+
+            <p class="desc">${escapeHtml(album.desc || "")}</p>
+
+            ${keywordsHtml ? `<div class="keywords">${keywordsHtml}</div>` : ""}
+
+            <div class="meta">
+              <span>♡ ${getLikeCount(album)}</span>
+              <span>💬 ${getCommentCount(album)}</span>
+            </div>
+          </div>
+        `;
+
+        resultsEl.appendChild(card);
+      });
+    }
+
+    function filterAlbums(){
+      const rawKeyword = searchInput.value.trim();
+      const normalizedKeyword = normalizeText(rawKeyword);
+
+      if(!normalizedKeyword){
+        renderAlbums(publicAlbums, "");
+        return;
+      }
+
+      const filtered = publicAlbums.filter((item) => {
+        const album = item.data;
+
+        const targetText = [
+          album.title,
+          album.artist,
+          album.userName,
+          album.nickname,
+          album.userEmail,
+          album.desc,
+          album.year,
+          getKeywordText(album.keywords)
+        ].join(" ");
+
+        return normalizeText(targetText).includes(normalizedKeyword);
+      });
+
+      renderAlbums(filtered, rawKeyword);
+    }
+
+    async function loadPublicAlbums(){
+      statusEl.textContent = "読み込み中...";
+      resultsEl.innerHTML = "";
+
+      try{
+        const albumsQuery = query(
+          collection(db, "albums"),
+          where("isPublic", "==", true),
+          orderBy("createdAt", "desc")
+        );
+
+        const snapshot = await getDocs(albumsQuery);
+
+        publicAlbums = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          data: doc.data()
+        }));
+
+        renderAlbums(publicAlbums, "");
+      }catch(error){
+        console.error(error);
+
+        statusEl.textContent = "読み込みに失敗しました";
+
+        resultsEl.innerHTML = `
+          <div class="empty">
+            投稿を読み込めませんでした。<br>
+            Firestore のインデックスやルール、firebaseConfig を確認してください。
+          </div>
+        `;
+      }
+    }
+
+    searchButton.addEventListener("click", filterAlbums);
+
+    searchInput.addEventListener("keydown", (event) => {
+      if(event.key === "Enter"){
+        filterAlbums();
+      }
+    });
+
+    searchInput.addEventListener("input", () => {
+      filterAlbums();
+    });
+
+    loadPublicAlbums();
+  </script>
+</body>
+</html>
