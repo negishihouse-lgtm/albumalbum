@@ -64,6 +64,10 @@ body{
     background:#6fa8dc;
 }
 
+#sideProfileEditBtn{
+    display:none;
+}
+
 /* ===== スマホ用下部タブバー ===== */
 .mobile-tabbar{
     display:none;
@@ -146,6 +150,13 @@ body{
     font-size:15px;
 }
 
+.profile-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
 .follow-btn{
     background:#6fa8dc;
     color:white;
@@ -163,6 +174,21 @@ body{
 .follow-btn:disabled{
     opacity:0.6;
     cursor:not-allowed;
+}
+
+.profile-edit-btn{
+    display:none;
+    background:#333;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:12px 20px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.profile-edit-btn:hover{
+    background:#444;
 }
 
 .owner-notice{
@@ -519,7 +545,12 @@ body{
         gap:14px;
     }
 
-    .follow-btn{
+    .profile-actions{
+        gap:8px;
+    }
+
+    .follow-btn,
+    .profile-edit-btn{
         font-size:14px;
         padding:10px 16px;
     }
@@ -695,7 +726,7 @@ body{
             <button onclick="location.href='./editor.html'">投稿する</button>
             <button onclick="location.href='./notifications.html'">通知</button>
             <button class="active">マイページ</button>
-            <button onclick="location.href='./profile-edit.html'">プロフィール編集</button>
+            <button id="sideProfileEditBtn" onclick="location.href='./profile-edit.html'">プロフィール編集</button>
             <button onclick="location.href='./login.html'">ログイン / 新規登録</button>
         </div>
     </div>
@@ -742,7 +773,13 @@ body{
                 <span id="followerCount">フォロワー 0</span>
             </div>
 
-            <button class="follow-btn" id="followBtn">フォロー</button>
+            <div class="profile-actions">
+                <button class="follow-btn" id="followBtn">フォロー</button>
+
+                <button class="profile-edit-btn" id="profileEditBtn">
+                    プロフィール編集
+                </button>
+            </div>
         </div>
 
         <div class="owner-notice" id="ownerNotice">
@@ -808,6 +845,8 @@ const followingCount = document.getElementById("followingCount");
 const followerCount = document.getElementById("followerCount");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const ownerNotice = document.getElementById("ownerNotice");
+const profileEditBtn = document.getElementById("profileEditBtn");
+const sideProfileEditBtn = document.getElementById("sideProfileEditBtn");
 
 let currentUser = null;
 let followDocId = null;
@@ -1137,6 +1176,8 @@ async function loadProfile() {
             profileName.textContent = "ユーザーが見つかりません";
             profileEmail.textContent = "";
             followBtn.style.display = "none";
+            profileEditBtn.style.display = "none";
+            sideProfileEditBtn.style.display = "none";
         }
     } catch (error) {
         console.error("プロフィール取得失敗:", error);
@@ -1351,10 +1392,23 @@ async function unfollowUser() {
 function updateOwnerUI(){
     if(isOwner()){
         ownerNotice.style.display = "block";
+        profileEditBtn.style.display = "inline-block";
+        sideProfileEditBtn.style.display = "block";
     } else {
         ownerNotice.style.display = "none";
+        profileEditBtn.style.display = "none";
+        sideProfileEditBtn.style.display = "none";
     }
 }
+
+profileEditBtn.addEventListener("click", () => {
+    if(!currentUser){
+        location.href = "login.html";
+        return;
+    }
+
+    location.href = "profile-edit.html";
+});
 
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
@@ -1376,6 +1430,8 @@ onAuthStateChanged(auth, async (user) => {
         albumGrid.innerHTML =
             `<div class="empty">ログインしていないため、マイページを表示できません。</div>`;
         followBtn.style.display = "none";
+        profileEditBtn.style.display = "none";
+        sideProfileEditBtn.style.display = "none";
         ownerNotice.style.display = "none";
         return;
     }
@@ -1391,6 +1447,9 @@ onAuthStateChanged(auth, async (user) => {
 
     if (!currentUser) {
         followBtn.style.display = "inline-block";
+        profileEditBtn.style.display = "none";
+        sideProfileEditBtn.style.display = "none";
+
         followBtn.textContent = "ログインしてフォロー";
         followBtn.onclick = () => {
             location.href =
@@ -1401,10 +1460,15 @@ onAuthStateChanged(auth, async (user) => {
 
     if (currentUser.uid === uid) {
         followBtn.style.display = "none";
+        profileEditBtn.style.display = "inline-block";
+        sideProfileEditBtn.style.display = "block";
         return;
     }
 
     followBtn.style.display = "inline-block";
+    profileEditBtn.style.display = "none";
+    sideProfileEditBtn.style.display = "none";
+
     followBtn.textContent = "フォロー";
 
     followBtn.onclick = async () => {
