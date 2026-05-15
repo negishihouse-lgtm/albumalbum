@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comments - Album Collection</title>
+<title>Album Detail - Album Collection</title>
 
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; }
@@ -12,58 +12,40 @@ body{
     background:#050505;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    padding:32px;
-    padding-bottom:32px;
-}
-
-button,input,textarea{
-    font-family:inherit;
+    padding:36px 40px;
+    padding-bottom:110px;
 }
 
 .topbar{
-    max-width:760px;
+    max-width:920px;
     margin:0 auto 24px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:12px;
 }
 
 .page-title{
-    font-size:28px;
+    font-size:30px;
     font-weight:800;
     letter-spacing:-0.03em;
 }
 
-.top-actions{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
 .btn,.like-btn,.comment-btn,.delete-comment-btn{
-    background:#141414;
+    background:#1e1e1e;
     color:white;
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:999px;
-    padding:10px 16px;
+    border:1px solid rgba(255,255,255,0.15);
+    padding:11px 16px;
     font-size:14px;
     cursor:pointer;
+    border-radius:999px;
 }
 
 .btn:hover,.like-btn:hover,.comment-btn:hover,.delete-comment-btn:hover{
-    background:#222;
-}
-
-.like-btn.liked{
-    background:#6fa8dc;
-    border-color:#6fa8dc;
-    color:#061018;
-    font-weight:700;
+    background:#2a2a2a;
 }
 
 .detail-wrap{
-    max-width:760px;
+    max-width:920px;
     margin:0 auto;
 }
 
@@ -71,154 +53,224 @@ button,input,textarea{
     background:#0b0b0b;
     border:1px solid rgba(255,255,255,0.12);
     border-radius:22px;
-    overflow:hidden;
+    padding:22px;
 }
 
-.post-summary{
-    padding:18px;
-    display:grid;
-    grid-template-columns:92px 1fr;
-    gap:15px;
-    cursor:pointer;
+.post-head{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
 }
 
 .cover{
-    width:92px;
-    aspect-ratio:1/1;
+    width:108px;
+    height:108px;
     object-fit:cover;
     background:#111;
     border-radius:14px;
-    border:1px solid rgba(255,255,255,0.08);
+    flex-shrink:0;
 }
 
 .post-info{
     min-width:0;
+    flex:1;
 }
 
 .title{
-    font-size:21px;
+    font-size:24px;
     font-weight:800;
     line-height:1.25;
+    margin-bottom:5px;
     word-break:break-word;
-    margin-bottom:4px;
 }
 
 .artist{
-    font-size:16px;
+    font-size:17px;
     color:#6fa8dc;
     font-weight:700;
+    margin-bottom:8px;
     word-break:break-word;
-    margin-bottom:7px;
 }
 
-.meta-line{
-    color:#aaa;
+.meta{
+    color:#888;
     font-size:13px;
-    line-height:1.5;
-    word-break:break-word;
+    margin-bottom:8px;
 }
 
-.creator a{
+.creator-line{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:12px;
+    color:#bbb;
+    font-size:14px;
+}
+
+.creator-line a{
     color:#ddd;
     text-decoration:none;
+    font-weight:700;
 }
 
-.creator a:hover{
+.creator-line a:hover{
     text-decoration:underline;
 }
 
-.review-preview{
-    color:#d8d8d8;
-    font-size:14px;
-    line-height:1.65;
-    margin-top:10px;
-    display:-webkit-box;
-    -webkit-line-clamp:3;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-    word-break:break-word;
+.avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#222;
+    border:1px solid rgba(255,255,255,0.12);
+    flex-shrink:0;
 }
 
-.action-row{
+.avatar-fallback{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    color:#ddd;
+    font-size:12px;
+    font-weight:800;
+}
+
+.post-actions{
     display:flex;
     align-items:center;
     gap:12px;
-    padding:0 18px 16px 125px;
+    flex-wrap:wrap;
     color:#aaa;
     font-size:14px;
 }
 
-.count-text{
-    color:#aaa;
+.like-btn{
+    padding:8px 13px;
 }
 
-.comment-section{
+.like-btn.liked{
+    background:#6fa8dc;
+    border-color:#6fa8dc;
+    color:#06111a;
+    font-weight:800;
+}
+
+.review{
+    margin-top:18px;
+    color:#e0e0e0;
+    font-size:15px;
+    line-height:1.85;
+    word-break:break-word;
+    white-space:pre-wrap;
+}
+
+.keyword-area{
+    margin-top:16px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.keyword-tag{
+    background:#121212;
+    border:1px solid rgba(255,255,255,0.13);
+    color:#ddd;
+    padding:7px 10px;
+    border-radius:999px;
+    font-size:13px;
+}
+
+.meter-area{
+    margin-top:18px;
+    border-top:1px solid rgba(255,255,255,0.1);
+    padding-top:16px;
+    display:grid;
+    gap:12px;
+}
+
+.meter{
+    display:grid;
+    grid-template-columns:66px minmax(90px,1fr) 66px;
+    align-items:center;
+    gap:10px;
+}
+
+.meter-label{
+    font-size:13px;
+    font-weight:700;
+    color:#dcdcdc;
+    white-space:nowrap;
+}
+
+.right-label{ text-align:right; }
+
+.meter-graphic{
+    display:flex;
+    align-items:center;
+    width:100%;
+}
+
+.dot{
+    width:13px;
+    height:13px;
+    border-radius:50%;
+    border:2px solid #555;
+    background:#0b0b0b;
+    flex-shrink:0;
+}
+
+.connector{
+    height:3px;
+    background:#3b3f44;
+    flex:1;
+    min-width:5px;
+}
+
+.dot.active.level-1,.connector.active.level-1{ background:#3f8ec7; border-color:#3f8ec7; }
+.dot.active.level-2,.connector.active.level-2{ background:#4d9bd0; border-color:#4d9bd0; }
+.dot.active.level-3,.connector.active.level-3{ background:#5fa7d8; border-color:#5fa7d8; }
+.dot.active.level-4,.connector.active.level-4{ background:#73b6e3; border-color:#73b6e3; }
+.dot.active.level-5{ background:#8bc8ef; border-color:#8bc8ef; }
+
+.comments-panel{
     margin-top:18px;
     background:#0b0b0b;
     border:1px solid rgba(255,255,255,0.12);
     border-radius:22px;
-    padding:20px;
+    padding:22px;
 }
 
-.comment-header{
-    display:flex;
-    align-items:baseline;
-    gap:10px;
-    margin-bottom:18px;
-}
-
-.comment-title{
-    font-size:22px;
+.comments-title{
+    font-size:19px;
     font-weight:800;
-    letter-spacing:-0.02em;
-}
-
-.comment-count{
-    color:#aaa;
-    font-size:14px;
+    margin-bottom:20px;
 }
 
 .comment-form{
-    display:grid;
-    grid-template-columns:40px 1fr;
+    display:flex;
     gap:12px;
+    align-items:flex-start;
     margin-bottom:24px;
 }
 
-.avatar{
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    background:#222;
-    border:1px solid rgba(255,255,255,0.12);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#aaa;
-    font-weight:800;
-    flex-shrink:0;
-}
-
-.comment-input-wrap{
-    min-width:0;
+.comment-form-main{
+    flex:1;
 }
 
 .comment-input{
     width:100%;
-    min-height:44px;
-    resize:vertical;
+    padding:10px 0;
     background:transparent;
     color:white;
-    border:0;
-    border-bottom:1px solid rgba(255,255,255,0.24);
-    padding:9px 0;
+    border:none;
+    border-bottom:1px solid rgba(255,255,255,0.28);
     font-size:15px;
-    line-height:1.6;
     outline:none;
 }
 
 .comment-input:focus{
-    border-bottom-color:#6fa8dc;
+    border-bottom-color:white;
 }
 
 .comment-submit-row{
@@ -229,71 +281,67 @@ button,input,textarea{
 }
 
 .comment-btn{
-    background:#6fa8dc;
-    border-color:#6fa8dc;
-    color:#061018;
+    padding:9px 16px;
+    background:#f1f1f1;
+    color:#050505;
+    border:none;
     font-weight:800;
-    padding:8px 16px;
 }
 
 .comment-list{
     display:flex;
     flex-direction:column;
-    gap:18px;
+    gap:20px;
 }
 
 .comment-item{
-    display:grid;
-    grid-template-columns:40px 1fr;
+    display:flex;
     gap:12px;
+    align-items:flex-start;
 }
 
 .comment-body{
+    flex:1;
     min-width:0;
 }
 
 .comment-meta{
     display:flex;
     align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:4px;
-}
-
-.comment-user{
-    color:#f1f1f1;
+    gap:8px;
+    color:#aaa;
     font-size:13px;
-    font-weight:800;
-    word-break:break-word;
+    margin-bottom:5px;
 }
 
-.comment-time{
-    color:#888;
-    font-size:12px;
-    font-weight:500;
-    margin-left:6px;
+.comment-name{
+    color:#f0f0f0;
+    font-weight:800;
 }
 
 .comment-text{
-    color:#ddd;
+    color:#e0e0e0;
+    line-height:1.65;
     font-size:15px;
-    line-height:1.75;
     word-break:break-word;
     white-space:pre-wrap;
 }
 
+.comment-menu{
+    margin-top:8px;
+}
+
 .delete-comment-btn{
-    padding:5px 9px;
+    padding:5px 10px;
     font-size:12px;
-    background:#151515;
+    background:#171717;
     color:#aaa;
 }
 
 .empty{
     color:#777;
-    font-size:18px;
-    text-align:center;
-    padding:34px 0;
+    font-size:19px;
+    padding:24px 0;
 }
 
 .mobile-tabbar{
@@ -303,68 +351,65 @@ button,input,textarea{
 @media(max-width:800px){
     body{
         padding:14px;
-        padding-bottom:86px;
+        padding-bottom:92px;
     }
 
     .topbar{
-        margin-bottom:12px;
-        padding:2px 2px 0;
+        margin-bottom:14px;
     }
 
     .page-title{
-        font-size:21px;
+        font-size:22px;
     }
 
-    .top-actions{
-        gap:7px;
-    }
-
-    .btn{
-        padding:8px 11px;
-        font-size:12px;
+    .topbar .btn{
+        display:none;
     }
 
     .post-card,
-    .comment-section{
+    .comments-panel{
         border-radius:18px;
+        padding:15px;
     }
 
-    .post-summary{
-        grid-template-columns:74px 1fr;
+    .post-head{
         gap:12px;
-        padding:14px;
     }
 
     .cover{
-        width:74px;
+        width:86px;
+        height:86px;
         border-radius:12px;
     }
 
     .title{
-        font-size:17px;
-        margin-bottom:3px;
+        font-size:18px;
+        line-height:1.28;
     }
 
     .artist{
         font-size:14px;
-        margin-bottom:5px;
+        margin-bottom:6px;
     }
 
-    .meta-line{
+    .meta{
         font-size:12px;
     }
 
-    .review-preview{
-        font-size:13px;
-        line-height:1.55;
-        margin-top:7px;
-        -webkit-line-clamp:2;
+    .creator-line{
+        font-size:12px;
+        gap:6px;
+        margin-bottom:10px;
     }
 
-    .action-row{
-        padding:0 14px 14px 100px;
-        gap:10px;
-        font-size:13px;
+    .avatar{
+        width:24px;
+        height:24px;
+    }
+
+    .post-actions{
+        gap:9px;
+        font-size:12px;
     }
 
     .like-btn{
@@ -372,25 +417,38 @@ button,input,textarea{
         font-size:12px;
     }
 
-    .comment-section{
-        margin-top:12px;
-        padding:16px 14px;
+    .review{
+        font-size:14px;
+        line-height:1.8;
+        margin-top:15px;
     }
 
-    .comment-title{
-        font-size:20px;
+    .keyword-tag{
+        font-size:12px;
+        padding:6px 9px;
     }
 
-    .comment-form,
-    .comment-item{
-        grid-template-columns:34px 1fr;
+    .meter{
+        grid-template-columns:56px minmax(70px,1fr) 56px;
+        gap:7px;
+    }
+
+    .meter-label{
+        font-size:12px;
+    }
+
+    .dot{
+        width:11px;
+        height:11px;
+    }
+
+    .comments-title{
+        font-size:17px;
+        margin-bottom:17px;
+    }
+
+    .comment-form{
         gap:10px;
-    }
-
-    .avatar{
-        width:34px;
-        height:34px;
-        font-size:13px;
     }
 
     .comment-input{
@@ -399,7 +457,6 @@ button,input,textarea{
 
     .comment-text{
         font-size:14px;
-        line-height:1.7;
     }
 
     .mobile-tabbar{
@@ -407,25 +464,26 @@ button,input,textarea{
         left:0;
         right:0;
         bottom:0;
-        height:66px;
+        height:68px;
         background:rgba(8,8,8,0.96);
         border-top:1px solid rgba(255,255,255,0.12);
         display:grid;
         grid-template-columns:repeat(5,1fr);
-        z-index:999;
-        backdrop-filter:blur(12px);
+        z-index:100;
+        backdrop-filter:blur(14px);
     }
 
-    .mobile-tabbar a{
+    .mobile-tabbar button{
+        background:transparent;
+        border:none;
         color:#aaa;
-        text-decoration:none;
+        font-size:11px;
         display:flex;
         flex-direction:column;
         align-items:center;
         justify-content:center;
-        gap:3px;
-        font-size:10px;
-        font-weight:700;
+        gap:4px;
+        cursor:pointer;
     }
 
     .mobile-tabbar .icon{
@@ -433,8 +491,9 @@ button,input,textarea{
         line-height:1;
     }
 
-    .mobile-tabbar a.active{
-        color:#6fa8dc;
+    .mobile-tabbar button.active{
+        color:white;
+        font-weight:800;
     }
 }
 </style>
@@ -443,10 +502,10 @@ button,input,textarea{
 <body>
 
 <div class="topbar">
-    <h1 class="page-title">Comments</h1>
+    <h1 class="page-title">Album Detail</h1>
 
-    <div class="top-actions">
-        <button class="btn" onclick="location.href='./index.html'">戻る</button>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn" onclick="location.href='./index.html'">一覧へ戻る</button>
         <button id="mypageBtn" class="btn" style="display:none;">マイページ</button>
     </div>
 </div>
@@ -456,26 +515,26 @@ button,input,textarea{
 </div>
 
 <nav class="mobile-tabbar">
-    <a href="./index.html">
+    <button onclick="location.href='./index.html'">
         <span class="icon">⌂</span>
         <span>ホーム</span>
-    </a>
-    <a href="./search.html">
+    </button>
+    <button onclick="location.href='./search.html'">
         <span class="icon">⌕</span>
         <span>検索</span>
-    </a>
-    <a href="./editor.html">
+    </button>
+    <button onclick="location.href='./editor.html'">
         <span class="icon">＋</span>
         <span>投稿</span>
-    </a>
-    <a href="./notifications.html">
+    </button>
+    <button onclick="location.href='./notifications.html'">
         <span class="icon">♡</span>
         <span>通知</span>
-    </a>
-    <a id="mobileMypageLink" href="./login.html">
+    </button>
+    <button id="mobileMypageBtn">
         <span class="icon">◯</span>
         <span>マイページ</span>
-    </a>
+    </button>
 </nav>
 
 <script type="module">
@@ -521,7 +580,7 @@ const auth = getAuth(app);
 
 const detailWrap = document.getElementById("detailWrap");
 const mypageBtn = document.getElementById("mypageBtn");
-const mobileMypageLink = document.getElementById("mobileMypageLink");
+const mobileMypageBtn = document.getElementById("mobileMypageBtn");
 
 const params = new URLSearchParams(location.search);
 const albumId = params.get("id");
@@ -531,6 +590,16 @@ let albumData = null;
 let allLikes = [];
 let allComments = [];
 
+/*
+    アイコン反映用キャッシュ。
+    users コレクション側のフィールド名が多少違っても拾えるようにしている。
+    対応フィールド例:
+    icon, iconUrl, avatar, avatarUrl, photoURL, photoUrl,
+    profileImage, profileImageUrl, imageUrl
+*/
+const userCache = {};
+const loadingUsers = new Set();
+
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
 
@@ -539,10 +608,17 @@ onAuthStateChanged(auth, (user) => {
         mypageBtn.onclick = () => {
             location.href = `profile.html?uid=${user.uid}`;
         };
-        mobileMypageLink.href = `profile.html?uid=${user.uid}`;
+
+        mobileMypageBtn.onclick = () => {
+            location.href = `profile.html?uid=${user.uid}`;
+        };
+
+        ensureUserLoaded(user.uid);
     } else {
         mypageBtn.style.display = "none";
-        mobileMypageLink.href = "./login.html";
+        mobileMypageBtn.onclick = () => {
+            location.href = "login.html";
+        };
     }
 
     renderDetail();
@@ -555,6 +631,160 @@ function escapeHTML(value){
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+function getFirstLetter(name){
+    const text = String(name || "U").trim();
+    return text ? text.slice(0,1).toUpperCase() : "U";
+}
+
+function normalizeUser(raw, uid){
+    raw = raw || {};
+
+    const displayName =
+        raw.displayName ||
+        raw.name ||
+        raw.nickname ||
+        raw.userName ||
+        raw.email ||
+        "匿名ユーザー";
+
+    const iconUrl =
+        raw.icon ||
+        raw.iconUrl ||
+        raw.avatar ||
+        raw.avatarUrl ||
+        raw.photoURL ||
+        raw.photoUrl ||
+        raw.profileImage ||
+        raw.profileImageUrl ||
+        raw.imageUrl ||
+        "";
+
+    return {
+        uid,
+        displayName,
+        email: raw.email || "",
+        iconUrl
+    };
+}
+
+async function ensureUserLoaded(uid){
+    if(!uid) return;
+    if(userCache[uid]) return;
+    if(loadingUsers.has(uid)) return;
+
+    loadingUsers.add(uid);
+
+    try{
+        const userSnap = await getDoc(doc(db, "users", uid));
+
+        if(userSnap.exists()){
+            userCache[uid] = normalizeUser(userSnap.data(), uid);
+        } else {
+            userCache[uid] = normalizeUser({}, uid);
+        }
+    } catch(error){
+        console.error("ユーザー情報の取得に失敗しました", error);
+        userCache[uid] = normalizeUser({}, uid);
+    }
+
+    loadingUsers.delete(uid);
+    renderDetail();
+}
+
+function getUserName(uid, fallback){
+    const cached = userCache[uid];
+
+    return (
+        cached?.displayName ||
+        fallback ||
+        "匿名ユーザー"
+    );
+}
+
+function getUserIcon(uid){
+    const cached = userCache[uid];
+    return cached?.iconUrl || "";
+}
+
+function avatarHTML(uid, fallbackName, sizeClass = ""){
+    if(uid){
+        ensureUserLoaded(uid);
+    }
+
+    const name = getUserName(uid, fallbackName);
+    const icon = getUserIcon(uid);
+
+    if(icon){
+        return `
+            <img class="avatar ${sizeClass}"
+                 src="${escapeHTML(icon)}"
+                 alt="${escapeHTML(name)}"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+            <span class="avatar avatar-fallback ${sizeClass}" style="display:none;">
+                ${escapeHTML(getFirstLetter(name))}
+            </span>
+        `;
+    }
+
+    return `
+        <span class="avatar avatar-fallback ${sizeClass}">
+            ${escapeHTML(getFirstLetter(name))}
+        </span>
+    `;
+}
+
+function meter(left, right, value){
+    value = Number(value) || 0;
+    value = Math.max(0, Math.min(5, value));
+
+    let graphicHTML = "";
+
+    for(let i = 1; i <= 5; i++){
+        graphicHTML += `
+            <div class="dot level-${i} ${i <= value ? "active" : ""}"></div>
+        `;
+
+        if(i < 5){
+            graphicHTML += `
+                <div class="connector level-${i} ${i < value ? "active" : ""}"></div>
+            `;
+        }
+    }
+
+    return `
+        <div class="meter">
+            <div class="meter-label">${escapeHTML(left)}</div>
+            <div class="meter-graphic">${graphicHTML}</div>
+            <div class="meter-label right-label">${escapeHTML(right)}</div>
+        </div>
+    `;
+}
+
+function renderKeywords(keywords){
+    const raw = String(keywords || "").trim();
+
+    if(!raw){
+        return "";
+    }
+
+    const tags = raw
+        .split(/[、,\s]+/)
+        .map(tag => tag.trim())
+        .filter(Boolean);
+
+    if(tags.length === 0){
+        return "";
+    }
+
+    return `
+        <div class="keyword-area">
+            ${tags.map(tag => `
+                <span class="keyword-tag">#${escapeHTML(tag.replace(/^#/, ""))}</span>
+            `).join("")}
+        </div>
+    `;
 }
 
 function getLikeId(userId, albumId){
@@ -646,57 +876,54 @@ function getComments(){
         .sort((a,b) => {
             const aTime = a.createdAt?.seconds || 0;
             const bTime = b.createdAt?.seconds || 0;
-            return bTime - aTime;
+            return aTime - bTime;
         });
-}
-
-function firstLetter(text){
-    const value = String(text || "?").trim();
-    return escapeHTML(value.slice(0,1).toUpperCase() || "?");
-}
-
-function formatDate(timestamp){
-    if(!timestamp?.seconds) return "";
-
-    const date = new Date(timestamp.seconds * 1000);
-    return date.toLocaleDateString("ja-JP", {
-        year:"numeric",
-        month:"short",
-        day:"numeric"
-    });
 }
 
 function renderComments(){
     const comments = getComments();
 
     if(comments.length === 0){
-        return `<div class="empty">まだコメントはありません</div>`;
+        return `<div style="color:#777;">まだコメントはありません</div>`;
     }
 
     return comments.map((comment) => {
-        const canDelete = currentUser && currentUser.uid === comment.userId;
-        const userName = comment.userEmail || "匿名ユーザー";
-        const dateText = formatDate(comment.createdAt);
+        const canDelete =
+            currentUser &&
+            currentUser.uid === comment.userId;
+
+        const commentName = getUserName(
+            comment.userId,
+            comment.userName || comment.userEmail || "匿名ユーザー"
+        );
 
         return `
             <div class="comment-item">
-                <div class="avatar">${firstLetter(userName)}</div>
+                ${avatarHTML(comment.userId, commentName)}
 
                 <div class="comment-body">
                     <div class="comment-meta">
-                        <div>
-                            <span class="comment-user">${escapeHTML(userName)}</span>
-                            ${dateText ? `<span class="comment-time">${escapeHTML(dateText)}</span>` : ""}
-                        </div>
-
-                        ${canDelete ? `
-                            <button class="delete-comment-btn" onclick="deleteComment('${escapeHTML(comment.id)}')">
-                                削除
-                            </button>
-                        ` : ""}
+                        <span class="comment-name">
+                            ${escapeHTML(commentName)}
+                        </span>
                     </div>
 
-                    <div class="comment-text">${escapeHTML(comment.text || "")}</div>
+                    <div class="comment-text">
+                        ${escapeHTML(comment.text || "")}
+                    </div>
+
+                    ${
+                        canDelete
+                        ? `
+                            <div class="comment-menu">
+                                <button class="delete-comment-btn"
+                                        onclick="deleteComment('${escapeHTML(comment.id)}')">
+                                    削除
+                                </button>
+                            </div>
+                        `
+                        : ""
+                    }
                 </div>
             </div>
         `;
@@ -713,64 +940,102 @@ function renderDetail(){
         return;
     }
 
+    if(albumData.userId){
+        ensureUserLoaded(albumData.userId);
+    }
+
     const liked = isLikedByMe();
     const likeCount = getLikeCount();
     const comments = getComments();
-    const creatorName = albumData.userName || albumData.userEmail || "匿名ユーザー";
+    const commentCount = comments.length;
+
+    const creatorName = getUserName(
+        albumData.userId,
+        albumData.userName || albumData.userEmail || "匿名ユーザー"
+    );
+
+    const myName = currentUser
+        ? getUserName(currentUser.uid, currentUser.email || "自分")
+        : "自分";
 
     detailWrap.innerHTML = `
         <article class="post-card">
-            <div class="post-summary" onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
-                <img class="cover" src="${escapeHTML(albumData.cover || "")}" alt="">
+            <div class="post-head">
+                <img class="cover"
+                     src="${escapeHTML(albumData.cover || "")}"
+                     alt="">
 
                 <div class="post-info">
-                    <div class="title">${escapeHTML(albumData.title || "")}</div>
-                    <div class="artist">${escapeHTML(albumData.artist || "")}</div>
-
-                    <div class="meta-line">
-                        ${albumData.year ? `${escapeHTML(albumData.year)} ・ ` : ""}
-                        <span class="creator">
-                            投稿者：
-                            <a href="profile.html?uid=${escapeHTML(albumData.userId || "")}" onclick="event.stopPropagation();">
-                                ${escapeHTML(creatorName)}
-                            </a>
-                        </span>
+                    <div class="title">
+                        ${escapeHTML(albumData.title || "")}
                     </div>
 
-                    <div class="review-preview">
-                        ${escapeHTML(albumData.desc || "本文はありません")}
+                    <div class="artist">
+                        ${escapeHTML(albumData.artist || "")}
+                    </div>
+
+                    ${
+                        albumData.year
+                        ? `<div class="meta">${escapeHTML(albumData.year)}</div>`
+                        : ""
+                    }
+
+                    <div class="creator-line">
+                        ${avatarHTML(albumData.userId, creatorName)}
+                        <span>投稿者：</span>
+                        <a href="profile.html?uid=${escapeHTML(albumData.userId || "")}">
+                            ${escapeHTML(creatorName)}
+                        </a>
+                    </div>
+
+                    <div class="post-actions">
+                        <button class="like-btn ${liked ? "liked" : ""}"
+                                onclick="toggleLike()">
+                            ${liked ? "♥ いいね済み" : "♡ いいね"}
+                        </button>
+
+                        <span>${likeCount}いいね</span>
+                        <span>${commentCount}コメント</span>
                     </div>
                 </div>
             </div>
 
-            <div class="action-row">
-                <button class="like-btn ${liked ? "liked" : ""}" onclick="toggleLike()">
-                    ${liked ? "♥" : "♡"} いいね
-                </button>
-                <span class="count-text">${likeCount}件</span>
-                <span class="count-text">💬 ${comments.length}件</span>
+            <div class="review">
+                ${escapeHTML(albumData.desc || "本文はありません")}
+            </div>
+
+            ${renderKeywords(albumData.keywords)}
+
+            <div class="meter-area">
+                ${meter("暗い", "明るい", albumData.darkness)}
+                ${meter("静か", "激しい", albumData.intense)}
+                ${meter("シンプル", "複雑", albumData.complex)}
+                ${meter("絶望", "希望", albumData.hope)}
+                ${meter("個人", "世界", albumData.world)}
             </div>
         </article>
 
-        <section class="comment-section">
-            <div class="comment-header">
-                <div class="comment-title">コメント</div>
-                <div class="comment-count">${comments.length}件</div>
+        <section class="comments-panel">
+            <div class="comments-title">
+                コメント ${commentCount}件
             </div>
 
             <div class="comment-form">
-                <div class="avatar">${currentUser ? firstLetter(currentUser.email) : "?"}</div>
+                ${avatarHTML(currentUser?.uid, myName)}
 
-                <div class="comment-input-wrap">
-                    <textarea
+                <div class="comment-form-main">
+                    <input
                         id="commentInput"
                         class="comment-input"
+                        type="text"
                         maxlength="200"
-                        placeholder="コメントを追加..."
-                    ></textarea>
+                        placeholder="${currentUser ? "コメントを書く" : "ログインしてコメントする"}"
+                    >
 
                     <div class="comment-submit-row">
-                        <button class="comment-btn" onclick="addComment()">コメント</button>
+                        <button class="comment-btn" onclick="addComment()">
+                            コメント
+                        </button>
                     </div>
                 </div>
             </div>
@@ -797,6 +1062,11 @@ async function loadAlbum(){
     }
 
     albumData = albumSnap.data();
+
+    if(albumData.userId){
+        ensureUserLoaded(albumData.userId);
+    }
+
     renderDetail();
 }
 
@@ -819,10 +1089,16 @@ onSnapshot(commentsQuery, (snapshot) => {
     allComments = [];
 
     snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+
         allComments.push({
             id: docSnap.id,
-            ...docSnap.data()
+            ...data
         });
+
+        if(data.userId){
+            ensureUserLoaded(data.userId);
+        }
     });
 
     renderDetail();
