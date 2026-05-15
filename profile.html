@@ -150,6 +150,16 @@ body{
     font-size:15px;
 }
 
+.follow-stats span{
+    cursor:pointer;
+    padding:4px 0;
+}
+
+.follow-stats span:hover{
+    color:#6fa8dc;
+    text-decoration:underline;
+}
+
 .profile-actions{
     display:flex;
     gap:10px;
@@ -896,8 +906,8 @@ body{
             <div class="profile-email" id="profileEmail"></div>
 
             <div class="follow-stats">
-                <span id="followingCount">フォロー中 0</span>
-                <span id="followerCount">フォロワー 0</span>
+                <span id="followingCount" role="button" tabindex="0">フォロー中 0</span>
+                <span id="followerCount" role="button" tabindex="0">フォロワー 0</span>
             </div>
 
             <div class="profile-actions">
@@ -1000,6 +1010,38 @@ function escapeHTML(value){
 function isOwner(){
     return currentUser && uid && currentUser.uid === uid;
 }
+
+const FOLLOW_LIST_PAGE = "follow-list.html";
+
+function goFollowList(type){
+    if(!uid){
+        return;
+    }
+
+    location.href = `${FOLLOW_LIST_PAGE}?uid=${encodeURIComponent(uid)}&type=${encodeURIComponent(type)}`;
+}
+
+window.goFollowList = goFollowList;
+
+function setupFollowStatsLinks(){
+    followingCount.onclick = () => goFollowList("following");
+    followerCount.onclick = () => goFollowList("followers");
+
+    followingCount.addEventListener("keydown", (event) => {
+        if(event.key === "Enter" || event.key === " "){
+            event.preventDefault();
+            goFollowList("following");
+        }
+    });
+
+    followerCount.addEventListener("keydown", (event) => {
+        if(event.key === "Enter" || event.key === " "){
+            event.preventDefault();
+            goFollowList("followers");
+        }
+    });
+}
+
 
 function meter(left, right, value){
     value = Number(value) || 0;
@@ -1537,6 +1579,8 @@ profileEditBtn.addEventListener("click", () => {
 
     location.href = "profile-edit.html";
 });
+
+setupFollowStatsLinks();
 
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
