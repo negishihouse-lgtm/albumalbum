@@ -566,6 +566,72 @@
         .join("");
     }
 
+    function getLocalCommentCount(album){
+      if(typeof album.commentCount === "number") return album.commentCount;
+      if(typeof album.commentsCount === "number") return album.commentsCount;
+      return 0;
+    }
+
+    function getLocalLikeCount(album){
+      if(typeof album.likeCount === "number") return album.likeCount;
+      if(typeof album.likesCount === "number") return album.likesCount;
+      return 0;
+    }
+
+    /*
+      検索欄で「♡ 0」「💬 0」になるバグ対策。
+
+      以前のコードは albums ドキュメント内の
+      likeCount / likesCount / commentCount / commentsCount だけを見ていました。
+
+      ただし、実際のいいね・コメントを likes / comments コレクションに保存している場合、
+      albums 側に件数フィールドがないため、検索ページだけ 0 表示になります。
+
+      そこで、検索ページの読み込み時に各投稿IDごとの件数を取得して、
+      album.likeCount / album.commentCount に入れてから表示します。
+    */
+    async function getCountFromCollection(collectionName, albumId){
+      try{
+        const q = query(
+          collection(db, collectionName),
+          where("albumId", "==", albumId)
+        );
+
+        const snapshot = await getDocs(q);
+        return snapshot.size;
+      }catch(error){
+        console.warn(`${collectionName} の件数取得に失敗:`, error);
+        return 0;
+      }
+    }
+
+    async function attachCountsToAlbums(items){
+      const itemsWithCounts = await Promise.all(
+        items.map(async (item) => {
+          const album = item.data;
+
+          const localLikeCount = getLocalLikeCount(album);
+          const localCommentCount = getLocalCommentCount(album);
+
+          const [fetchedLikeCount, fetchedCommentCount] = await Promise.all([
+            getCountFromCollection("likes", item.id),
+            getCountFromCollection("comments", item.id)
+          ]);
+
+          return {
+            ...item,
+            data: {
+              ...album,
+              likeCount: Math.max(localLikeCount, fetchedLikeCount),
+              commentCount: Math.max(localCommentCount, fetchedCommentCount)
+            }
+          };
+        })
+      );
+
+      return itemsWithCounts;
+    }
+
     function getCommentCount(album){
       if(typeof album.commentCount === "number") return album.commentCount;
       if(typeof album.commentsCount === "number") return album.commentsCount;
@@ -685,10 +751,14 @@
 
         const snapshot = await getDocs(albumsQuery);
 
-        publicAlbums = snapshot.docs.map((doc) => ({
+        const albumsWithoutCounts = snapshot.docs.map((doc) => ({
           id: doc.id,
           data: doc.data()
         }));
+
+        statusEl.textContent = "いいね・コメント数を読み込み中...";
+
+        publicAlbums = await attachCountsToAlbums(albumsWithoutCounts);
 
         renderAlbums(publicAlbums, "");
       }catch(error){
