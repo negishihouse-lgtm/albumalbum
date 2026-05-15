@@ -12,9 +12,98 @@ body{
     background:#050505;
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    padding:36px 40px;
-    padding-left:260px;
-    padding-bottom:110px;
+    padding:40px;
+    padding-left:280px;
+    padding-bottom:120px;
+}
+
+
+/* ===== 共通PCサイドバー ===== */
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    background:#0b0b0b;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:30px 20px;
+    overflow-y:auto;
+    z-index:100;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:10px;
+    font-size:15px;
+}
+
+.sidebar a:hover{
+    background:#1a1a1a;
+}
+
+.sidebar a.active{
+    background:#1a1a1a;
+    color:#6fa8dc;
+}
+
+/* ===== 共通スマホ下部タブバー ===== */
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#999;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:#6fa8dc;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+/* ===== 共通右下投稿ボタン ===== */
+.fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:#6fa8dc;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    z-index:1000;
+}
+
+.fab:hover{
+    background:#84b7e4;
 }
 
 .topbar{
@@ -349,80 +438,41 @@ body{
 }
 
 
-.sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    width:220px;
-    height:100vh;
-    background:#070707;
-    border-right:1px solid rgba(255,255,255,0.12);
-    padding:28px 18px;
-    z-index:90;
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-}
 
-.sidebar-logo{
-    font-size:24px;
-    font-weight:900;
-    letter-spacing:-0.04em;
-    margin-bottom:18px;
-    color:white;
-}
-
-.sidebar-link{
-    width:100%;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:13px 14px;
-    border-radius:14px;
-    color:#ddd;
-    background:transparent;
-    border:none;
-    text-align:left;
-    font-size:16px;
-    font-weight:700;
-    cursor:pointer;
-}
-
-.sidebar-link:hover{
-    background:#171717;
-    color:white;
-}
-
-.sidebar-link.active{
-    background:#1e1e1e;
-    color:white;
-}
-
-.sidebar-icon{
-    width:24px;
-    text-align:center;
-    font-size:20px;
-}
-
-.sidebar-spacer{
-    flex:1;
-}
-
-.mobile-tabbar{
-    display:none;
-}
 
 @media(max-width:800px){
     body{
-        padding:14px;
-        padding-bottom:92px;
+        padding:16px;
+        padding-left:16px;
+        padding-bottom:110px;
     }
 
     .sidebar{
         display:none;
     }
 
-    .topbar{
+    .mobile-tabbar{
+        display:flex;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:#0b0b0b;
+        border-top:1px solid rgba(255,255,255,0.1);
+        z-index:999;
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .fab{
+        right:16px;
+        bottom:88px;
+        width:58px;
+        height:58px;
+        font-size:32px;
+    }
+
+.topbar{
         margin-bottom:14px;
     }
 
@@ -526,80 +576,55 @@ body{
     .comment-text{
         font-size:14px;
     }
-
-    .mobile-tabbar{
-        position:fixed;
-        left:0;
-        right:0;
-        bottom:0;
-        height:68px;
-        background:rgba(8,8,8,0.96);
-        border-top:1px solid rgba(255,255,255,0.12);
-        display:grid;
-        grid-template-columns:repeat(5,1fr);
-        z-index:100;
-        backdrop-filter:blur(14px);
-    }
-
-    .mobile-tabbar button{
-        background:transparent;
-        border:none;
-        color:#aaa;
-        font-size:11px;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        gap:4px;
-        cursor:pointer;
-    }
-
-    .mobile-tabbar .icon{
-        font-size:20px;
-        line-height:1;
-    }
-
-    .mobile-tabbar button.active{
-        color:white;
-        font-weight:800;
-    }
 }
 </style>
 </head>
 
 <body>
 
+<!-- PC用サイドバー -->
+<nav class="sidebar">
+    <div class="logo">Album Collection</div>
 
-<aside class="sidebar">
-    <div class="sidebar-logo">Album Collection</div>
+    <a href="index.html">ホーム</a>
+    <a href="search.html">検索</a>
+    <a href="editor.html">投稿する</a>
+    <a href="notifications.html">通知</a>
+    <a id="myPageLink" href="login.html">マイページ</a>
+    <a href="profile-edit.html">プロフィール編集</a>
+    <a href="login.html">ログイン</a>
+</nav>
 
-    <button class="sidebar-link" onclick="location.href='./index.html'">
-        <span class="sidebar-icon">⌂</span>
-        <span>ホーム</span>
-    </button>
+<!-- スマホ用下部タブバー -->
+<nav class="mobile-tabbar">
+    <a href="index.html">
+        <div class="icon">🏠</div>
+        <div>ホーム</div>
+    </a>
 
-    <button class="sidebar-link" onclick="location.href='./search.html'">
-        <span class="sidebar-icon">⌕</span>
-        <span>検索</span>
-    </button>
+    <a href="search.html">
+        <div class="icon">🔍</div>
+        <div>検索</div>
+    </a>
 
-    <button class="sidebar-link" onclick="location.href='./editor.html'">
-        <span class="sidebar-icon">＋</span>
-        <span>投稿</span>
-    </button>
+    <a href="editor.html">
+        <div class="icon">➕</div>
+        <div>投稿</div>
+    </a>
 
-    <button class="sidebar-link" onclick="location.href='./notifications.html'">
-        <span class="sidebar-icon">♡</span>
-        <span>通知</span>
-    </button>
+    <a href="notifications.html">
+        <div class="icon">🔔</div>
+        <div>通知</div>
+    </a>
 
-    <div class="sidebar-spacer"></div>
+    <a id="mobileMyPageLink" href="login.html">
+        <div class="icon">👤</div>
+        <div>マイページ</div>
+    </a>
+</nav>
 
-    <button id="sidebarMypageBtn" class="sidebar-link">
-        <span class="sidebar-icon">◯</span>
-        <span>マイページ</span>
-    </button>
-</aside>
+<a href="editor.html" class="fab">＋</a>
+
 
 <div class="topbar">
     <h1 class="page-title">Album Detail</h1>
@@ -613,29 +638,6 @@ body{
 <div class="detail-wrap" id="detailWrap">
     <div class="empty">読み込み中...</div>
 </div>
-
-<nav class="mobile-tabbar">
-    <button onclick="location.href='./index.html'">
-        <span class="icon">⌂</span>
-        <span>ホーム</span>
-    </button>
-    <button onclick="location.href='./search.html'">
-        <span class="icon">⌕</span>
-        <span>検索</span>
-    </button>
-    <button onclick="location.href='./editor.html'">
-        <span class="icon">＋</span>
-        <span>投稿</span>
-    </button>
-    <button onclick="location.href='./notifications.html'">
-        <span class="icon">♡</span>
-        <span>通知</span>
-    </button>
-    <button id="mobileMypageBtn">
-        <span class="icon">◯</span>
-        <span>マイページ</span>
-    </button>
-</nav>
 
 <script type="module">
 
@@ -680,8 +682,8 @@ const auth = getAuth(app);
 
 const detailWrap = document.getElementById("detailWrap");
 const mypageBtn = document.getElementById("mypageBtn");
-const mobileMypageBtn = document.getElementById("mobileMypageBtn");
-const sidebarMypageBtn = document.getElementById("sidebarMypageBtn");
+const myPageLink = document.getElementById("myPageLink");
+const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 
 const params = new URLSearchParams(location.search);
 const albumId = params.get("id");
@@ -710,24 +712,27 @@ onAuthStateChanged(auth, (user) => {
             location.href = `profile.html?uid=${user.uid}`;
         };
 
-        mobileMypageBtn.onclick = () => {
-            location.href = `profile.html?uid=${user.uid}`;
-        };
+        const url = `profile.html?uid=${encodeURIComponent(user.uid)}`;
 
-        sidebarMypageBtn.onclick = () => {
-            location.href = `profile.html?uid=${user.uid}`;
-        };
+        if(myPageLink){
+            myPageLink.href = url;
+        }
+
+        if(mobileMyPageLink){
+            mobileMyPageLink.href = url;
+        }
 
         ensureUserLoaded(user.uid);
     } else {
         mypageBtn.style.display = "none";
-        mobileMypageBtn.onclick = () => {
-            location.href = "login.html";
-        };
 
-        sidebarMypageBtn.onclick = () => {
-            location.href = "login.html";
-        };
+        if(myPageLink){
+            myPageLink.href = "login.html";
+        }
+
+        if(mobileMyPageLink){
+            mobileMyPageLink.href = "login.html";
+        }
     }
 
     renderDetail();
