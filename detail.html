@@ -13,6 +13,7 @@ body{
     color:white;
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
     padding:36px 40px;
+    padding-left:260px;
     padding-bottom:110px;
 }
 
@@ -347,6 +348,66 @@ body{
     padding:24px 0;
 }
 
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:220px;
+    height:100vh;
+    background:#070707;
+    border-right:1px solid rgba(255,255,255,0.12);
+    padding:28px 18px;
+    z-index:90;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.sidebar-logo{
+    font-size:24px;
+    font-weight:900;
+    letter-spacing:-0.04em;
+    margin-bottom:18px;
+    color:white;
+}
+
+.sidebar-link{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 14px;
+    border-radius:14px;
+    color:#ddd;
+    background:transparent;
+    border:none;
+    text-align:left;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.sidebar-link:hover{
+    background:#171717;
+    color:white;
+}
+
+.sidebar-link.active{
+    background:#1e1e1e;
+    color:white;
+}
+
+.sidebar-icon{
+    width:24px;
+    text-align:center;
+    font-size:20px;
+}
+
+.sidebar-spacer{
+    flex:1;
+}
+
 .mobile-tabbar{
     display:none;
 }
@@ -355,6 +416,10 @@ body{
     body{
         padding:14px;
         padding-bottom:92px;
+    }
+
+    .sidebar{
+        display:none;
     }
 
     .topbar{
@@ -504,6 +569,38 @@ body{
 
 <body>
 
+
+<aside class="sidebar">
+    <div class="sidebar-logo">Album Collection</div>
+
+    <button class="sidebar-link" onclick="location.href='./index.html'">
+        <span class="sidebar-icon">⌂</span>
+        <span>ホーム</span>
+    </button>
+
+    <button class="sidebar-link" onclick="location.href='./search.html'">
+        <span class="sidebar-icon">⌕</span>
+        <span>検索</span>
+    </button>
+
+    <button class="sidebar-link" onclick="location.href='./editor.html'">
+        <span class="sidebar-icon">＋</span>
+        <span>投稿</span>
+    </button>
+
+    <button class="sidebar-link" onclick="location.href='./notifications.html'">
+        <span class="sidebar-icon">♡</span>
+        <span>通知</span>
+    </button>
+
+    <div class="sidebar-spacer"></div>
+
+    <button id="sidebarMypageBtn" class="sidebar-link">
+        <span class="sidebar-icon">◯</span>
+        <span>マイページ</span>
+    </button>
+</aside>
+
 <div class="topbar">
     <h1 class="page-title">Album Detail</h1>
 
@@ -584,6 +681,7 @@ const auth = getAuth(app);
 const detailWrap = document.getElementById("detailWrap");
 const mypageBtn = document.getElementById("mypageBtn");
 const mobileMypageBtn = document.getElementById("mobileMypageBtn");
+const sidebarMypageBtn = document.getElementById("sidebarMypageBtn");
 
 const params = new URLSearchParams(location.search);
 const albumId = params.get("id");
@@ -616,10 +714,18 @@ onAuthStateChanged(auth, (user) => {
             location.href = `profile.html?uid=${user.uid}`;
         };
 
+        sidebarMypageBtn.onclick = () => {
+            location.href = `profile.html?uid=${user.uid}`;
+        };
+
         ensureUserLoaded(user.uid);
     } else {
         mypageBtn.style.display = "none";
         mobileMypageBtn.onclick = () => {
+            location.href = "login.html";
+        };
+
+        sidebarMypageBtn.onclick = () => {
             location.href = "login.html";
         };
     }
