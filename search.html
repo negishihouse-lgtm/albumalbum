@@ -66,8 +66,8 @@
     }
 
     .main{
-      width:min(760px, calc(100% - 220px));
-      margin-left:220px;
+      width:min(760px, calc(100% - 240px));
+      margin-left:240px;
       min-height:100vh;
       border-right:1px solid rgba(255,255,255,0.08);
     }
@@ -416,21 +416,147 @@
         color:#fff;
       }
     }
-  </style>
+  
+/* ===== 共通PCサイドバー ===== */
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    background:#0b0b0b;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:30px 20px;
+    overflow-y:auto;
+    z-index:100;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:10px;
+    font-size:15px;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+    background:#1a1a1a;
+}
+
+.sidebar a.active{
+    color:#6fa8dc;
+}
+
+/* ===== 共通スマホ下部タブバー ===== */
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#999;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:#6fa8dc;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+/* ===== 共通右下投稿ボタン ===== */
+.fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:#6fa8dc;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    z-index:1000;
+}
+
+.fab:hover{
+    background:#84b7e4;
+}
+
+@media(max-width:900px){
+    body{
+        padding-left:16px !important;
+        padding-right:16px !important;
+        padding-bottom:110px !important;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .mobile-tabbar{
+        display:flex;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:#0b0b0b;
+        border-top:1px solid rgba(255,255,255,0.1);
+        z-index:999;
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .fab{
+        right:16px;
+        bottom:88px;
+        width:58px;
+        height:58px;
+        font-size:32px;
+    }
+}
+
+</style>
 </head>
 
 <body>
-  <aside class="sidebar">
-    <div class="brand">Album Collection</div>
-    <nav class="side-nav">
-      <a class="side-link" href="index.html">ホーム</a>
-      <a class="side-link active" href="search.html">さがす</a>
-      <a class="side-link" href="editor.html">投稿</a>
-      <a class="side-link" href="notifications.html">通知</a>
-      <a class="side-link" id="sideMyPageLink" href="login.html">マイページ</a>
-      <a class="side-link" href="login.html">ログイン</a>
-    </nav>
-  </aside>
+  
+<!-- PC用サイドバー -->
+<nav class="sidebar">
+    <div class="logo">Album Collection</div>
+
+    <a href="index.html">ホーム</a>
+    <a href="search.html" class="active">検索</a>
+    <a href="editor.html">投稿する</a>
+    <a href="notifications.html">通知</a>
+    <a id="myPageLink" href="login.html">マイページ</a>
+    <a href="profile-edit.html">プロフィール編集</a>
+    <a href="login.html">ログイン</a>
+</nav>
+
+
 
   <main class="main">
     <header class="page-header">
@@ -455,15 +581,37 @@
     <section id="results" class="results"></section>
   </main>
 
-  <a class="post-fab" href="editor.html" aria-label="投稿する">＋</a>
+  <a href="editor.html" class="fab">＋</a>
 
-  <nav class="bottom-tab">
-    <a class="tab-link" href="index.html"><span>⌂</span>ホーム</a>
-    <a class="tab-link active" href="search.html"><span>⌕</span>さがす</a>
-    <a class="tab-link" href="editor.html"><span>＋</span>投稿</a>
-    <a class="tab-link" href="notifications.html"><span>♡</span>通知</a>
-    <a class="tab-link" id="bottomMyPageLink" href="login.html"><span>◉</span>マイページ</a>
-  </nav>
+  <!-- スマホ用下部タブバー -->
+<nav class="mobile-tabbar">
+    <a href="index.html">
+        <div class="icon">🏠</div>
+        <div>ホーム</div>
+    </a>
+
+    <a href="search.html" class="active">
+        <div class="icon">🔍</div>
+        <div>検索</div>
+    </a>
+
+    <a href="editor.html">
+        <div class="icon">➕</div>
+        <div>投稿</div>
+    </a>
+
+    <a href="notifications.html">
+        <div class="icon">🔔</div>
+        <div>通知</div>
+    </a>
+
+    <a id="mobileMyPageLink" href="login.html">
+        <div class="icon">👤</div>
+        <div>マイページ</div>
+    </a>
+</nav>
+
+
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
@@ -499,8 +647,8 @@
     const searchButton = document.getElementById("searchButton");
     const statusEl = document.getElementById("status");
     const resultsEl = document.getElementById("results");
-    const sideMyPageLink = document.getElementById("sideMyPageLink");
-    const bottomMyPageLink = document.getElementById("bottomMyPageLink");
+    const myPageLink = document.getElementById("myPageLink");
+    const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 
     let currentUser = null;
     let publicAlbums = [];
@@ -510,11 +658,11 @@
 
       if(user){
         const myPageUrl = `profile.html?uid=${user.uid}`;
-        sideMyPageLink.href = myPageUrl;
-        bottomMyPageLink.href = myPageUrl;
+        myPageLink.href = myPageUrl;
+        mobileMyPageLink.href = myPageUrl;
       }else{
-        sideMyPageLink.href = "login.html";
-        bottomMyPageLink.href = "login.html";
+        myPageLink.href = "login.html";
+        mobileMyPageLink.href = "login.html";
       }
     });
 
