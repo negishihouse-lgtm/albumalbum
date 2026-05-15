@@ -265,6 +265,104 @@ button:disabled{
     font-size:14px;
 }
 
+
+/* =====================
+   Spotify Search
+===================== */
+
+.spotify-box{
+    background:#101010;
+    border:1px solid rgba(111,168,220,0.28);
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:24px;
+}
+
+.spotify-search-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.spotify-search-row input{
+    flex:1;
+}
+
+.spotify-search-row button{
+    width:120px;
+    margin-top:0;
+    background:#1db954;
+    padding:14px;
+    font-size:15px;
+}
+
+.spotify-status{
+    color:#aaa;
+    font-size:13px;
+    line-height:1.6;
+    margin-top:10px;
+}
+
+.spotify-results{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+    margin-top:14px;
+}
+
+.spotify-result-card{
+    display:grid;
+    grid-template-columns:64px 1fr 88px;
+    gap:12px;
+    align-items:center;
+    background:#171717;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    padding:10px;
+}
+
+.spotify-result-card img{
+    width:64px;
+    height:64px;
+    object-fit:cover;
+    border-radius:10px;
+    background:#222;
+}
+
+.spotify-result-title{
+    font-size:14px;
+    font-weight:700;
+    line-height:1.4;
+    margin-bottom:4px;
+}
+
+.spotify-result-meta{
+    color:#aaa;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.spotify-select-btn{
+    width:88px;
+    margin-top:0;
+    padding:10px;
+    font-size:13px;
+    background:#6fa8dc;
+    border-radius:10px;
+}
+
+.spotify-selected{
+    display:none;
+    margin-top:12px;
+    color:#9fd3ff;
+    font-size:13px;
+    line-height:1.6;
+    background:#0d1720;
+    border:1px solid rgba(111,168,220,0.25);
+    border-radius:12px;
+    padding:10px;
+}
+
 /* =====================
    Floating Post Button
 ===================== */
@@ -333,6 +431,30 @@ button:disabled{
         width:54px;
         height:54px;
         font-size:32px;
+    }
+
+
+    .spotify-search-row{
+        display:block;
+    }
+
+    .spotify-search-row button{
+        width:100%;
+        margin-top:10px;
+    }
+
+    .spotify-result-card{
+        grid-template-columns:56px 1fr;
+    }
+
+    .spotify-result-card img{
+        width:56px;
+        height:56px;
+    }
+
+    .spotify-select-btn{
+        grid-column:1 / -1;
+        width:100%;
     }
 
     .bottom-tab{
@@ -422,6 +544,32 @@ button:disabled{
             </div>
 
             <div class="error-box" id="errorBox"></div>
+
+
+            <div class="spotify-box">
+                <div class="section-title">Spotify Search</div>
+
+                <div class="input-group" style="margin-bottom:0;">
+                    <label>Spotifyでアルバム検索</label>
+
+                    <div class="spotify-search-row">
+                        <input
+                            id="spotifySearchInput"
+                            type="text"
+                            placeholder="例：RADWIMPS 君の名は"
+                        >
+                        <button type="button" id="spotifySearchBtn">検索</button>
+                    </div>
+
+                    <div class="spotify-status" id="spotifyStatus">
+                        アルバム名やアーティスト名で検索できます。選択するとフォームに自動入力されます。
+                    </div>
+
+                    <div class="spotify-selected" id="spotifySelectedBox"></div>
+
+                    <div class="spotify-results" id="spotifyResults"></div>
+                </div>
+            </div>
 
             <div class="section-title">Album Form</div>
 
@@ -626,8 +774,18 @@ const clearBtn = document.getElementById("clearBtn");
 const descCount = document.getElementById("descCount");
 const descCountBox = document.getElementById("descCountBox");
 
+
+const spotifySearchInput = document.getElementById("spotifySearchInput");
+const spotifySearchBtn = document.getElementById("spotifySearchBtn");
+const spotifyStatus = document.getElementById("spotifyStatus");
+const spotifySelectedBox = document.getElementById("spotifySelectedBox");
+const spotifyResults = document.getElementById("spotifyResults");
+
+const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
+
 let editingId = editingIdFromUrl;
 let currentLoadedAlbum = null;
+let selectedSpotifyAlbum = null;
 let authReady = false;
 
 function escapeHTML(value){
@@ -718,6 +876,13 @@ function getFormData(){
         complex: Number(complexInput.value),
         hope: Number(hopeInput.value),
         world: Number(worldInput.value),
+        spotifyId: selectedSpotifyAlbum?.spotifyId || "",
+        spotifyUrl: selectedSpotifyAlbum?.spotifyUrl || "",
+        spotifyUri: selectedSpotifyAlbum?.spotifyUri || "",
+        spotifyReleaseDate: selectedSpotifyAlbum?.releaseDate || "",
+        spotifyAlbumType: selectedSpotifyAlbum?.albumType || "",
+        spotifyTotalTracks: selectedSpotifyAlbum?.totalTracks || 0,
+        source: selectedSpotifyAlbum?.spotifyId ? "spotify" : "manual",
         updatedAt: serverTimestamp()
     };
 }
@@ -735,6 +900,25 @@ function setFormData(album){
     complexInput.value = album.complex || 3;
     hopeInput.value = album.hope || 3;
     worldInput.value = album.world || 3;
+
+    if(album.spotifyId){
+        selectedSpotifyAlbum = {
+            spotifyId: album.spotifyId || "",
+            spotifyUrl: album.spotifyUrl || "",
+            spotifyUri: album.spotifyUri || "",
+            releaseDate: album.spotifyReleaseDate || "",
+            albumType: album.spotifyAlbumType || "",
+            totalTracks: album.spotifyTotalTracks || 0,
+            title: album.title || "",
+            artist: album.artist || "",
+            year: album.spotifyReleaseDate ? String(album.spotifyReleaseDate).slice(0, 4) : "",
+            cover: album.cover || ""
+        };
+        updateSpotifySelectedBox();
+    }else{
+        selectedSpotifyAlbum = null;
+        updateSpotifySelectedBox();
+    }
 
     updateDescCount();
 }
@@ -759,6 +943,8 @@ function clearForm(){
     descInput.value = "";
     keywordsInput.value = "";
     isPublicInput.value = "true";
+    selectedSpotifyAlbum = null;
+    updateSpotifySelectedBox();
 
     darknessInput.value = 3;
     intenseInput.value = 3;
@@ -768,6 +954,112 @@ function clearForm(){
 
     updateDescCount();
 }
+
+
+function setSpotifyStatus(message){
+    spotifyStatus.textContent = message;
+}
+
+function updateSpotifySelectedBox(){
+    if(!selectedSpotifyAlbum || !selectedSpotifyAlbum.spotifyId){
+        spotifySelectedBox.style.display = "none";
+        spotifySelectedBox.innerHTML = "";
+        return;
+    }
+
+    spotifySelectedBox.style.display = "block";
+    spotifySelectedBox.innerHTML = `
+        Spotify選択中：${escapeHTML(selectedSpotifyAlbum.title || titleInput.value)}
+        / ${escapeHTML(selectedSpotifyAlbum.artist || artistInput.value)}
+    `;
+}
+
+function renderSpotifyResults(albums){
+    spotifyResults.innerHTML = "";
+
+    if(!albums.length){
+        setSpotifyStatus("検索結果が見つかりませんでした。別のキーワードで試してください。");
+        return;
+    }
+
+    albums.forEach((album) => {
+        const card = document.createElement("div");
+        card.className = "spotify-result-card";
+
+        const imageSrc = album.cover || "";
+
+        card.innerHTML = `
+            <img src="${escapeHTML(imageSrc)}" alt="">
+            <div>
+                <div class="spotify-result-title">${escapeHTML(album.title)}</div>
+                <div class="spotify-result-meta">
+                    ${escapeHTML(album.artist)}<br>
+                    ${escapeHTML(album.year || "")}
+                    ${album.totalTracks ? `・${escapeHTML(album.totalTracks)}曲` : ""}
+                </div>
+            </div>
+            <button type="button" class="spotify-select-btn">選択</button>
+        `;
+
+        const selectBtn = card.querySelector(".spotify-select-btn");
+        selectBtn.addEventListener("click", () => {
+            selectedSpotifyAlbum = album;
+
+            coverInput.value = album.cover || "";
+            titleInput.value = album.title || "";
+            artistInput.value = album.artist || "";
+
+            updateSpotifySelectedBox();
+            setSpotifyStatus("Spotifyのアルバム情報をフォームに反映しました。紹介文・キーワード・メーターを入力して保存してください。");
+        });
+
+        spotifyResults.appendChild(card);
+    });
+
+    setSpotifyStatus(`${albums.length}件の候補を表示しています。該当するアルバムを選択してください。`);
+}
+
+async function searchSpotifyAlbums(){
+    const q = spotifySearchInput.value.trim();
+
+    if(!q){
+        alert("検索キーワードを入力してください");
+        return;
+    }
+
+    spotifySearchBtn.disabled = true;
+    spotifyResults.innerHTML = "";
+    setSpotifyStatus("Spotifyで検索中...");
+
+    try{
+        const url = `${SPOTIFY_API_BASE}/search-albums?q=${encodeURIComponent(q)}`;
+        const res = await fetch(url);
+
+        if(!res.ok){
+            const errorText = await res.text();
+            throw new Error(`Spotify検索に失敗しました：${res.status} ${errorText}`);
+        }
+
+        const albums = await res.json();
+        renderSpotifyResults(albums);
+
+    }catch(e){
+        setSpotifyStatus("Spotify検索でエラーが出ました。Cloudflare Workerや通信状況を確認してください。");
+        showError(e.message);
+    }finally{
+        spotifySearchBtn.disabled = false;
+    }
+}
+
+spotifySearchBtn.addEventListener("click", searchSpotifyAlbums);
+
+spotifySearchInput.addEventListener("keydown", (event) => {
+    if(event.key === "Enter"){
+        event.preventDefault();
+        searchSpotifyAlbums();
+    }
+});
+
 
 clearBtn.addEventListener("click", clearForm);
 
@@ -873,6 +1165,11 @@ function clearNewPostFormOnly(){
     descInput.value = "";
     keywordsInput.value = "";
     isPublicInput.value = "true";
+    selectedSpotifyAlbum = null;
+    updateSpotifySelectedBox();
+    spotifySearchInput.value = "";
+    spotifyResults.innerHTML = "";
+    spotifyStatus.textContent = "アルバム名やアーティスト名で検索できます。選択するとフォームに自動入力されます。";
 
     darknessInput.value = 3;
     intenseInput.value = 3;
