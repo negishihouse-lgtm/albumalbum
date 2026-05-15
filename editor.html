@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Album Editor</title>
+<title>Track Editor</title>
 
 <style>
 *{
@@ -527,7 +527,7 @@ button:disabled{
 
             <div class="page-title" id="pageTitle">投稿作成</div>
             <div class="page-subtitle" id="pageSubtitle">
-                新しいアルバム・曲のコレクションを作成します。
+                新しい曲のコレクションを作成します。
             </div>
 
             <div class="mode-badge" id="modeBadge">新規投稿モード</div>
@@ -550,19 +550,19 @@ button:disabled{
                 <div class="section-title">Spotify Search</div>
 
                 <div class="input-group" style="margin-bottom:0;">
-                    <label>Spotifyでアルバム検索</label>
+                    <label>Spotifyで曲検索</label>
 
                     <div class="spotify-search-row">
                         <input
                             id="spotifySearchInput"
                             type="text"
-                            placeholder="例：RADWIMPS 君の名は"
+                            placeholder="例：RADWIMPS 前前前世"
                         >
                         <button type="button" id="spotifySearchBtn">検索</button>
                     </div>
 
                     <div class="spotify-status" id="spotifyStatus">
-                        アルバム名やアーティスト名で検索できます。選択するとフォームに自動入力されます。
+                        曲名・アーティスト名で検索できます。選択するとフォームに自動入力されます。
                     </div>
 
                     <div class="spotify-selected" id="spotifySelectedBox"></div>
@@ -571,7 +571,7 @@ button:disabled{
                 </div>
             </div>
 
-            <div class="section-title">Album Form</div>
+            <div class="section-title">Song Form</div>
 
             <div class="input-group">
                 <label>ジャケット画像URL</label>
@@ -579,8 +579,8 @@ button:disabled{
             </div>
 
             <div class="input-group">
-                <label>曲名 / アルバム名</label>
-                <input id="titleInput" type="text" placeholder="例：HELP EVER HURT NEVER">
+                <label>曲名</label>
+                <input id="titleInput" type="text" placeholder="例：前前前世">
             </div>
 
             <div class="input-group">
@@ -785,7 +785,7 @@ const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
 let editingId = editingIdFromUrl;
 let currentLoadedAlbum = null;
-let selectedSpotifyAlbum = null;
+let selectedSpotifyTrack = null;
 let authReady = false;
 
 function escapeHTML(value){
@@ -837,7 +837,7 @@ function setPageMode(){
         saveBtn.textContent = "更新";
     }else{
         pageTitle.textContent = "投稿作成";
-        pageSubtitle.textContent = "新しいアルバム・曲のコレクションを作成します。";
+        pageSubtitle.textContent = "新しい曲のコレクションを作成します。";
         modeBadge.textContent = "新規投稿モード";
         modeBadge.classList.remove("edit");
         saveBtn.textContent = "保存";
@@ -876,13 +876,17 @@ function getFormData(){
         complex: Number(complexInput.value),
         hope: Number(hopeInput.value),
         world: Number(worldInput.value),
-        spotifyId: selectedSpotifyAlbum?.spotifyId || "",
-        spotifyUrl: selectedSpotifyAlbum?.spotifyUrl || "",
-        spotifyUri: selectedSpotifyAlbum?.spotifyUri || "",
-        spotifyReleaseDate: selectedSpotifyAlbum?.releaseDate || "",
-        spotifyAlbumType: selectedSpotifyAlbum?.albumType || "",
-        spotifyTotalTracks: selectedSpotifyAlbum?.totalTracks || 0,
-        source: selectedSpotifyAlbum?.spotifyId ? "spotify" : "manual",
+        spotifyId: selectedSpotifyTrack?.spotifyId || "",
+        spotifyUrl: selectedSpotifyTrack?.spotifyUrl || "",
+        spotifyUri: selectedSpotifyTrack?.spotifyUri || "",
+        spotifyType: selectedSpotifyTrack?.type || "track",
+        spotifyAlbumId: selectedSpotifyTrack?.albumId || "",
+        spotifyAlbumTitle: selectedSpotifyTrack?.albumTitle || "",
+        spotifyReleaseDate: selectedSpotifyTrack?.releaseDate || "",
+        spotifyTrackNumber: selectedSpotifyTrack?.trackNumber || 0,
+        spotifyDurationMs: selectedSpotifyTrack?.durationMs || 0,
+        spotifyPreviewUrl: selectedSpotifyTrack?.previewUrl || "",
+        source: selectedSpotifyTrack?.spotifyId ? "spotify" : "manual",
         updatedAt: serverTimestamp()
     };
 }
@@ -902,13 +906,17 @@ function setFormData(album){
     worldInput.value = album.world || 3;
 
     if(album.spotifyId){
-        selectedSpotifyAlbum = {
+        selectedSpotifyTrack = {
             spotifyId: album.spotifyId || "",
             spotifyUrl: album.spotifyUrl || "",
             spotifyUri: album.spotifyUri || "",
+            type: album.spotifyType || "track",
+            albumId: album.spotifyAlbumId || "",
+            albumTitle: album.spotifyAlbumTitle || "",
             releaseDate: album.spotifyReleaseDate || "",
-            albumType: album.spotifyAlbumType || "",
-            totalTracks: album.spotifyTotalTracks || 0,
+            trackNumber: album.spotifyTrackNumber || 0,
+            durationMs: album.spotifyDurationMs || 0,
+            previewUrl: album.spotifyPreviewUrl || "",
             title: album.title || "",
             artist: album.artist || "",
             year: album.spotifyReleaseDate ? String(album.spotifyReleaseDate).slice(0, 4) : "",
@@ -916,7 +924,7 @@ function setFormData(album){
         };
         updateSpotifySelectedBox();
     }else{
-        selectedSpotifyAlbum = null;
+        selectedSpotifyTrack = null;
         updateSpotifySelectedBox();
     }
 
@@ -943,7 +951,7 @@ function clearForm(){
     descInput.value = "";
     keywordsInput.value = "";
     isPublicInput.value = "true";
-    selectedSpotifyAlbum = null;
+    selectedSpotifyTrack = null;
     updateSpotifySelectedBox();
 
     darknessInput.value = 3;
@@ -961,7 +969,7 @@ function setSpotifyStatus(message){
 }
 
 function updateSpotifySelectedBox(){
-    if(!selectedSpotifyAlbum || !selectedSpotifyAlbum.spotifyId){
+    if(!selectedSpotifyTrack || !selectedSpotifyTrack.spotifyId){
         spotifySelectedBox.style.display = "none";
         spotifySelectedBox.innerHTML = "";
         return;
@@ -969,33 +977,33 @@ function updateSpotifySelectedBox(){
 
     spotifySelectedBox.style.display = "block";
     spotifySelectedBox.innerHTML = `
-        Spotify選択中：${escapeHTML(selectedSpotifyAlbum.title || titleInput.value)}
-        / ${escapeHTML(selectedSpotifyAlbum.artist || artistInput.value)}
+        Spotify選択中：${escapeHTML(selectedSpotifyTrack.title || titleInput.value)}
+        / ${escapeHTML(selectedSpotifyTrack.artist || artistInput.value)}
     `;
 }
 
-function renderSpotifyResults(albums){
+function renderSpotifyResults(tracks){
     spotifyResults.innerHTML = "";
 
-    if(!albums.length){
+    if(!tracks.length){
         setSpotifyStatus("検索結果が見つかりませんでした。別のキーワードで試してください。");
         return;
     }
 
-    albums.forEach((album) => {
+    tracks.forEach((track) => {
         const card = document.createElement("div");
         card.className = "spotify-result-card";
 
-        const imageSrc = album.cover || "";
+        const imageSrc = track.cover || "";
 
         card.innerHTML = `
             <img src="${escapeHTML(imageSrc)}" alt="">
             <div>
-                <div class="spotify-result-title">${escapeHTML(album.title)}</div>
+                <div class="spotify-result-title">${escapeHTML(track.title)}</div>
                 <div class="spotify-result-meta">
-                    ${escapeHTML(album.artist)}<br>
-                    ${escapeHTML(album.year || "")}
-                    ${album.totalTracks ? `・${escapeHTML(album.totalTracks)}曲` : ""}
+                    ${escapeHTML(track.artist)}<br>
+                    ${escapeHTML(track.year || "")}
+                    ${track.albumTitle ? `・${escapeHTML(track.albumTitle)}` : ""}
                 </div>
             </div>
             <button type="button" class="spotify-select-btn">選択</button>
@@ -1003,23 +1011,23 @@ function renderSpotifyResults(albums){
 
         const selectBtn = card.querySelector(".spotify-select-btn");
         selectBtn.addEventListener("click", () => {
-            selectedSpotifyAlbum = album;
+            selectedSpotifyTrack = track;
 
-            coverInput.value = album.cover || "";
-            titleInput.value = album.title || "";
-            artistInput.value = album.artist || "";
+            coverInput.value = track.cover || "";
+            titleInput.value = track.title || "";
+            artistInput.value = track.artist || "";
 
             updateSpotifySelectedBox();
-            setSpotifyStatus("Spotifyのアルバム情報をフォームに反映しました。紹介文・キーワード・メーターを入力して保存してください。");
+            setSpotifyStatus("Spotifyの曲情報をフォームに反映しました。紹介文・キーワード・メーターを入力して保存してください。");
         });
 
         spotifyResults.appendChild(card);
     });
 
-    setSpotifyStatus(`${albums.length}件の候補を表示しています。該当するアルバムを選択してください。`);
+    setSpotifyStatus(`${tracks.length}件の候補を表示しています。該当する曲を選択してください。`);
 }
 
-async function searchSpotifyAlbums(){
+async function searchSpotifyTracks(){
     const q = spotifySearchInput.value.trim();
 
     if(!q){
@@ -1032,7 +1040,7 @@ async function searchSpotifyAlbums(){
     setSpotifyStatus("Spotifyで検索中...");
 
     try{
-        const url = `${SPOTIFY_API_BASE}/search-albums?q=${encodeURIComponent(q)}`;
+        const url = `${SPOTIFY_API_BASE}/search-tracks?q=${encodeURIComponent(q)}`;
         const res = await fetch(url);
 
         if(!res.ok){
@@ -1040,8 +1048,8 @@ async function searchSpotifyAlbums(){
             throw new Error(`Spotify検索に失敗しました：${res.status} ${errorText}`);
         }
 
-        const albums = await res.json();
-        renderSpotifyResults(albums);
+        const tracks = await res.json();
+        renderSpotifyResults(tracks);
 
     }catch(e){
         setSpotifyStatus("Spotify検索でエラーが出ました。Cloudflare Workerや通信状況を確認してください。");
@@ -1051,12 +1059,12 @@ async function searchSpotifyAlbums(){
     }
 }
 
-spotifySearchBtn.addEventListener("click", searchSpotifyAlbums);
+spotifySearchBtn.addEventListener("click", searchSpotifyTracks);
 
 spotifySearchInput.addEventListener("keydown", (event) => {
     if(event.key === "Enter"){
         event.preventDefault();
-        searchSpotifyAlbums();
+        searchSpotifyTracks();
     }
 });
 
@@ -1114,7 +1122,7 @@ saveBtn.addEventListener("click", async () => {
         }
 
         if(!titleInput.value.trim()){
-            alert("曲名 / アルバム名を入力してください");
+            alert("曲名を入力してください");
             return;
         }
 
@@ -1165,11 +1173,11 @@ function clearNewPostFormOnly(){
     descInput.value = "";
     keywordsInput.value = "";
     isPublicInput.value = "true";
-    selectedSpotifyAlbum = null;
+    selectedSpotifyTrack = null;
     updateSpotifySelectedBox();
     spotifySearchInput.value = "";
     spotifyResults.innerHTML = "";
-    spotifyStatus.textContent = "アルバム名やアーティスト名で検索できます。選択するとフォームに自動入力されます。";
+    spotifyStatus.textContent = "曲名・アーティスト名で検索できます。選択するとフォームに自動入力されます。";
 
     darknessInput.value = 3;
     intenseInput.value = 3;
