@@ -303,6 +303,7 @@ body{
 .comment-body{
     flex:1;
     min-width:0;
+    text-align:left;
 }
 
 .comment-meta{
@@ -325,6 +326,8 @@ body{
     font-size:15px;
     word-break:break-word;
     white-space:pre-wrap;
+    text-align:left;
+    margin:0;
 }
 
 .comment-menu{
@@ -908,9 +911,7 @@ function renderComments(){
                         </span>
                     </div>
 
-                    <div class="comment-text">
-                        ${escapeHTML(comment.text || "")}
-                    </div>
+                    <div class="comment-text">${escapeHTML(comment.text || "")}</div>
 
                     ${
                         canDelete
@@ -1000,9 +1001,7 @@ function renderDetail(){
                 </div>
             </div>
 
-            <div class="review">
-                ${escapeHTML(albumData.desc || "本文はありません")}
-            </div>
+            <div class="review">${escapeHTML(albumData.desc || "本文はありません")}</div>
 
             ${renderKeywords(albumData.keywords)}
 
