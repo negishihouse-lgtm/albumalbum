@@ -585,6 +585,91 @@ body{
     }
 }
 
+
+/* ===== スマホ下部タブバー：detail仕様 + ユーザーアイコン ===== */
+.mobile-tabbar{
+    display:none;
+}
+
+@media(max-width:900px){
+    body{
+        padding-bottom:110px !important;
+    }
+
+    .mobile-tabbar{
+        position:fixed !important;
+        left:0 !important;
+        right:0 !important;
+        bottom:0 !important;
+        height:72px !important;
+        background:rgba(8,8,8,0.96) !important;
+        border-top:1px solid rgba(255,255,255,0.12) !important;
+        display:grid !important;
+        grid-template-columns:repeat(5,1fr) !important;
+        z-index:9999 !important;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .mobile-tabbar a{
+        color:#aaa !important;
+        text-decoration:none !important;
+        font-size:11px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:center !important;
+        justify-content:center !important;
+        gap:4px !important;
+        min-width:0 !important;
+        height:72px !important;
+    }
+
+    .mobile-tabbar a.active{
+        color:white !important;
+        font-weight:700 !important;
+    }
+
+    .mobile-tabbar .icon{
+        font-size:22px !important;
+        line-height:1 !important;
+        height:24px !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+    }
+
+    .mobile-tabbar .label{
+        line-height:1 !important;
+        white-space:nowrap !important;
+    }
+
+    .mobile-tabbar .tab-avatar{
+        width:28px !important;
+        height:28px !important;
+        border-radius:50% !important;
+        object-fit:cover !important;
+        background:#111 !important;
+        border:1px solid rgba(255,255,255,0.35) !important;
+        display:none;
+    }
+
+    .mobile-tabbar .mypage-icon-text{
+        font-size:22px !important;
+        line-height:1 !important;
+        height:24px !important;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .fab,
+    .floating-post-btn,
+    .post-fab{
+        display:none !important;
+    }
+}
+
 </style>
 </head>
 
@@ -604,30 +689,32 @@ body{
 </nav>
 
 <!-- スマホ用下部タブバー -->
+<!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
     <a href="index.html" class="active">
-        <div class="icon">🏠</div>
-        <div>ホーム</div>
+        <span class="icon">⌂</span>
+        <span class="label">ホーム</span>
     </a>
 
     <a href="search.html">
-        <div class="icon">🔍</div>
-        <div>検索</div>
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
     </a>
 
     <a href="editor.html">
-        <div class="icon">➕</div>
-        <div>投稿</div>
+        <span class="icon">＋</span>
+        <span class="label">投稿</span>
     </a>
 
     <a href="notifications.html">
-        <div class="icon">🔔</div>
-        <div>通知</div>
+        <span class="icon">♡</span>
+        <span class="label">通知</span>
     </a>
 
     <a id="mobileMyPageLink" href="login.html">
-        <div class="icon">👤</div>
-        <div>マイページ</div>
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">マイページ</span>
     </a>
 </nav>
 
@@ -655,6 +742,7 @@ import {
     query,
     where,
     doc,
+    getDoc,
     setDoc,
     deleteDoc,
     serverTimestamp
@@ -687,12 +775,15 @@ const albumGrid = document.getElementById("albumGrid");
 const mypageBtn = document.getElementById("mypageBtn");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 
 let currentUser = null;
 let allLikes = [];
 let allComments = [];
 
 onAuthStateChanged(auth, (user) => {
+    updateMobileMyPageTab(user);
     currentUser = user;
 
     if(mypageBtn){
@@ -719,6 +810,68 @@ onAuthStateChanged(auth, (user) => {
     updateLikeDisplays();
     updateCommentDisplays();
 });
+
+
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
+
+async function updateMobileMyPageTab(user){
+    if(!mobileMyPageLink){
+        return;
+    }
+
+    if(!user){
+        mobileMyPageLink.href = "login.html";
+
+        if(mobileMyPageAvatar){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+            mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+    }
+
+    mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+
+    try{
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+
+        if(!userSnap.exists()){
+            return;
+        }
+
+        const iconUrl = getUserIconUrl(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.src = iconUrl;
+            mobileMyPageAvatar.style.display = "block";
+            mobileMyPageFallback.style.display = "none";
+
+            mobileMyPageAvatar.onerror = () => {
+                mobileMyPageAvatar.style.display = "none";
+                mobileMyPageFallback.style.display = "flex";
+            };
+        }
+    }catch(error){
+        console.warn("マイページアイコンの取得に失敗しました", error);
+    }
+}
 
 function escapeHTML(value){
     return String(value ?? "")
