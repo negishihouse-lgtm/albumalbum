@@ -23,8 +23,96 @@ body{
 }
 
 .wrapper{
-    display:flex;
     min-height:100vh;
+}
+
+
+/* ===== detail仕様：PCサイドバー ===== */
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    background:#0b0b0b;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:30px 20px;
+    overflow-y:auto;
+    z-index:100;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:10px;
+    font-size:15px;
+}
+
+.sidebar a:hover{
+    background:#1a1a1a;
+}
+
+.sidebar a.active{
+    background:#1a1a1a;
+    color:#6fa8dc;
+}
+
+/* ===== detail仕様：スマホ下部タブバー ===== */
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#999;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:#6fa8dc;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+/* ===== detail仕様：右下投稿ボタン ===== */
+.fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:#6fa8dc;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    z-index:1000;
+}
+
+.fab:hover{
+    background:#84b7e4;
 }
 
 /* =====================
@@ -32,8 +120,8 @@ body{
 ===================== */
 
 .main{
-    flex:1;
-    padding:40px;
+    width:560px;
+    max-width:100%;
 }
 
 .form-area{
@@ -310,8 +398,6 @@ button:disabled{
     padding:10px;
 }
 
-
-
 /* =====================
    Mobile
 ===================== */
@@ -323,6 +409,9 @@ button:disabled{
         padding-bottom:110px;
     }
 
+    .wrapper{
+        display:block;
+    }
 
     .sidebar{
         display:none;
@@ -349,16 +438,8 @@ button:disabled{
         font-size:32px;
     }
 
-    body{
-        padding-bottom:86px;
-    }
-
-    .wrapper{
-        display:block;
-    }
-
     .main{
-        padding:18px;
+        width:100%;
     }
 
     .form-area{
@@ -370,8 +451,7 @@ button:disabled{
     .page-title{
         font-size:24px;
     }
-
-    .spotify-search-row{
+.spotify-search-row{
         display:block;
     }
 
@@ -393,110 +473,12 @@ button:disabled{
         grid-column:1 / -1;
         width:100%;
     }
-
-    }
-
-/* ===== detail仕様：PCサイドバー ===== */
-.sidebar{
-    position:fixed;
-    top:0;
-    left:0;
-    width:240px;
-    height:100vh;
-    background:#0b0b0b;
-    border-right:1px solid rgba(255,255,255,0.1);
-    padding:30px 20px;
-    overflow-y:auto;
-    z-index:100;
 }
-
-.logo{
-    font-size:28px;
-    font-weight:700;
-    margin-bottom:30px;
-}
-
-.sidebar a{
-    display:block;
-    color:white;
-    text-decoration:none;
-    padding:14px 16px;
-    margin-bottom:8px;
-    border-radius:10px;
-    font-size:15px;
-}
-
-.sidebar a:hover{
-    background:#1a1a1a;
-}
-
-.sidebar a.active{
-    background:#1a1a1a;
-    color:#6fa8dc;
-}
-
-/* ===== detail仕様：スマホ下部タブバー ===== */
-.mobile-tabbar{
-    display:none;
-}
-
-.mobile-tabbar a{
-    color:#999;
-    text-decoration:none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    font-size:11px;
-    flex:1;
-}
-
-.mobile-tabbar a.active{
-    color:#6fa8dc;
-}
-
-.mobile-tabbar .icon{
-    font-size:22px;
-    line-height:1;
-}
-
-/* ===== detail仕様：右下投稿ボタン ===== */
-.fab{
-    position:fixed;
-    right:24px;
-    bottom:24px;
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    background:#6fa8dc;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:36px;
-    text-decoration:none;
-    box-shadow:0 8px 24px rgba(0,0,0,0.45);
-    z-index:1000;
-}
-
-.fab:hover{
-    background:#84b7e4;
-}
-
-
-@media(max-width:900px){
-    body{
-        padding:16px;
-        padding-left:16px;
-        padding-bottom:110px;
-    }
-}
-
 </style>
 </head>
 
 <body>
+
 
 <!-- PC用サイドバー -->
 <nav class="sidebar">
@@ -541,10 +523,8 @@ button:disabled{
 
 <a href="editor.html" class="fab">＋</a>
 
-
 <div class="wrapper">
-
-    <main class="main">
+<main class="main">
 
         <div class="form-area">
 
@@ -694,7 +674,6 @@ button:disabled{
     </main>
 
 </div>
-
 <script type="module">
 
 import {
@@ -732,9 +711,6 @@ const db = initializeFirestore(app, {
 });
 
 const auth = getAuth(app);
-
-const myPageLink = document.getElementById("myPageLink");
-const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 
 const params = new URLSearchParams(location.search);
 const editingIdFromUrl = params.get("id");
@@ -787,14 +763,14 @@ let authReady = false;
 
 
 function updateCommonMyPageLinks(user){
-    const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
+    const url = user ? `./profile.html?uid=${encodeURIComponent(user.uid)}` : "./login.html";
 
-    if(myPageLink){
-        myPageLink.href = url;
+    if(myPageBtn){
+        myPageBtn.href = url;
     }
 
-    if(mobileMyPageLink){
-        mobileMyPageLink.href = url;
+    if(bottomMyPageBtn){
+        bottomMyPageBtn.href = url;
     }
 }
 
@@ -1209,13 +1185,13 @@ function goMyPage(){
     location.href = `./profile.html?uid=${encodeURIComponent(user.uid)}`;
 }
 
-if(myPageBtn) myPageBtn.addEventListener("click", (e) => { e.preventDefault(); goMyPage(); });
-if(bottomMyPageBtn) bottomMyPageBtn.addEventListener("click", (e) => { e.preventDefault(); goMyPage(); });
+if(myPageBtn) myPageBtn.addEventListener("click", (event) => { event.preventDefault(); goMyPage(); });
+if(bottomMyPageBtn) bottomMyPageBtn.addEventListener("click", (event) => { event.preventDefault(); goMyPage(); });
 goMyPageBtn.addEventListener("click", goMyPage);
 
 onAuthStateChanged(auth, async (user) => {
-    updateCommonMyPageLinks(user);
     authReady = true;
+    updateCommonMyPageLinks(user);
 
     if(user){
         loginStatus.textContent = `ログイン中: ${user.email}`;
