@@ -78,6 +78,32 @@ body{
     color:#6fa8dc;
 }
 
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
 .mobile-tabbar .icon{
     font-size:22px;
     line-height:1;
@@ -464,12 +490,10 @@ body{
         padding-bottom:env(safe-area-inset-bottom);
     }
 
-    .fab{
-        right:16px;
-        bottom:88px;
-        width:58px;
-        height:58px;
-        font-size:32px;
+    .fab,
+    .floating-post-btn,
+    .post-fab{
+        display:none !important;
     }
 
 .topbar{
@@ -596,30 +620,32 @@ body{
 </nav>
 
 <!-- スマホ用下部タブバー -->
+<!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
     <a href="index.html">
-        <div class="icon">🏠</div>
-        <div>ホーム</div>
+        <span class="icon">⌂</span>
+        <span class="label">ホーム</span>
     </a>
 
     <a href="search.html">
-        <div class="icon">🔍</div>
-        <div>検索</div>
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
     </a>
 
     <a href="editor.html">
-        <div class="icon">➕</div>
-        <div>投稿</div>
+        <span class="icon">＋</span>
+        <span class="label">投稿</span>
     </a>
 
     <a href="notifications.html">
-        <div class="icon">🔔</div>
-        <div>通知</div>
+        <span class="icon">♡</span>
+        <span class="label">通知</span>
     </a>
 
     <a id="mobileMyPageLink" href="login.html">
-        <div class="icon">👤</div>
-        <div>マイページ</div>
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">マイページ</span>
     </a>
 </nav>
 
@@ -684,6 +710,8 @@ const detailWrap = document.getElementById("detailWrap");
 const mypageBtn = document.getElementById("mypageBtn");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 
 const params = new URLSearchParams(location.search);
 const albumId = params.get("id");
@@ -704,6 +732,7 @@ const userCache = {};
 const loadingUsers = new Set();
 
 onAuthStateChanged(auth, (user) => {
+    updateMobileMyPageTab(user);
     currentUser = user;
 
     if(user){
@@ -737,6 +766,68 @@ onAuthStateChanged(auth, (user) => {
 
     renderDetail();
 });
+
+
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
+
+async function updateMobileMyPageTab(user){
+    if(!mobileMyPageLink){
+        return;
+    }
+
+    if(!user){
+        mobileMyPageLink.href = "login.html";
+
+        if(mobileMyPageAvatar){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+            mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+    }
+
+    mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+
+    try{
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+
+        if(!userSnap.exists()){
+            return;
+        }
+
+        const iconUrl = getUserIconUrl(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.src = iconUrl;
+            mobileMyPageAvatar.style.display = "block";
+            mobileMyPageFallback.style.display = "none";
+
+            mobileMyPageAvatar.onerror = () => {
+                mobileMyPageAvatar.style.display = "none";
+                mobileMyPageFallback.style.display = "flex";
+            };
+        }
+    }catch(error){
+        console.warn("マイページアイコンの取得に失敗しました", error);
+    }
+}
 
 function escapeHTML(value){
     return String(value ?? "")
