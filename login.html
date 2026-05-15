@@ -6,187 +6,387 @@
 <title>Login - Album Collection</title>
 
 <style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
-  background:#050505;
-  color:white;
-  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-  padding:40px;
+    background:#050505;
+    color:white;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    padding:40px;
+    padding-left:280px;
+    padding-bottom:120px;
 }
 
 .login-box{
-  max-width:420px;
-  margin:80px auto;
-  background:#0b0b0b;
-  border:1px solid rgba(255,255,255,0.12);
-  padding:32px;
+    max-width:420px;
+    margin:80px auto;
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:18px;
+    padding:32px;
 }
 
 h1{
-  font-size:36px;
-  margin-bottom:24px;
+    font-size:36px;
+    margin-bottom:24px;
 }
 
 input{
-  width:100%;
-  padding:14px;
-  margin-bottom:14px;
-  background:#111;
-  color:white;
-  border:1px solid rgba(255,255,255,0.2);
-  font-size:16px;
+    width:100%;
+    padding:14px;
+    margin-bottom:14px;
+    background:#111;
+    color:white;
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:10px;
+    font-size:16px;
 }
 
 button{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  background:#6fa8dc;
-  color:white;
-  border:none;
-  font-size:16px;
-  cursor:pointer;
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    background:#6fa8dc;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
 }
 
 .sub-btn{
-  background:#222;
+    background:#222;
 }
 
 .message{
-  margin-top:16px;
-  color:#aaa;
-  line-height:1.7;
+    margin-top:16px;
+    color:#aaa;
+    line-height:1.7;
 }
 
 a{
-  color:#6fa8dc;
-  text-decoration:none;
+    color:#6fa8dc;
+    text-decoration:none;
+}
+
+/* ===== 共通PCサイドバー ===== */
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:240px;
+    height:100vh;
+    background:#0b0b0b;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:30px 20px;
+    overflow-y:auto;
+    z-index:100;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:10px;
+    font-size:15px;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+    background:#1a1a1a;
+}
+
+.sidebar a.active{
+    color:#6fa8dc;
+}
+
+/* ===== 共通スマホ下部タブバー ===== */
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#999;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:#6fa8dc;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+/* ===== 共通右下投稿ボタン ===== */
+.fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:#6fa8dc;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    z-index:1000;
+}
+
+.fab:hover{
+    background:#84b7e4;
+}
+
+@media(max-width:900px){
+    body{
+        padding-left:16px !important;
+        padding-right:16px !important;
+        padding-bottom:110px !important;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .mobile-tabbar{
+        display:flex;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:#0b0b0b;
+        border-top:1px solid rgba(255,255,255,0.1);
+        z-index:999;
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .fab{
+        right:16px;
+        bottom:88px;
+        width:58px;
+        height:58px;
+        font-size:32px;
+    }
+}
+
+@media(max-width:900px){
+    .login-box{
+        margin:32px auto;
+        padding:26px;
+    }
+
+    h1{
+        font-size:32px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<p><a href="index.html">← ホームへ戻る</a></p>
+<!-- PC用サイドバー -->
+<nav class="sidebar">
+    <div class="logo">Album Collection</div>
+
+    <a href="index.html">ホーム</a>
+    <a href="search.html">検索</a>
+    <a href="editor.html">投稿する</a>
+    <a href="notifications.html">通知</a>
+    <a id="myPageLink" href="login.html">マイページ</a>
+    <a href="profile-edit.html">プロフィール編集</a>
+    <a href="login.html" class="active">ログイン</a>
+</nav>
+
+<!-- スマホ用下部タブバー -->
+<nav class="mobile-tabbar">
+    <a href="index.html">
+        <div class="icon">🏠</div>
+        <div>ホーム</div>
+    </a>
+
+    <a href="search.html">
+        <div class="icon">🔍</div>
+        <div>検索</div>
+    </a>
+
+    <a href="editor.html">
+        <div class="icon">➕</div>
+        <div>投稿</div>
+    </a>
+
+    <a href="notifications.html">
+        <div class="icon">🔔</div>
+        <div>通知</div>
+    </a>
+
+    <a id="mobileMyPageLink" href="login.html">
+        <div class="icon">👤</div>
+        <div>マイページ</div>
+    </a>
+</nav>
+
+<a href="editor.html" class="fab">＋</a>
+
 
 <div class="login-box">
-  <h1>Login</h1>
+    <h1>Login</h1>
 
-  <input type="email" id="email" placeholder="メールアドレス">
-  <input type="password" id="password" placeholder="パスワード">
+    <input type="email" id="email" placeholder="メールアドレス">
+    <input type="password" id="password" placeholder="パスワード">
 
-  <button id="loginBtn">ログイン</button>
-  <button class="sub-btn" id="signupBtn">新規登録</button>
-  <button class="sub-btn" id="logoutBtn">ログアウト</button>
+    <button id="loginBtn">ログイン</button>
+    <button class="sub-btn" id="signupBtn">新規登録</button>
+    <button class="sub-btn" id="logoutBtn">ログアウト</button>
 
-  <div class="message" id="message"></div>
+    <div class="message" id="message"></div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    initializeFirestore,
+    doc,
+    setDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
-  authDomain: "album-49b3e.firebaseapp.com",
-  projectId: "album-49b3e",
-  storageBucket: "album-49b3e.firebasestorage.app",
-  messagingSenderId: "448724897117",
-  appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
-  measurementId: "G-3QFX3GDEXN"
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+    measurementId: "G-3QFX3GDEXN"
 };
 
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
-const db = getFirestore(app);
+
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling: true
+});
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const message = document.getElementById("message");
+const myPageLink = document.getElementById("myPageLink");
+const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 
 const params = new URLSearchParams(location.search);
 const redirect = params.get("redirect") || "index.html";
 
+function updateCommonMyPageLinks(user){
+    const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
+
+    myPageLink.href = url;
+    mobileMyPageLink.href = url;
+}
+
 function goRedirect(){
-  location.href = redirect;
+    location.href = redirect;
 }
 
 async function saveUser(user, isNewUser = false){
-  await setDoc(doc(db, "users", user.uid), {
-    uid: user.uid,
-    email: user.email,
-    userName: user.email.split("@")[0],
-    updatedAt: serverTimestamp(),
-    ...(isNewUser ? { createdAt: serverTimestamp() } : {})
-  }, { merge: true });
+    await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        userName: user.email.split("@")[0],
+        updatedAt: serverTimestamp(),
+        ...(isNewUser ? { createdAt: serverTimestamp() } : {})
+    }, { merge: true });
 }
 
 document.getElementById("signupBtn").addEventListener("click", async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
-  if (!email || !password) {
-    message.textContent = "メールアドレスとパスワードを入力してください。";
-    return;
-  }
+    if(!email || !password){
+        message.textContent = "メールアドレスとパスワードを入力してください。";
+        return;
+    }
 
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    await saveUser(userCredential.user, true);
+    try{
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await saveUser(userCredential.user, true);
 
-    message.textContent = "新規登録しました。移動します。";
-    goRedirect();
+        message.textContent = "新規登録しました。移動します。";
+        goRedirect();
 
-  } catch (error) {
-    message.textContent = "新規登録エラー：" + error.message;
-  }
+    }catch(error){
+        message.textContent = "新規登録エラー：" + error.message;
+    }
 });
 
 document.getElementById("loginBtn").addEventListener("click", async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
-  if (!email || !password) {
-    message.textContent = "メールアドレスとパスワードを入力してください。";
-    return;
-  }
+    if(!email || !password){
+        message.textContent = "メールアドレスとパスワードを入力してください。";
+        return;
+    }
 
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    await saveUser(userCredential.user, false);
+    try{
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        await saveUser(userCredential.user, false);
 
-    message.textContent = "ログインしました。移動します。";
-    goRedirect();
+        message.textContent = "ログインしました。移動します。";
+        goRedirect();
 
-  } catch (error) {
-    message.textContent = "ログインエラー：" + error.message;
-  }
+    }catch(error){
+        message.textContent = "ログインエラー：" + error.message;
+    }
 });
 
 document.getElementById("logoutBtn").addEventListener("click", async () => {
-  await signOut(auth);
-  message.textContent = "ログアウトしました。";
+    await signOut(auth);
+    message.textContent = "ログアウトしました。";
 });
 
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    message.textContent = `ログイン中：${user.email}`;
-  } else {
-    message.textContent = "ログインしていません。";
-  }
+    updateCommonMyPageLinks(user);
+
+    if(user){
+        message.textContent = `ログイン中：${user.email}`;
+    }else{
+        message.textContent = "ログインしていません。";
+    }
 });
 </script>
 
