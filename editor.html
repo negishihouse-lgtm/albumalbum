@@ -23,11 +23,15 @@ body{
 }
 
 .wrapper{
+    display:block;
     min-height:100vh;
 }
 
 
-/* ===== detail仕様：PCサイドバー ===== */
+/* =====================
+   共通PCサイドバー
+===================== */
+
 .sidebar{
     position:fixed;
     top:0;
@@ -66,33 +70,66 @@ body{
     color:#6fa8dc;
 }
 
-/* ===== detail仕様：スマホ下部タブバー ===== */
+/* =====================
+   共通スマホ下部タブバー
+===================== */
+
 .mobile-tabbar{
     display:none;
 }
 
 .mobile-tabbar a{
-    color:#999;
+    color:#aaa;
     text-decoration:none;
+    font-size:11px;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     gap:4px;
-    font-size:11px;
-    flex:1;
+    min-width:0;
+    height:72px;
 }
 
 .mobile-tabbar a.active{
-    color:#6fa8dc;
+    color:white;
+    font-weight:700;
 }
 
 .mobile-tabbar .icon{
     font-size:22px;
     line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-/* ===== detail仕様：右下投稿ボタン ===== */
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* PCでは右下投稿ボタン表示 */
 .fab{
     position:fixed;
     right:24px;
@@ -120,8 +157,7 @@ body{
 ===================== */
 
 .main{
-    width:560px;
-    max-width:100%;
+    padding:0;
 }
 
 .form-area{
@@ -404,9 +440,7 @@ button:disabled{
 
 @media(max-width:900px){
     body{
-        padding:16px;
-        padding-left:16px;
-        padding-bottom:110px;
+        padding-bottom:86px;
     }
 
     .wrapper{
@@ -417,29 +451,8 @@ button:disabled{
         display:none;
     }
 
-    .mobile-tabbar{
-        display:flex;
-        position:fixed;
-        left:0;
-        right:0;
-        bottom:0;
-        height:72px;
-        background:#0b0b0b;
-        border-top:1px solid rgba(255,255,255,0.1);
-        z-index:999;
-        padding-bottom:env(safe-area-inset-bottom);
-    }
-
-    .fab{
-        right:16px;
-        bottom:88px;
-        width:58px;
-        height:58px;
-        font-size:32px;
-    }
-
     .main{
-        width:100%;
+        padding:18px;
     }
 
     .form-area{
@@ -451,7 +464,17 @@ button:disabled{
     .page-title{
         font-size:24px;
     }
-.spotify-search-row{
+
+    .floating-post-btn{
+        right:18px;
+        bottom:86px;
+        width:54px;
+        height:54px;
+        font-size:32px;
+    }
+
+
+    .spotify-search-row{
         display:block;
     }
 
@@ -473,12 +496,94 @@ button:disabled{
         grid-column:1 / -1;
         width:100%;
     }
+
+    .bottom-tab{
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:68px;
+        background:#111;
+        border-top:1px solid rgba(255,255,255,0.1);
+        display:flex;
+        justify-content:space-around;
+        align-items:center;
+        z-index:100;
+    }
+
+    .bottom-tab button{
+        width:auto;
+        flex:1;
+        height:68px;
+        margin:0;
+        padding:6px 0;
+        background:transparent;
+        color:#aaa;
+        border-radius:0;
+        font-size:11px;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:4px;
+    }
+
+    .bottom-tab button.active{
+        color:#6fa8dc;
+    }
+
+    .tab-icon{
+        font-size:20px;
+        line-height:1;
+    }
 }
+
+@media(max-width:900px){
+    body{
+        padding:16px !important;
+        padding-left:16px !important;
+        padding-bottom:110px !important;
+    }
+
+    .wrapper{
+        display:block;
+    }
+
+    .sidebar{
+        display:none !important;
+    }
+
+    .main{
+        padding:0 !important;
+    }
+
+    .mobile-tabbar{
+        position:fixed !important;
+        left:0 !important;
+        right:0 !important;
+        bottom:0 !important;
+        height:72px !important;
+        background:rgba(8,8,8,0.96) !important;
+        border-top:1px solid rgba(255,255,255,0.12) !important;
+        display:grid !important;
+        grid-template-columns:repeat(5,1fr) !important;
+        z-index:9999 !important;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .fab,
+    .floating-post-btn,
+    .post-fab{
+        display:none !important;
+    }
+}
+
 </style>
 </head>
 
 <body>
-
 
 <!-- PC用サイドバー -->
 <nav class="sidebar">
@@ -496,35 +601,37 @@ button:disabled{
 <!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
     <a href="index.html">
-        <div class="icon">🏠</div>
-        <div>ホーム</div>
+        <span class="icon">⌂</span>
+        <span class="label">ホーム</span>
     </a>
 
     <a href="search.html">
-        <div class="icon">🔍</div>
-        <div>検索</div>
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
     </a>
 
     <a href="editor.html" class="active">
-        <div class="icon">➕</div>
-        <div>投稿</div>
+        <span class="icon">＋</span>
+        <span class="label">投稿</span>
     </a>
 
     <a href="notifications.html">
-        <div class="icon">🔔</div>
-        <div>通知</div>
+        <span class="icon">♡</span>
+        <span class="label">通知</span>
     </a>
 
     <a id="mobileMyPageLink" href="login.html">
-        <div class="icon">👤</div>
-        <div>マイページ</div>
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">マイページ</span>
     </a>
 </nav>
 
 <a href="editor.html" class="fab">＋</a>
 
 <div class="wrapper">
-<main class="main">
+
+    <main class="main">
 
         <div class="form-area">
 
@@ -674,6 +781,7 @@ button:disabled{
     </main>
 
 </div>
+
 <script type="module">
 
 import {
@@ -726,6 +834,9 @@ const loadingBox = document.getElementById("loadingBox");
 
 const myPageBtn = document.getElementById("myPageLink");
 const bottomMyPageBtn = document.getElementById("mobileMyPageLink");
+const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 const goMyPageBtn = document.getElementById("goMyPageBtn");
 
 const coverInput = document.getElementById("coverInput");
@@ -762,15 +873,74 @@ let selectedSpotifyTrack = null;
 let authReady = false;
 
 
-function updateCommonMyPageLinks(user){
-    const url = user ? `./profile.html?uid=${encodeURIComponent(user.uid)}` : "./login.html";
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
+
+async function updateMobileMyPageTab(user){
+    if(!mobileMyPageLink){
+        return;
+    }
+
+    if(!user){
+        mobileMyPageLink.href = "login.html";
+
+        if(myPageBtn){
+            myPageBtn.href = "login.html";
+        }
+
+        if(mobileMyPageAvatar){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+            mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+    }
+
+    const url = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+
+    mobileMyPageLink.href = url;
 
     if(myPageBtn){
         myPageBtn.href = url;
     }
 
-    if(bottomMyPageBtn){
-        bottomMyPageBtn.href = url;
+    try{
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+
+        if(!userSnap.exists()){
+            return;
+        }
+
+        const iconUrl = getUserIconUrl(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.src = iconUrl;
+            mobileMyPageAvatar.style.display = "block";
+            mobileMyPageFallback.style.display = "none";
+
+            mobileMyPageAvatar.onerror = () => {
+                mobileMyPageAvatar.style.display = "none";
+                mobileMyPageFallback.style.display = "flex";
+            };
+        }
+    }catch(error){
+        console.warn("マイページアイコンの取得に失敗しました", error);
     }
 }
 
@@ -1190,8 +1360,8 @@ if(bottomMyPageBtn) bottomMyPageBtn.addEventListener("click", (event) => { event
 goMyPageBtn.addEventListener("click", goMyPage);
 
 onAuthStateChanged(auth, async (user) => {
+    updateMobileMyPageTab(user);
     authReady = true;
-    updateCommonMyPageLinks(user);
 
     if(user){
         loginStatus.textContent = `ログイン中: ${user.email}`;
