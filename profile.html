@@ -150,6 +150,20 @@ body{
     font-size:15px;
 }
 
+.follow-stat-link{
+    background:none;
+    border:none;
+    color:#ddd;
+    padding:0;
+    font:inherit;
+    cursor:pointer;
+}
+
+.follow-stat-link:hover{
+    color:white;
+    text-decoration:underline;
+}
+
 .profile-actions{
     display:flex;
     gap:10px;
@@ -896,8 +910,13 @@ body{
             <div class="profile-email" id="profileEmail"></div>
 
             <div class="follow-stats">
-                <span id="followingCount">フォロー中 0</span>
-                <span id="followerCount">フォロワー 0</span>
+                <button class="follow-stat-link" id="followingLink" type="button">
+                    <span id="followingCount">フォロー中 0</span>
+                </button>
+
+                <button class="follow-stat-link" id="followerLink" type="button">
+                    <span id="followerCount">フォロワー 0</span>
+                </button>
             </div>
 
             <div class="profile-actions">
@@ -970,6 +989,8 @@ const albumGrid = document.getElementById("albumGrid");
 const followBtn = document.getElementById("followBtn");
 const followingCount = document.getElementById("followingCount");
 const followerCount = document.getElementById("followerCount");
+const followingLink = document.getElementById("followingLink");
+const followerLink = document.getElementById("followerLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const ownerNotice = document.getElementById("ownerNotice");
 const profileEditBtn = document.getElementById("profileEditBtn");
@@ -1609,6 +1630,20 @@ profileEditBtn.addEventListener("click", () => {
 
     location.href = "profile-edit.html";
 });
+
+if(followingLink){
+    followingLink.addEventListener("click", () => {
+        if(!uid) return;
+        location.href = `follows.html?uid=${encodeURIComponent(uid)}&type=following`;
+    });
+}
+
+if(followerLink){
+    followerLink.addEventListener("click", () => {
+        if(!uid) return;
+        location.href = `follows.html?uid=${encodeURIComponent(uid)}&type=followers`;
+    });
+}
 
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
