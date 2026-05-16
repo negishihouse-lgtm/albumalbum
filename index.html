@@ -1565,5 +1565,28 @@ onSnapshot(q, (snapshot)=>{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   スマホ版：いいね数とコメント数を同じ列に横並び
+============================================================ */
+@media(max-width:900px){
+    .reaction-row{
+        display:flex !important;
+        flex-direction:row !important;
+        align-items:center !important;
+        justify-content:flex-start !important;
+        gap:10px !important;
+        flex-wrap:wrap !important;
+    }
+
+    .like-area{
+        display:flex !important;
+        align-items:center !important;
+        gap:6px !important;
+    }
+}
+</style>
+
 </body>
 </html>
