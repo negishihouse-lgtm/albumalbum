@@ -2020,5 +2020,164 @@ onSnapshot(q, (snapshot)=>{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   スマホ版メーター色・縦ズレ修正
+   - PC版には影響しない
+   - 左側をより黒め・濃い色に変更
+   - 線は全区間に色を付ける
+   - ドットと線の縦位置を中央揃えで固定
+============================================================ */
+@media(max-width:900px){
+    .meter-graphic{
+        height:18px !important;
+        display:flex !important;
+        align-items:center !important;
+        overflow:visible !important;
+    }
+
+    .dot,
+    .connector{
+        box-sizing:border-box !important;
+        align-self:center !important;
+        margin-top:0 !important;
+        margin-bottom:0 !important;
+        transform:none !important;
+    }
+
+    /* 線は全区間に色付き。左ほど黒め・右ほど淡い */
+    .connector.level-1{
+        background:#273238 !important;
+    }
+
+    .connector.level-2{
+        background:#557884 !important;
+    }
+
+    .connector.level-3{
+        background:#94bdc8 !important;
+    }
+
+    .connector.level-4{
+        background:#d5edf1 !important;
+    }
+
+    /* ドットも位置ごとに非連続で色を変える */
+    .dot.level-1{
+        background:#273238 !important;
+        border-color:#273238 !important;
+    }
+
+    .dot.level-2{
+        background:#557884 !important;
+        border-color:#557884 !important;
+    }
+
+    .dot.level-3{
+        background:#94bdc8 !important;
+        border-color:#94bdc8 !important;
+    }
+
+    .dot.level-4{
+        background:#d5edf1 !important;
+        border-color:#d5edf1 !important;
+    }
+
+    .dot.level-5{
+        background:#f0fbfc !important;
+        border-color:#f0fbfc !important;
+    }
+
+    /* 左端・右端は、選択されていないときは消す */
+    .dot.level-1:not(.selected),
+    .dot.level-5:not(.selected){
+        width:0 !important;
+        height:0 !important;
+        flex:0 0 0 !important;
+        border:0 !important;
+        opacity:0 !important;
+        box-shadow:none !important;
+    }
+
+    /* 中間ドットは小さく表示 */
+    .dot.level-2:not(.selected),
+    .dot.level-3:not(.selected),
+    .dot.level-4:not(.selected){
+        width:7px !important;
+        height:7px !important;
+        flex:0 0 7px !important;
+        border:0 !important;
+        opacity:1 !important;
+        box-shadow:none !important;
+    }
+
+    /* 選択ドットだけ大きく。値はこの位置で表す */
+    .dot.selected.level-1,
+    .dot.selected.level-2,
+    .dot.selected.level-3,
+    .dot.selected.level-4,
+    .dot.selected.level-5{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        border:3px solid #f0fbfc !important;
+        opacity:1 !important;
+        box-shadow:none !important;
+    }
+
+    .dot.selected.level-1{
+        background:#273238 !important;
+        border-color:#9fcdd9 !important;
+        box-shadow:0 0 10px rgba(39,50,56,0.55) !important;
+    }
+
+    .dot.selected.level-2{
+        background:#557884 !important;
+        box-shadow:0 0 10px rgba(85,120,132,0.42) !important;
+    }
+
+    .dot.selected.level-3{
+        background:#94bdc8 !important;
+        box-shadow:0 0 10px rgba(148,189,200,0.38) !important;
+    }
+
+    .dot.selected.level-4{
+        background:#d5edf1 !important;
+        box-shadow:0 0 10px rgba(213,237,241,0.38) !important;
+    }
+
+    .dot.selected.level-5{
+        background:#f0fbfc !important;
+        border-color:#ffffff !important;
+        box-shadow:0 0 10px rgba(240,251,252,0.45) !important;
+    }
+}
+
+@media(max-width:430px){
+    .meter-graphic{
+        height:17px !important;
+    }
+
+    .dot.level-2:not(.selected),
+    .dot.level-3:not(.selected),
+    .dot.level-4:not(.selected){
+        width:6px !important;
+        height:6px !important;
+        flex:0 0 6px !important;
+    }
+
+    .dot.selected.level-1,
+    .dot.selected.level-2,
+    .dot.selected.level-3,
+    .dot.selected.level-4,
+    .dot.selected.level-5{
+        width:14px !important;
+        height:14px !important;
+        flex:0 0 14px !important;
+    }
+}
+</style>
+
 </body>
 </html>
