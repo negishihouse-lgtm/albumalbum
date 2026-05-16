@@ -1,5 +1,470 @@
-// notifications.html
-// Firebase設定は既存の Album Collection.html と同じものを使用
+【1】notifications.html 完全版
+下のコードを丸ごとコピーして、notifications.html として保存してください。
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>通知 - Album Collection</title>
+
+<style>
+:root{
+    --bg:#050505;
+    --panel:#080909;
+    --panel-2:#0b0d0e;
+    --border:rgba(255,255,255,0.15);
+    --border-soft:rgba(255,255,255,0.10);
+    --text:#ffffff;
+    --text-soft:#dce3e6;
+    --muted:#aab3b8;
+    --accent:#9fcdd9;
+    --accent-hover:#b7dfe7;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    min-height:100%;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Noto Sans JP",sans-serif;
+    padding:38px 30px 120px 252px;
+}
+
+a{
+    color:inherit;
+}
+
+/* ===== PC Sidebar ===== */
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:220px;
+    height:100vh;
+    background:#060708;
+    border-right:1px solid rgba(255,255,255,0.08);
+    padding:28px 20px;
+    overflow-y:auto;
+    z-index:100;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:800;
+    line-height:1.04;
+    margin-bottom:28px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:12px;
+    font-size:15px;
+}
+
+.sidebar a:hover{
+    background:#141617;
+}
+
+.sidebar a.active{
+    background:#17191a;
+    color:var(--accent);
+}
+
+/* ===== Header ===== */
+
+.page-wrap{
+    max-width:760px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.page-title{
+    font-size:42px;
+    font-weight:900;
+    letter-spacing:-0.045em;
+}
+
+.mark-read-btn{
+    border:1px solid rgba(255,255,255,0.16);
+    background:#0b0d0e;
+    color:#dce3e6;
+    border-radius:999px;
+    padding:10px 14px;
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.mark-read-btn:hover{
+    border-color:rgba(159,205,217,0.42);
+    color:#fff;
+}
+
+/* ===== Notifications ===== */
+
+.notification-list{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:18px;
+    overflow:hidden;
+    background:#070808;
+}
+
+.notification-item{
+    display:grid;
+    grid-template-columns:44px minmax(0,1fr);
+    gap:14px;
+    padding:18px 18px;
+    border-bottom:1px solid rgba(255,255,255,0.10);
+    text-decoration:none;
+    color:white;
+    cursor:pointer;
+    background:#070808;
+}
+
+.notification-item:last-child{
+    border-bottom:none;
+}
+
+.notification-item:hover{
+    background:#0d0f10;
+}
+
+.notification-item.unread{
+    background:linear-gradient(90deg, rgba(159,205,217,0.12), rgba(7,8,8,0));
+}
+
+.notification-icon{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:#111516;
+    border:1px solid rgba(255,255,255,0.14);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+}
+
+.notification-main{
+    min-width:0;
+}
+
+.notification-text{
+    color:#f2f6f7;
+    font-size:15px;
+    line-height:1.55;
+    font-weight:700;
+    word-break:break-word;
+}
+
+.notification-text strong{
+    color:#ffffff;
+}
+
+.notification-sub{
+    color:#aab3b8;
+    font-size:12px;
+    line-height:1.45;
+    margin-top:5px;
+    word-break:break-word;
+}
+
+.comment-preview{
+    margin-top:8px;
+    color:#dce3e6;
+    font-size:13px;
+    line-height:1.5;
+    border-left:3px solid rgba(159,205,217,0.55);
+    padding-left:10px;
+}
+
+.empty{
+    color:#888;
+    font-size:18px;
+    padding:28px;
+}
+
+.loading{
+    color:#888;
+    font-size:18px;
+    padding:28px;
+}
+
+/* ===== Mobile Tabbar ===== */
+
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#9ca6ac;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+    position:relative;
+}
+
+.mobile-tabbar a.active{
+    color:white;
+    font-weight:700;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.unread-badge{
+    display:none;
+    position:absolute;
+    top:10px;
+    right:25%;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    border-radius:999px;
+    background:#ff4d5a;
+    color:white;
+    font-size:11px;
+    line-height:18px;
+    text-align:center;
+    font-weight:900;
+}
+
+/* ===== Smartphone ===== */
+
+@media(max-width:900px){
+    body{
+        padding:16px;
+        padding-left:16px;
+        padding-bottom:110px;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .page-wrap{
+        max-width:none;
+    }
+
+    .topbar{
+        position:sticky;
+        top:0;
+        z-index:900;
+        margin:-16px -16px 14px;
+        padding:calc(14px + env(safe-area-inset-top)) 16px 13px;
+        background:rgba(5,5,5,0.96);
+        border-bottom:1px solid rgba(255,255,255,0.10);
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+    }
+
+    .page-title{
+        font-size:28px;
+        letter-spacing:-0.03em;
+    }
+
+    .mark-read-btn{
+        padding:8px 11px;
+        font-size:12px;
+    }
+
+    .notification-list{
+        border:none;
+        border-radius:0;
+        background:transparent;
+        margin:0 -16px;
+    }
+
+    .notification-item{
+        grid-template-columns:38px minmax(0,1fr);
+        gap:12px;
+        padding:16px;
+        border-bottom:1px solid rgba(255,255,255,0.10);
+        background:#050505;
+    }
+
+    .notification-item:hover{
+        background:#050505;
+    }
+
+    .notification-icon{
+        width:36px;
+        height:36px;
+        font-size:18px;
+    }
+
+    .notification-text{
+        font-size:14px;
+        line-height:1.55;
+    }
+
+    .notification-sub{
+        font-size:12px;
+    }
+
+    .comment-preview{
+        font-size:12px;
+    }
+
+    .empty,
+    .loading{
+        padding:24px 16px;
+        font-size:15px;
+    }
+
+    .mobile-tabbar{
+        display:grid;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:rgba(8,8,8,0.96);
+        border-top:1px solid rgba(255,255,255,0.12);
+        grid-template-columns:repeat(5,1fr);
+        z-index:9999;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .mobile-tabbar a{
+        height:72px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- PC用サイドバー -->
+<nav class="sidebar">
+    <div class="logo">Album<br>Collection</div>
+
+    <a href="index.html">ホーム</a>
+    <a href="search.html">検索</a>
+    <a href="editor.html">投稿する</a>
+    <a href="notifications.html" class="active">通知</a>
+    <a id="myPageLink" href="login.html">マイページ</a>
+    <a href="profile-edit.html">プロフィール編集</a>
+    <a href="login.html">ログイン</a>
+</nav>
+
+<!-- スマホ用下部タブバー -->
+<nav class="mobile-tabbar">
+    <a href="index.html">
+        <span class="icon">⌂</span>
+        <span class="label">ホーム</span>
+    </a>
+
+    <a href="search.html">
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
+    </a>
+
+    <a href="editor.html">
+        <span class="icon">＋</span>
+        <span class="label">投稿</span>
+    </a>
+
+    <a href="notifications.html" class="active">
+        <span class="icon">♡</span>
+        <span class="unread-badge" id="mobileUnreadBadge">0</span>
+        <span class="label">通知</span>
+    </a>
+
+    <a id="mobileMyPageLink" href="login.html">
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">マイページ</span>
+    </a>
+</nav>
+
+<main class="page-wrap">
+    <div class="topbar">
+        <h1 class="page-title">通知</h1>
+        <button id="markAllReadBtn" class="mark-read-btn" type="button">すべて既読</button>
+    </div>
+
+    <div id="notificationsList" class="notification-list">
+        <div class="loading">読み込み中...</div>
+    </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+    initializeFirestore,
+    collection,
+    query,
+    where,
+    onSnapshot,
+    doc,
+    getDoc,
+    updateDoc,
+    writeBatch,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
@@ -11,21 +476,423 @@ const firebaseConfig = {
     measurementId: "G-3QFX3GDEXN"
 };
 
-/* ============================================
-   通知作成関数
-   ============================================ */
+const app = initializeApp(firebaseConfig);
 
-async function createNotification({
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling: true
+});
+
+const auth = getAuth(app);
+
+const notificationsList = document.getElementById("notificationsList");
+const markAllReadBtn = document.getElementById("markAllReadBtn");
+const myPageLink = document.getElementById("myPageLink");
+const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
+const mobileUnreadBadge = document.getElementById("mobileUnreadBadge");
+
+let currentUser = null;
+let unsubscribeNotifications = null;
+let latestNotifications = [];
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
+
+async function updateMobileMyPageTab(user){
+    if(!mobileMyPageLink){
+        return;
+    }
+
+    if(!user){
+        mobileMyPageLink.href = "login.html";
+
+        if(mobileMyPageAvatar){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+            mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+    }
+
+    mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+
+    try{
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+
+        if(!userSnap.exists()){
+            return;
+        }
+
+        const iconUrl = getUserIconUrl(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.src = iconUrl;
+            mobileMyPageAvatar.style.display = "block";
+            mobileMyPageFallback.style.display = "none";
+
+            mobileMyPageAvatar.onerror = () => {
+                mobileMyPageAvatar.style.display = "none";
+                mobileMyPageFallback.style.display = "flex";
+            };
+        }
+    }catch(error){
+        console.warn("マイページアイコンの取得に失敗しました", error);
+    }
+}
+
+function formatDate(value){
+    if(!value){
+        return "";
+    }
+
+    let date = null;
+
+    if(typeof value.toDate === "function"){
+        date = value.toDate();
+    }else if(value instanceof Date){
+        date = value;
+    }else if(typeof value === "number"){
+        date = new Date(value);
+    }else if(typeof value === "string"){
+        const parsed = new Date(value);
+        if(!Number.isNaN(parsed.getTime())){
+            date = parsed;
+        }
+    }
+
+    if(!date || Number.isNaN(date.getTime())){
+        return "";
+    }
+
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMinutes = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if(diffMinutes < 1){
+        return "今";
+    }
+
+    if(diffMinutes < 60){
+        return `${diffMinutes}分前`;
+    }
+
+    if(diffHours < 24){
+        return `${diffHours}時間前`;
+    }
+
+    if(diffDays < 7){
+        return `${diffDays}日前`;
+    }
+
+    return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+function getNotificationText(n){
+    const fromName = escapeHTML(n.fromUserName || "匿名ユーザー");
+    const albumTitle = escapeHTML(n.albumTitle || "投稿");
+
+    if(n.type === "like"){
+        return `<strong>${fromName}</strong>さんが「${albumTitle}」にいいねしました`;
+    }
+
+    if(n.type === "comment"){
+        return `<strong>${fromName}</strong>さんが「${albumTitle}」にコメントしました`;
+    }
+
+    if(n.type === "follow"){
+        return `<strong>${fromName}</strong>さんがあなたをフォローしました`;
+    }
+
+    return `<strong>${fromName}</strong>さんから通知があります`;
+}
+
+function getNotificationIcon(type){
+    if(type === "like"){
+        return "♥";
+    }
+
+    if(type === "comment"){
+        return "💬";
+    }
+
+    if(type === "follow"){
+        return "👤";
+    }
+
+    return "•";
+}
+
+function getNotificationHref(n){
+    if(n.type === "follow" && n.fromUserId){
+        return `profile.html?uid=${encodeURIComponent(n.fromUserId)}`;
+    }
+
+    if(n.albumId){
+        return `detail.html?id=${encodeURIComponent(n.albumId)}`;
+    }
+
+    return "#";
+}
+
+async function markNotificationRead(notificationId){
+    if(!notificationId){
+        return;
+    }
+
+    try{
+        await updateDoc(doc(db, "notifications", notificationId), {
+            read: true,
+            readAt: serverTimestamp()
+        });
+    }catch(error){
+        console.warn("通知の既読化に失敗しました", error);
+    }
+}
+
+window.openNotification = async function(notificationId, href){
+    await markNotificationRead(notificationId);
+
+    if(href && href !== "#"){
+        location.href = href;
+    }
+};
+
+function renderNotifications(){
+    const unreadCount = latestNotifications.filter(n => !n.read).length;
+
+    if(mobileUnreadBadge){
+        if(unreadCount > 0){
+            mobileUnreadBadge.style.display = "block";
+            mobileUnreadBadge.textContent = unreadCount > 99 ? "99+" : String(unreadCount);
+        }else{
+            mobileUnreadBadge.style.display = "none";
+            mobileUnreadBadge.textContent = "0";
+        }
+    }
+
+    if(latestNotifications.length === 0){
+        notificationsList.innerHTML = `<div class="empty">通知はまだありません</div>`;
+        return;
+    }
+
+    const html = latestNotifications.map((n) => {
+        const href = getNotificationHref(n);
+        const icon = getNotificationIcon(n.type);
+        const text = getNotificationText(n);
+        const dateText = formatDate(n.createdAt);
+        const commentText = n.type === "comment" && n.commentText
+            ? `<div class="comment-preview">「${escapeHTML(n.commentText)}」</div>`
+            : "";
+
+        return `
+            <div class="notification-item ${n.read ? "" : "unread"}"
+                 onclick="openNotification('${escapeHTML(n.id)}', '${escapeHTML(href)}')">
+                <div class="notification-icon">${escapeHTML(icon)}</div>
+                <div class="notification-main">
+                    <div class="notification-text">${text}</div>
+                    <div class="notification-sub">${escapeHTML(dateText)}</div>
+                    ${commentText}
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    notificationsList.innerHTML = html;
+}
+
+async function markAllRead(){
+    if(!currentUser){
+        return;
+    }
+
+    const unreadNotifications = latestNotifications.filter(n => !n.read);
+
+    if(unreadNotifications.length === 0){
+        return;
+    }
+
+    try{
+        const batch = writeBatch(db);
+
+        unreadNotifications.forEach((n) => {
+            batch.update(doc(db, "notifications", n.id), {
+                read: true,
+                readAt: serverTimestamp()
+            });
+        });
+
+        await batch.commit();
+    }catch(error){
+        console.warn("すべて既読に失敗しました", error);
+        alert("既読処理に失敗しました。時間を置いてもう一度試してください。");
+    }
+}
+
+if(markAllReadBtn){
+    markAllReadBtn.addEventListener("click", markAllRead);
+}
+
+function startNotificationListener(user){
+    if(unsubscribeNotifications){
+        unsubscribeNotifications();
+        unsubscribeNotifications = null;
+    }
+
+    latestNotifications = [];
+
+    if(!user){
+        notificationsList.innerHTML = `<div class="empty">ログインすると通知を表示できます</div>`;
+        return;
+    }
+
+    notificationsList.innerHTML = `<div class="loading">読み込み中...</div>`;
+
+    const notificationsQuery = query(
+        collection(db, "notifications"),
+        where("toUserId", "==", user.uid)
+    );
+
+    unsubscribeNotifications = onSnapshot(notificationsQuery, (snapshot) => {
+        latestNotifications = [];
+
+        snapshot.forEach((docSnap) => {
+            latestNotifications.push({
+                id: docSnap.id,
+                ...docSnap.data()
+            });
+        });
+
+        latestNotifications.sort((a, b) => {
+            const aTime = a.createdAt?.toDate?.()?.getTime?.() || 0;
+            const bTime = b.createdAt?.toDate?.()?.getTime?.() || 0;
+            return bTime - aTime;
+        });
+
+        renderNotifications();
+    }, (error) => {
+        console.error("通知の取得に失敗しました", error);
+        notificationsList.innerHTML = `<div class="empty">通知の読み込みに失敗しました：${escapeHTML(error.message)}</div>`;
+    });
+}
+
+onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    updateMobileMyPageTab(user);
+
+    const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
+
+    if(myPageLink){
+        myPageLink.href = url;
+    }
+
+    if(mobileMyPageLink){
+        mobileMyPageLink.href = url;
+    }
+
+    startNotificationListener(user);
+});
+</script>
+
+</body>
+</html>
+
+
+============================================================
+
+【2】通知作成用コード
+いいね・コメント・フォロー通知を発生させるための追加コードです。
+これは notifications.html ではなく、既存の index.html / detail.html / profile.html などの該当処理に組み込んでください。
+
+// 通知作成用コード
+// これは各ページの既存処理に追加するコードです。
+// notifications.html とは別に、いいね・コメント・フォローの処理があるページへ組み込んでください。
+
+import {
+    collection,
+    doc,
+    getDoc,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+function getUserDisplayNameFromData(data){
+    if(!data){
+        return "";
+    }
+
+    return (
+        data.displayName ||
+        data.nickname ||
+        data.nickName ||
+        data.userName ||
+        data.name ||
+        ""
+    );
+}
+
+async function getCurrentUserName(db, currentUser){
+    if(!currentUser){
+        return "匿名ユーザー";
+    }
+
+    try{
+        const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+
+        if(meSnap.exists()){
+            return getUserDisplayNameFromData(meSnap.data()) || "匿名ユーザー";
+        }
+    }catch(error){
+        console.warn("自分のユーザー名取得に失敗しました", error);
+    }
+
+    return currentUser.displayName || "匿名ユーザー";
+}
+
+async function createNotification(db, {
     toUserId,
     fromUserId,
     fromUserName,
-    type,           // "like" | "comment" | "follow"
+    type,
     albumId = "",
     albumTitle = "",
     commentText = ""
-}) {
+}){
+    if(!toUserId || !fromUserId){
+        return;
+    }
+
     // 自分自身への通知は作らない
-    if (!toUserId || toUserId === fromUserId) return;
+    if(toUserId === fromUserId){
+        return;
+    }
 
     await addDoc(collection(db, "notifications"), {
         toUserId,
@@ -35,67 +902,63 @@ async function createNotification({
         albumId,
         albumTitle,
         commentText,
-        read: false,
-        createdAt: serverTimestamp()
+        read:false,
+        createdAt:serverTimestamp()
     });
 }
 
-/* ============================================
-   いいね時の通知
-   toggleLike() の setDoc の後に追加
-   ============================================ */
+/* ============================================================
+   1. いいね通知
+   toggleLike(albumId) の「いいね追加」側で setDoc 後に入れる
+============================================================ */
 
-// 投稿情報を取得
-const albumSnap = await getDoc(doc(db, "albums", albumId));
-
-if (albumSnap.exists()) {
-    const albumData = albumSnap.data();
-
-    // いいね追加時のみ通知
-    if (!isLikedByMe(albumId)) {
-        const meSnap = await getDoc(doc(db, "users", currentUser.uid));
-        const meData = meSnap.exists() ? meSnap.data() : {};
-
-        const myName =
-            meData.displayName ||
-            meData.nickname ||
-            meData.userName ||
-            "匿名ユーザー";
-
-        await createNotification({
-            toUserId: albumData.userId,
-            fromUserId: currentUser.uid,
-            fromUserName: myName,
-            type: "like",
-            albumId,
-            albumTitle: albumData.title || ""
-        });
+async function notifyLike(db, currentUser, albumId){
+    if(!currentUser || !albumId){
+        return;
     }
-}
 
-/* ============================================
-   コメント投稿時の通知
-   コメント保存後に追加
-   ============================================ */
+    const albumSnap = await getDoc(doc(db, "albums", albumId));
 
-const albumSnap2 = await getDoc(doc(db, "albums", albumId));
+    if(!albumSnap.exists()){
+        return;
+    }
 
-if (albumSnap2.exists()) {
-    const albumData = albumSnap2.data();
+    const albumData = albumSnap.data();
+    const fromUserName = await getCurrentUserName(db, currentUser);
 
-    const meSnap = await getDoc(doc(db, "users", currentUser.uid));
-    const meData = meSnap.exists() ? meSnap.data() : {};
-
-    const myName =
-        meData.displayName ||
-        meData.nickname ||
-        meData.userName ||
-        "匿名ユーザー";
-
-    await createNotification({
+    await createNotification(db, {
         toUserId: albumData.userId,
         fromUserId: currentUser.uid,
-        fromUserName: myName,
+        fromUserName,
+        type: "like",
+        albumId,
+        albumTitle: albumData.title || ""
+    });
+}
+
+/* ============================================================
+   2. コメント通知
+   コメントを addDoc した直後に入れる
+============================================================ */
+
+async function notifyComment(db, currentUser, albumId, commentText){
+    if(!currentUser || !albumId){
+        return;
+    }
+
+    const albumSnap = await getDoc(doc(db, "albums", albumId));
+
+    if(!albumSnap.exists()){
+        return;
+    }
+
+    const albumData = albumSnap.data();
+    const fromUserName = await getCurrentUserName(db, currentUser);
+
+    await createNotification(db, {
+        toUserId: albumData.userId,
+        fromUserId: currentUser.uid,
+        fromUserName,
         type: "comment",
         albumId,
         albumTitle: albumData.title || "",
@@ -103,81 +966,23 @@ if (albumSnap2.exists()) {
     });
 }
 
-/* ============================================
-   フォロー時の通知
-   follow ボタン処理で setDoc 後に追加
-   ============================================ */
+/* ============================================================
+   3. フォロー通知
+   follows に setDoc した直後に入れる
+============================================================ */
 
-const meSnap = await getDoc(doc(db, "users", currentUser.uid));
-const meData = meSnap.exists() ? meSnap.data() : {};
+async function notifyFollow(db, currentUser, targetUserId){
+    if(!currentUser || !targetUserId){
+        return;
+    }
 
-const myName =
-    meData.displayName ||
-    meData.nickname ||
-    meData.userName ||
-    "匿名ユーザー";
+    const fromUserName = await getCurrentUserName(db, currentUser);
 
-await createNotification({
-    toUserId: targetUserId,
-    fromUserId: currentUser.uid,
-    fromUserName: myName,
-    type: "follow"
-});
-
-/* ============================================
-   notifications.html で一覧表示
-   ============================================ */
-
-const q = query(
-    collection(db, "notifications"),
-    where("toUserId", "==", currentUser.uid)
-);
-
-onSnapshot(q, (snapshot) => {
-    const notifications = [];
-
-    snapshot.forEach((docSnap) => {
-        notifications.push({
-            id: docSnap.id,
-            ...docSnap.data()
-        });
+    await createNotification(db, {
+        toUserId: targetUserId,
+        fromUserId: currentUser.uid,
+        fromUserName,
+        type: "follow"
     });
+}
 
-    notifications.sort((a, b) => {
-        const aTime = a.createdAt?.toDate?.()?.getTime?.() || 0;
-        const bTime = b.createdAt?.toDate?.()?.getTime?.() || 0;
-        return bTime - aTime;
-    });
-
-    const html = notifications.map((n) => {
-        let icon = "♡";
-        let text = "";
-
-        if (n.type === "like") {
-            icon = "♥";
-            text = `${n.fromUserName}さんが「${n.albumTitle}」にいいねしました`;
-        }
-
-        if (n.type === "comment") {
-            icon = "💬";
-            text = `${n.fromUserName}さんが「${n.albumTitle}」にコメントしました`;
-        }
-
-        if (n.type === "follow") {
-            icon = "👤";
-            text = `${n.fromUserName}さんがあなたをフォローしました`;
-        }
-
-        return `
-        <div class="notification-item">
-            <div class="notification-icon">${icon}</div>
-            <div class="notification-content">
-                <div class="notification-text">${text}</div>
-            </div>
-        </div>
-        `;
-    }).join("");
-
-    document.getElementById("notificationsList").innerHTML =
-        html || '<div class="empty">通知はまだありません</div>';
-});
