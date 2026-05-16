@@ -1879,5 +1879,146 @@ onSnapshot(q, (snapshot)=>{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   スマホ版メーター最終調整
+   - 左端・右端の未選択ドットを非表示
+   - 線はデフォルトで全区間に色を付ける
+   - 値は「選択ドットの位置」で表現
+   - 色は非連続で、左ほど濃いPale Ice
+   - PC版には影響しない
+============================================================ */
+@media(max-width:900px){
+
+    /* 線は常に全区間色付き（非連続） */
+    .connector.level-1{
+        background:#6f9daa !important; /* 左端ほど濃い */
+    }
+    .connector.level-2{
+        background:#89b8c6 !important;
+    }
+    .connector.level-3{
+        background:#add6df !important;
+    }
+    .connector.level-4{
+        background:#d2eaef !important;
+    }
+
+    /* ドットの基本色も位置ごとに変える */
+    .dot.level-1{
+        background:#6f9daa !important;
+        border-color:#6f9daa !important;
+    }
+    .dot.level-2{
+        background:#89b8c6 !important;
+        border-color:#89b8c6 !important;
+    }
+    .dot.level-3{
+        background:#add6df !important;
+        border-color:#add6df !important;
+    }
+    .dot.level-4{
+        background:#d2eaef !important;
+        border-color:#d2eaef !important;
+    }
+    .dot.level-5{
+        background:#eef8fa !important;
+        border-color:#eef8fa !important;
+    }
+
+    /* 左端・右端のガイドドットは消す（選択時だけ出す） */
+    .dot.level-1:not(.selected),
+    .dot.level-5:not(.selected){
+        width:0 !important;
+        height:0 !important;
+        flex:0 0 0 !important;
+        margin:0 !important;
+        border:0 !important;
+        opacity:0 !important;
+        box-shadow:none !important;
+    }
+
+    /* 中間ドットは小さく残す */
+    .dot.level-2:not(.selected),
+    .dot.level-3:not(.selected),
+    .dot.level-4:not(.selected){
+        width:8px !important;
+        height:8px !important;
+        flex:0 0 8px !important;
+        border:0 !important;
+        opacity:1 !important;
+        box-shadow:none !important;
+    }
+
+    /* 選択ドットだけ大きく表示して値を表す */
+    .dot.selected.level-1{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#6f9daa !important;
+        border:3px solid #eef8fa !important;
+        box-shadow:0 0 12px rgba(111,157,170,0.45) !important;
+        opacity:1 !important;
+    }
+    .dot.selected.level-2{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#89b8c6 !important;
+        border:3px solid #eef8fa !important;
+        box-shadow:0 0 12px rgba(137,184,198,0.42) !important;
+        opacity:1 !important;
+    }
+    .dot.selected.level-3{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#add6df !important;
+        border:3px solid #eef8fa !important;
+        box-shadow:0 0 12px rgba(173,214,223,0.42) !important;
+        opacity:1 !important;
+    }
+    .dot.selected.level-4{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#d2eaef !important;
+        border:3px solid #f6fcfd !important;
+        box-shadow:0 0 12px rgba(210,234,239,0.44) !important;
+        opacity:1 !important;
+    }
+    .dot.selected.level-5{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#eef8fa !important;
+        border:3px solid #ffffff !important;
+        box-shadow:0 0 12px rgba(238,248,250,0.48) !important;
+        opacity:1 !important;
+    }
+}
+
+@media(max-width:430px){
+    .dot.level-2:not(.selected),
+    .dot.level-3:not(.selected),
+    .dot.level-4:not(.selected){
+        width:7px !important;
+        height:7px !important;
+        flex:0 0 7px !important;
+    }
+
+    .dot.selected.level-1,
+    .dot.selected.level-2,
+    .dot.selected.level-3,
+    .dot.selected.level-4,
+    .dot.selected.level-5{
+        width:14px !important;
+        height:14px !important;
+        flex:0 0 14px !important;
+    }
+}
+</style>
+
 </body>
 </html>
