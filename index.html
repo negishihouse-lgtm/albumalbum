@@ -1296,6 +1296,81 @@ function escapeHTML(value){
         .replaceAll("'", "&#039;");
 }
 
+
+function getUserDisplayNameFromData(data){
+    if(!data){
+        return "";
+    }
+
+    return (
+        data.displayName ||
+        data.nickname ||
+        data.nickName ||
+        data.userName ||
+        data.name ||
+        ""
+    );
+}
+
+async function getCurrentUserName(db, currentUser){
+    if(!currentUser){
+        return "匿名ユーザー";
+    }
+
+    try{
+        const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+        if(meSnap.exists()){
+            return getUserDisplayNameFromData(meSnap.data()) || "匿名ユーザー";
+        }
+    }catch(error){
+        console.warn("自分のユーザー名取得に失敗しました", error);
+    }
+
+    return currentUser.displayName || "匿名ユーザー";
+}
+
+async function createNotification(db, {
+    toUserId,
+    fromUserId,
+    fromUserName,
+    type,
+    albumId = "",
+    albumTitle = "",
+    commentText = ""
+}){
+    if(!toUserId || !fromUserId || toUserId === fromUserId){
+        return;
+    }
+
+    await addDoc(collection(db, "notifications"), {
+        toUserId,
+        fromUserId,
+        fromUserName,
+        type,
+        albumId,
+        albumTitle,
+        commentText,
+        read: false,
+        createdAt: serverTimestamp()
+    });
+}
+
+async function notifyLike(db, currentUser, albumId){
+    if(!currentUser || !albumId) return;
+    const albumSnap = await getDoc(doc(db, "albums", albumId));
+    if(!albumSnap.exists()) return;
+    const albumData = albumSnap.data();
+    const fromUserName = await getCurrentUserName(db, currentUser);
+    await createNotification(db, {
+        toUserId: albumData.userId,
+        fromUserId: currentUser.uid,
+        fromUserName,
+        type: "like",
+        albumId,
+        albumTitle: albumData.title || ""
+    });
+}
+
 function formatPostDate(value){
     if(!value){
         return "";
@@ -1406,6 +1481,8 @@ async function toggleLike(albumId){
             albumId: albumId,
             createdAt: serverTimestamp()
         });
+
+        await notifyLike(db, currentUser, albumId);
     }
 }
 
