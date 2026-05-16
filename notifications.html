@@ -1,0 +1,183 @@
+// notifications.html
+// Firebase設定は既存の Album Collection.html と同じものを使用
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+    measurementId: "G-3QFX3GDEXN"
+};
+
+/* ============================================
+   通知作成関数
+   ============================================ */
+
+async function createNotification({
+    toUserId,
+    fromUserId,
+    fromUserName,
+    type,           // "like" | "comment" | "follow"
+    albumId = "",
+    albumTitle = "",
+    commentText = ""
+}) {
+    // 自分自身への通知は作らない
+    if (!toUserId || toUserId === fromUserId) return;
+
+    await addDoc(collection(db, "notifications"), {
+        toUserId,
+        fromUserId,
+        fromUserName,
+        type,
+        albumId,
+        albumTitle,
+        commentText,
+        read: false,
+        createdAt: serverTimestamp()
+    });
+}
+
+/* ============================================
+   いいね時の通知
+   toggleLike() の setDoc の後に追加
+   ============================================ */
+
+// 投稿情報を取得
+const albumSnap = await getDoc(doc(db, "albums", albumId));
+
+if (albumSnap.exists()) {
+    const albumData = albumSnap.data();
+
+    // いいね追加時のみ通知
+    if (!isLikedByMe(albumId)) {
+        const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+        const meData = meSnap.exists() ? meSnap.data() : {};
+
+        const myName =
+            meData.displayName ||
+            meData.nickname ||
+            meData.userName ||
+            "匿名ユーザー";
+
+        await createNotification({
+            toUserId: albumData.userId,
+            fromUserId: currentUser.uid,
+            fromUserName: myName,
+            type: "like",
+            albumId,
+            albumTitle: albumData.title || ""
+        });
+    }
+}
+
+/* ============================================
+   コメント投稿時の通知
+   コメント保存後に追加
+   ============================================ */
+
+const albumSnap2 = await getDoc(doc(db, "albums", albumId));
+
+if (albumSnap2.exists()) {
+    const albumData = albumSnap2.data();
+
+    const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+    const meData = meSnap.exists() ? meSnap.data() : {};
+
+    const myName =
+        meData.displayName ||
+        meData.nickname ||
+        meData.userName ||
+        "匿名ユーザー";
+
+    await createNotification({
+        toUserId: albumData.userId,
+        fromUserId: currentUser.uid,
+        fromUserName: myName,
+        type: "comment",
+        albumId,
+        albumTitle: albumData.title || "",
+        commentText: commentText || ""
+    });
+}
+
+/* ============================================
+   フォロー時の通知
+   follow ボタン処理で setDoc 後に追加
+   ============================================ */
+
+const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+const meData = meSnap.exists() ? meSnap.data() : {};
+
+const myName =
+    meData.displayName ||
+    meData.nickname ||
+    meData.userName ||
+    "匿名ユーザー";
+
+await createNotification({
+    toUserId: targetUserId,
+    fromUserId: currentUser.uid,
+    fromUserName: myName,
+    type: "follow"
+});
+
+/* ============================================
+   notifications.html で一覧表示
+   ============================================ */
+
+const q = query(
+    collection(db, "notifications"),
+    where("toUserId", "==", currentUser.uid)
+);
+
+onSnapshot(q, (snapshot) => {
+    const notifications = [];
+
+    snapshot.forEach((docSnap) => {
+        notifications.push({
+            id: docSnap.id,
+            ...docSnap.data()
+        });
+    });
+
+    notifications.sort((a, b) => {
+        const aTime = a.createdAt?.toDate?.()?.getTime?.() || 0;
+        const bTime = b.createdAt?.toDate?.()?.getTime?.() || 0;
+        return bTime - aTime;
+    });
+
+    const html = notifications.map((n) => {
+        let icon = "♡";
+        let text = "";
+
+        if (n.type === "like") {
+            icon = "♥";
+            text = `${n.fromUserName}さんが「${n.albumTitle}」にいいねしました`;
+        }
+
+        if (n.type === "comment") {
+            icon = "💬";
+            text = `${n.fromUserName}さんが「${n.albumTitle}」にコメントしました`;
+        }
+
+        if (n.type === "follow") {
+            icon = "👤";
+            text = `${n.fromUserName}さんがあなたをフォローしました`;
+        }
+
+        return `
+        <div class="notification-item">
+            <div class="notification-icon">${icon}</div>
+            <div class="notification-content">
+                <div class="notification-text">${text}</div>
+            </div>
+        </div>
+        `;
+    }).join("");
+
+    document.getElementById("notificationsList").innerHTML =
+        html || '<div class="empty">通知はまだありません</div>';
+});
