@@ -15,76 +15,53 @@
 body{
     background:#050505;
     color:white;
-    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    padding:40px;
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+    padding:42px;
     padding-left:280px;
     padding-bottom:120px;
 }
-
 
 .topbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:32px;
+    margin-bottom:28px;
 }
 
 .page-title{
-    font-size:48px;
-    font-weight:700;
-}
-
-.back-btn,
-.like-btn{
-    background:#1e1e1e;
-    color:white;
-    border:1px solid rgba(255,255,255,0.15);
-    padding:14px 22px;
-    font-size:16px;
-    cursor:pointer;
-    border-radius:10px;
-}
-
-.back-btn:hover,
-.like-btn:hover{
-    background:#2a2a2a;
-}
-
-.like-btn.liked{
-    background:#6fa8dc;
-    color:white;
+    font-size:42px;
+    font-weight:800;
+    letter-spacing:-0.04em;
 }
 
 .album-grid{
     display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap:24px;
-    max-width:1400px;
+    grid-template-columns:1fr;
+    gap:34px;
+    max-width:1460px;
     margin:0 auto;
 }
 
 .album-card{
-    background:#0b0b0b;
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:18px;
-    padding:18px;
+    background:linear-gradient(135deg,#0b0d0f 0%,#050505 60%,#090909 100%);
+    border:1px solid rgba(255,255,255,0.16);
+    border-radius:0;
+    padding:28px;
     cursor:pointer;
     overflow:hidden;
+    display:grid;
+    grid-template-columns:minmax(300px,0.78fr) minmax(460px,1.22fr);
+    gap:28px;
+    box-shadow:0 18px 50px rgba(0,0,0,0.35);
 }
 
 .album-card:hover{
-    border-color:rgba(111,168,220,0.55);
+    border-color:rgba(111,168,220,0.6);
+    transform:translateY(-1px);
+    transition:0.18s ease;
 }
 
-/* 上段：画像 / 基本情報 / メーター */
-.card-top{
-    display:grid;
-    grid-template-columns:120px 1fr 260px;
-    gap:18px;
-    align-items:start;
-}
-
-.cover-wrap{
+.album-main{
     min-width:0;
 }
 
@@ -93,34 +70,54 @@ body{
     aspect-ratio:1/1;
     object-fit:cover;
     background:#111;
-    border-radius:10px;
-    border:1px solid rgba(255,255,255,0.18);
     display:block;
-}
-
-.album-info,
-.album-analysis{
-    min-width:0;
+    border:1px solid rgba(255,255,255,0.12);
 }
 
 .title{
-    font-size:24px;
-    font-weight:800;
-    line-height:1.2;
-    margin-bottom:6px;
+    font-size:52px;
+    font-weight:900;
+    line-height:0.98;
+    letter-spacing:-0.055em;
+    margin-top:24px;
+    margin-bottom:12px;
     word-break:break-word;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
 }
 
 .artist{
     color:#6fa8dc;
-    font-size:18px;
-    margin-bottom:8px;
+    font-size:25px;
+    font-weight:700;
+    margin-bottom:12px;
     word-break:break-word;
 }
 
+.meta{
+    color:#cfcfcf;
+    font-size:18px;
+    line-height:1.5;
+    margin-bottom:22px;
+    word-break:break-word;
+}
+
+.description{
+    color:#e0e0e0;
+    font-size:18px;
+    line-height:1.85;
+    word-break:break-word;
+    display:-webkit-box;
+    -webkit-line-clamp:5;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
 .creator{
-    margin-bottom:10px;
-    color:#ccc;
+    margin-top:18px;
+    color:#aaa;
     font-size:14px;
     line-height:1.5;
     word-break:break-word;
@@ -142,6 +139,7 @@ body{
     color:#aaa;
     font-size:14px;
     flex-wrap:wrap;
+    margin-top:12px;
 }
 
 .like-area{
@@ -155,18 +153,12 @@ body{
     border:none;
     color:#aaa;
     padding:0;
-    font-size:20px;
+    font-size:21px;
     cursor:pointer;
-    border-radius:0;
 }
 
-.like-btn:hover{
-    background:none;
-    color:white;
-}
-
+.like-btn:hover,
 .like-btn.liked{
-    background:none;
     color:white;
 }
 
@@ -176,26 +168,28 @@ body{
     color:#aaa;
 }
 
-.meter-area{
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:14px;
-    padding:12px;
+.album-analysis{
     min-width:0;
+    border:1px solid rgba(255,255,255,0.16);
+    padding:34px 28px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
 }
 
 .meter{
     display:grid;
-    grid-template-columns:46px minmax(0,1fr) 46px;
+    grid-template-columns:96px minmax(0,1fr) 96px;
     align-items:center;
-    gap:6px;
-    margin-bottom:10px;
+    gap:14px;
+    margin-bottom:27px;
     min-width:0;
 }
 
 .meter-label{
-    font-size:11px;
-    font-weight:700;
-    color:#e8e8e8;
+    font-size:22px;
+    font-weight:800;
+    color:#f0f0f0;
     white-space:nowrap;
 }
 
@@ -212,79 +206,48 @@ body{
 }
 
 .dot{
-    width:8px;
-    height:8px;
+    width:38px;
+    height:38px;
     border-radius:50%;
-    border:2px solid #555;
-    background:#0b0b0b;
+    border:3px solid rgba(255,255,255,0.25);
+    background:#080808;
     flex-shrink:0;
 }
 
 .connector{
-    height:2px;
-    background:#4a5158;
+    height:3px;
+    background:rgba(255,255,255,0.23);
     flex:1;
     min-width:0;
 }
 
-.dot.active.level-1,
-.connector.active.level-1{
-    background:#3f8ec7;
-    border-color:#3f8ec7;
-}
-
-.dot.active.level-2,
-.connector.active.level-2{
-    background:#4d9bd0;
-    border-color:#4d9bd0;
-}
-
-.dot.active.level-3,
-.connector.active.level-3{
-    background:#5fa7d8;
-    border-color:#5fa7d8;
-}
-
-.dot.active.level-4,
-.connector.active.level-4{
-    background:#73b6e3;
-    border-color:#73b6e3;
-}
-
-.dot.active.level-5{
-    background:#8bc8ef;
-    border-color:#8bc8ef;
+.dot.active,
+.connector.active{
+    background:#6fa8dc;
+    border-color:#6fa8dc;
+    box-shadow:0 0 22px rgba(111,168,220,0.22);
 }
 
 .keyword-box{
-    margin-top:10px;
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:12px;
-    padding:10px;
+    margin-top:4px;
+    border:1px solid rgba(255,255,255,0.16);
+    padding:18px 22px;
+    display:grid;
+    grid-template-columns:150px 1fr;
+    gap:18px;
+    align-items:start;
 }
 
 .keyword-title{
     color:#6fa8dc;
-    font-size:12px;
-    font-weight:700;
-    margin-bottom:4px;
+    font-size:21px;
+    font-weight:800;
 }
 
 .keyword-text{
     color:#ddd;
-    font-size:12px;
-    line-height:1.5;
-    word-break:break-word;
-}
-
-/* 下段：紹介文 */
-.description{
-    color:#ddd;
-    font-size:14px;
-    line-height:1.7;
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1px solid rgba(255,255,255,0.1);
+    font-size:18px;
+    line-height:1.65;
     word-break:break-word;
 }
 
@@ -293,202 +256,7 @@ body{
     font-size:28px;
 }
 
-/* ===== タブレット以下 ===== */
-@media(max-width:1300px){
-    .album-grid{
-        grid-template-columns:1fr;
-    }
-
-    .card-top{
-        grid-template-columns:120px 1fr 260px;
-    }
-}
-
-/* ===== スマホUI ===== */
-@media(max-width:900px){
-    body{
-        padding:16px;
-        padding-left:16px;
-        padding-bottom:110px;
-    }
-
-
-    .sidebar{
-        display:none;
-    }
-
-    .mobile-tabbar{
-        display:flex;
-        position:fixed;
-        left:0;
-        right:0;
-        bottom:0;
-        height:72px;
-        background:#0b0b0b;
-        border-top:1px solid rgba(255,255,255,0.1);
-        z-index:999;
-        padding-bottom:env(safe-area-inset-bottom);
-    }
-
-    .fab{
-        right:16px;
-        bottom:88px;
-        width:58px;
-        height:58px;
-        font-size:32px;
-    }
-
-    body{
-        padding:16px;
-        padding-left:16px;
-        padding-bottom:110px;
-    }
-
-    /* スマホではサイドバー非表示 */
-    /* スマホでは下部タブバー表示 */
-    .page-title{
-        font-size:30px;
-    }
-
-    .topbar{
-        margin-bottom:20px;
-    }
-
-    /* スマホでは上部ボタンを隠す */
-    .topbar > div{
-        display:none !important;
-    }
-
-    .album-grid{
-        grid-template-columns:1fr;
-        gap:14px;
-    }
-
-    .album-card{
-        padding:14px;
-        border-radius:14px;
-    }
-
-    /* スマホだけ横型コンパクト */
-    .card-top{
-        grid-template-columns:72px minmax(0,1fr) 120px;
-        gap:10px;
-        align-items:start;
-    }
-
-    .title{
-        font-size:16px;
-        margin-bottom:4px;
-        line-height:1.3;
-    }
-
-    .artist{
-        font-size:13px;
-        margin-bottom:4px;
-    }
-
-    .creator{
-        font-size:11px;
-        margin-bottom:6px;
-        line-height:1.4;
-    }
-
-    .reaction-row{
-        gap:8px;
-        font-size:11px;
-    }
-
-    .like-btn{
-        font-size:16px;
-    }
-
-    .like-count,
-    .comment-count{
-        font-size:11px;
-    }
-
-    .meter-area{
-        padding:8px;
-    }
-
-    .meter{
-        grid-template-columns:26px minmax(0,1fr) 26px;
-        gap:3px;
-        margin-bottom:5px;
-    }
-
-    .meter-label{
-        font-size:8px;
-    }
-
-    .dot{
-        width:5px;
-        height:5px;
-        border-width:1px;
-    }
-
-    .connector{
-        height:1px;
-    }
-
-    .keyword-box{
-        margin-top:6px;
-        padding:6px;
-    }
-
-    .keyword-title{
-        font-size:9px;
-        margin-bottom:2px;
-    }
-
-    .keyword-text{
-        font-size:9px;
-        line-height:1.3;
-    }
-
-    .description{
-        font-size:12px;
-        line-height:1.6;
-        margin-top:10px;
-        padding-top:10px;
-    }
-
-    /* スマホでは投稿ボタンを下部タブバーの上に */
-    }
-
-/* かなり狭いスマホ用 */
-@media(max-width:390px){
-    .card-top{
-        grid-template-columns:64px minmax(0,1fr) 110px;
-        gap:8px;
-    }
-
-    .title{
-        font-size:15px;
-    }
-
-    .artist{
-        font-size:12px;
-    }
-
-    .meter-area{
-        padding:6px;
-    }
-
-    .meter{
-        grid-template-columns:24px minmax(0,1fr) 24px;
-    }
-
-    .meter-label{
-        font-size:7px;
-    }
-
-    .keyword-text{
-        font-size:8px;
-    }
-}
-
-/* ===== detail仕様：PCサイドバー ===== */
+/* ===== PCサイドバー ===== */
 .sidebar{
     position:fixed;
     top:0;
@@ -527,7 +295,7 @@ body{
     color:#6fa8dc;
 }
 
-/* ===== detail仕様：スマホ下部タブバー ===== */
+/* ===== スマホ下部タブバー ===== */
 .mobile-tabbar{
     display:none;
 }
@@ -553,7 +321,6 @@ body{
     line-height:1;
 }
 
-/* ===== detail仕様：右下投稿ボタン ===== */
 .fab{
     position:fixed;
     right:24px;
@@ -576,24 +343,147 @@ body{
     background:#84b7e4;
 }
 
+@media(max-width:1200px){
+    .album-card{
+        grid-template-columns:1fr;
+    }
+
+    .album-analysis{
+        padding:26px 22px;
+    }
+}
 
 @media(max-width:900px){
     body{
         padding:16px;
         padding-left:16px;
-        padding-bottom:110px;
-    }
-}
-
-
-/* ===== スマホ下部タブバー：detail仕様 + ユーザーアイコン ===== */
-.mobile-tabbar{
-    display:none;
-}
-
-@media(max-width:900px){
-    body{
         padding-bottom:110px !important;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .topbar{
+        margin-bottom:16px;
+    }
+
+    .topbar > div{
+        display:none !important;
+    }
+
+    .page-title{
+        font-size:30px;
+    }
+
+    .album-grid{
+        gap:18px;
+    }
+
+    .album-card{
+        padding:14px;
+        gap:14px;
+        border-radius:14px;
+    }
+
+    .album-main{
+        display:grid;
+        grid-template-columns:94px minmax(0,1fr);
+        gap:12px;
+        align-items:start;
+    }
+
+    .cover{
+        border-radius:10px;
+    }
+
+    .title{
+        font-size:22px;
+        line-height:1.05;
+        margin-top:0;
+        margin-bottom:6px;
+        -webkit-line-clamp:2;
+    }
+
+    .artist{
+        font-size:15px;
+        margin-bottom:6px;
+    }
+
+    .meta{
+        font-size:12px;
+        margin-bottom:8px;
+    }
+
+    .description{
+        grid-column:1 / -1;
+        font-size:13px;
+        line-height:1.55;
+        -webkit-line-clamp:3;
+        margin-top:0;
+    }
+
+    .creator{
+        grid-column:1 / -1;
+        font-size:11px;
+        margin-top:0;
+    }
+
+    .reaction-row{
+        grid-column:1 / -1;
+        margin-top:0;
+        gap:12px;
+        font-size:11px;
+    }
+
+    .like-btn{
+        font-size:17px;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:11px;
+    }
+
+    .album-analysis{
+        padding:12px;
+        border-radius:12px;
+    }
+
+    .meter{
+        grid-template-columns:54px minmax(0,1fr) 54px;
+        gap:7px;
+        margin-bottom:10px;
+    }
+
+    .meter-label{
+        font-size:11px;
+    }
+
+    .dot{
+        width:12px;
+        height:12px;
+        border-width:2px;
+    }
+
+    .connector{
+        height:2px;
+    }
+
+    .keyword-box{
+        grid-template-columns:1fr;
+        gap:4px;
+        padding:9px;
+        border-radius:10px;
+    }
+
+    .keyword-title{
+        font-size:11px;
+    }
+
+    .keyword-text{
+        font-size:11px;
+        line-height:1.4;
     }
 
     .mobile-tabbar{
@@ -670,6 +560,28 @@ body{
     }
 }
 
+@media(max-width:390px){
+    .album-main{
+        grid-template-columns:78px minmax(0,1fr);
+        gap:10px;
+    }
+
+    .title{
+        font-size:19px;
+    }
+
+    .artist{
+        font-size:13px;
+    }
+
+    .meter{
+        grid-template-columns:48px minmax(0,1fr) 48px;
+    }
+
+    .meter-label{
+        font-size:10px;
+    }
+}
 </style>
 </head>
 
@@ -1033,75 +945,65 @@ onSnapshot(q, (snapshot)=>{
 <div class="album-card"
      onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
 
-    <div class="card-top">
+    <div class="album-main">
+        <img class="cover"
+             src="${escapeHTML(a.cover || '')}"
+             alt="">
 
-        <div class="cover-wrap">
-            <img class="cover"
-                 src="${escapeHTML(a.cover || "")}"
-                 alt="">
-        </div>
-
-        <div class="album-info">
-            <div class="title">
-                ${escapeHTML(a.title || "")}
-            </div>
-
-            <div class="artist">
-                ${escapeHTML(a.artist || "")}
-            </div>
-
-            <div class="creator">
-                投稿者：
-                <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
-                   onclick="event.stopPropagation();">
-                    ${escapeHTML(
-                        a.userName ||
-                        a.userEmail ||
-                        "匿名ユーザー"
-                    )}
-                </a>
-            </div>
-
-            <div class="reaction-row">
-                <div class="like-area"
-                     data-like-area
-                     data-album-id="${escapeHTML(albumId)}">
-                    <button class="like-btn"
-                            onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
-                        ♡
-                    </button>
-                    <span class="like-count">0</span>
-                </div>
-
-                <div class="comment-count"
-                     data-comment-count
-                     data-album-id="${escapeHTML(albumId)}">
-                    コメント 0件
-                </div>
+        <div class="album-text">
+            <div class="title">${escapeHTML(a.title || '')}</div>
+            <div class="artist">${escapeHTML(a.artist || '')}</div>
+            <div class="meta">
+                ${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(' / ') || a.year || '')}
             </div>
         </div>
 
-        <div class="album-analysis">
-            <div class="meter-area">
-                ${meter("暗い", "明るい", a.darkness)}
-                ${meter("静か", "激しい", a.intense)}
-                ${meter("シンプル", "複雑", a.complex)}
-                ${meter("絶望", "希望", a.hope)}
-                ${meter("個人", "世界", a.world)}
-
-                <div class="keyword-box">
-                    <div class="keyword-title">キーワード</div>
-                    <div class="keyword-text">
-                        ${escapeHTML(a.keywords || "")}
-                    </div>
-                </div>
-            </div>
+        <div class="description">
+            ${escapeHTML(a.desc || '')}
         </div>
 
+        <div class="creator">
+            投稿者：
+            <a href="profile.html?uid=${escapeHTML(a.userId || '')}"
+               onclick="event.stopPropagation();">
+                ${escapeHTML(a.userName || a.userEmail || '匿名ユーザー')}
+            </a>
+        </div>
+
+        <div class="reaction-row">
+            <div class="like-area"
+                 data-like-area
+                 data-album-id="${escapeHTML(albumId)}">
+                <button class="like-btn"
+                        onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
+                    ♡
+                </button>
+                <span class="like-count">0</span>
+            </div>
+
+            <div class="comment-count"
+                 data-comment-count
+                 data-album-id="${escapeHTML(albumId)}">
+                コメント 0件
+            </div>
+        </div>
     </div>
 
-    <div class="description">
-        ${escapeHTML(a.desc || "")}
+    <div class="album-analysis">
+        ${meter("暗い", "明るい", a.darkness)}
+        ${meter("静か", "激しい", a.intense)}
+        ${meter("有機的", "機械的", a.organic ?? 3)}
+        ${meter("シンプル", "複雑", a.complex)}
+        ${meter("希望的", "絶望的", a.hope)}
+        ${meter("温かい", "冷たい", a.warm ?? 3)}
+        ${meter("内向的", "外向的", a.world)}
+
+        <div class="keyword-box">
+            <div class="keyword-title">キーワード</div>
+            <div class="keyword-text">
+                ${escapeHTML(a.keywords || '')}
+            </div>
+        </div>
     </div>
 
 </div>
