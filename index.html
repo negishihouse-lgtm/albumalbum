@@ -1919,3 +1919,75 @@ onSnapshot(q, (snapshot)=>{
     }
 }
 </style>
+
+<!--
+============================================================
+追加修正：PC版メーターを見本寄せ（丸大きめ・線細め・項目文字大きめ）
+============================================================
+-->
+<style>
+@media(min-width:901px){
+    .meter-label{
+        font-size:13px !important;
+        font-weight:800 !important;
+        color:#f0f0f0 !important;
+        letter-spacing:0.02em !important;
+    }
+
+    .dot{
+        width:18px !important;
+        height:18px !important;
+        border-radius:50% !important;
+        border:2px solid #48545a !important;
+        background:#080909 !important;
+        box-shadow:none !important;
+        flex-shrink:0 !important;
+    }
+
+    .connector{
+        height:1px !important;
+        background:#343d42 !important;
+        opacity:1 !important;
+    }
+
+    .dot.active,
+    .dot.active.level-1,
+    .dot.active.level-2,
+    .dot.active.level-3,
+    .dot.active.level-4,
+    .dot.active.level-5{
+        background:#5e9fc0 !important;
+        border-color:#5e9fc0 !important;
+    }
+
+    .connector.active,
+    .connector.active.level-1,
+    .connector.active.level-2,
+    .connector.active.level-3,
+    .connector.active.level-4{
+        background:#5e9fc0 !important;
+        border-color:#5e9fc0 !important;
+    }
+
+    .meter{
+        grid-template-columns:46px minmax(0,1fr) 46px !important;
+        gap:10px !important;
+    }
+}
+
+@media(min-width:901px) and (max-width:1280px){
+    .meter-label{
+        font-size:12px !important;
+    }
+
+    .dot{
+        width:16px !important;
+        height:16px !important;
+        border-width:2px !important;
+    }
+
+    .connector{
+        height:1px !important;
+    }
+}
+</style>
