@@ -1799,3 +1799,68 @@ onSnapshot(q, (snapshot)=>{
     }
 }
 </style>
+
+<!--
+============================================================
+追加修正：PC版メーターの丸・線を見本寄せ
+============================================================
+-->
+<style>
+@media(min-width:901px){
+    .meter-graphic{
+        gap:0 !important;
+    }
+
+    .dot{
+        width:9px !important;
+        height:9px !important;
+        border-radius:50% !important;
+        border:1.5px solid #3f474c !important;
+        background:#080909 !important;
+        box-shadow:none !important;
+        opacity:1 !important;
+    }
+
+    .connector{
+        height:1.5px !important;
+        background:#30383d !important;
+        opacity:1 !important;
+    }
+
+    .dot.active,
+    .connector.active{
+        background:#5f9fc2 !important;
+        border-color:#5f9fc2 !important;
+    }
+
+    .dot.active.level-1,
+    .connector.active.level-1,
+    .dot.active.level-2,
+    .connector.active.level-2,
+    .dot.active.level-3,
+    .connector.active.level-3,
+    .dot.active.level-4,
+    .connector.active.level-4,
+    .dot.active.level-5{
+        background:#5f9fc2 !important;
+        border-color:#5f9fc2 !important;
+    }
+
+    .meter-label{
+        color:#eeeeee !important;
+        font-weight:800 !important;
+    }
+}
+
+@media(min-width:901px) and (max-width:1280px){
+    .dot{
+        width:8px !important;
+        height:8px !important;
+        border-width:1.4px !important;
+    }
+
+    .connector{
+        height:1.4px !important;
+    }
+}
+</style>
