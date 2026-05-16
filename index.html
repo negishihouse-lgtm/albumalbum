@@ -788,6 +788,67 @@ a{
         font-size:7px;
     }
 }
+
+/* ===== Meter height sync fix =====
+   メーター間隔を投稿カードの高さに連動させる。
+   固定marginではなく、右メーター欄の残り高さに合わせて5本を均等配置。
+*/
+@media(min-width:901px){
+    .album-analysis{
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        align-self:stretch;
+        height:100%;
+    }
+
+    .meter-list{
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        min-height:0;
+        padding-bottom:14px;
+    }
+
+    .meter{
+        margin-bottom:0;
+    }
+
+    .keyword-box{
+        flex-shrink:0;
+        margin-top:0;
+    }
+}
+
+@media(max-width:900px){
+    .album-analysis{
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        align-self:stretch;
+        height:100%;
+    }
+
+    .meter-list{
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        min-height:0;
+        padding-bottom:8px;
+    }
+
+    .meter{
+        margin-bottom:0;
+    }
+
+    .keyword-box{
+        flex-shrink:0;
+        margin-top:0;
+    }
+}
+
 </style>
 </head>
 
