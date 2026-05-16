@@ -1772,551 +1772,106 @@ onSnapshot(q, (snapshot)=>{
 
 <style>
 /* ============================================================
-   スマホ版色調整
-   - PC版のPale Ice系に準拠
-   - グラデーションは使わず、非連続な5段階色
+   FINAL: スマホ版メーター完全固定版
    - PC版には影響しない
-============================================================ */
-@media(max-width:900px){
-    /* inactive */
-    .dot{
-        background:rgba(255,255,255,0.34) !important;
-    }
-
-    .connector{
-        background:rgba(255,255,255,0.24) !important;
-    }
-
-    /* active dots: discrete colors like PC */
-    .dot.active.level-1{
-        background:#7faebb !important;
-        border-color:#7faebb !important;
-    }
-    .dot.active.level-2{
-        background:#9bc7d0 !important;
-        border-color:#9bc7d0 !important;
-    }
-    .dot.active.level-3{
-        background:#b9dde3 !important;
-        border-color:#b9dde3 !important;
-    }
-    .dot.active.level-4{
-        background:#d7edf0 !important;
-        border-color:#d7edf0 !important;
-    }
-    .dot.active.level-5{
-        background:#edf8f9 !important;
-        border-color:#edf8f9 !important;
-    }
-
-    /* active connectors: also discrete, not gradient */
-    .connector.active.level-1{
-        background:#7faebb !important;
-    }
-    .connector.active.level-2{
-        background:#9bc7d0 !important;
-    }
-    .connector.active.level-3{
-        background:#b9dde3 !important;
-    }
-    .connector.active.level-4{
-        background:#d7edf0 !important;
-    }
-
-    /* selected node: ring remains, fill matches its level */
-    .dot.selected.level-1{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#7faebb !important;
-        border:3px solid #edf8f9 !important;
-        box-shadow:0 0 12px rgba(127,174,187,0.38) !important;
-    }
-    .dot.selected.level-2{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#9bc7d0 !important;
-        border:3px solid #edf8f9 !important;
-        box-shadow:0 0 12px rgba(155,199,208,0.38) !important;
-    }
-    .dot.selected.level-3{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#b9dde3 !important;
-        border:3px solid #edf8f9 !important;
-        box-shadow:0 0 12px rgba(185,221,227,0.42) !important;
-    }
-    .dot.selected.level-4{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#d7edf0 !important;
-        border:3px solid #edf8f9 !important;
-        box-shadow:0 0 12px rgba(215,237,240,0.42) !important;
-    }
-    .dot.selected.level-5{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#edf8f9 !important;
-        border:3px solid #ffffff !important;
-        box-shadow:0 0 12px rgba(237,248,249,0.45) !important;
-    }
-}
-
-@media(max-width:430px){
-    .dot.selected.level-1,
-    .dot.selected.level-2,
-    .dot.selected.level-3,
-    .dot.selected.level-4,
-    .dot.selected.level-5{
-        width:14px !important;
-        height:14px !important;
-        flex:0 0 14px !important;
-    }
-}
-</style>
-
-
-<style>
-/* ============================================================
-   スマホ版メーター最終調整
-   - 左端・右端の未選択ドットを非表示
-   - 線はデフォルトで全区間に色を付ける
-   - 値は「選択ドットの位置」で表現
-   - 色は非連続で、左ほど濃いPale Ice
-   - PC版には影響しない
-============================================================ */
-@media(max-width:900px){
-
-    /* 線は常に全区間色付き（非連続） */
-    .connector.level-1{
-        background:#6f9daa !important; /* 左端ほど濃い */
-    }
-    .connector.level-2{
-        background:#89b8c6 !important;
-    }
-    .connector.level-3{
-        background:#add6df !important;
-    }
-    .connector.level-4{
-        background:#d2eaef !important;
-    }
-
-    /* ドットの基本色も位置ごとに変える */
-    .dot.level-1{
-        background:#6f9daa !important;
-        border-color:#6f9daa !important;
-    }
-    .dot.level-2{
-        background:#89b8c6 !important;
-        border-color:#89b8c6 !important;
-    }
-    .dot.level-3{
-        background:#add6df !important;
-        border-color:#add6df !important;
-    }
-    .dot.level-4{
-        background:#d2eaef !important;
-        border-color:#d2eaef !important;
-    }
-    .dot.level-5{
-        background:#eef8fa !important;
-        border-color:#eef8fa !important;
-    }
-
-    /* 左端・右端のガイドドットは消す（選択時だけ出す） */
-    .dot.level-1:not(.selected),
-    .dot.level-5:not(.selected){
-        width:0 !important;
-        height:0 !important;
-        flex:0 0 0 !important;
-        margin:0 !important;
-        border:0 !important;
-        opacity:0 !important;
-        box-shadow:none !important;
-    }
-
-    /* 中間ドットは小さく残す */
-    .dot.level-2:not(.selected),
-    .dot.level-3:not(.selected),
-    .dot.level-4:not(.selected){
-        width:8px !important;
-        height:8px !important;
-        flex:0 0 8px !important;
-        border:0 !important;
-        opacity:1 !important;
-        box-shadow:none !important;
-    }
-
-    /* 選択ドットだけ大きく表示して値を表す */
-    .dot.selected.level-1{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#6f9daa !important;
-        border:3px solid #eef8fa !important;
-        box-shadow:0 0 12px rgba(111,157,170,0.45) !important;
-        opacity:1 !important;
-    }
-    .dot.selected.level-2{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#89b8c6 !important;
-        border:3px solid #eef8fa !important;
-        box-shadow:0 0 12px rgba(137,184,198,0.42) !important;
-        opacity:1 !important;
-    }
-    .dot.selected.level-3{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#add6df !important;
-        border:3px solid #eef8fa !important;
-        box-shadow:0 0 12px rgba(173,214,223,0.42) !important;
-        opacity:1 !important;
-    }
-    .dot.selected.level-4{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#d2eaef !important;
-        border:3px solid #f6fcfd !important;
-        box-shadow:0 0 12px rgba(210,234,239,0.44) !important;
-        opacity:1 !important;
-    }
-    .dot.selected.level-5{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#eef8fa !important;
-        border:3px solid #ffffff !important;
-        box-shadow:0 0 12px rgba(238,248,250,0.48) !important;
-        opacity:1 !important;
-    }
-}
-
-@media(max-width:430px){
-    .dot.level-2:not(.selected),
-    .dot.level-3:not(.selected),
-    .dot.level-4:not(.selected){
-        width:7px !important;
-        height:7px !important;
-        flex:0 0 7px !important;
-    }
-
-    .dot.selected.level-1,
-    .dot.selected.level-2,
-    .dot.selected.level-3,
-    .dot.selected.level-4,
-    .dot.selected.level-5{
-        width:14px !important;
-        height:14px !important;
-        flex:0 0 14px !important;
-    }
-}
-</style>
-
-
-<style>
-/* ============================================================
-   スマホ版メーター色・縦ズレ修正
-   - PC版には影響しない
-   - 左側をより黒め・濃い色に変更
-   - 線は全区間に色を付ける
-   - ドットと線の縦位置を中央揃えで固定
+   - メーター線は1本の背景線
+   - 値は選択ドット1個だけで表示
+   - 5段階の位置はCSS Gridで固定
+   - 左右端の未選択ドットだけでなく、中間の未選択ドットも非表示
+   - これで列ズレ・点線化・途中の小さい点を防ぐ
 ============================================================ */
 @media(max-width:900px){
     .meter-graphic{
-        height:18px !important;
-        display:flex !important;
+        position:relative !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, 1fr) !important;
         align-items:center !important;
-        overflow:visible !important;
-    }
-
-    .dot,
-    .connector{
-        box-sizing:border-box !important;
-        align-self:center !important;
-        margin-top:0 !important;
-        margin-bottom:0 !important;
-        transform:none !important;
-    }
-
-    /* 線は全区間に色付き。左ほど黒め・右ほど淡い */
-    .connector.level-1{
-        background:#273238 !important;
-    }
-
-    .connector.level-2{
-        background:#557884 !important;
-    }
-
-    .connector.level-3{
-        background:#94bdc8 !important;
-    }
-
-    .connector.level-4{
-        background:#d5edf1 !important;
-    }
-
-    /* ドットも位置ごとに非連続で色を変える */
-    .dot.level-1{
-        background:#273238 !important;
-        border-color:#273238 !important;
-    }
-
-    .dot.level-2{
-        background:#557884 !important;
-        border-color:#557884 !important;
-    }
-
-    .dot.level-3{
-        background:#94bdc8 !important;
-        border-color:#94bdc8 !important;
-    }
-
-    .dot.level-4{
-        background:#d5edf1 !important;
-        border-color:#d5edf1 !important;
-    }
-
-    .dot.level-5{
-        background:#f0fbfc !important;
-        border-color:#f0fbfc !important;
-    }
-
-    /* 左端・右端は、選択されていないときは消す */
-    .dot.level-1:not(.selected),
-    .dot.level-5:not(.selected){
-        width:0 !important;
-        height:0 !important;
-        flex:0 0 0 !important;
-        border:0 !important;
-        opacity:0 !important;
-        box-shadow:none !important;
-    }
-
-    /* 中間ドットは小さく表示 */
-    .dot.level-2:not(.selected),
-    .dot.level-3:not(.selected),
-    .dot.level-4:not(.selected){
-        width:7px !important;
-        height:7px !important;
-        flex:0 0 7px !important;
-        border:0 !important;
-        opacity:1 !important;
-        box-shadow:none !important;
-    }
-
-    /* 選択ドットだけ大きく。値はこの位置で表す */
-    .dot.selected.level-1,
-    .dot.selected.level-2,
-    .dot.selected.level-3,
-    .dot.selected.level-4,
-    .dot.selected.level-5{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        border:3px solid #f0fbfc !important;
-        opacity:1 !important;
-        box-shadow:none !important;
-    }
-
-    .dot.selected.level-1{
-        background:#273238 !important;
-        border-color:#9fcdd9 !important;
-        box-shadow:0 0 10px rgba(39,50,56,0.55) !important;
-    }
-
-    .dot.selected.level-2{
-        background:#557884 !important;
-        box-shadow:0 0 10px rgba(85,120,132,0.42) !important;
-    }
-
-    .dot.selected.level-3{
-        background:#94bdc8 !important;
-        box-shadow:0 0 10px rgba(148,189,200,0.38) !important;
-    }
-
-    .dot.selected.level-4{
-        background:#d5edf1 !important;
-        box-shadow:0 0 10px rgba(213,237,241,0.38) !important;
-    }
-
-    .dot.selected.level-5{
-        background:#f0fbfc !important;
-        border-color:#ffffff !important;
-        box-shadow:0 0 10px rgba(240,251,252,0.45) !important;
-    }
-}
-
-@media(max-width:430px){
-    .meter-graphic{
-        height:17px !important;
-    }
-
-    .dot.level-2:not(.selected),
-    .dot.level-3:not(.selected),
-    .dot.level-4:not(.selected){
-        width:6px !important;
-        height:6px !important;
-        flex:0 0 6px !important;
-    }
-
-    .dot.selected.level-1,
-    .dot.selected.level-2,
-    .dot.selected.level-3,
-    .dot.selected.level-4,
-    .dot.selected.level-5{
-        width:14px !important;
-        height:14px !important;
-        flex:0 0 14px !important;
-    }
-}
-</style>
-
-
-<style>
-/* ============================================================
-   スマホ版メーター列ズレ修正
-   - PC版には影響しない
-   - ドットのレイアウト上の幅を全段階で固定
-   - 左端/右端ドットは width:0 ではなく opacity:0 で消す
-   - 選択ドットは width を変えず transform で大きく見せる
-   - 左端は黒めのまま
-============================================================ */
-@media(max-width:900px){
-    .meter-graphic{
+        width:100% !important;
         height:18px !important;
-        display:flex !important;
-        align-items:center !important;
-        overflow:visible !important;
-    }
-
-    .connector{
-        height:2px !important;
-        flex:1 1 0 !important;
         min-width:0 !important;
-        align-self:center !important;
-        margin:0 !important;
-        box-sizing:border-box !important;
+        overflow:visible !important;
     }
 
-    /* 全ドットの占有幅を固定。列ズレ防止の本体 */
-    .dot{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
+    .meter-graphic::before{
+        content:"" !important;
+        position:absolute !important;
+        left:7px !important;
+        right:7px !important;
+        top:50% !important;
+        height:2px !important;
+        transform:translateY(-50%) !important;
+        border-radius:999px !important;
+        z-index:0 !important;
+        background:linear-gradient(
+            90deg,
+            #162025 0%,
+            #162025 25%,
+            #405f69 25%,
+            #405f69 50%,
+            #8bb7c3 50%,
+            #8bb7c3 75%,
+            #d7edf0 75%,
+            #d7edf0 100%
+        ) !important;
+    }
+
+    .meter-graphic .connector{
+        display:none !important;
+    }
+
+    .meter-graphic .dot{
+        position:relative !important;
+        z-index:1 !important;
+        grid-row:1 !important;
+        justify-self:center !important;
+        align-self:center !important;
+
+        width:16px !important;
+        height:16px !important;
+        flex:none !important;
+        margin:0 !important;
         border-radius:50% !important;
         box-sizing:border-box !important;
-        align-self:center !important;
-        margin:0 !important;
-        border:0 !important;
-        box-shadow:none !important;
-        opacity:1 !important;
-        transform:scale(0.43) !important;
-        transform-origin:center center !important;
-    }
 
-    /* 線は全区間に色付き。左ほど黒め */
-    .connector.level-1{
-        background:#273238 !important;
-    }
-
-    .connector.level-2{
-        background:#557884 !important;
-    }
-
-    .connector.level-3{
-        background:#94bdc8 !important;
-    }
-
-    .connector.level-4{
-        background:#d5edf1 !important;
-    }
-
-    /* ドット色も位置ごとに非連続 */
-    .dot.level-1{
-        background:#273238 !important;
-        border-color:#273238 !important;
-    }
-
-    .dot.level-2{
-        background:#557884 !important;
-        border-color:#557884 !important;
-    }
-
-    .dot.level-3{
-        background:#94bdc8 !important;
-        border-color:#94bdc8 !important;
-    }
-
-    .dot.level-4{
-        background:#d5edf1 !important;
-        border-color:#d5edf1 !important;
-    }
-
-    .dot.level-5{
-        background:#f0fbfc !important;
-        border-color:#f0fbfc !important;
-    }
-
-    /* 端の未選択ドットは消す。ただし幅は残す */
-    .dot.level-1:not(.selected),
-    .dot.level-5:not(.selected){
         opacity:0 !important;
-        transform:scale(0.43) !important;
+        transform:none !important;
         border:0 !important;
         box-shadow:none !important;
+        background:transparent !important;
     }
 
-    /* 中間の未選択ドットは小さく表示 */
-    .dot.level-2:not(.selected),
-    .dot.level-3:not(.selected),
-    .dot.level-4:not(.selected){
-        opacity:1 !important;
-        transform:scale(0.43) !important;
-        border:0 !important;
-        box-shadow:none !important;
-    }
+    .meter-graphic .dot.level-1{ grid-column:1 !important; }
+    .meter-graphic .dot.level-2{ grid-column:2 !important; }
+    .meter-graphic .dot.level-3{ grid-column:3 !important; }
+    .meter-graphic .dot.level-4{ grid-column:4 !important; }
+    .meter-graphic .dot.level-5{ grid-column:5 !important; }
 
-    /* 選択ドット：幅は変えず、見た目だけ大きくする */
-    .dot.selected{
+    .meter-graphic .dot.selected{
         opacity:1 !important;
-        transform:scale(1) !important;
         border:3px solid #f0fbfc !important;
-        box-shadow:none !important;
+        box-shadow:0 0 12px rgba(220,245,250,0.40) !important;
     }
 
-    .dot.selected.level-1{
-        background:#273238 !important;
+    .meter-graphic .dot.selected.level-1{
+        background:#162025 !important;
         border-color:#9fcdd9 !important;
-        box-shadow:0 0 10px rgba(39,50,56,0.55) !important;
     }
 
-    .dot.selected.level-2{
-        background:#557884 !important;
-        box-shadow:0 0 10px rgba(85,120,132,0.42) !important;
+    .meter-graphic .dot.selected.level-2{
+        background:#405f69 !important;
     }
 
-    .dot.selected.level-3{
-        background:#94bdc8 !important;
-        box-shadow:0 0 10px rgba(148,189,200,0.38) !important;
+    .meter-graphic .dot.selected.level-3{
+        background:#8bb7c3 !important;
     }
 
-    .dot.selected.level-4{
-        background:#d5edf1 !important;
-        box-shadow:0 0 10px rgba(213,237,241,0.38) !important;
+    .meter-graphic .dot.selected.level-4{
+        background:#d7edf0 !important;
     }
 
-    .dot.selected.level-5{
+    .meter-graphic .dot.selected.level-5{
         background:#f0fbfc !important;
         border-color:#ffffff !important;
-        box-shadow:0 0 10px rgba(240,251,252,0.45) !important;
     }
 }
 
@@ -2325,15 +1880,15 @@ onSnapshot(q, (snapshot)=>{
         height:17px !important;
     }
 
-    .dot{
-        width:14px !important;
-        height:14px !important;
-        flex:0 0 14px !important;
-        transform:scale(0.43) !important;
+    .meter-graphic::before{
+        left:7px !important;
+        right:7px !important;
+        height:2px !important;
     }
 
-    .dot.selected{
-        transform:scale(1) !important;
+    .meter-graphic .dot{
+        width:15px !important;
+        height:15px !important;
     }
 }
 </style>
