@@ -1108,6 +1108,7 @@ import {
     where,
     doc,
     getDoc,
+    addDoc,
     setDoc,
     deleteDoc,
     serverTimestamp
@@ -1296,21 +1297,6 @@ function escapeHTML(value){
         .replaceAll("'", "&#039;");
 }
 
-
-function getUserDisplayNameFromData(data){
-    if(!data){
-        return "";
-    }
-
-    return (
-        data.displayName ||
-        data.nickname ||
-        data.nickName ||
-        data.userName ||
-        data.name ||
-        ""
-    );
-}
 
 async function getCurrentUserName(db, currentUser){
     if(!currentUser){
