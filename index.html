@@ -1756,3 +1756,46 @@ onSnapshot(q, (snapshot)=>{
 }
 
 </style>
+
+
+<!--
+============================================================
+追加修正：PC版右メーター欄の下余白を消す
+============================================================
+-->
+<style>
+@media(min-width:901px){
+    .album-card{
+        align-items:stretch !important;
+    }
+
+    .album-analysis{
+        align-self:stretch !important;
+        height:100% !important;
+        min-height:100% !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        padding:14px 14px 13px !important;
+    }
+
+    .meter{
+        margin:0 !important;
+    }
+
+    .keyword-box{
+        margin-top:10px !important;
+        margin-bottom:0 !important;
+    }
+}
+
+@media(min-width:901px) and (max-width:1280px){
+    .album-analysis{
+        padding:12px 12px 11px !important;
+    }
+
+    .keyword-box{
+        margin-top:8px !important;
+    }
+}
+</style>
