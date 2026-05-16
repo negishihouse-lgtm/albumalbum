@@ -6,65 +6,111 @@
 <title>Album Collection</title>
 
 <style>
+/* ============================================================
+   Album Collection index.html
+   CSS整理版
+   - PC版：右側項目復活版を基準に2列カード
+   - スマホ版：修正版の横型カード感を維持しつつ1列表示
+   - 色：Pale Ice
+   - JS/Firestore/Auth/likes/comments/下部タブバー機能は維持
+============================================================ */
+
+:root{
+    --bg:#050505;
+    --surface:#080909;
+    --surface-2:#0b0d0e;
+    --border:rgba(255,255,255,0.14);
+    --border-soft:rgba(255,255,255,0.09);
+
+    --text:#ffffff;
+    --text-soft:#dce3e6;
+    --muted:#a7b0b5;
+
+    --accent:#9fcdd9;
+    --accent-hover:#b7dfe7;
+
+    --pale-1:#7faebb;
+    --pale-2:#9bc7d0;
+    --pale-3:#b9dde3;
+    --pale-4:#d7edf0;
+    --pale-5:#edf8f9;
+
+    --meter-off:#48555b;
+    --meter-line-off:#333d42;
+}
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
+html,
 body{
-    background:#050505;
-    color:white;
-    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
-    padding:42px;
-    padding-left:280px;
-    padding-bottom:120px;
+    min-height:100%;
 }
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Noto Sans JP",sans-serif;
+    padding:38px 30px 120px 272px;
+}
+
+a{
+    color:inherit;
+}
+
+/* ===== Header ===== */
 
 .topbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:28px;
+    margin-bottom:26px;
 }
 
 .page-title{
     font-size:42px;
-    font-weight:800;
-    letter-spacing:-0.04em;
+    font-weight:900;
+    letter-spacing:-0.045em;
 }
+
+/* ===== Layout ===== */
 
 .album-grid{
     display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
+    grid-template-columns:repeat(2,minmax(0,1fr));
     gap:24px;
     max-width:1480px;
     margin:0 auto;
 }
 
 .album-card{
-    background:linear-gradient(135deg,#0b0d0f 0%,#050505 62%,#090909 100%);
-    border:1px solid rgba(255,255,255,0.16);
-    border-radius:18px;
-    padding:20px;
+    background:linear-gradient(135deg,#0a0c0d 0%,#050505 62%,#090a0b 100%);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:18px;
     cursor:pointer;
     overflow:hidden;
-    display:block;
+    display:grid;
+    grid-template-columns:240px minmax(0,1fr);
+    gap:18px;
+    align-items:stretch;
     box-shadow:0 14px 36px rgba(0,0,0,0.32);
 }
 
 .album-card:hover{
-    border-color:rgba(111,168,220,0.6);
+    border-color:rgba(159,205,217,0.42);
     transform:translateY(-1px);
     transition:0.18s ease;
 }
 
+/* ===== Left side: album info ===== */
+
 .album-main{
     min-width:0;
-    display:grid;
-    grid-template-columns:170px minmax(0,1fr);
-    gap:18px;
-    align-items:start;
+    display:block;
 }
 
 .cover{
@@ -76,16 +122,21 @@ body{
     display:block;
     border:1px solid rgba(255,255,255,0.12);
     border-radius:10px;
+    margin:0 0 14px 0;
+}
+
+.album-text{
+    min-width:0;
 }
 
 .title{
-    font-size:28px;
+    font-size:26px;
     font-weight:900;
     line-height:1.08;
-    letter-spacing:-0.035em;
-    margin-top:0;
-    margin-bottom:8px;
+    letter-spacing:-0.04em;
+    margin-bottom:6px;
     word-break:break-word;
+
     display:-webkit-box;
     -webkit-line-clamp:2;
     -webkit-box-orient:vertical;
@@ -93,45 +144,44 @@ body{
 }
 
 .artist{
-    color:#6fa8dc;
-    font-size:18px;
-    font-weight:700;
-    margin-bottom:8px;
+    color:var(--accent);
+    font-size:17px;
+    font-weight:800;
+    margin-bottom:7px;
     word-break:break-word;
 }
 
 .meta{
-    color:#cfcfcf;
-    font-size:13px;
-    line-height:1.5;
-    margin-bottom:12px;
+    color:#cbd2d5;
+    font-size:12px;
+    line-height:1.45;
+    margin-bottom:10px;
     word-break:break-word;
 }
 
 .description{
-    grid-column:1 / -1;
-    color:#e0e0e0;
-    font-size:14px;
-    line-height:1.7;
-    margin-top:2px;
+    color:var(--text-soft);
+    font-size:13px;
+    line-height:1.65;
+    margin-bottom:10px;
     word-break:break-word;
+
     display:-webkit-box;
-    -webkit-line-clamp:3;
+    -webkit-line-clamp:4;
     -webkit-box-orient:vertical;
     overflow:hidden;
 }
 
 .creator{
-    grid-column:1 / -1;
-    margin-top:4px;
-    color:#aaa;
-    font-size:14px;
+    color:var(--muted);
+    font-size:13px;
     line-height:1.5;
+    margin-bottom:8px;
     word-break:break-word;
 }
 
 .creator a{
-    color:#6fa8dc;
+    color:var(--accent);
     text-decoration:none;
 }
 
@@ -140,14 +190,12 @@ body{
 }
 
 .reaction-row{
-    grid-column:1 / -1;
     display:flex;
     align-items:center;
-    gap:16px;
-    color:#aaa;
-    font-size:14px;
+    gap:12px;
+    color:#b6c0c4;
+    font-size:13px;
     flex-wrap:wrap;
-    margin-top:12px;
 }
 
 .like-area{
@@ -159,9 +207,9 @@ body{
 .like-btn{
     background:none;
     border:none;
-    color:#aaa;
+    color:#b6c0c4;
     padding:0;
-    font-size:21px;
+    font-size:18px;
     cursor:pointer;
 }
 
@@ -172,31 +220,45 @@ body{
 
 .like-count,
 .comment-count{
-    font-size:14px;
-    color:#aaa;
+    font-size:13px;
+    color:#b6c0c4;
 }
+
+/* ===== Right side: meter panel ===== */
 
 .album-analysis{
     min-width:0;
-    margin-top:16px;
-    border:1px solid rgba(255,255,255,0.14);
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+
+    border:1px solid rgba(255,255,255,0.12);
     border-radius:14px;
-    padding:14px;
+    padding:16px;
+}
+
+.meter-list{
+    display:block;
 }
 
 .meter{
     display:grid;
-    grid-template-columns:96px minmax(0,1fr) 96px;
+    grid-template-columns:58px minmax(0,1fr) 58px;
     align-items:center;
-    gap:14px;
+    gap:12px;
     margin-bottom:27px;
     min-width:0;
 }
 
+.meter:last-of-type{
+    margin-bottom:0;
+}
+
 .meter-label{
-    font-size:15px;
+    color:#f3f7f8;
+    font-size:14px;
     font-weight:800;
-    color:#f0f0f0;
     white-space:nowrap;
 }
 
@@ -213,74 +275,108 @@ body{
 }
 
 .dot{
-    width:38px;
-    height:38px;
+    width:20px;
+    height:20px;
     border-radius:50%;
-    border:3px solid rgba(255,255,255,0.25);
-    background:#080808;
+    border:2px solid var(--meter-off);
+    background:transparent;
     flex-shrink:0;
 }
 
 .connector{
-    height:3px;
-    background:rgba(255,255,255,0.23);
+    height:1px;
+    background:var(--meter-line-off);
     flex:1;
     min-width:0;
 }
 
-.dot.active,
-.connector.active{
-    background:#6fa8dc;
-    border-color:#6fa8dc;
-    box-shadow:0 0 22px rgba(111,168,220,0.22);
+/* Pale Ice gradient */
+.dot.active.level-1,
+.connector.active.level-1{
+    background:var(--pale-1);
+    border-color:var(--pale-1);
+}
+
+.dot.active.level-2,
+.connector.active.level-2{
+    background:var(--pale-2);
+    border-color:var(--pale-2);
+}
+
+.dot.active.level-3,
+.connector.active.level-3{
+    background:var(--pale-3);
+    border-color:var(--pale-3);
+}
+
+.dot.active.level-4,
+.connector.active.level-4{
+    background:var(--pale-4);
+    border-color:var(--pale-4);
+}
+
+.dot.active.level-5,
+.connector.active.level-5{
+    background:var(--pale-5);
+    border-color:var(--pale-5);
+}
+
+.dot.active{
+    box-shadow:0 0 18px rgba(159,205,217,0.16);
 }
 
 .keyword-box{
-    margin-top:4px;
-    border:1px solid rgba(255,255,255,0.16);
-    padding:18px 22px;
+    margin-top:16px;
+    border:1px solid var(--border-soft);
+    border-radius:10px;
+    padding:10px 12px;
+
     display:grid;
-    grid-template-columns:150px 1fr;
-    gap:18px;
+    grid-template-columns:76px minmax(0,1fr);
+    gap:10px;
     align-items:start;
 }
 
 .keyword-title{
-    color:#6fa8dc;
-    font-size:21px;
+    color:var(--accent);
+    font-size:12px;
     font-weight:800;
 }
 
 .keyword-text{
-    color:#ddd;
-    font-size:18px;
-    line-height:1.65;
+    color:#dde6e8;
+    font-size:12px;
+    line-height:1.55;
     word-break:break-word;
 }
 
+/* ===== Empty ===== */
+
 .empty{
-    color:#777;
-    font-size:28px;
+    color:#888;
+    font-size:24px;
 }
 
-/* ===== PCサイドバー ===== */
+/* ===== PC Sidebar ===== */
+
 .sidebar{
     position:fixed;
     top:0;
     left:0;
-    width:240px;
+    width:236px;
     height:100vh;
-    background:#0b0b0b;
-    border-right:1px solid rgba(255,255,255,0.1);
-    padding:30px 20px;
+    background:#060708;
+    border-right:1px solid rgba(255,255,255,0.08);
+    padding:28px 20px;
     overflow-y:auto;
     z-index:100;
 }
 
 .logo{
     font-size:28px;
-    font-weight:700;
-    margin-bottom:30px;
+    font-weight:800;
+    line-height:1.04;
+    margin-bottom:28px;
 }
 
 .sidebar a{
@@ -289,26 +385,27 @@ body{
     text-decoration:none;
     padding:14px 16px;
     margin-bottom:8px;
-    border-radius:10px;
+    border-radius:12px;
     font-size:15px;
 }
 
 .sidebar a:hover{
-    background:#1a1a1a;
+    background:#141617;
 }
 
 .sidebar a.active{
-    background:#1a1a1a;
-    color:#6fa8dc;
+    background:#17191a;
+    color:var(--accent);
 }
 
-/* ===== スマホ下部タブバー ===== */
+/* ===== Mobile Tabbar ===== */
+
 .mobile-tabbar{
     display:none;
 }
 
 .mobile-tabbar a{
-    color:#999;
+    color:#9ca6ac;
     text-decoration:none;
     display:flex;
     flex-direction:column;
@@ -320,13 +417,40 @@ body{
 }
 
 .mobile-tabbar a.active{
-    color:#6fa8dc;
+    color:white;
+    font-weight:700;
 }
 
 .mobile-tabbar .icon{
     font-size:22px;
     line-height:1;
 }
+
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* ===== Floating Post Button ===== */
 
 .fab{
     position:fixed;
@@ -335,7 +459,7 @@ body{
     width:64px;
     height:64px;
     border-radius:50%;
-    background:#6fa8dc;
+    background:var(--accent);
     color:white;
     display:flex;
     align-items:center;
@@ -347,24 +471,25 @@ body{
 }
 
 .fab:hover{
-    background:#84b7e4;
+    background:var(--accent-hover);
 }
 
-@media(max-width:1200px){
-    .album-card{
+/* ===== Tablet ===== */
+
+@media(max-width:1250px){
+    .album-grid{
         grid-template-columns:1fr;
-    }
-
-    .album-analysis{
-        padding:26px 22px;
+        max-width:760px;
     }
 }
+
+/* ===== Smartphone ===== */
 
 @media(max-width:900px){
     body{
         padding:16px;
         padding-left:16px;
-        padding-bottom:110px !important;
+        padding-bottom:110px;
     }
 
     .sidebar{
@@ -372,11 +497,7 @@ body{
     }
 
     .topbar{
-        margin-bottom:16px;
-    }
-
-    .topbar > div{
-        display:none !important;
+        margin-bottom:18px;
     }
 
     .page-title{
@@ -384,67 +505,86 @@ body{
     }
 
     .album-grid{
-        gap:18px;
+        grid-template-columns:1fr;
+        gap:14px;
+        width:100%;
+        max-width:none;
+        margin:0;
     }
 
+    /*
+      スマホは投稿自体は縦一列。
+      カード内部はPC版に近く、左：投稿情報 / 右：メーター。
+    */
     .album-card{
-        padding:14px;
-        gap:14px;
-        border-radius:14px;
+        grid-template-columns:minmax(0,0.94fr) minmax(0,1.06fr);
+        gap:10px;
+        align-items:stretch;
+        padding:12px;
+        border-radius:16px;
     }
 
     .album-main{
         display:grid;
-        grid-template-columns:94px minmax(0,1fr);
-        gap:12px;
-        align-items:start;
+        grid-template-columns:92px minmax(0,1fr);
+        gap:9px;
+        align-content:start;
+        min-width:0;
     }
 
     .cover{
-        border-radius:10px;
+        width:92px;
+        border-radius:8px;
+        margin:0;
+    }
+
+    .album-text{
+        min-width:0;
     }
 
     .title{
-        font-size:22px;
-        line-height:1.05;
-        margin-top:0;
-        margin-bottom:6px;
+        font-size:16px;
+        line-height:1.12;
+        margin-bottom:4px;
         -webkit-line-clamp:2;
     }
 
     .artist{
-        font-size:15px;
-        margin-bottom:6px;
+        font-size:13px;
+        margin-bottom:3px;
     }
 
     .meta{
-        font-size:12px;
-        margin-bottom:8px;
+        font-size:10px;
+        line-height:1.35;
+        margin-bottom:5px;
     }
 
     .description{
         grid-column:1 / -1;
-        font-size:13px;
+        font-size:11px;
         line-height:1.55;
-        -webkit-line-clamp:3;
         margin-top:0;
+        margin-bottom:7px;
+        -webkit-line-clamp:4;
     }
 
     .creator{
         grid-column:1 / -1;
         font-size:11px;
         margin-top:0;
+        margin-bottom:5px;
     }
 
     .reaction-row{
         grid-column:1 / -1;
-        margin-top:0;
-        gap:12px;
+        gap:9px;
         font-size:11px;
+        margin-top:5px;
     }
 
     .like-btn{
-        font-size:17px;
+        font-size:16px;
     }
 
     .like-count,
@@ -453,111 +593,76 @@ body{
     }
 
     .album-analysis{
-        padding:12px;
+        height:100%;
+        margin-top:0;
+        padding:9px 9px 8px;
         border-radius:12px;
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        min-width:0;
     }
 
     .meter{
-        grid-template-columns:54px minmax(0,1fr) 54px;
-        gap:7px;
-        margin-bottom:10px;
+        grid-template-columns:32px minmax(0,1fr) 32px;
+        gap:5px;
+        margin-bottom:15px;
+    }
+
+    .meter:last-of-type{
+        margin-bottom:0;
     }
 
     .meter-label{
-        font-size:11px;
+        font-size:8px;
+        font-weight:800;
     }
 
     .dot{
-        width:12px;
-        height:12px;
-        border-width:2px;
+        width:10px;
+        height:10px;
+        border-width:1.4px;
     }
 
     .connector{
-        height:2px;
+        height:1px;
     }
 
     .keyword-box{
-        grid-template-columns:1fr;
-        gap:4px;
-        padding:9px;
-        border-radius:10px;
+        margin-top:10px;
+        padding:7px;
+        border-radius:8px;
+        grid-template-columns:48px minmax(0,1fr);
+        gap:6px;
     }
 
     .keyword-title{
-        font-size:11px;
+        font-size:8px;
     }
 
     .keyword-text{
-        font-size:11px;
+        font-size:8px;
         line-height:1.4;
     }
 
     .mobile-tabbar{
-        position:fixed !important;
-        left:0 !important;
-        right:0 !important;
-        bottom:0 !important;
-        height:72px !important;
-        background:rgba(8,8,8,0.96) !important;
-        border-top:1px solid rgba(255,255,255,0.12) !important;
-        display:grid !important;
-        grid-template-columns:repeat(5,1fr) !important;
-        z-index:9999 !important;
+        display:grid;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:rgba(8,8,8,0.96);
+        border-top:1px solid rgba(255,255,255,0.12);
+        grid-template-columns:repeat(5,1fr);
+        z-index:9999;
         backdrop-filter:blur(14px);
         -webkit-backdrop-filter:blur(14px);
         padding-bottom:env(safe-area-inset-bottom);
     }
 
     .mobile-tabbar a{
-        color:#aaa !important;
-        text-decoration:none !important;
-        font-size:11px !important;
-        display:flex !important;
-        flex-direction:column !important;
-        align-items:center !important;
-        justify-content:center !important;
-        gap:4px !important;
-        min-width:0 !important;
-        height:72px !important;
-    }
-
-    .mobile-tabbar a.active{
-        color:white !important;
-        font-weight:700 !important;
-    }
-
-    .mobile-tabbar .icon{
-        font-size:22px !important;
-        line-height:1 !important;
-        height:24px !important;
-        display:flex !important;
-        align-items:center !important;
-        justify-content:center !important;
-    }
-
-    .mobile-tabbar .label{
-        line-height:1 !important;
-        white-space:nowrap !important;
-    }
-
-    .mobile-tabbar .tab-avatar{
-        width:28px !important;
-        height:28px !important;
-        border-radius:50% !important;
-        object-fit:cover !important;
-        background:#111 !important;
-        border:1px solid rgba(255,255,255,0.35) !important;
-        display:none;
-    }
-
-    .mobile-tabbar .mypage-icon-text{
-        font-size:22px !important;
-        line-height:1 !important;
-        height:24px !important;
-        display:flex;
-        align-items:center;
-        justify-content:center;
+        height:72px;
     }
 
     .fab,
@@ -567,565 +672,62 @@ body{
     }
 }
 
-@media(max-width:390px){
+/* ===== Narrow smartphone ===== */
+
+@media(max-width:430px){
+    .album-card{
+        grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr);
+        gap:8px;
+        padding:10px;
+    }
+
     .album-main{
         grid-template-columns:78px minmax(0,1fr);
-        gap:10px;
+        gap:8px;
+    }
+
+    .cover{
+        width:78px;
     }
 
     .title{
-        font-size:19px;
+        font-size:14px;
     }
 
     .artist{
-        font-size:13px;
+        font-size:12px;
     }
 
-    .meter{
-        grid-template-columns:48px minmax(0,1fr) 48px;
-    }
-
-    .meter-label{
+    .description{
         font-size:10px;
-    }
-}
-
-
-/* ===== 修正版：PCは2列、項目は元の5項目のまま ===== */
-@media(min-width:1101px){
-    .album-grid{
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-    }
-}
-
-@media(max-width:1100px){
-    .album-grid{
-        grid-template-columns:1fr !important;
-    }
-}
-
-@media(max-width:900px){
-    .album-main{
-        grid-template-columns:86px minmax(0,1fr) !important;
-        gap:12px !important;
-    }
-
-    .cover{
-        width:86px !important;
-    }
-
-    .title{
-        font-size:17px !important;
-    }
-
-    .artist{
-        font-size:13px !important;
-    }
-
-    .description{
-        font-size:12px !important;
-        -webkit-line-clamp:3 !important;
-    }
-}
-
-
-
-/* ===== 2026-05 修正：見本スクショ寄せのPCカード ===== */
-@media(min-width:901px){
-    body{
-        padding:36px 34px 120px 280px !important;
-    }
-
-    .topbar{
-        margin-bottom:24px !important;
-    }
-
-    .page-title{
-        font-size:42px !important;
-        line-height:1 !important;
-    }
-
-    .album-grid{
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        gap:24px !important;
-        max-width:1500px !important;
-        margin:0 !important;
-    }
-
-    .album-card{
-        display:grid !important;
-        grid-template-columns:38% minmax(0, 1fr) !important;
-        gap:14px !important;
-        padding:20px !important;
-        border-radius:16px !important;
-        background:#080909 !important;
-        border:1px solid rgba(255,255,255,0.16) !important;
-        box-shadow:none !important;
-        min-height:0 !important;
-    }
-
-    .album-main{
-        display:block !important;
-        min-width:0 !important;
-    }
-
-    .cover{
-        width:100% !important;
-        max-width:none !important;
-        aspect-ratio:1/1 !important;
-        object-fit:cover !important;
-        border-radius:2px !important;
-        margin-bottom:14px !important;
-    }
-
-    .title{
-        font-size:28px !important;
-        line-height:1.05 !important;
-        margin:0 0 4px !important;
-        letter-spacing:-0.04em !important;
-        -webkit-line-clamp:2 !important;
-    }
-
-    .artist{
-        font-size:16px !important;
-        line-height:1.25 !important;
-        margin-bottom:5px !important;
-    }
-
-    .meta{
-        font-size:12px !important;
-        line-height:1.35 !important;
-        margin-bottom:10px !important;
-        color:#c9c9c9 !important;
-    }
-
-    .description{
-        display:-webkit-box !important;
-        -webkit-line-clamp:4 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-        font-size:12.5px !important;
-        line-height:1.65 !important;
-        color:#d9d9d9 !important;
-        margin:0 0 10px !important;
-    }
-
-    .creator{
-        font-size:12px !important;
-        margin:8px 0 0 !important;
-        color:#aaa !important;
-    }
-
-    .reaction-row{
-        margin-top:8px !important;
-        font-size:12px !important;
-        gap:12px !important;
-    }
-
-    .like-btn{
-        font-size:17px !important;
-    }
-
-    .like-count,
-    .comment-count{
-        font-size:12px !important;
-    }
-
-    .album-analysis{
-        margin-top:0 !important;
-        padding:12px 12px 10px !important;
-        border-radius:0 !important;
-        border:1px solid rgba(255,255,255,0.13) !important;
-        min-width:0 !important;
-        align-self:stretch !important;
+        -webkit-line-clamp:4;
     }
 
     .meter{
-        grid-template-columns:42px minmax(0,1fr) 42px !important;
-        gap:8px !important;
-        margin-bottom:12px !important;
+        grid-template-columns:29px minmax(0,1fr) 29px;
+        gap:4px;
+        margin-bottom:13px;
     }
 
     .meter-label{
-        font-size:10px !important;
-        font-weight:800 !important;
+        font-size:7px;
     }
 
     .dot{
-        width:14px !important;
-        height:14px !important;
-        border-width:2px !important;
-        box-shadow:none !important;
-    }
-
-    .connector{
-        height:2px !important;
-    }
-
-    .dot.active,
-    .connector.active{
-        box-shadow:none !important;
+        width:9px;
+        height:9px;
     }
 
     .keyword-box{
-        margin-top:4px !important;
-        padding:8px 10px !important;
-        grid-template-columns:58px minmax(0,1fr) !important;
-        gap:10px !important;
-        border-radius:0 !important;
+        grid-template-columns:42px minmax(0,1fr);
+        padding:6px;
     }
 
-    .keyword-title{
-        font-size:11px !important;
-    }
-
+    .keyword-title,
     .keyword-text{
-        font-size:10.5px !important;
-        line-height:1.55 !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:2 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
+        font-size:7px;
     }
 }
-
-@media(min-width:901px) and (max-width:1250px){
-    .album-grid{
-        grid-template-columns:1fr !important;
-        max-width:760px !important;
-    }
-}
-
-
-
-/* ===== 2026-05-17 最終調整：PC版をスクショのようなコンパクト2列に固定 ===== */
-@media(min-width:901px){
-    body{
-        padding:34px 32px 120px 280px !important;
-    }
-
-    .album-grid{
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        gap:22px !important;
-        max-width:none !important;
-        width:100% !important;
-        margin:0 !important;
-    }
-
-    .album-card{
-        display:grid !important;
-        grid-template-columns:220px minmax(0, 1fr) !important;
-        gap:14px !important;
-        padding:16px !important;
-        border-radius:16px !important;
-        min-height:0 !important;
-        align-items:start !important;
-    }
-
-    .album-main{
-        display:block !important;
-        min-width:0 !important;
-    }
-
-    .cover{
-        width:100% !important;
-        height:auto !important;
-        aspect-ratio:1/1 !important;
-        object-fit:cover !important;
-        border-radius:2px !important;
-        margin:0 0 10px !important;
-    }
-
-    .title{
-        font-size:25px !important;
-        line-height:1.05 !important;
-        margin:0 0 4px !important;
-        letter-spacing:-0.04em !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:2 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .artist{
-        font-size:15px !important;
-        line-height:1.25 !important;
-        margin:0 0 5px !important;
-    }
-
-    .meta{
-        font-size:11px !important;
-        line-height:1.35 !important;
-        margin:0 0 8px !important;
-    }
-
-    .description{
-        font-size:11.5px !important;
-        line-height:1.55 !important;
-        margin:0 0 8px !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:3 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .creator{
-        font-size:11.5px !important;
-        margin:6px 0 0 !important;
-    }
-
-    .reaction-row{
-        font-size:11.5px !important;
-        gap:10px !important;
-        margin-top:7px !important;
-    }
-
-    .like-btn{
-        font-size:16px !important;
-    }
-
-    .like-count,
-    .comment-count{
-        font-size:11.5px !important;
-    }
-
-    .album-analysis{
-        align-self:start !important;
-        margin:0 !important;
-        padding:10px 10px 9px !important;
-        border-radius:0 !important;
-        min-height:0 !important;
-        height:auto !important;
-        border:1px solid rgba(255,255,255,0.13) !important;
-    }
-
-    .meter{
-        grid-template-columns:38px minmax(0,1fr) 38px !important;
-        gap:7px !important;
-        margin-bottom:9px !important;
-    }
-
-    .meter-label{
-        font-size:9px !important;
-        font-weight:800 !important;
-    }
-
-    .dot{
-        width:13px !important;
-        height:13px !important;
-        border-width:2px !important;
-        box-shadow:none !important;
-    }
-
-    .connector{
-        height:2px !important;
-    }
-
-    .keyword-box{
-        margin-top:7px !important;
-        padding:7px 9px !important;
-        grid-template-columns:54px minmax(0,1fr) !important;
-        gap:9px !important;
-        border-radius:0 !important;
-    }
-
-    .keyword-title{
-        font-size:10px !important;
-    }
-
-    .keyword-text{
-        font-size:9.5px !important;
-        line-height:1.45 !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:2 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1250px){
-    .album-grid{
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        max-width:none !important;
-    }
-
-    .album-card{
-        grid-template-columns:190px minmax(0,1fr) !important;
-        gap:12px !important;
-    }
-
-    .title{
-        font-size:22px !important;
-    }
-
-    .artist{
-        font-size:14px !important;
-    }
-}
-
-
-
-/* ===== PC版：メーター間隔を広げる追加調整 ===== */
-@media(min-width:901px){
-    .album-analysis{
-        padding:14px 14px 13px !important;
-    }
-
-    .meter{
-        grid-template-columns:40px minmax(0,1fr) 40px !important;
-        gap:8px !important;
-        margin:0 0 14px 0 !important;
-    }
-
-    .meter:last-of-type{
-        margin-bottom:12px !important;
-    }
-
-    .meter-label{
-        font-size:9.5px !important;
-    }
-
-    .dot{
-        width:11px !important;
-        height:11px !important;
-    }
-
-    .connector{
-        height:2px !important;
-    }
-
-    .keyword-box{
-        margin-top:12px !important;
-        padding:8px 10px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-analysis{
-        padding:12px 12px 11px !important;
-    }
-
-    .meter{
-        grid-template-columns:36px minmax(0,1fr) 36px !important;
-        gap:6px !important;
-        margin-bottom:12px !important;
-    }
-
-    .meter-label{
-        font-size:8.5px !important;
-    }
-
-    .keyword-box{
-        margin-top:10px !important;
-        padding:7px 9px !important;
-    }
-}
-
-
-
-/* ===== 2026-05-17 右ラベル復活・メーター幅調整 ===== */
-@media(min-width:901px){
-    .album-card{
-        grid-template-columns:200px minmax(0, 1fr) !important;
-        gap:20px !important;
-        overflow:hidden !important;
-    }
-
-    .album-info{
-        width:200px !important;
-        min-width:200px !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-    }
-
-    .album-analysis{
-        min-width:0 !important;
-        width:100% !important;
-        box-sizing:border-box !important;
-        overflow:visible !important;
-        padding:17px 14px 14px !important;
-    }
-
-    .meter{
-        grid-template-columns:52px minmax(0, 1fr) 58px !important;
-        gap:10px !important;
-        width:100% !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        color:#f1f1f1 !important;
-        white-space:nowrap !important;
-        overflow:visible !important;
-    }
-
-    .right-label{
-        display:block !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        text-align:right !important;
-    }
-
-    .meter-graphic{
-        min-width:0 !important;
-        width:100% !important;
-        overflow:visible !important;
-    }
-
-    .dot{
-        width:18px !important;
-        height:18px !important;
-        border-width:2px !important;
-        flex:0 0 18px !important;
-    }
-
-    .connector{
-        height:1px !important;
-        min-width:13px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-card{
-        grid-template-columns:180px minmax(0, 1fr) !important;
-        gap:16px !important;
-    }
-
-    .album-info{
-        width:180px !important;
-        min-width:180px !important;
-    }
-
-    .cover{
-        width:150px !important;
-        height:150px !important;
-    }
-
-    .meter{
-        grid-template-columns:48px minmax(0, 1fr) 54px !important;
-        gap:8px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-        flex-basis:16px !important;
-    }
-
-    .connector{
-        min-width:10px !important;
-    }
-}
-
 </style>
 </head>
 
@@ -1133,7 +735,7 @@ body{
 
 <!-- PC用サイドバー -->
 <nav class="sidebar">
-    <div class="logo">Album Collection</div>
+    <div class="logo">Album<br>Collection</div>
 
     <a href="index.html" class="active">ホーム</a>
     <a href="search.html">検索</a>
@@ -1144,7 +746,6 @@ body{
     <a href="login.html">ログイン</a>
 </nav>
 
-<!-- スマホ用下部タブバー -->
 <!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
     <a href="index.html" class="active">
@@ -1176,13 +777,9 @@ body{
 
 <a href="editor.html" class="fab">＋</a>
 
-
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
-
-    <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        
-    </div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;"></div>
 </div>
 
 <div class="album-grid" id="albumGrid"></div>
@@ -1228,7 +825,6 @@ const db = initializeFirestore(app, {
 const auth = getAuth(app);
 
 const albumGrid = document.getElementById("albumGrid");
-const mypageBtn = document.getElementById("mypageBtn");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
@@ -1266,7 +862,6 @@ onAuthStateChanged(auth, (user) => {
     updateLikeDisplays();
     updateCommentDisplays();
 });
-
 
 function getUserIconUrl(data){
     return (
@@ -1491,59 +1086,62 @@ onSnapshot(q, (snapshot)=>{
 
     <div class="album-main">
         <img class="cover"
-             src="${escapeHTML(a.cover || '')}"
+             src="${escapeHTML(a.cover || "")}"
              alt="">
 
         <div class="album-text">
-            <div class="title">${escapeHTML(a.title || '')}</div>
-            <div class="artist">${escapeHTML(a.artist || '')}</div>
+            <div class="title">${escapeHTML(a.title || "")}</div>
+            <div class="artist">${escapeHTML(a.artist || "")}</div>
+
             <div class="meta">
-                ${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(' / ') || a.year || '')}
-            </div>
-        </div>
-
-        <div class="description">
-            ${escapeHTML(a.desc || '')}
-        </div>
-
-        <div class="creator">
-            投稿者：
-            <a href="profile.html?uid=${escapeHTML(a.userId || '')}"
-               onclick="event.stopPropagation();">
-                ${escapeHTML(a.userName || a.userEmail || '匿名ユーザー')}
-            </a>
-        </div>
-
-        <div class="reaction-row">
-            <div class="like-area"
-                 data-like-area
-                 data-album-id="${escapeHTML(albumId)}">
-                <button class="like-btn"
-                        onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
-                    ♡
-                </button>
-                <span class="like-count">0</span>
+                ${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(" / ") || a.year || "")}
             </div>
 
-            <div class="comment-count"
-                 data-comment-count
-                 data-album-id="${escapeHTML(albumId)}">
-                コメント 0件
+            <div class="description">
+                ${escapeHTML(a.desc || "")}
+            </div>
+
+            <div class="creator">
+                投稿者：
+                <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
+                   onclick="event.stopPropagation();">
+                    ${escapeHTML(a.userName || a.userEmail || "匿名ユーザー")}
+                </a>
+            </div>
+
+            <div class="reaction-row">
+                <div class="like-area"
+                     data-like-area
+                     data-album-id="${escapeHTML(albumId)}">
+                    <button class="like-btn"
+                            onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
+                        ♡
+                    </button>
+                    <span class="like-count">0</span>
+                </div>
+
+                <div class="comment-count"
+                     data-comment-count
+                     data-album-id="${escapeHTML(albumId)}">
+                    コメント 0件
+                </div>
             </div>
         </div>
     </div>
 
     <div class="album-analysis">
-        ${meter("暗い", "明るい", a.darkness)}
-        ${meter("静か", "激しい", a.intense)}
-        ${meter("シンプル", "複雑", a.complex)}
-        ${meter("絶望", "希望", a.hope)}
-        ${meter("個人", "世界", a.world)}
+        <div class="meter-list">
+            ${meter("暗い", "明るい", a.darkness)}
+            ${meter("静か", "激しい", a.intense)}
+            ${meter("シンプル", "複雑", a.complex)}
+            ${meter("絶望", "希望", a.hope)}
+            ${meter("個人", "世界", a.world)}
+        </div>
 
         <div class="keyword-box">
             <div class="keyword-title">キーワード</div>
             <div class="keyword-text">
-                ${escapeHTML(a.keywords || '')}
+                ${escapeHTML(a.keywords || "")}
             </div>
         </div>
     </div>
@@ -1564,1291 +1162,3 @@ onSnapshot(q, (snapshot)=>{
 
 </body>
 </html>
-
-<!--
-============================================================
-追加修正：PC版を見本スクショにさらに近づける最終上書きCSS
-※既存CSSの一番最後に置くことで、前の指定を打ち消します。
-============================================================
--->
-<style>
-@media(min-width:901px){
-    body{
-        padding-top:36px !important;
-        padding-right:32px !important;
-        padding-left:270px !important;
-        padding-bottom:120px !important;
-        background:#050505 !important;
-    }
-
-    .page-title{
-        font-size:42px !important;
-        line-height:1 !important;
-        margin:0 !important;
-        letter-spacing:-0.045em !important;
-    }
-
-    .topbar{
-        margin-bottom:24px !important;
-    }
-
-    .album-grid{
-        display:grid !important;
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        gap:20px 24px !important;
-        max-width:1230px !important;
-        margin:0 !important;
-    }
-
-    .album-card{
-        display:grid !important;
-        grid-template-columns:205px minmax(0, 1fr) !important;
-        gap:16px !important;
-        align-items:start !important;
-        padding:18px !important;
-        border-radius:15px !important;
-        background:#070808 !important;
-        border:1px solid rgba(255,255,255,0.17) !important;
-        box-shadow:none !important;
-        min-height:0 !important;
-        height:auto !important;
-    }
-
-    .album-main{
-        display:block !important;
-        width:205px !important;
-        min-width:0 !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-        aspect-ratio:auto !important;
-        object-fit:cover !important;
-        border-radius:1px !important;
-        border:1px solid rgba(255,255,255,0.16) !important;
-        margin:0 0 12px 0 !important;
-        background:#111 !important;
-    }
-
-    .title{
-        font-size:25px !important;
-        line-height:1.05 !important;
-        font-weight:900 !important;
-        letter-spacing:-0.045em !important;
-        margin:0 0 4px 0 !important;
-        -webkit-line-clamp:2 !important;
-    }
-
-    .artist{
-        font-size:15px !important;
-        line-height:1.25 !important;
-        font-weight:800 !important;
-        color:#6fa8dc !important;
-        margin:0 0 5px 0 !important;
-    }
-
-    .meta{
-        font-size:11px !important;
-        line-height:1.35 !important;
-        color:#bdbdbd !important;
-        margin:0 0 8px 0 !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:1 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .description{
-        font-size:11.5px !important;
-        line-height:1.58 !important;
-        color:#d7d7d7 !important;
-        margin:0 0 8px 0 !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:4 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .creator{
-        font-size:11.5px !important;
-        line-height:1.35 !important;
-        margin:0 0 7px 0 !important;
-        color:#aaa !important;
-    }
-
-    .reaction-row{
-        margin-top:0 !important;
-        gap:10px !important;
-        font-size:11.5px !important;
-        line-height:1 !important;
-    }
-
-    .like-btn{
-        font-size:15px !important;
-        line-height:1 !important;
-    }
-
-    .like-count,
-    .comment-count{
-        font-size:11.5px !important;
-    }
-
-    .album-analysis{
-        width:100% !important;
-        min-width:0 !important;
-        align-self:start !important;
-        padding:10px 10px 9px !important;
-        border-radius:0 !important;
-        border:1px solid rgba(255,255,255,0.14) !important;
-        background:#070808 !important;
-        height:auto !important;
-        min-height:0 !important;
-        margin:0 !important;
-    }
-
-    .meter{
-        grid-template-columns:38px minmax(0,1fr) 38px !important;
-        gap:7px !important;
-        margin:0 0 8px 0 !important;
-        align-items:center !important;
-    }
-
-    .meter-label{
-        font-size:9px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        color:#f0f0f0 !important;
-        white-space:nowrap !important;
-    }
-
-    .dot{
-        width:11px !important;
-        height:11px !important;
-        border-width:2px !important;
-        box-shadow:none !important;
-    }
-
-    .connector{
-        height:2px !important;
-    }
-
-    .keyword-box{
-        margin-top:7px !important;
-        padding:7px 9px !important;
-        border-radius:0 !important;
-        display:grid !important;
-        grid-template-columns:54px minmax(0,1fr) !important;
-        gap:8px !important;
-        align-items:start !important;
-        border:1px solid rgba(255,255,255,0.14) !important;
-    }
-
-    .keyword-title{
-        font-size:10px !important;
-        line-height:1.3 !important;
-        font-weight:900 !important;
-        color:#6fa8dc !important;
-        margin:0 !important;
-    }
-
-    .keyword-text{
-        font-size:9.5px !important;
-        line-height:1.45 !important;
-        color:#e0e0e0 !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:2 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-grid{
-        max-width:1050px !important;
-    }
-
-    .album-card{
-        grid-template-columns:170px minmax(0, 1fr) !important;
-        gap:12px !important;
-        padding:16px !important;
-    }
-
-    .album-main{
-        width:170px !important;
-    }
-
-    .cover{
-        width:140px !important;
-        height:140px !important;
-    }
-
-    .title{
-        font-size:22px !important;
-    }
-
-    .meter{
-        grid-template-columns:34px minmax(0,1fr) 34px !important;
-        gap:5px !important;
-        margin-bottom:7px !important;
-    }
-
-    .meter-label{
-        font-size:8px !important;
-    }
-
-    .dot{
-        width:10px !important;
-        height:10px !important;
-    }
-}
-
-
-/* ===== PC版：メーター間隔を広げる追加調整 ===== */
-@media(min-width:901px){
-    .album-analysis{
-        padding:14px 14px 13px !important;
-    }
-
-    .meter{
-        grid-template-columns:40px minmax(0,1fr) 40px !important;
-        gap:8px !important;
-        margin:0 0 14px 0 !important;
-    }
-
-    .meter:last-of-type{
-        margin-bottom:12px !important;
-    }
-
-    .meter-label{
-        font-size:9.5px !important;
-    }
-
-    .dot{
-        width:11px !important;
-        height:11px !important;
-    }
-
-    .connector{
-        height:2px !important;
-    }
-
-    .keyword-box{
-        margin-top:12px !important;
-        padding:8px 10px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-analysis{
-        padding:12px 12px 11px !important;
-    }
-
-    .meter{
-        grid-template-columns:36px minmax(0,1fr) 36px !important;
-        gap:6px !important;
-        margin-bottom:12px !important;
-    }
-
-    .meter-label{
-        font-size:8.5px !important;
-    }
-
-    .keyword-box{
-        margin-top:10px !important;
-        padding:7px 9px !important;
-    }
-}
-
-
-
-/* ===== 2026-05-17 右ラベル復活・メーター幅調整 ===== */
-@media(min-width:901px){
-    .album-card{
-        grid-template-columns:200px minmax(0, 1fr) !important;
-        gap:20px !important;
-        overflow:hidden !important;
-    }
-
-    .album-info{
-        width:200px !important;
-        min-width:200px !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-    }
-
-    .album-analysis{
-        min-width:0 !important;
-        width:100% !important;
-        box-sizing:border-box !important;
-        overflow:visible !important;
-        padding:17px 14px 14px !important;
-    }
-
-    .meter{
-        grid-template-columns:52px minmax(0, 1fr) 58px !important;
-        gap:10px !important;
-        width:100% !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        color:#f1f1f1 !important;
-        white-space:nowrap !important;
-        overflow:visible !important;
-    }
-
-    .right-label{
-        display:block !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        text-align:right !important;
-    }
-
-    .meter-graphic{
-        min-width:0 !important;
-        width:100% !important;
-        overflow:visible !important;
-    }
-
-    .dot{
-        width:18px !important;
-        height:18px !important;
-        border-width:2px !important;
-        flex:0 0 18px !important;
-    }
-
-    .connector{
-        height:1px !important;
-        min-width:13px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-card{
-        grid-template-columns:180px minmax(0, 1fr) !important;
-        gap:16px !important;
-    }
-
-    .album-info{
-        width:180px !important;
-        min-width:180px !important;
-    }
-
-    .cover{
-        width:150px !important;
-        height:150px !important;
-    }
-
-    .meter{
-        grid-template-columns:48px minmax(0, 1fr) 54px !important;
-        gap:8px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-        flex-basis:16px !important;
-    }
-
-    .connector{
-        min-width:10px !important;
-    }
-}
-
-</style>
-
-
-<!--
-============================================================
-追加修正：PC版右メーター欄の下余白を消す
-============================================================
--->
-<style>
-@media(min-width:901px){
-    .album-card{
-        align-items:stretch !important;
-    }
-
-    .album-analysis{
-        align-self:stretch !important;
-        height:100% !important;
-        min-height:100% !important;
-        display:flex !important;
-        flex-direction:column !important;
-        justify-content:space-between !important;
-        padding:14px 14px 13px !important;
-    }
-
-    .meter{
-        margin:0 !important;
-    }
-
-    .keyword-box{
-        margin-top:10px !important;
-        margin-bottom:0 !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-analysis{
-        padding:12px 12px 11px !important;
-    }
-
-    .keyword-box{
-        margin-top:8px !important;
-    }
-}
-
-
-/* ===== 2026-05-17 右ラベル復活・メーター幅調整 ===== */
-@media(min-width:901px){
-    .album-card{
-        grid-template-columns:200px minmax(0, 1fr) !important;
-        gap:20px !important;
-        overflow:hidden !important;
-    }
-
-    .album-info{
-        width:200px !important;
-        min-width:200px !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-    }
-
-    .album-analysis{
-        min-width:0 !important;
-        width:100% !important;
-        box-sizing:border-box !important;
-        overflow:visible !important;
-        padding:17px 14px 14px !important;
-    }
-
-    .meter{
-        grid-template-columns:52px minmax(0, 1fr) 58px !important;
-        gap:10px !important;
-        width:100% !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        color:#f1f1f1 !important;
-        white-space:nowrap !important;
-        overflow:visible !important;
-    }
-
-    .right-label{
-        display:block !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        text-align:right !important;
-    }
-
-    .meter-graphic{
-        min-width:0 !important;
-        width:100% !important;
-        overflow:visible !important;
-    }
-
-    .dot{
-        width:18px !important;
-        height:18px !important;
-        border-width:2px !important;
-        flex:0 0 18px !important;
-    }
-
-    .connector{
-        height:1px !important;
-        min-width:13px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-card{
-        grid-template-columns:180px minmax(0, 1fr) !important;
-        gap:16px !important;
-    }
-
-    .album-info{
-        width:180px !important;
-        min-width:180px !important;
-    }
-
-    .cover{
-        width:150px !important;
-        height:150px !important;
-    }
-
-    .meter{
-        grid-template-columns:48px minmax(0, 1fr) 54px !important;
-        gap:8px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-        flex-basis:16px !important;
-    }
-
-    .connector{
-        min-width:10px !important;
-    }
-}
-
-</style>
-
-<!--
-============================================================
-追加修正：PC版メーターの丸・線を見本寄せ
-============================================================
--->
-<style>
-@media(min-width:901px){
-    .meter-graphic{
-        gap:0 !important;
-    }
-
-    .dot{
-        width:9px !important;
-        height:9px !important;
-        border-radius:50% !important;
-        border:1.5px solid #3f474c !important;
-        background:#080909 !important;
-        box-shadow:none !important;
-        opacity:1 !important;
-    }
-
-    .connector{
-        height:1.5px !important;
-        background:#30383d !important;
-        opacity:1 !important;
-    }
-
-    .dot.active,
-    .connector.active{
-        background:#5f9fc2 !important;
-        border-color:#5f9fc2 !important;
-    }
-
-    .dot.active.level-1,
-    .connector.active.level-1,
-    .dot.active.level-2,
-    .connector.active.level-2,
-    .dot.active.level-3,
-    .connector.active.level-3,
-    .dot.active.level-4,
-    .connector.active.level-4,
-    .dot.active.level-5{
-        background:#5f9fc2 !important;
-        border-color:#5f9fc2 !important;
-    }
-
-    .meter-label{
-        color:#eeeeee !important;
-        font-weight:800 !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .dot{
-        width:8px !important;
-        height:8px !important;
-        border-width:1.4px !important;
-    }
-
-    .connector{
-        height:1.4px !important;
-    }
-}
-
-
-/* ===== 2026-05-17 右ラベル復活・メーター幅調整 ===== */
-@media(min-width:901px){
-    .album-card{
-        grid-template-columns:200px minmax(0, 1fr) !important;
-        gap:20px !important;
-        overflow:hidden !important;
-    }
-
-    .album-info{
-        width:200px !important;
-        min-width:200px !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-    }
-
-    .album-analysis{
-        min-width:0 !important;
-        width:100% !important;
-        box-sizing:border-box !important;
-        overflow:visible !important;
-        padding:17px 14px 14px !important;
-    }
-
-    .meter{
-        grid-template-columns:52px minmax(0, 1fr) 58px !important;
-        gap:10px !important;
-        width:100% !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        color:#f1f1f1 !important;
-        white-space:nowrap !important;
-        overflow:visible !important;
-    }
-
-    .right-label{
-        display:block !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        text-align:right !important;
-    }
-
-    .meter-graphic{
-        min-width:0 !important;
-        width:100% !important;
-        overflow:visible !important;
-    }
-
-    .dot{
-        width:18px !important;
-        height:18px !important;
-        border-width:2px !important;
-        flex:0 0 18px !important;
-    }
-
-    .connector{
-        height:1px !important;
-        min-width:13px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-card{
-        grid-template-columns:180px minmax(0, 1fr) !important;
-        gap:16px !important;
-    }
-
-    .album-info{
-        width:180px !important;
-        min-width:180px !important;
-    }
-
-    .cover{
-        width:150px !important;
-        height:150px !important;
-    }
-
-    .meter{
-        grid-template-columns:48px minmax(0, 1fr) 54px !important;
-        gap:8px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-        flex-basis:16px !important;
-    }
-
-    .connector{
-        min-width:10px !important;
-    }
-}
-
-</style>
-
-
-<!--
-============================================================
-追加修正：PC版メーターの丸を見本サイズに戻す
-============================================================
--->
-<style>
-@media(min-width:901px){
-    .dot{
-        width:14px !important;
-        height:14px !important;
-        border-width:2px !important;
-        border-color:#465158 !important;
-        background:#080909 !important;
-        box-shadow:none !important;
-    }
-
-    .connector{
-        height:2px !important;
-        background:#343d42 !important;
-    }
-
-    .dot.active,
-    .connector.active,
-    .dot.active.level-1,
-    .connector.active.level-1,
-    .dot.active.level-2,
-    .connector.active.level-2,
-    .dot.active.level-3,
-    .connector.active.level-3,
-    .dot.active.level-4,
-    .connector.active.level-4,
-    .dot.active.level-5{
-        background:#5e9fc0 !important;
-        border-color:#5e9fc0 !important;
-    }
-
-    .meter{
-        gap:9px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .dot{
-        width:12px !important;
-        height:12px !important;
-        border-width:2px !important;
-    }
-
-    .connector{
-        height:2px !important;
-    }
-}
-
-
-/* ===== 2026-05-17 右ラベル復活・メーター幅調整 ===== */
-@media(min-width:901px){
-    .album-card{
-        grid-template-columns:200px minmax(0, 1fr) !important;
-        gap:20px !important;
-        overflow:hidden !important;
-    }
-
-    .album-info{
-        width:200px !important;
-        min-width:200px !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-    }
-
-    .album-analysis{
-        min-width:0 !important;
-        width:100% !important;
-        box-sizing:border-box !important;
-        overflow:visible !important;
-        padding:17px 14px 14px !important;
-    }
-
-    .meter{
-        grid-template-columns:52px minmax(0, 1fr) 58px !important;
-        gap:10px !important;
-        width:100% !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        color:#f1f1f1 !important;
-        white-space:nowrap !important;
-        overflow:visible !important;
-    }
-
-    .right-label{
-        display:block !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        text-align:right !important;
-    }
-
-    .meter-graphic{
-        min-width:0 !important;
-        width:100% !important;
-        overflow:visible !important;
-    }
-
-    .dot{
-        width:18px !important;
-        height:18px !important;
-        border-width:2px !important;
-        flex:0 0 18px !important;
-    }
-
-    .connector{
-        height:1px !important;
-        min-width:13px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-card{
-        grid-template-columns:180px minmax(0, 1fr) !important;
-        gap:16px !important;
-    }
-
-    .album-info{
-        width:180px !important;
-        min-width:180px !important;
-    }
-
-    .cover{
-        width:150px !important;
-        height:150px !important;
-    }
-
-    .meter{
-        grid-template-columns:48px minmax(0, 1fr) 54px !important;
-        gap:8px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-        flex-basis:16px !important;
-    }
-
-    .connector{
-        min-width:10px !important;
-    }
-}
-
-</style>
-
-<!--
-============================================================
-追加修正：PC版メーターを見本寄せ（丸大きめ・線細め・項目文字大きめ）
-============================================================
--->
-<style>
-@media(min-width:901px){
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        color:#f0f0f0 !important;
-        letter-spacing:0.02em !important;
-    }
-
-    .dot{
-        width:18px !important;
-        height:18px !important;
-        border-radius:50% !important;
-        border:2px solid #48545a !important;
-        background:#080909 !important;
-        box-shadow:none !important;
-        flex-shrink:0 !important;
-    }
-
-    .connector{
-        height:1px !important;
-        background:#343d42 !important;
-        opacity:1 !important;
-    }
-
-    .dot.active,
-    .dot.active.level-1,
-    .dot.active.level-2,
-    .dot.active.level-3,
-    .dot.active.level-4,
-    .dot.active.level-5{
-        background:#5e9fc0 !important;
-        border-color:#5e9fc0 !important;
-    }
-
-    .connector.active,
-    .connector.active.level-1,
-    .connector.active.level-2,
-    .connector.active.level-3,
-    .connector.active.level-4{
-        background:#5e9fc0 !important;
-        border-color:#5e9fc0 !important;
-    }
-
-    .meter{
-        grid-template-columns:46px minmax(0,1fr) 46px !important;
-        gap:10px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-        border-width:2px !important;
-    }
-
-    .connector{
-        height:1px !important;
-    }
-}
-
-
-/* ===== 2026-05-17 右ラベル復活・メーター幅調整 ===== */
-@media(min-width:901px){
-    .album-card{
-        grid-template-columns:200px minmax(0, 1fr) !important;
-        gap:20px !important;
-        overflow:hidden !important;
-    }
-
-    .album-info{
-        width:200px !important;
-        min-width:200px !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-    }
-
-    .album-analysis{
-        min-width:0 !important;
-        width:100% !important;
-        box-sizing:border-box !important;
-        overflow:visible !important;
-        padding:17px 14px 14px !important;
-    }
-
-    .meter{
-        grid-template-columns:52px minmax(0, 1fr) 58px !important;
-        gap:10px !important;
-        width:100% !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        color:#f1f1f1 !important;
-        white-space:nowrap !important;
-        overflow:visible !important;
-    }
-
-    .right-label{
-        display:block !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        text-align:right !important;
-    }
-
-    .meter-graphic{
-        min-width:0 !important;
-        width:100% !important;
-        overflow:visible !important;
-    }
-
-    .dot{
-        width:18px !important;
-        height:18px !important;
-        border-width:2px !important;
-        flex:0 0 18px !important;
-    }
-
-    .connector{
-        height:1px !important;
-        min-width:13px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-card{
-        grid-template-columns:180px minmax(0, 1fr) !important;
-        gap:16px !important;
-    }
-
-    .album-info{
-        width:180px !important;
-        min-width:180px !important;
-    }
-
-    .cover{
-        width:150px !important;
-        height:150px !important;
-    }
-
-    .meter{
-        grid-template-columns:48px minmax(0, 1fr) 54px !important;
-        gap:8px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-        flex-basis:16px !important;
-    }
-
-    .connector{
-        min-width:10px !important;
-    }
-}
-
-</style>
-
-<!--
-============================================================
-追加修正：PC版メーター横幅を見本寄せ（丸同士の間隔を広げる）
-============================================================
--->
-<style>
-@media(min-width:901px){
-    /* 見本との差：サイドバーが広すぎて本文領域が狭かったので、PCだけ少し詰める */
-    body{
-        padding-left:250px !important;
-        padding-right:28px !important;
-    }
-
-    .sidebar{
-        width:220px !important;
-    }
-
-    .album-grid{
-        max-width:none !important;
-        width:100% !important;
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        gap:24px !important;
-    }
-
-    /* カード内で右メーター側に幅を渡す */
-    .album-card{
-        grid-template-columns:210px minmax(340px, 1fr) !important;
-        gap:20px !important;
-        padding:18px 20px !important;
-    }
-
-    .album-info{
-        width:210px !important;
-        min-width:210px !important;
-    }
-
-    .cover{
-        width:170px !important;
-        height:170px !important;
-        object-fit:cover !important;
-    }
-
-    .album-analysis{
-        min-width:340px !important;
-        width:100% !important;
-        padding:17px 16px 14px !important;
-    }
-
-    .meter{
-        grid-template-columns:46px minmax(230px, 1fr) 46px !important;
-        gap:8px !important;
-    }
-
-    .meter-graphic{
-        width:100% !important;
-        min-width:230px !important;
-        gap:0 !important;
-    }
-
-    .dot{
-        width:18px !important;
-        height:18px !important;
-        border-width:2px !important;
-    }
-
-    .connector{
-        height:1px !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    body{
-        padding-left:236px !important;
-        padding-right:20px !important;
-    }
-
-    .sidebar{
-        width:210px !important;
-    }
-
-    .album-card{
-        grid-template-columns:190px minmax(300px, 1fr) !important;
-        gap:16px !important;
-        padding:16px 18px !important;
-    }
-
-    .album-info{
-        width:190px !important;
-        min-width:190px !important;
-    }
-
-    .cover{
-        width:155px !important;
-        height:155px !important;
-    }
-
-    .album-analysis{
-        min-width:300px !important;
-        padding:15px 14px 12px !important;
-    }
-
-    .meter{
-        grid-template-columns:42px minmax(200px, 1fr) 42px !important;
-        gap:7px !important;
-    }
-
-    .meter-graphic{
-        min-width:200px !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-}
-
-
-/* ===== 2026-05-17 右ラベル復活・メーター幅調整 ===== */
-@media(min-width:901px){
-    .album-card{
-        grid-template-columns:200px minmax(0, 1fr) !important;
-        gap:20px !important;
-        overflow:hidden !important;
-    }
-
-    .album-info{
-        width:200px !important;
-        min-width:200px !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-    }
-
-    .album-analysis{
-        min-width:0 !important;
-        width:100% !important;
-        box-sizing:border-box !important;
-        overflow:visible !important;
-        padding:17px 14px 14px !important;
-    }
-
-    .meter{
-        grid-template-columns:52px minmax(0, 1fr) 58px !important;
-        gap:10px !important;
-        width:100% !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        color:#f1f1f1 !important;
-        white-space:nowrap !important;
-        overflow:visible !important;
-    }
-
-    .right-label{
-        display:block !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        text-align:right !important;
-    }
-
-    .meter-graphic{
-        min-width:0 !important;
-        width:100% !important;
-        overflow:visible !important;
-    }
-
-    .dot{
-        width:18px !important;
-        height:18px !important;
-        border-width:2px !important;
-        flex:0 0 18px !important;
-    }
-
-    .connector{
-        height:1px !important;
-        min-width:13px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-card{
-        grid-template-columns:180px minmax(0, 1fr) !important;
-        gap:16px !important;
-    }
-
-    .album-info{
-        width:180px !important;
-        min-width:180px !important;
-    }
-
-    .cover{
-        width:150px !important;
-        height:150px !important;
-    }
-
-    .meter{
-        grid-template-columns:48px minmax(0, 1fr) 54px !important;
-        gap:8px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-        flex-basis:16px !important;
-    }
-
-    .connector{
-        min-width:10px !important;
-    }
-}
-
-</style>
