@@ -987,6 +987,12 @@ a{
         touch-action:pan-x pan-y;
     }
 
+    .feed-swipe.vertical-gesture{
+        overflow-x:hidden !important;
+        scroll-snap-type:none !important;
+        touch-action:pan-y !important;
+    }
+
     .feed-swipe::-webkit-scrollbar{
         display:none;
     }
@@ -1655,8 +1661,68 @@ if(followingTab){
 }
 
 let feedScrollTicking = false;
+let feedTouchStartX = 0;
+let feedTouchStartY = 0;
+let feedGestureDirection = null;
+let unlockVerticalGestureTimer = null;
+
+function lockFeedForVerticalGesture(){
+    if(!feedSwipe){
+        return;
+    }
+
+    feedSwipe.classList.add("vertical-gesture");
+}
+
+function unlockFeedGestureSoon(){
+    if(!feedSwipe){
+        return;
+    }
+
+    clearTimeout(unlockVerticalGestureTimer);
+
+    unlockVerticalGestureTimer = setTimeout(() => {
+        feedSwipe.classList.remove("vertical-gesture");
+        feedGestureDirection = null;
+    }, 180);
+}
 
 if(feedSwipe){
+    feedSwipe.addEventListener("touchstart", (event) => {
+        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
+            return;
+        }
+
+        clearTimeout(unlockVerticalGestureTimer);
+        feedSwipe.classList.remove("vertical-gesture");
+
+        feedTouchStartX = event.touches[0].clientX;
+        feedTouchStartY = event.touches[0].clientY;
+        feedGestureDirection = null;
+    }, { passive:true });
+
+    feedSwipe.addEventListener("touchmove", (event) => {
+        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
+            return;
+        }
+
+        const dx = event.touches[0].clientX - feedTouchStartX;
+        const dy = event.touches[0].clientY - feedTouchStartY;
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+
+        if(!feedGestureDirection && Math.max(absX, absY) > 8){
+            feedGestureDirection = absY > absX + 6 ? "vertical" : "horizontal";
+
+            if(feedGestureDirection === "vertical"){
+                lockFeedForVerticalGesture();
+            }
+        }
+    }, { passive:true });
+
+    feedSwipe.addEventListener("touchend", unlockFeedGestureSoon, { passive:true });
+    feedSwipe.addEventListener("touchcancel", unlockFeedGestureSoon, { passive:true });
+
     feedSwipe.addEventListener("scroll", () => {
         if(window.innerWidth > 900){
             return;
