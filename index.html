@@ -1893,5 +1893,57 @@ onSnapshot(q, (snapshot)=>{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   スマホ版メーター色：グラデーション復帰版
+   - PC版には影響しない
+   - 色合いは今の黒めPale Ice系のまま
+   - 未選択ドットは非表示
+   - 選択ドット1個で5段階評価を表す
+============================================================ */
+@media(max-width:900px){
+    .meter-graphic::before{
+        background:linear-gradient(
+            90deg,
+            #162025 0%,
+            #405f69 34%,
+            #8bb7c3 66%,
+            #d7edf0 100%
+        ) !important;
+    }
+
+    .meter-graphic .dot.selected.level-1{
+        background:#162025 !important;
+        border-color:#9fcdd9 !important;
+        box-shadow:0 0 10px rgba(22,32,37,0.70) !important;
+    }
+
+    .meter-graphic .dot.selected.level-2{
+        background:#405f69 !important;
+        border-color:#edf8f9 !important;
+        box-shadow:0 0 10px rgba(64,95,105,0.48) !important;
+    }
+
+    .meter-graphic .dot.selected.level-3{
+        background:#8bb7c3 !important;
+        border-color:#edf8f9 !important;
+        box-shadow:0 0 10px rgba(139,183,195,0.42) !important;
+    }
+
+    .meter-graphic .dot.selected.level-4{
+        background:#d7edf0 !important;
+        border-color:#f7fcfd !important;
+        box-shadow:0 0 10px rgba(215,237,240,0.42) !important;
+    }
+
+    .meter-graphic .dot.selected.level-5{
+        background:#f0fbfc !important;
+        border-color:#ffffff !important;
+        box-shadow:0 0 10px rgba(240,251,252,0.48) !important;
+    }
+}
+</style>
+
 </body>
 </html>
