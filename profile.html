@@ -205,6 +205,21 @@ body{
     background:#444;
 }
 
+.mobile-logout-btn{
+    display:none;
+    background:#522;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:12px 20px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.mobile-logout-btn:hover{
+    background:#733;
+}
+
 .owner-notice{
     display:none;
     color:#aaa;
@@ -510,6 +525,12 @@ body{
 }
 
 /* ===== スマホUI ===== */
+@media(min-width:901px){
+    .mobile-logout-btn{
+        display:none !important;
+    }
+}
+
 @media(max-width:900px){
     body{
         padding-bottom:110px;
@@ -564,9 +585,14 @@ body{
     }
 
     .follow-btn,
-    .profile-edit-btn{
+    .profile-edit-btn,
+    .mobile-logout-btn{
         font-size:14px;
         padding:10px 16px;
+    }
+
+    .mobile-logout-btn{
+        display:inline-block;
     }
 
     .owner-notice{
@@ -925,6 +951,10 @@ body{
                 <button class="profile-edit-btn" id="profileEditBtn">
                     プロフィール編集
                 </button>
+
+                <button class="mobile-logout-btn" id="mobileLogoutBtn" type="button">
+                    ログアウト
+                </button>
             </div>
         </div>
 
@@ -959,7 +989,8 @@ import {
 
 import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -994,6 +1025,7 @@ const followerLink = document.getElementById("followerLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const ownerNotice = document.getElementById("ownerNotice");
 const profileEditBtn = document.getElementById("profileEditBtn");
+const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
 const sideProfileEditBtn = document.getElementById("sideProfileEditBtn");
 const myPageLink = document.getElementById("myPageLink");
 
@@ -1614,10 +1646,12 @@ function updateOwnerUI(){
     if(isOwner()){
         ownerNotice.style.display = "block";
         profileEditBtn.style.display = "inline-block";
+        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "inline-block";
         if(sideProfileEditBtn) sideProfileEditBtn.style.display = "block";
     } else {
         ownerNotice.style.display = "none";
         profileEditBtn.style.display = "none";
+        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
         if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
     }
 }
@@ -1629,6 +1663,16 @@ profileEditBtn.addEventListener("click", () => {
     }
 
     location.href = "profile-edit.html";
+});
+
+mobileLogoutBtn.addEventListener("click", async () => {
+    try{
+        await signOut(auth);
+        location.href = "login.html";
+    }catch(error){
+        console.error("ログアウト失敗:", error);
+        alert("ログアウトに失敗しました: " + error.message);
+    }
 });
 
 if(followingLink){
@@ -1674,6 +1718,7 @@ onAuthStateChanged(auth, async (user) => {
             `<div class="empty">ログインしていないため、マイページを表示できません。</div>`;
         followBtn.style.display = "none";
         profileEditBtn.style.display = "none";
+        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
         if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
         ownerNotice.style.display = "none";
         return;
@@ -1691,6 +1736,7 @@ onAuthStateChanged(auth, async (user) => {
     if (!currentUser) {
         followBtn.style.display = "inline-block";
         profileEditBtn.style.display = "none";
+        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
         if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
 
         followBtn.textContent = "ログインしてフォロー";
@@ -1704,12 +1750,14 @@ onAuthStateChanged(auth, async (user) => {
     if (currentUser.uid === uid) {
         followBtn.style.display = "none";
         profileEditBtn.style.display = "inline-block";
+        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "inline-block";
         if(sideProfileEditBtn) sideProfileEditBtn.style.display = "block";
         return;
     }
 
     followBtn.style.display = "inline-block";
     profileEditBtn.style.display = "none";
+    if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
     if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
 
     followBtn.textContent = "フォロー";
