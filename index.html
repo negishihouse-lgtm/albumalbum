@@ -628,6 +628,174 @@ body{
     }
 }
 
+
+
+/* ===== 2026-05 修正：見本スクショ寄せのPCカード ===== */
+@media(min-width:901px){
+    body{
+        padding:36px 34px 120px 280px !important;
+    }
+
+    .topbar{
+        margin-bottom:24px !important;
+    }
+
+    .page-title{
+        font-size:42px !important;
+        line-height:1 !important;
+    }
+
+    .album-grid{
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:24px !important;
+        max-width:1500px !important;
+        margin:0 !important;
+    }
+
+    .album-card{
+        display:grid !important;
+        grid-template-columns:38% minmax(0, 1fr) !important;
+        gap:14px !important;
+        padding:20px !important;
+        border-radius:16px !important;
+        background:#080909 !important;
+        border:1px solid rgba(255,255,255,0.16) !important;
+        box-shadow:none !important;
+        min-height:0 !important;
+    }
+
+    .album-main{
+        display:block !important;
+        min-width:0 !important;
+    }
+
+    .cover{
+        width:100% !important;
+        max-width:none !important;
+        aspect-ratio:1/1 !important;
+        object-fit:cover !important;
+        border-radius:2px !important;
+        margin-bottom:14px !important;
+    }
+
+    .title{
+        font-size:28px !important;
+        line-height:1.05 !important;
+        margin:0 0 4px !important;
+        letter-spacing:-0.04em !important;
+        -webkit-line-clamp:2 !important;
+    }
+
+    .artist{
+        font-size:16px !important;
+        line-height:1.25 !important;
+        margin-bottom:5px !important;
+    }
+
+    .meta{
+        font-size:12px !important;
+        line-height:1.35 !important;
+        margin-bottom:10px !important;
+        color:#c9c9c9 !important;
+    }
+
+    .description{
+        display:-webkit-box !important;
+        -webkit-line-clamp:4 !important;
+        -webkit-box-orient:vertical !important;
+        overflow:hidden !important;
+        font-size:12.5px !important;
+        line-height:1.65 !important;
+        color:#d9d9d9 !important;
+        margin:0 0 10px !important;
+    }
+
+    .creator{
+        font-size:12px !important;
+        margin:8px 0 0 !important;
+        color:#aaa !important;
+    }
+
+    .reaction-row{
+        margin-top:8px !important;
+        font-size:12px !important;
+        gap:12px !important;
+    }
+
+    .like-btn{
+        font-size:17px !important;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:12px !important;
+    }
+
+    .album-analysis{
+        margin-top:0 !important;
+        padding:12px 12px 10px !important;
+        border-radius:0 !important;
+        border:1px solid rgba(255,255,255,0.13) !important;
+        min-width:0 !important;
+        align-self:stretch !important;
+    }
+
+    .meter{
+        grid-template-columns:42px minmax(0,1fr) 42px !important;
+        gap:8px !important;
+        margin-bottom:12px !important;
+    }
+
+    .meter-label{
+        font-size:10px !important;
+        font-weight:800 !important;
+    }
+
+    .dot{
+        width:14px !important;
+        height:14px !important;
+        border-width:2px !important;
+        box-shadow:none !important;
+    }
+
+    .connector{
+        height:2px !important;
+    }
+
+    .dot.active,
+    .connector.active{
+        box-shadow:none !important;
+    }
+
+    .keyword-box{
+        margin-top:4px !important;
+        padding:8px 10px !important;
+        grid-template-columns:58px minmax(0,1fr) !important;
+        gap:10px !important;
+        border-radius:0 !important;
+    }
+
+    .keyword-title{
+        font-size:11px !important;
+    }
+
+    .keyword-text{
+        font-size:10.5px !important;
+        line-height:1.55 !important;
+        display:-webkit-box !important;
+        -webkit-line-clamp:2 !important;
+        -webkit-box-orient:vertical !important;
+        overflow:hidden !important;
+    }
+}
+
+@media(min-width:901px) and (max-width:1250px){
+    .album-grid{
+        grid-template-columns:1fr !important;
+        max-width:760px !important;
+    }
+}
+
 </style>
 </head>
 
