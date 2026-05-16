@@ -414,6 +414,64 @@ a{
     color:var(--accent);
 }
 
+
+/* ===== Mobile Feed Tabs ===== */
+
+.mobile-feed-tabs{
+    display:none;
+}
+
+.feed-tab{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    background:transparent;
+    color:#7b858b;
+    font:inherit;
+    cursor:pointer;
+}
+
+@media(max-width:900px){
+    .mobile-feed-tabs{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        position:sticky;
+        top:0;
+        z-index:900;
+        margin:-16px -16px 16px;
+        padding-top:env(safe-area-inset-top);
+        background:rgba(5,5,5,0.96);
+        border-bottom:1px solid rgba(255,255,255,0.10);
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+    }
+
+    .feed-tab{
+        position:relative;
+        height:54px;
+        color:#7d858b;
+        font-size:16px;
+        font-weight:900;
+        letter-spacing:-0.02em;
+    }
+
+    .feed-tab.active{
+        color:#ffffff;
+    }
+
+    .feed-tab.active::after{
+        content:"";
+        position:absolute;
+        left:50%;
+        bottom:0;
+        width:72px;
+        height:4px;
+        transform:translateX(-50%);
+        border-radius:999px;
+        background:#1d9bf0;
+    }
+}
+
 /* ===== Mobile Tabbar ===== */
 
 .mobile-tabbar{
@@ -904,6 +962,12 @@ a{
 
 <a href="editor.html" class="fab">＋</a>
 
+<!-- スマホ用：おすすめ / フォロー中 タブ -->
+<div class="mobile-feed-tabs" id="mobileFeedTabs">
+    <button type="button" class="feed-tab active" id="recommendTab">おすすめ</button>
+    <button type="button" class="feed-tab" id="followingTab">フォロー中</button>
+</div>
+
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
     <div style="display:flex; gap:12px; flex-wrap:wrap;"></div>
@@ -956,6 +1020,15 @@ const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
 const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
+const recommendTab = document.getElementById("recommendTab");
+const followingTab = document.getElementById("followingTab");
+
+let currentFeedMode = "recommend";
+let allAlbums = [];
+let followingIds = new Set();
+let unsubscribeFollowing = null;
+let touchStartX = 0;
+let touchStartY = 0;
 
 let currentUser = null;
 let allLikes = [];
@@ -965,17 +1038,7 @@ const userNameCache = new Map();
 onAuthStateChanged(auth, (user) => {
     updateMobileMyPageTab(user);
     currentUser = user;
-
-    if(mypageBtn){
-        if (user) {
-            mypageBtn.style.display = "inline-block";
-            mypageBtn.onclick = () => {
-                location.href = `profile.html?uid=${user.uid}`;
-            };
-        } else {
-            mypageBtn.style.display = "none";
-        }
-    }
+    setupFollowingListener(user);
 
     const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
 
@@ -987,10 +1050,10 @@ onAuthStateChanged(auth, (user) => {
         mobileMyPageLink.href = url;
     }
 
+    renderAlbums();
     updateLikeDisplays();
     updateCommentDisplays();
 });
-
 function getUserIconUrl(data){
     return (
         data?.photoURL ||
@@ -1291,20 +1354,172 @@ const q = query(
     where("isPublic", "==", true)
 );
 
-onSnapshot(q, async (snapshot)=>{
+function setupFollowingListener(user){
+    if(unsubscribeFollowing){
+        unsubscribeFollowing();
+        unsubscribeFollowing = null;
+    }
 
-    albumGrid.innerHTML = "";
+    followingIds = new Set();
 
-    if(snapshot.empty){
-        albumGrid.innerHTML =
-            `<div class="empty">保存されたアルバムがありません</div>`;
+    if(!user){
+        renderAlbums();
         return;
     }
 
-    for (const docSnap of snapshot.docs){
+    const followQuery = query(
+        collection(db, "follows"),
+        where("followerId", "==", user.uid)
+    );
 
-        const a = docSnap.data();
-        const albumId = docSnap.id;
+    unsubscribeFollowing = onSnapshot(followQuery, (snapshot) => {
+        followingIds = new Set();
+
+        snapshot.forEach((docSnap) => {
+            const follow = docSnap.data();
+            if(follow.followingId){
+                followingIds.add(follow.followingId);
+            }
+        });
+
+        renderAlbums();
+    }, (error) => {
+        console.warn("フォロー情報の取得に失敗しました", error);
+        followingIds = new Set();
+        renderAlbums();
+    });
+}
+
+function getVisibleAlbums(){
+    const sortedAlbums = [...allAlbums].sort((a, b) => {
+        const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
+        const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
+        return bTime - aTime;
+    });
+
+    if(currentFeedMode !== "following"){
+        return sortedAlbums;
+    }
+
+    if(!currentUser){
+        return [];
+    }
+
+    return sortedAlbums.filter((album) => {
+        const userId = album.data.userId || "";
+        return userId === currentUser.uid || followingIds.has(userId);
+    });
+}
+
+function getPostTime(value){
+    if(!value){
+        return 0;
+    }
+
+    if(typeof value.toDate === "function"){
+        return value.toDate().getTime();
+    }
+
+    if(value instanceof Date){
+        return value.getTime();
+    }
+
+    if(typeof value === "number"){
+        return value;
+    }
+
+    if(typeof value === "string"){
+        const parsed = new Date(value);
+        if(!Number.isNaN(parsed.getTime())){
+            return parsed.getTime();
+        }
+    }
+
+    return 0;
+}
+
+function updateFeedTabs(){
+    if(!recommendTab || !followingTab){
+        return;
+    }
+
+    recommendTab.classList.toggle("active", currentFeedMode === "recommend");
+    followingTab.classList.toggle("active", currentFeedMode === "following");
+}
+
+function setFeedMode(mode){
+    if(mode !== "recommend" && mode !== "following"){
+        return;
+    }
+
+    currentFeedMode = mode;
+    updateFeedTabs();
+    renderAlbums();
+}
+
+if(recommendTab){
+    recommendTab.addEventListener("click", () => setFeedMode("recommend"));
+}
+
+if(followingTab){
+    followingTab.addEventListener("click", () => setFeedMode("following"));
+}
+
+document.addEventListener("touchstart", (event) => {
+    if(window.innerWidth > 900 || event.touches.length !== 1){
+        return;
+    }
+
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+}, { passive:true });
+
+document.addEventListener("touchend", (event) => {
+    if(window.innerWidth > 900 || !touchStartX || event.changedTouches.length !== 1){
+        return;
+    }
+
+    const endX = event.changedTouches[0].clientX;
+    const endY = event.changedTouches[0].clientY;
+    const diffX = endX - touchStartX;
+    const diffY = endY - touchStartY;
+
+    touchStartX = 0;
+    touchStartY = 0;
+
+    if(Math.abs(diffX) < 70 || Math.abs(diffX) < Math.abs(diffY) * 1.25){
+        return;
+    }
+
+    if(diffX < 0 && currentFeedMode === "recommend"){
+        setFeedMode("following");
+    } else if(diffX > 0 && currentFeedMode === "following"){
+        setFeedMode("recommend");
+    }
+}, { passive:true });
+
+async function renderAlbums(){
+    updateFeedTabs();
+
+    const visibleAlbums = getVisibleAlbums();
+
+    albumGrid.innerHTML = "";
+
+    if(visibleAlbums.length === 0){
+        if(currentFeedMode === "following"){
+            albumGrid.innerHTML = currentUser
+                ? `<div class="empty">フォロー中の投稿がまだありません</div>`
+                : `<div class="empty">ログインするとフォロー中TLを表示できます</div>`;
+        } else {
+            albumGrid.innerHTML = `<div class="empty">保存されたアルバムがありません</div>`;
+        }
+        return;
+    }
+
+    for (const item of visibleAlbums){
+
+        const a = item.data;
+        const albumId = item.id;
         const posterName = await getDisplayNameForAlbum(a);
 
         albumGrid.innerHTML += `
@@ -1378,12 +1593,25 @@ onSnapshot(q, async (snapshot)=>{
 
     updateLikeDisplays();
     updateCommentDisplays();
+}
+
+onSnapshot(q, (snapshot)=>{
+
+    allAlbums = [];
+
+    snapshot.forEach((docSnap) => {
+        allAlbums.push({
+            id: docSnap.id,
+            data: docSnap.data()
+        });
+    });
+
+    renderAlbums();
 
 }, (error) => {
     albumGrid.innerHTML =
         `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`;
 });
-
 </script>
 
 
