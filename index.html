@@ -1282,5 +1282,79 @@ onSnapshot(q, (snapshot)=>{
 
 </script>
 
+
+<style>
+/* ============================================================
+   PC版：ジャケット横の余白をメーター側に渡す調整
+   - 左カラムを少し狭くする
+   - 右メーター欄を広げる
+   - メーター中央の横幅を長くする
+   - スマホ版は現状維持
+============================================================ */
+@media(min-width:901px){
+    .album-card{
+        grid-template-columns:180px minmax(0,1fr) !important;
+        gap:16px !important;
+    }
+
+    .album-main{
+        width:180px !important;
+        max-width:180px !important;
+    }
+
+    .cover{
+        width:160px !important;
+        height:160px !important;
+        margin-right:0 !important;
+    }
+
+    .album-analysis{
+        width:100% !important;
+        min-width:0 !important;
+    }
+
+    .meter{
+        grid-template-columns:44px minmax(0,1fr) 48px !important;
+        gap:8px !important;
+        width:100% !important;
+    }
+
+    .meter-graphic{
+        width:100% !important;
+        min-width:0 !important;
+    }
+
+    .connector{
+        min-width:18px !important;
+    }
+}
+
+@media(min-width:901px) and (max-width:1280px){
+    .album-card{
+        grid-template-columns:165px minmax(0,1fr) !important;
+        gap:14px !important;
+    }
+
+    .album-main{
+        width:165px !important;
+        max-width:165px !important;
+    }
+
+    .cover{
+        width:145px !important;
+        height:145px !important;
+    }
+
+    .meter{
+        grid-template-columns:40px minmax(0,1fr) 46px !important;
+        gap:7px !important;
+    }
+
+    .connector{
+        min-width:14px !important;
+    }
+}
+</style>
+
 </body>
 </html>
