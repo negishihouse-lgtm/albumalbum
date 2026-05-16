@@ -1769,5 +1769,115 @@ onSnapshot(q, (snapshot)=>{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   スマホ版色調整
+   - PC版のPale Ice系に準拠
+   - グラデーションは使わず、非連続な5段階色
+   - PC版には影響しない
+============================================================ */
+@media(max-width:900px){
+    /* inactive */
+    .dot{
+        background:rgba(255,255,255,0.34) !important;
+    }
+
+    .connector{
+        background:rgba(255,255,255,0.24) !important;
+    }
+
+    /* active dots: discrete colors like PC */
+    .dot.active.level-1{
+        background:#7faebb !important;
+        border-color:#7faebb !important;
+    }
+    .dot.active.level-2{
+        background:#9bc7d0 !important;
+        border-color:#9bc7d0 !important;
+    }
+    .dot.active.level-3{
+        background:#b9dde3 !important;
+        border-color:#b9dde3 !important;
+    }
+    .dot.active.level-4{
+        background:#d7edf0 !important;
+        border-color:#d7edf0 !important;
+    }
+    .dot.active.level-5{
+        background:#edf8f9 !important;
+        border-color:#edf8f9 !important;
+    }
+
+    /* active connectors: also discrete, not gradient */
+    .connector.active.level-1{
+        background:#7faebb !important;
+    }
+    .connector.active.level-2{
+        background:#9bc7d0 !important;
+    }
+    .connector.active.level-3{
+        background:#b9dde3 !important;
+    }
+    .connector.active.level-4{
+        background:#d7edf0 !important;
+    }
+
+    /* selected node: ring remains, fill matches its level */
+    .dot.selected.level-1{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#7faebb !important;
+        border:3px solid #edf8f9 !important;
+        box-shadow:0 0 12px rgba(127,174,187,0.38) !important;
+    }
+    .dot.selected.level-2{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#9bc7d0 !important;
+        border:3px solid #edf8f9 !important;
+        box-shadow:0 0 12px rgba(155,199,208,0.38) !important;
+    }
+    .dot.selected.level-3{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#b9dde3 !important;
+        border:3px solid #edf8f9 !important;
+        box-shadow:0 0 12px rgba(185,221,227,0.42) !important;
+    }
+    .dot.selected.level-4{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#d7edf0 !important;
+        border:3px solid #edf8f9 !important;
+        box-shadow:0 0 12px rgba(215,237,240,0.42) !important;
+    }
+    .dot.selected.level-5{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#edf8f9 !important;
+        border:3px solid #ffffff !important;
+        box-shadow:0 0 12px rgba(237,248,249,0.45) !important;
+    }
+}
+
+@media(max-width:430px){
+    .dot.selected.level-1,
+    .dot.selected.level-2,
+    .dot.selected.level-3,
+    .dot.selected.level-4,
+    .dot.selected.level-5{
+        width:14px !important;
+        height:14px !important;
+        flex:0 0 14px !important;
+    }
+}
+</style>
+
 </body>
 </html>
