@@ -1864,3 +1864,58 @@ onSnapshot(q, (snapshot)=>{
     }
 }
 </style>
+
+
+<!--
+============================================================
+追加修正：PC版メーターの丸を見本サイズに戻す
+============================================================
+-->
+<style>
+@media(min-width:901px){
+    .dot{
+        width:14px !important;
+        height:14px !important;
+        border-width:2px !important;
+        border-color:#465158 !important;
+        background:#080909 !important;
+        box-shadow:none !important;
+    }
+
+    .connector{
+        height:2px !important;
+        background:#343d42 !important;
+    }
+
+    .dot.active,
+    .connector.active,
+    .dot.active.level-1,
+    .connector.active.level-1,
+    .dot.active.level-2,
+    .connector.active.level-2,
+    .dot.active.level-3,
+    .connector.active.level-3,
+    .dot.active.level-4,
+    .connector.active.level-4,
+    .dot.active.level-5{
+        background:#5e9fc0 !important;
+        border-color:#5e9fc0 !important;
+    }
+
+    .meter{
+        gap:9px !important;
+    }
+}
+
+@media(min-width:901px) and (max-width:1280px){
+    .dot{
+        width:12px !important;
+        height:12px !important;
+        border-width:2px !important;
+    }
+
+    .connector{
+        height:2px !important;
+    }
+}
+</style>
