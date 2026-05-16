@@ -36,23 +36,21 @@ body{
 
 .album-grid{
     display:grid;
-    grid-template-columns:1fr;
-    gap:34px;
-    max-width:1460px;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:24px;
+    max-width:1480px;
     margin:0 auto;
 }
 
 .album-card{
-    background:linear-gradient(135deg,#0b0d0f 0%,#050505 60%,#090909 100%);
+    background:linear-gradient(135deg,#0b0d0f 0%,#050505 62%,#090909 100%);
     border:1px solid rgba(255,255,255,0.16);
-    border-radius:0;
-    padding:28px;
+    border-radius:18px;
+    padding:20px;
     cursor:pointer;
     overflow:hidden;
-    display:grid;
-    grid-template-columns:minmax(300px,0.78fr) minmax(460px,1.22fr);
-    gap:28px;
-    box-shadow:0 18px 50px rgba(0,0,0,0.35);
+    display:block;
+    box-shadow:0 14px 36px rgba(0,0,0,0.32);
 }
 
 .album-card:hover{
@@ -63,24 +61,30 @@ body{
 
 .album-main{
     min-width:0;
+    display:grid;
+    grid-template-columns:170px minmax(0,1fr);
+    gap:18px;
+    align-items:start;
 }
 
 .cover{
-    width:100%;
+    width:170px;
+    max-width:100%;
     aspect-ratio:1/1;
     object-fit:cover;
     background:#111;
     display:block;
     border:1px solid rgba(255,255,255,0.12);
+    border-radius:10px;
 }
 
 .title{
-    font-size:52px;
+    font-size:28px;
     font-weight:900;
-    line-height:0.98;
-    letter-spacing:-0.055em;
-    margin-top:24px;
-    margin-bottom:12px;
+    line-height:1.08;
+    letter-spacing:-0.035em;
+    margin-top:0;
+    margin-bottom:8px;
     word-break:break-word;
     display:-webkit-box;
     -webkit-line-clamp:2;
@@ -90,33 +94,36 @@ body{
 
 .artist{
     color:#6fa8dc;
-    font-size:25px;
+    font-size:18px;
     font-weight:700;
-    margin-bottom:12px;
+    margin-bottom:8px;
     word-break:break-word;
 }
 
 .meta{
     color:#cfcfcf;
-    font-size:18px;
+    font-size:13px;
     line-height:1.5;
-    margin-bottom:22px;
+    margin-bottom:12px;
     word-break:break-word;
 }
 
 .description{
+    grid-column:1 / -1;
     color:#e0e0e0;
-    font-size:18px;
-    line-height:1.85;
+    font-size:14px;
+    line-height:1.7;
+    margin-top:2px;
     word-break:break-word;
     display:-webkit-box;
-    -webkit-line-clamp:5;
+    -webkit-line-clamp:3;
     -webkit-box-orient:vertical;
     overflow:hidden;
 }
 
 .creator{
-    margin-top:18px;
+    grid-column:1 / -1;
+    margin-top:4px;
     color:#aaa;
     font-size:14px;
     line-height:1.5;
@@ -133,6 +140,7 @@ body{
 }
 
 .reaction-row{
+    grid-column:1 / -1;
     display:flex;
     align-items:center;
     gap:16px;
@@ -170,11 +178,10 @@ body{
 
 .album-analysis{
     min-width:0;
-    border:1px solid rgba(255,255,255,0.16);
-    padding:34px 28px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
+    margin-top:16px;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:14px;
+    padding:14px;
 }
 
 .meter{
@@ -187,7 +194,7 @@ body{
 }
 
 .meter-label{
-    font-size:22px;
+    font-size:15px;
     font-weight:800;
     color:#f0f0f0;
     white-space:nowrap;
@@ -582,6 +589,45 @@ body{
         font-size:10px;
     }
 }
+
+
+/* ===== 修正版：PCは2列、項目は元の5項目のまま ===== */
+@media(min-width:1101px){
+    .album-grid{
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media(max-width:1100px){
+    .album-grid{
+        grid-template-columns:1fr !important;
+    }
+}
+
+@media(max-width:900px){
+    .album-main{
+        grid-template-columns:86px minmax(0,1fr) !important;
+        gap:12px !important;
+    }
+
+    .cover{
+        width:86px !important;
+    }
+
+    .title{
+        font-size:17px !important;
+    }
+
+    .artist{
+        font-size:13px !important;
+    }
+
+    .description{
+        font-size:12px !important;
+        -webkit-line-clamp:3 !important;
+    }
+}
+
 </style>
 </head>
 
@@ -992,11 +1038,9 @@ onSnapshot(q, (snapshot)=>{
     <div class="album-analysis">
         ${meter("暗い", "明るい", a.darkness)}
         ${meter("静か", "激しい", a.intense)}
-        ${meter("有機的", "機械的", a.organic ?? 3)}
         ${meter("シンプル", "複雑", a.complex)}
-        ${meter("希望的", "絶望的", a.hope)}
-        ${meter("温かい", "冷たい", a.warm ?? 3)}
-        ${meter("内向的", "外向的", a.world)}
+        ${meter("絶望", "希望", a.hope)}
+        ${meter("個人", "世界", a.world)}
 
         <div class="keyword-box">
             <div class="keyword-title">キーワード</div>
