@@ -3219,3 +3219,144 @@ onSnapshot(q, (snapshot)=>{
     }
 }
 </style>
+
+
+<style>
+/* ============================================================
+   PC ONLY FIX
+   - Pale Ice 色は維持
+   - スマホ版は前回の良い状態を維持
+   - PC版だけ、左側を「ジャケ → タイトル → 説明」の縦積みに戻す
+============================================================ */
+@media(min-width:901px){
+    .album-card{
+        display:grid !important;
+        grid-template-columns:240px minmax(0,1fr) !important;
+        gap:18px !important;
+        align-items:stretch !important;
+        min-height:0 !important;
+    }
+
+    .album-main{
+        display:block !important;
+        min-width:0 !important;
+        align-content:initial !important;
+    }
+
+    .cover{
+        width:170px !important;
+        max-width:100% !important;
+        aspect-ratio:1/1 !important;
+        object-fit:cover !important;
+        display:block !important;
+        margin:0 0 14px 0 !important;
+    }
+
+    .album-text{
+        display:block !important;
+        min-width:0 !important;
+    }
+
+    .title{
+        font-size:26px !important;
+        line-height:1.08 !important;
+        margin-bottom:6px !important;
+        -webkit-line-clamp:2 !important;
+    }
+
+    .artist{
+        font-size:17px !important;
+        margin-bottom:7px !important;
+    }
+
+    .meta{
+        font-size:12px !important;
+        line-height:1.45 !important;
+        margin-bottom:10px !important;
+    }
+
+    .description{
+        display:-webkit-box !important;
+        grid-column:auto !important;
+        font-size:13px !important;
+        line-height:1.65 !important;
+        margin-top:0 !important;
+        margin-bottom:10px !important;
+        -webkit-line-clamp:4 !important;
+        -webkit-box-orient:vertical !important;
+        overflow:hidden !important;
+    }
+
+    .creator{
+        grid-column:auto !important;
+        font-size:13px !important;
+        margin-top:0 !important;
+        margin-bottom:8px !important;
+    }
+
+    .reaction-row{
+        grid-column:auto !important;
+        font-size:13px !important;
+        gap:12px !important;
+        margin-top:0 !important;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:13px !important;
+    }
+
+    .like-btn{
+        font-size:18px !important;
+    }
+
+    .album-analysis{
+        margin-top:0 !important;
+        height:100% !important;
+        min-height:0 !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        padding:16px !important;
+        border-radius:14px !important;
+    }
+
+    .meter{
+        grid-template-columns:58px minmax(0,1fr) 58px !important;
+        gap:12px !important;
+        margin-bottom:27px !important;
+    }
+
+    .meter:last-of-type{
+        margin-bottom:0 !important;
+    }
+
+    .meter-label{
+        font-size:14px !important;
+        font-weight:800 !important;
+    }
+
+    .dot{
+        width:20px !important;
+        height:20px !important;
+        border-width:2px !important;
+    }
+
+    .connector{
+        height:1px !important;
+    }
+
+    .keyword-box{
+        margin-top:16px !important;
+        padding:10px 12px !important;
+        grid-template-columns:76px minmax(0,1fr) !important;
+        gap:10px !important;
+    }
+
+    .keyword-title,
+    .keyword-text{
+        font-size:12px !important;
+        line-height:1.55 !important;
+    }
+}
+</style>
