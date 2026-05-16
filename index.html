@@ -849,6 +849,12 @@ a{
     }
 }
 
+
+/* indexでは紹介文を表示しない */
+.description{
+    display:none !important;
+}
+
 </style>
 </head>
 
@@ -1217,12 +1223,7 @@ onSnapshot(q, (snapshot)=>{
             <div class="meta">
                 ${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(" / ") || a.year || "")}
             </div>
-
-            <div class="description">
-                ${escapeHTML(a.desc || "")}
-            </div>
-
-            <div class="creator">
+<div class="creator">
                 投稿者：
                 <a href="profile.html?uid=${escapeHTML(a.userId || "")}"
                    onclick="event.stopPropagation();">
