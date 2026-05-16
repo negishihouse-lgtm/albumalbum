@@ -1991,3 +1991,129 @@ onSnapshot(q, (snapshot)=>{
     }
 }
 </style>
+
+<!--
+============================================================
+追加修正：PC版メーター横幅を見本寄せ（丸同士の間隔を広げる）
+============================================================
+-->
+<style>
+@media(min-width:901px){
+    /* 見本との差：サイドバーが広すぎて本文領域が狭かったので、PCだけ少し詰める */
+    body{
+        padding-left:250px !important;
+        padding-right:28px !important;
+    }
+
+    .sidebar{
+        width:220px !important;
+    }
+
+    .album-grid{
+        max-width:none !important;
+        width:100% !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:24px !important;
+    }
+
+    /* カード内で右メーター側に幅を渡す */
+    .album-card{
+        grid-template-columns:210px minmax(340px, 1fr) !important;
+        gap:20px !important;
+        padding:18px 20px !important;
+    }
+
+    .album-info{
+        width:210px !important;
+        min-width:210px !important;
+    }
+
+    .cover{
+        width:170px !important;
+        height:170px !important;
+        object-fit:cover !important;
+    }
+
+    .album-analysis{
+        min-width:340px !important;
+        width:100% !important;
+        padding:17px 16px 14px !important;
+    }
+
+    .meter{
+        grid-template-columns:46px minmax(230px, 1fr) 46px !important;
+        gap:8px !important;
+    }
+
+    .meter-graphic{
+        width:100% !important;
+        min-width:230px !important;
+        gap:0 !important;
+    }
+
+    .dot{
+        width:18px !important;
+        height:18px !important;
+        border-width:2px !important;
+    }
+
+    .connector{
+        height:1px !important;
+    }
+
+    .meter-label{
+        font-size:13px !important;
+        font-weight:800 !important;
+    }
+}
+
+@media(min-width:901px) and (max-width:1280px){
+    body{
+        padding-left:236px !important;
+        padding-right:20px !important;
+    }
+
+    .sidebar{
+        width:210px !important;
+    }
+
+    .album-card{
+        grid-template-columns:190px minmax(300px, 1fr) !important;
+        gap:16px !important;
+        padding:16px 18px !important;
+    }
+
+    .album-info{
+        width:190px !important;
+        min-width:190px !important;
+    }
+
+    .cover{
+        width:155px !important;
+        height:155px !important;
+    }
+
+    .album-analysis{
+        min-width:300px !important;
+        padding:15px 14px 12px !important;
+    }
+
+    .meter{
+        grid-template-columns:42px minmax(200px, 1fr) 42px !important;
+        gap:7px !important;
+    }
+
+    .meter-graphic{
+        min-width:200px !important;
+    }
+
+    .dot{
+        width:16px !important;
+        height:16px !important;
+    }
+
+    .meter-label{
+        font-size:12px !important;
+    }
+}
+</style>
