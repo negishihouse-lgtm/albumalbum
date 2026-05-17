@@ -1,427 +1,440 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Album Collection</title>
-
-<style>
-/* ============================================================
-   Album Collection index.html
-   CSS整理・安定版
-   - PC版：2列カード / 左に投稿情報 / 右にメーター
-   - スマホ版：1列表示 / カード内部はPC版に近い横型
-   - メーター色：Pale Ice
-   - 追加styleの多重上書きなし
-============================================================ */
-
-:root{
-    --bg:#050505;
-    --panel:#080909;
-    --panel-2:#0b0d0e;
-    --border:rgba(255,255,255,0.15);
-    --border-soft:rgba(255,255,255,0.10);
-
-    --text:#ffffff;
-    --text-soft:#dce3e6;
-    --muted:#aab3b8;
-
-    --accent:#9fcdd9;
-    --accent-hover:#b7dfe7;
-
-    --pale-1:#7faebb;
-    --pale-2:#9bc7d0;
-    --pale-3:#b9dde3;
-    --pale-4:#d7edf0;
-    --pale-5:#edf8f9;
-
-    --meter-off:#48555b;
-    --meter-line-off:#333d42;
-}
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-html,
-body{
-    min-height:100%;
-}
-
-body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Noto Sans JP",sans-serif;
-    padding:38px 30px 120px 252px;
-}
-
-a{
-    color:inherit;
-}
-
-/* ===== Header ===== */
-
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:26px;
-}
-
-.page-title{
-    font-size:42px;
-    font-weight:900;
-    letter-spacing:-0.045em;
-}
-
-/* ===== Layout ===== */
-
-.album-grid{
-    display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap:24px;
-    max-width:1230px;
-    margin:0;
-}
-
-.album-card{
-    background:#070808;
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:18px;
-    cursor:pointer;
-    overflow:hidden;
-    display:grid;
-    grid-template-columns:200px minmax(0, 1fr);
-    gap:20px;
-    align-items:stretch;
-    box-shadow:none;
-}
-
-.album-card:hover{
-    border-color:rgba(159,205,217,0.42);
-    transform:translateY(-1px);
-    transition:0.18s ease;
-}
-
-/* ===== Left side ===== */
-
-.album-main{
-    min-width:0;
-    display:block;
-}
-
-.cover{
-    width:160px;
-    height:160px;
-    aspect-ratio:1/1;
-    object-fit:cover;
-    background:#111;
-    display:block;
-    border:1px solid rgba(255,255,255,0.16);
-    border-radius:4px;
-    margin:0 0 12px 0;
-}
-
-.album-text{
-    min-width:0;
-}
-
-.title{
-    font-size:25px;
-    font-weight:900;
-    line-height:1.06;
-    letter-spacing:-0.045em;
-    margin-bottom:5px;
-    word-break:break-word;
-
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-}
-
-.artist{
-    color:var(--accent);
-    font-size:15px;
-    font-weight:800;
-    line-height:1.25;
-    margin-bottom:6px;
-    word-break:break-word;
-}
-
-.meta{
-    color:#c5cbd0;
-    font-size:11px;
-    line-height:1.35;
-    margin-bottom:8px;
-    word-break:break-word;
-
-    display:-webkit-box;
-    -webkit-line-clamp:1;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-}
-
-.description{
-    color:var(--text-soft);
-    font-size:11.5px;
-    line-height:1.58;
-    margin-bottom:8px;
-    word-break:break-word;
-
-    display:-webkit-box;
-    -webkit-line-clamp:4;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-}
-
-.creator{
-    color:var(--muted);
-    font-size:11.5px;
-    line-height:1.45;
-    margin-bottom:7px;
-    word-break:break-word;
-}
-
-.creator a{
-    color:var(--accent);
-    text-decoration:none;
-}
-
-.creator a:hover{
-    text-decoration:underline;
-}
-
-.reaction-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    color:#b6c0c4;
-    font-size:11.5px;
-    flex-wrap:wrap;
-}
-
-.like-area{
-    display:flex;
-    align-items:center;
-    gap:6px;
-}
-
-.like-btn{
-    background:none;
-    border:none;
-    color:#b6c0c4;
-    padding:0;
-    font-size:16px;
-    cursor:pointer;
-    line-height:1;
-}
-
-.like-btn:hover,
-.like-btn.liked{
-    color:white;
-}
-
-.like-count,
-.comment-count{
-    font-size:11.5px;
-    color:#b6c0c4;
-}
-
-/* ===== Right side: meter panel ===== */
-
-.album-analysis{
-    min-width:0;
-    width:100%;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-
-    border:1px solid rgba(255,255,255,0.13);
-    border-radius:14px;
-    padding:17px 14px 14px;
-    background:#070808;
-}
-
-.meter-list{
-    display:block;
-}
-
-.meter{
-    display:grid;
-    grid-template-columns:52px minmax(0,1fr) 58px;
-    align-items:center;
-    gap:10px;
-    margin-bottom:26px;
-    min-width:0;
-    width:100%;
-}
-
-.meter:last-of-type{
-    margin-bottom:0;
-}
-
-.meter-label{
-    color:#f3f7f8;
-    font-size:13px;
-    font-weight:800;
-    line-height:1;
-    white-space:nowrap;
-}
-
-.right-label{
-    text-align:right;
-}
-
-.meter-graphic{
-    display:flex;
-    align-items:center;
-    width:100%;
-    min-width:0;
-    overflow:hidden;
-}
-
-.dot{
-    width:16px;
-    height:16px;
-    border-radius:50%;
-    border:2px solid var(--meter-off);
-    background:transparent;
-    flex:0 0 16px;
-}
-
-.connector{
-    height:1px;
-    background:var(--meter-line-off);
-    flex:1;
-    min-width:8px;
-}
-
-/* Pale Ice gradient */
-.dot.active.level-1,
-.connector.active.level-1{
-    background:var(--pale-1);
-    border-color:var(--pale-1);
-}
-
-.dot.active.level-2,
-.connector.active.level-2{
-    background:var(--pale-2);
-    border-color:var(--pale-2);
-}
-
-.dot.active.level-3,
-.connector.active.level-3{
-    background:var(--pale-3);
-    border-color:var(--pale-3);
-}
-
-.dot.active.level-4,
-.connector.active.level-4{
-    background:var(--pale-4);
-    border-color:var(--pale-4);
-}
-
-.dot.active.level-5,
-.connector.active.level-5{
-    background:var(--pale-5);
-    border-color:var(--pale-5);
-}
-
-.dot.active{
-    box-shadow:0 0 16px rgba(159,205,217,0.14);
-}
-
-.keyword-box{
-    margin-top:14px;
-    border:1px solid var(--border-soft);
-    border-radius:8px;
-    padding:9px 10px;
-
-    display:grid;
-    grid-template-columns:62px minmax(0,1fr);
-    gap:10px;
-    align-items:start;
-}
-
-.keyword-title{
-    color:var(--accent);
-    font-size:11px;
-    font-weight:800;
-}
-
-.keyword-text{
-    color:#dde6e8;
-    font-size:10.5px;
-    line-height:1.5;
-    word-break:break-word;
-
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-}
-
-.keyword-tags{
-    min-width:0;
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    max-height:42px;
-    overflow:hidden;
-}
-
-.keyword-tag{
-    display:inline-flex;
-    align-items:center;
-    max-width:100%;
-    color:#dde6e8;
-    font-size:10.5px;
-    line-height:1;
-    text-decoration:none;
-    word-break:break-word;
-    border:1px solid rgba(255,255,255,0.12);
-    border-radius:999px;
-    padding:5px 8px;
-    background:rgba(255,255,255,0.025);
-}
-
-.keyword-tag:hover{
-    border-color:rgba(159,205,217,0.48);
-    color:white;
-}
-
-/* ===== Empty ===== */
-
-.empty{
-    color:#888;
-    font-size:24px;
-}
-
-/* ===== PC Sidebar ===== */
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search - Album Collection</title>
+
+  <style>
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      background:#050505;
+      color:#fff;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    button{
+      font-family:inherit;
+    }
+
+    .sidebar{
+      position:fixed;
+      left:0;
+      top:0;
+      width:220px;
+      height:100vh;
+      border-right:1px solid rgba(255,255,255,0.12);
+      background:#050505;
+      padding:28px 22px;
+      z-index:10;
+    }
+
+    .brand{
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      margin-bottom:36px;
+    }
+
+    .side-nav{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .side-link{
+      display:block;
+      padding:13px 14px;
+      border-radius:999px;
+      color:rgba(255,255,255,0.82);
+      font-size:16px;
+    }
+
+    .side-link:hover,
+    .side-link.active{
+      background:rgba(255,255,255,0.1);
+      color:#fff;
+    }
+
+    .main{
+      width:min(760px, calc(100% - 240px));
+      margin-left:240px;
+      min-height:100vh;
+      border-right:1px solid rgba(255,255,255,0.08);
+    }
+
+    .page-header{
+      position:sticky;
+      top:0;
+      z-index:5;
+      backdrop-filter:blur(18px);
+      background:rgba(5,5,5,0.86);
+      border-bottom:1px solid rgba(255,255,255,0.1);
+      padding:18px 22px;
+    }
+
+    .page-title{
+      margin:0;
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+    }
+
+    .search-area{
+      padding:18px 22px 14px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    .search-box{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .search-input{
+      flex:1;
+      width:100%;
+      border:1px solid rgba(255,255,255,0.14);
+      background:#101010;
+      color:white;
+      border-radius:999px;
+      padding:14px 18px;
+      font-size:16px;
+      outline:none;
+    }
+
+    .search-input:focus{
+      border-color:rgba(111,168,220,0.75);
+      box-shadow:0 0 0 3px rgba(111,168,220,0.18);
+    }
+
+    .search-button{
+      border:0;
+      border-radius:999px;
+      padding:14px 18px;
+      background:#6fa8dc;
+      color:#fff;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .search-button:hover{
+      filter:brightness(1.08);
+    }
+
+    .hint{
+      margin:10px 2px 0;
+      color:rgba(255,255,255,0.55);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .status{
+      padding:18px 22px;
+      color:rgba(255,255,255,0.64);
+      font-size:14px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    .results{
+      padding-bottom:100px;
+    }
+
+    .album-card{
+      display:grid;
+      grid-template-columns:96px 1fr;
+      gap:16px;
+      padding:18px 22px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      cursor:pointer;
+      transition:background 0.15s ease;
+    }
+
+    .album-card:hover{
+      background:rgba(255,255,255,0.04);
+    }
+
+    .cover{
+      width:96px;
+      height:96px;
+      background:#171717;
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:14px;
+      overflow:hidden;
+      flex-shrink:0;
+    }
+
+    .cover img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .no-cover{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(255,255,255,0.35);
+      font-size:12px;
+      text-align:center;
+      padding:8px;
+    }
+
+    .card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:4px;
+    }
+
+    .album-title{
+      margin:0;
+      font-size:19px;
+      font-weight:800;
+      line-height:1.3;
+      letter-spacing:-0.02em;
+    }
+
+    .year{
+      color:rgba(255,255,255,0.45);
+      font-size:13px;
+      white-space:nowrap;
+      padding-top:3px;
+    }
+
+    .artist{
+      margin:0 0 6px;
+      color:rgba(255,255,255,0.72);
+      font-size:14px;
+      line-height:1.4;
+    }
+
+    .user-name{
+      display:inline-flex;
+      align-items:center;
+      max-width:100%;
+      margin-bottom:8px;
+      color:#9bc7ef;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .desc{
+      margin:0 0 10px;
+      color:rgba(255,255,255,0.68);
+      font-size:14px;
+      line-height:1.6;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .keywords{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-bottom:10px;
+    }
+
+    .keyword{
+      padding:4px 9px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.08);
+      color:rgba(255,255,255,0.76);
+      font-size:12px;
+    }
+
+    .meta{
+      display:flex;
+      gap:14px;
+      color:rgba(255,255,255,0.52);
+      font-size:13px;
+    }
+
+    .empty{
+      padding:42px 22px;
+      color:rgba(255,255,255,0.58);
+      text-align:center;
+      line-height:1.8;
+    }
+
+    .post-fab{
+      position:fixed;
+      right:28px;
+      bottom:28px;
+      width:58px;
+      height:58px;
+      border-radius:50%;
+      background:#6fa8dc;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:34px;
+      font-weight:500;
+      box-shadow:0 12px 30px rgba(0,0,0,0.35);
+      z-index:30;
+    }
+
+    .bottom-tab{
+      display:none;
+    }
+
+    @media (max-width:760px){
+      body{
+        padding-bottom:78px;
+      }
+
+      .sidebar{
+        display:none;
+      }
+
+      .main{
+        width:100%;
+        margin-left:0;
+        border-right:0;
+      }
+
+      .page-header{
+        padding:14px 16px;
+      }
+
+      .page-title{
+        font-size:22px;
+      }
+
+      .search-area{
+        padding:14px 16px 12px;
+      }
+
+      .search-box{
+        gap:8px;
+      }
+
+      .search-input{
+        padding:13px 15px;
+        font-size:15px;
+      }
+
+      .search-button{
+        padding:13px 15px;
+        font-size:14px;
+      }
+
+      .status{
+        padding:14px 16px;
+      }
+
+      .album-card{
+        grid-template-columns:76px 1fr;
+        gap:12px;
+        padding:14px 16px;
+      }
+
+      .cover{
+        width:76px;
+        height:76px;
+        border-radius:12px;
+      }
+
+      .album-title{
+        font-size:16px;
+      }
+
+      .artist,
+      .desc{
+        font-size:13px;
+      }
+
+      .desc{
+        -webkit-line-clamp:2;
+      }
+
+      .keywords{
+        gap:5px;
+      }
+
+      .keyword{
+        font-size:11px;
+        padding:3px 7px;
+      }
+
+      .post-fab{
+        right:18px;
+        bottom:88px;
+        width:54px;
+        height:54px;
+        font-size:32px;
+      }
+
+      .bottom-tab{
+        position:fixed;
+        left:0;
+        bottom:0;
+        width:100%;
+        height:70px;
+        background:rgba(5,5,5,0.96);
+        backdrop-filter:blur(18px);
+        border-top:1px solid rgba(255,255,255,0.12);
+        display:grid;
+        grid-template-columns:repeat(5,1fr);
+        z-index:25;
+      }
+
+      .tab-link{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:3px;
+        color:rgba(255,255,255,0.64);
+        font-size:11px;
+      }
+
+      .tab-link span{
+        font-size:21px;
+        line-height:1;
+      }
+
+      .tab-link.active{
+        color:#fff;
+      }
+    }
+  
+/* ===== 共通PCサイドバー ===== */
 .sidebar{
     position:fixed;
     top:0;
     left:0;
-    width:220px;
+    width:240px;
     height:100vh;
-    background:#060708;
-    border-right:1px solid rgba(255,255,255,0.08);
-    padding:28px 20px;
+    background:#0b0b0b;
+    border-right:1px solid rgba(255,255,255,0.1);
+    padding:30px 20px;
     overflow-y:auto;
     z-index:100;
 }
 
 .logo{
     font-size:28px;
-    font-weight:800;
-    line-height:1.04;
-    margin-bottom:28px;
+    font-weight:700;
+    margin-bottom:30px;
 }
 
 .sidebar a{
@@ -430,79 +443,20 @@ a{
     text-decoration:none;
     padding:14px 16px;
     margin-bottom:8px;
-    border-radius:12px;
+    border-radius:10px;
     font-size:15px;
 }
 
-.sidebar a:hover{
-    background:#141617;
+.sidebar a:hover,
+.sidebar a.active{
+    background:#1a1a1a;
 }
 
 .sidebar a.active{
-    background:#17191a;
-    color:var(--accent);
+    color:#6fa8dc;
 }
 
-
-/* ===== Mobile Feed Tabs ===== */
-
-.mobile-feed-tabs{
-    display:none;
-}
-
-.feed-tab{
-    appearance:none;
-    -webkit-appearance:none;
-    border:none;
-    background:transparent;
-    color:#7b858b;
-    font:inherit;
-    cursor:pointer;
-}
-
-@media(max-width:900px){
-    .mobile-feed-tabs{
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        position:sticky;
-        top:0;
-        z-index:900;
-        margin:-16px -16px 16px;
-        padding-top:env(safe-area-inset-top);
-        background:rgba(5,5,5,0.96);
-        border-bottom:1px solid rgba(255,255,255,0.10);
-        backdrop-filter:blur(14px);
-        -webkit-backdrop-filter:blur(14px);
-    }
-
-    .feed-tab{
-        position:relative;
-        height:54px;
-        color:#7d858b;
-        font-size:16px;
-        font-weight:900;
-        letter-spacing:-0.02em;
-    }
-
-    .feed-tab.active{
-        color:#ffffff;
-    }
-
-    .feed-tab.active::after{
-        content:"";
-        position:absolute;
-        left:50%;
-        bottom:0;
-        width:72px;
-        height:4px;
-        transform:translateX(-50%);
-        border-radius:999px;
-        background:#1d9bf0;
-    }
-}
-
-/* ===== Mobile Tabbar ===== */
-
+/* ===== 共通スマホ下部タブバー：index準拠 ===== */
 .mobile-tabbar{
     display:none;
 }
@@ -553,8 +507,7 @@ a{
     justify-content:center;
 }
 
-/* ===== Floating Post Button ===== */
-
+/* ===== 共通右下投稿ボタン ===== */
 .fab{
     position:fixed;
     right:24px;
@@ -562,7 +515,7 @@ a{
     width:64px;
     height:64px;
     border-radius:50%;
-    background:var(--accent);
+    background:#6fa8dc;
     color:white;
     display:flex;
     align-items:center;
@@ -574,221 +527,18 @@ a{
 }
 
 .fab:hover{
-    background:var(--accent-hover);
+    background:#84b7e4;
 }
-
-/* ===== PC narrow ===== */
-
-@media(min-width:901px) and (max-width:1280px){
-    body{
-        padding-left:236px;
-        padding-right:20px;
-    }
-
-    .sidebar{
-        width:210px;
-    }
-
-    .album-grid{
-        max-width:none;
-        width:100%;
-    }
-
-    .album-card{
-        grid-template-columns:180px minmax(0,1fr);
-        gap:16px;
-        padding:16px;
-    }
-
-    .cover{
-        width:150px;
-        height:150px;
-    }
-
-    .title{
-        font-size:22px;
-    }
-
-    .meter{
-        grid-template-columns:48px minmax(0,1fr) 54px;
-        gap:8px;
-        margin-bottom:22px;
-    }
-
-    .meter-label{
-        font-size:12px;
-    }
-
-    .dot{
-        width:14px;
-        height:14px;
-        flex-basis:14px;
-    }
-}
-
-/* ===== Smartphone ===== */
 
 @media(max-width:900px){
     body{
-        padding:16px;
-        padding-left:16px;
-        padding-bottom:110px;
+        padding-left:16px !important;
+        padding-right:16px !important;
+        padding-bottom:110px !important;
     }
 
     .sidebar{
         display:none;
-    }
-
-    .topbar{
-        margin-bottom:18px;
-    }
-
-    .page-title{
-        font-size:30px;
-    }
-
-    .album-grid{
-        grid-template-columns:1fr;
-        gap:14px;
-        width:100%;
-        max-width:none;
-        margin:0;
-    }
-
-    /*
-      スマホは投稿自体は縦一列。
-      カード内部はPC版に近く、左：投稿情報 / 右：メーター。
-    */
-    .album-card{
-        grid-template-columns:minmax(0,0.94fr) minmax(0,1.06fr);
-        gap:10px;
-        align-items:stretch;
-        padding:12px;
-        border-radius:16px;
-    }
-
-    .album-main{
-        display:grid;
-        grid-template-columns:92px minmax(0,1fr);
-        gap:9px;
-        align-content:start;
-        min-width:0;
-    }
-
-    .cover{
-        width:92px;
-        height:auto;
-        border-radius:8px;
-        margin:0;
-    }
-
-    .album-text{
-        min-width:0;
-    }
-
-    .title{
-        font-size:16px;
-        line-height:1.12;
-        margin-bottom:4px;
-        -webkit-line-clamp:2;
-    }
-
-    .artist{
-        font-size:13px;
-        margin-bottom:3px;
-    }
-
-    .meta{
-        font-size:10px;
-        line-height:1.35;
-        margin-bottom:5px;
-    }
-
-    .description{
-        grid-column:1 / -1;
-        font-size:11px;
-        line-height:1.55;
-        margin-top:0;
-        margin-bottom:7px;
-        -webkit-line-clamp:4;
-    }
-
-    .creator{
-        grid-column:1 / -1;
-        font-size:11px;
-        margin-top:0;
-        margin-bottom:5px;
-    }
-
-    .reaction-row{
-        grid-column:1 / -1;
-        gap:9px;
-        font-size:11px;
-        margin-top:5px;
-    }
-
-    .like-btn{
-        font-size:16px;
-    }
-
-    .like-count,
-    .comment-count{
-        font-size:11px;
-    }
-
-    .album-analysis{
-        height:100%;
-        margin-top:0;
-        padding:9px 9px 8px;
-        border-radius:12px;
-        display:flex;
-        flex-direction:column;
-        justify-content:space-between;
-        min-width:0;
-    }
-
-    .meter{
-        grid-template-columns:32px minmax(0,1fr) 32px;
-        gap:5px;
-        margin-bottom:15px;
-    }
-
-    .meter:last-of-type{
-        margin-bottom:0;
-    }
-
-    .meter-label{
-        font-size:8px;
-        font-weight:800;
-    }
-
-    .dot{
-        width:10px;
-        height:10px;
-        border-width:1.4px;
-        flex-basis:10px;
-    }
-
-    .connector{
-        height:1px;
-        min-width:4px;
-    }
-
-    .keyword-box{
-        margin-top:10px;
-        padding:7px;
-        border-radius:8px;
-        grid-template-columns:48px minmax(0,1fr);
-        gap:6px;
-    }
-
-    .keyword-title{
-        font-size:8px;
-    }
-
-    .keyword-text{
-        font-size:8px;
-        line-height:1.4;
     }
 
     .mobile-tabbar{
@@ -818,255 +568,17 @@ a{
     }
 }
 
-/* ===== Narrow smartphone ===== */
-
-@media(max-width:430px){
-    .album-card{
-        grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr);
-        gap:8px;
-        padding:10px;
-    }
-
-    .album-main{
-        grid-template-columns:78px minmax(0,1fr);
-        gap:8px;
-    }
-
-    .cover{
-        width:78px;
-    }
-
-    .title{
-        font-size:14px;
-    }
-
-    .artist{
-        font-size:12px;
-    }
-
-    .description{
-        font-size:10px;
-        -webkit-line-clamp:4;
-    }
-
-    .meter{
-        grid-template-columns:29px minmax(0,1fr) 29px;
-        gap:4px;
-        margin-bottom:13px;
-    }
-
-    .meter-label{
-        font-size:7px;
-    }
-
-    .dot{
-        width:9px;
-        height:9px;
-        flex-basis:9px;
-    }
-
-    .keyword-box{
-        grid-template-columns:42px minmax(0,1fr);
-        padding:6px;
-    }
-
-    .keyword-title,
-    .keyword-text{
-        font-size:7px;
-    }
-}
-
-/* ===== Meter height sync fix =====
-   メーター間隔を投稿カードの高さに連動させる。
-   固定marginではなく、右メーター欄の残り高さに合わせて5本を均等配置。
-*/
-@media(min-width:901px){
-    .album-analysis{
-        display:flex;
-        flex-direction:column;
-        justify-content:space-between;
-        align-self:stretch;
-        height:100%;
-    }
-
-    .meter-list{
-        flex:1;
-        display:flex;
-        flex-direction:column;
-        justify-content:space-between;
-        min-height:0;
-        padding-bottom:14px;
-    }
-
-    .meter{
-        margin-bottom:0;
-    }
-
-    .keyword-box{
-        flex-shrink:0;
-        margin-top:0;
-    }
-}
-
-@media(max-width:900px){
-    .album-analysis{
-        display:flex;
-        flex-direction:column;
-        justify-content:space-between;
-        align-self:stretch;
-        height:100%;
-    }
-
-    .meter-list{
-        flex:1;
-        display:flex;
-        flex-direction:column;
-        justify-content:space-between;
-        min-height:0;
-        padding-bottom:8px;
-    }
-
-    .meter{
-        margin-bottom:0;
-    }
-
-    .keyword-box{
-        flex-shrink:0;
-        margin-top:0;
-    }
-}
-
-
-/* indexでは紹介文を表示しない */
-.description{
-    display:none !important;
-}
-
 </style>
-
-<style>
-.feed-swipe{
-    width:100%;
-}
-
-.feed-panel{
-    min-width:0;
-}
-
-@media(max-width:900px){
-    body{
-        overflow-x:hidden !important;
-    }
-
-    .mobile-feed-tabs{
-        --feed-progress:0;
-        --recommend-tab-opacity:1;
-        --following-tab-opacity:0.58;
-    }
-
-    .mobile-feed-tabs .feed-tab::after{
-        display:none !important;
-    }
-
-    .mobile-feed-tabs::after{
-        content:"";
-        position:absolute;
-        left:calc(25% + (50% * var(--feed-progress, 0)));
-        bottom:0;
-        width:92px;
-        height:4px;
-        transform:translateX(-50%);
-        border-radius:999px;
-        background:#1d9bf0;
-        pointer-events:none;
-        will-change:left;
-    }
-
-    .feed-tab{
-        transition:color .18s ease, opacity .18s ease, transform .18s ease;
-        will-change:opacity, transform;
-    }
-
-    #recommendTab{
-        opacity:var(--recommend-tab-opacity);
-        transform:scale(calc(0.96 + (0.04 * (1 - var(--feed-progress, 0)))));
-    }
-
-    #followingTab{
-        opacity:var(--following-tab-opacity);
-        transform:scale(calc(0.96 + (0.04 * var(--feed-progress, 0))));
-    }
-
-    .feed-tab.active{
-        color:#ffffff;
-    }
-
-    .feed-swipe{
-        display:flex;
-        width:100vw;
-        margin-left:-16px;
-        margin-right:-16px;
-        overflow-x:auto;
-        overflow-y:visible;
-        scroll-snap-type:x mandatory;
-        scroll-behavior:smooth;
-        -webkit-overflow-scrolling:touch;
-        scrollbar-width:none;
-        overscroll-behavior-x:contain;
-        touch-action:pan-x pan-y;
-    }
-
-    .feed-swipe.vertical-gesture{
-        overflow-x:hidden !important;
-        scroll-snap-type:none !important;
-        touch-action:pan-y !important;
-    }
-
-    .feed-swipe::-webkit-scrollbar{
-        display:none;
-    }
-
-    .feed-panel{
-        flex:0 0 100vw;
-        width:100vw;
-        scroll-snap-align:start;
-        scroll-snap-stop:always;
-        padding:0 16px;
-        min-height:55vh;
-        opacity:0.96;
-        transform:scale(0.995);
-        transition:opacity .16s ease, transform .16s ease;
-        will-change:opacity, transform;
-    }
-
-    .feed-panel.is-visible{
-        opacity:1;
-        transform:scale(1);
-    }
-}
-
-@media(min-width:901px){
-    .feed-swipe{
-        display:block;
-        overflow:visible;
-    }
-
-    .feed-panel[data-feed-panel="following"]{
-        display:none;
-    }
-}
-</style>
-
 </head>
 
 <body>
-
+  
 <!-- PC用サイドバー -->
 <nav class="sidebar">
-    <div class="logo">Album<br>Collection</div>
+    <div class="logo">Album Collection</div>
 
-    <a href="index.html" class="active">ホーム</a>
-    <a href="search.html">検索</a>
+    <a href="index.html">ホーム</a>
+    <a href="search.html" class="active">検索</a>
     <a href="editor.html">投稿する</a>
     <a href="notifications.html">通知</a>
     <a id="myPageLink" href="login.html">マイページ</a>
@@ -1074,14 +586,41 @@ a{
     <a href="login.html">ログイン</a>
 </nav>
 
-<!-- スマホ用下部タブバー -->
+
+
+  <main class="main">
+    <header class="page-header">
+      <h1 class="page-title">さがす</h1>
+    </header>
+
+    <section class="search-area">
+      <div class="search-box">
+        <input
+          id="searchInput"
+          class="search-input"
+          type="search"
+          placeholder="アルバム名・アーティスト名・投稿者・キーワードで検索"
+          autocomplete="off"
+        />
+        <button id="searchButton" class="search-button" type="button">検索</button>
+      </div>
+      <p class="hint">公開投稿のみ検索します。入力なしの場合は最近の公開投稿を表示します。</p>
+    </section>
+
+    <div id="status" class="status">読み込み中...</div>
+    <section id="results" class="results"></section>
+  </main>
+
+  <a href="editor.html" class="fab">＋</a>
+
+  <!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
-    <a href="index.html" class="active">
+    <a href="index.html">
         <span class="icon">⌂</span>
         <span class="label">ホーム</span>
     </a>
 
-    <a href="search.html">
+    <a href="search.html" class="active">
         <span class="icon">⌕</span>
         <span class="label">検索</span>
     </a>
@@ -1103,112 +642,127 @@ a{
     </a>
 </nav>
 
-<a href="editor.html" class="fab">＋</a>
 
-<!-- スマホ用：おすすめ / フォロー中 タブ -->
-<div class="mobile-feed-tabs" id="mobileFeedTabs">
-    <button type="button" class="feed-tab active" id="recommendTab">おすすめ</button>
-    <button type="button" class="feed-tab" id="followingTab">フォロー中</button>
-</div>
 
-<div class="topbar">
-    <h1 class="page-title">Album Collection</h1>
-    <div style="display:flex; gap:12px; flex-wrap:wrap;"></div>
-</div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+    import {
+      initializeFirestore,
+      collection,
+      getDocs,
+      query,
+      doc,
+      getDoc,
+      where,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-<div class="feed-swipe" id="feedSwipe">
-    <section class="feed-panel" data-feed-panel="recommend">
-        <div class="album-grid" id="recommendGrid"></div>
-    </section>
-    <section class="feed-panel" data-feed-panel="following">
-        <div class="album-grid" id="followingGrid"></div>
-    </section>
-</div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+      authDomain: "album-49b3e.firebaseapp.com",
+      projectId: "album-49b3e",
+      storageBucket: "album-49b3e.firebasestorage.app",
+      messagingSenderId: "448724897117",
+      appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+      measurementId: "G-3QFX3GDEXN"
+    };
 
-<script type="module">
+    const app = initializeApp(firebaseConfig);
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    const db = initializeFirestore(app, {
+      experimentalAutoDetectLongPolling: true
+    });
 
-import {
-    initializeFirestore,
-    collection,
-    onSnapshot,
-    query,
-    where,
-    doc,
-    getDoc,
-    addDoc,
-    setDoc,
-    deleteDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    const auth = getAuth(app);
 
-import {
-    getAuth,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+    const statusEl = document.getElementById("status");
+    const resultsEl = document.getElementById("results");
+    const myPageLink = document.getElementById("myPageLink");
+    const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+    const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+    const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
-    authDomain: "album-49b3e.firebaseapp.com",
-    projectId: "album-49b3e",
-    storageBucket: "album-49b3e.firebasestorage.app",
-    messagingSenderId: "448724897117",
-    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
-    measurementId: "G-3QFX3GDEXN"
-};
+    const urlParams = new URLSearchParams(location.search);
+    const initialQuery = (urlParams.get("q") || "").trim();
 
-const app = initializeApp(firebaseConfig);
-
-const db = initializeFirestore(app, {
-    experimentalAutoDetectLongPolling: true
-});
-
-const auth = getAuth(app);
-
-const feedSwipe = document.getElementById("feedSwipe");
-const recommendGrid = document.getElementById("recommendGrid");
-const followingGrid = document.getElementById("followingGrid");
-const myPageLink = document.getElementById("myPageLink");
-const mobileMyPageLink = document.getElementById("mobileMyPageLink");
-const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
-const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
-const recommendTab = document.getElementById("recommendTab");
-const followingTab = document.getElementById("followingTab");
-
-let currentFeedMode = "recommend";
-let allAlbums = [];
-let followingIds = new Set();
-let unsubscribeFollowing = null;
-let touchStartX = 0;
-let touchStartY = 0;
-
-let currentUser = null;
-let allLikes = [];
-let allComments = [];
-const userNameCache = new Map();
-
-onAuthStateChanged(auth, (user) => {
-    updateMobileMyPageTab(user);
-    currentUser = user;
-    setupFollowingListener(user);
-
-    const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
-
-    if(myPageLink){
-        myPageLink.href = url;
+    if(initialQuery){
+      searchInput.value = initialQuery;
     }
 
-    if(mobileMyPageLink){
-        mobileMyPageLink.href = url;
+    let currentUser = null;
+    let publicAlbums = [];
+    const userNameCache = new Map();
+
+    function getUserDisplayNameFromData(data){
+      if(!data){
+        return "";
+      }
+
+      return (
+        data.displayName ||
+        data.nickname ||
+        data.nickName ||
+        data.userName ||
+        data.name ||
+        ""
+      );
     }
 
-    renderAlbums();
-    updateLikeDisplays();
-    updateCommentDisplays();
-});
-function getUserIconUrl(data){
-    return (
+    async function getDisplayNameForAlbum(item){
+      const album = item?.data || {};
+      const uid = album.userId || "";
+
+      if(uid && userNameCache.has(uid)){
+        return userNameCache.get(uid);
+      }
+
+      if(uid){
+        try{
+          const userSnap = await getDoc(doc(db, "users", uid));
+
+          if(userSnap.exists()){
+            const displayName = getUserDisplayNameFromData(userSnap.data());
+
+            if(displayName){
+              userNameCache.set(uid, displayName);
+              return displayName;
+            }
+          }
+        }catch(error){
+          console.warn("投稿者名の取得に失敗しました", error);
+        }
+      }
+
+      const fallbackName = album.userName || album.nickname || album.displayName || "匿名ユーザー";
+
+      if(uid){
+        userNameCache.set(uid, fallbackName);
+      }
+
+      return fallbackName;
+    }
+
+    async function attachDisplayNamesToAlbums(items){
+      return await Promise.all(
+        items.map(async (item) => {
+          const displayUserName = await getDisplayNameForAlbum(item);
+
+          return {
+            ...item,
+            data: {
+              ...item.data,
+              displayUserName
+            }
+          };
+        })
+      );
+    }
+
+    function getUserIconUrl(data){
+      return (
         data?.photoURL ||
         data?.iconURL ||
         data?.iconUrl ||
@@ -1219,1336 +773,348 @@ function getUserIconUrl(data){
         data?.imageUrl ||
         data?.icon ||
         ""
-    );
-}
-
-
-function getUserDisplayNameFromData(data){
-    if(!data){
-        return "";
+      );
     }
 
-    return (
-        data.displayName ||
-        data.nickname ||
-        data.nickName ||
-        data.userName ||
-        data.name ||
-        ""
-    );
-}
-
-async function getDisplayNameForAlbum(album){
-    const uid = album?.userId || "";
-
-    if(uid && userNameCache.has(uid)){
-        return userNameCache.get(uid);
-    }
-
-    if(uid){
-        try{
-            const userSnap = await getDoc(doc(db, "users", uid));
-
-            if(userSnap.exists()){
-                const displayName = getUserDisplayNameFromData(userSnap.data());
-
-                if(displayName){
-                    userNameCache.set(uid, displayName);
-                    return displayName;
-                }
-            }
-        }catch(error){
-            console.warn("投稿者名の取得に失敗しました", error);
-        }
-    }
-
-    const fallbackName = album?.userName || album?.displayName || album?.nickname || "匿名ユーザー";
-
-    if(uid){
-        userNameCache.set(uid, fallbackName);
-    }
-
-    return fallbackName;
-}
-
-async function updateMobileMyPageTab(user){
-    if(!mobileMyPageLink){
+    async function updateMobileMyPageTab(user){
+      if(!mobileMyPageLink){
         return;
-    }
+      }
 
-    if(!user){
+      if(!user){
         mobileMyPageLink.href = "login.html";
 
         if(mobileMyPageAvatar){
-            mobileMyPageAvatar.style.display = "none";
-            mobileMyPageAvatar.src = "";
+          mobileMyPageAvatar.style.display = "none";
+          mobileMyPageAvatar.src = "";
         }
 
         if(mobileMyPageFallback){
-            mobileMyPageFallback.style.display = "flex";
+          mobileMyPageFallback.style.display = "flex";
         }
 
         return;
-    }
+      }
 
-    mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+      mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
 
-    try{
+      try{
         const userSnap = await getDoc(doc(db, "users", user.uid));
 
         if(!userSnap.exists()){
-            return;
+          return;
         }
 
         const iconUrl = getUserIconUrl(userSnap.data());
 
         if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
-            mobileMyPageAvatar.src = iconUrl;
-            mobileMyPageAvatar.style.display = "block";
-            mobileMyPageFallback.style.display = "none";
+          mobileMyPageAvatar.src = iconUrl;
+          mobileMyPageAvatar.style.display = "block";
+          mobileMyPageFallback.style.display = "none";
 
-            mobileMyPageAvatar.onerror = () => {
-                mobileMyPageAvatar.style.display = "none";
-                mobileMyPageFallback.style.display = "flex";
-            };
+          mobileMyPageAvatar.onerror = () => {
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageFallback.style.display = "flex";
+          };
         }
-    }catch(error){
+      }catch(error){
         console.warn("マイページアイコンの取得に失敗しました", error);
+      }
     }
-}
 
-function escapeHTML(value){
-    return String(value ?? "")
+    onAuthStateChanged(auth, (user) => {
+      updateMobileMyPageTab(user);
+      currentUser = user;
+
+      if(user){
+        const myPageUrl = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+        if(myPageLink){ myPageLink.href = myPageUrl; }
+        if(mobileMyPageLink){ mobileMyPageLink.href = myPageUrl; }
+      }else{
+        if(myPageLink){ myPageLink.href = "login.html"; }
+        if(mobileMyPageLink){ mobileMyPageLink.href = "login.html"; }
+      }
+    });
+
+    function normalizeText(value){
+      return String(value || "")
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .trim();
+    }
+
+    function getKeywordText(keywords){
+      if(Array.isArray(keywords)){
+        return keywords.join(" ");
+      }
+
+      if(typeof keywords === "string"){
+        return keywords;
+      }
+
+      return "";
+    }
+
+    function escapeHtml(value){
+      return String(value || "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
-}
-
-
-async function getCurrentUserName(db, currentUser){
-    if(!currentUser){
-        return "匿名ユーザー";
     }
 
-    try{
-        const meSnap = await getDoc(doc(db, "users", currentUser.uid));
-        if(meSnap.exists()){
-            return getUserDisplayNameFromData(meSnap.data()) || "匿名ユーザー";
-        }
-    }catch(error){
-        console.warn("自分のユーザー名取得に失敗しました", error);
+    function formatKeywords(keywords){
+      if(!keywords) return "";
+
+      let list = [];
+
+      if(Array.isArray(keywords)){
+        list = keywords;
+      }else if(typeof keywords === "string"){
+        list = keywords
+          .split(/[、,\s]+/)
+          .map((item) => item.trim())
+          .filter(Boolean);
+      }
+
+      return list
+        .slice(0, 6)
+        .map((keyword) => `<span class="keyword">${escapeHtml(keyword)}</span>`)
+        .join("");
     }
 
-    return currentUser.displayName || "匿名ユーザー";
-}
-
-async function createNotification(db, {
-    toUserId,
-    fromUserId,
-    fromUserName,
-    type,
-    albumId = "",
-    albumTitle = "",
-    commentText = ""
-}){
-    if(!toUserId || !fromUserId || toUserId === fromUserId){
-        return;
+    function getLocalCommentCount(album){
+      if(typeof album.commentCount === "number") return album.commentCount;
+      if(typeof album.commentsCount === "number") return album.commentsCount;
+      return 0;
     }
 
-    await addDoc(collection(db, "notifications"), {
-        toUserId,
-        fromUserId,
-        fromUserName,
-        type,
-        albumId,
-        albumTitle,
-        commentText,
-        read: false,
-        createdAt: serverTimestamp()
-    });
-}
-
-async function notifyLike(db, currentUser, albumId){
-    if(!currentUser || !albumId) return;
-    const albumSnap = await getDoc(doc(db, "albums", albumId));
-    if(!albumSnap.exists()) return;
-    const albumData = albumSnap.data();
-    const fromUserName = await getCurrentUserName(db, currentUser);
-    await createNotification(db, {
-        toUserId: albumData.userId,
-        fromUserId: currentUser.uid,
-        fromUserName,
-        type: "like",
-        albumId,
-        albumTitle: albumData.title || ""
-    });
-}
-
-function formatPostDate(value){
-    if(!value){
-        return "";
+    function getLocalLikeCount(album){
+      if(typeof album.likeCount === "number") return album.likeCount;
+      if(typeof album.likesCount === "number") return album.likesCount;
+      return 0;
     }
 
-    let date = null;
+    /*
+      検索欄で「♡ 0」「💬 0」になるバグ対策。
 
-    if(typeof value.toDate === "function"){
-        date = value.toDate();
-    } else if(value instanceof Date){
-        date = value;
-    } else if(typeof value === "number"){
-        date = new Date(value);
-    } else if(typeof value === "string"){
-        const parsed = new Date(value);
-        if(!Number.isNaN(parsed.getTime())){
-            date = parsed;
-        }
+      以前のコードは albums ドキュメント内の
+      likeCount / likesCount / commentCount / commentsCount だけを見ていました。
+
+      ただし、実際のいいね・コメントを likes / comments コレクションに保存している場合、
+      albums 側に件数フィールドがないため、検索ページだけ 0 表示になります。
+
+      そこで、検索ページの読み込み時に各投稿IDごとの件数を取得して、
+      album.likeCount / album.commentCount に入れてから表示します。
+    */
+    async function getCountFromCollection(collectionName, albumId){
+      try{
+        const q = query(
+          collection(db, collectionName),
+          where("albumId", "==", albumId)
+        );
+
+        const snapshot = await getDocs(q);
+        return snapshot.size;
+      }catch(error){
+        console.warn(`${collectionName} の件数取得に失敗:`, error);
+        return 0;
+      }
     }
 
-    if(!date || Number.isNaN(date.getTime())){
-        return "";
-    }
+    async function attachCountsToAlbums(items){
+      const itemsWithCounts = await Promise.all(
+        items.map(async (item) => {
+          const album = item.data;
 
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMinutes = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+          const localLikeCount = getLocalLikeCount(album);
+          const localCommentCount = getLocalCommentCount(album);
 
-    if(diffMinutes < 1){
-        return "今";
-    }
+          const [fetchedLikeCount, fetchedCommentCount] = await Promise.all([
+            getCountFromCollection("likes", item.id),
+            getCountFromCollection("comments", item.id)
+          ]);
 
-    if(diffMinutes < 60){
-        return `${diffMinutes}分前`;
-    }
-
-    if(diffHours < 24){
-        return `${diffHours}時間前`;
-    }
-
-    if(diffDays < 7){
-        return `${diffDays}日前`;
-    }
-
-    return `${date.getMonth() + 1}/${date.getDate()}`;
-}
-
-function meter(left, right, value){
-    value = Number(value) || 0;
-    value = Math.max(0, Math.min(5, value));
-
-    let graphicHTML = "";
-
-    for(let i = 1; i <= 5; i++){
-        graphicHTML += `
-            <div class="dot level-${i} ${i <= value ? "active" : ""} ${i === value ? "selected" : ""}"></div>
-        `;
-
-        if(i < 5){
-            graphicHTML += `
-                <div class="connector level-${i} ${i < value ? "active" : ""}"></div>
-            `;
-        }
-    }
-
-    return `
-        <div class="meter">
-            <div class="meter-label">${escapeHTML(left)}</div>
-            <div class="meter-graphic">${graphicHTML}</div>
-            <div class="meter-label right-label">${escapeHTML(right)}</div>
-        </div>
-    `;
-}
-
-function getLikeId(userId, albumId){
-    return `${userId}_${albumId}`;
-}
-
-function getLikeCount(albumId){
-    return allLikes.filter(like => like.albumId === albumId).length;
-}
-
-function isLikedByMe(albumId){
-    if(!currentUser) return false;
-
-    return allLikes.some(like =>
-        like.albumId === albumId &&
-        like.userId === currentUser.uid
-    );
-}
-
-async function toggleLike(albumId){
-    if(!currentUser){
-        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
-        return;
-    }
-
-    const likeId = getLikeId(currentUser.uid, albumId);
-    const likeRef = doc(db, "likes", likeId);
-
-    if(isLikedByMe(albumId)){
-        await deleteDoc(likeRef);
-    } else {
-        await setDoc(likeRef, {
-            userId: currentUser.uid,
-            albumId: albumId,
-            createdAt: serverTimestamp()
-        });
-
-        await notifyLike(db, currentUser, albumId);
-    }
-}
-
-window.toggleLike = toggleLike;
-
-onSnapshot(collection(db, "likes"), (snapshot) => {
-    allLikes = [];
-
-    snapshot.forEach((docSnap) => {
-        allLikes.push(docSnap.data());
-    });
-
-    updateLikeDisplays();
-});
-
-function updateLikeDisplays(){
-    const likeAreas = document.querySelectorAll("[data-like-area]");
-
-    likeAreas.forEach((area) => {
-        const albumId = area.dataset.albumId;
-        const countSpan = area.querySelector(".like-count");
-        const button = area.querySelector(".like-btn");
-
-        if(!countSpan || !button) return;
-
-        const count = getLikeCount(albumId);
-        const liked = isLikedByMe(albumId);
-
-        countSpan.textContent = count;
-        button.textContent = liked ? "♥" : "♡";
-
-        if(liked){
-            button.classList.add("liked");
-        } else {
-            button.classList.remove("liked");
-        }
-    });
-}
-
-onSnapshot(collection(db, "comments"), (snapshot) => {
-    allComments = [];
-
-    snapshot.forEach((docSnap) => {
-        allComments.push({
-            id: docSnap.id,
-            ...docSnap.data()
-        });
-    });
-
-    updateCommentDisplays();
-});
-
-function getCommentCount(albumId){
-    return allComments.filter(comment => comment.albumId === albumId).length;
-}
-
-function updateCommentDisplays(){
-    const commentCounts = document.querySelectorAll("[data-comment-count]");
-
-    commentCounts.forEach((countEl) => {
-        const albumId = countEl.dataset.albumId;
-        const count = getCommentCount(albumId);
-        countEl.textContent = `コメント ${count}件`;
-    });
-}
-
-const q = query(
-    collection(db, "albums"),
-    where("isPublic", "==", true)
-);
-
-function setupFollowingListener(user){
-    if(unsubscribeFollowing){
-        unsubscribeFollowing();
-        unsubscribeFollowing = null;
-    }
-
-    followingIds = new Set();
-
-    if(!user){
-        renderAlbums();
-        return;
-    }
-
-    const followQuery = query(
-        collection(db, "follows"),
-        where("followerId", "==", user.uid)
-    );
-
-    unsubscribeFollowing = onSnapshot(followQuery, (snapshot) => {
-        followingIds = new Set();
-
-        snapshot.forEach((docSnap) => {
-            const follow = docSnap.data();
-            if(follow.followingId){
-                followingIds.add(follow.followingId);
+          return {
+            ...item,
+            data: {
+              ...album,
+              likeCount: Math.max(localLikeCount, fetchedLikeCount),
+              commentCount: Math.max(localCommentCount, fetchedCommentCount)
             }
+          };
+        })
+      );
+
+      return itemsWithCounts;
+    }
+
+    function getCommentCount(album){
+      if(typeof album.commentCount === "number") return album.commentCount;
+      if(typeof album.commentsCount === "number") return album.commentsCount;
+      return 0;
+    }
+
+    function getLikeCount(album){
+      if(typeof album.likeCount === "number") return album.likeCount;
+      if(typeof album.likesCount === "number") return album.likesCount;
+      return 0;
+    }
+
+    function renderAlbums(albums, keyword){
+      resultsEl.innerHTML = "";
+
+      if(albums.length === 0){
+        resultsEl.innerHTML = `
+          <div class="empty">
+            該当する投稿がありません。<br>
+            別のキーワードで検索してみてください。
+          </div>
+        `;
+        statusEl.textContent = keyword
+          ? `「${keyword}」の検索結果：0件`
+          : "公開投稿：0件";
+        return;
+      }
+
+      statusEl.textContent = keyword
+        ? `「${keyword}」の検索結果：${albums.length}件`
+        : `最近の公開投稿：${albums.length}件`;
+
+      albums.forEach((item) => {
+        const album = item.data;
+        const card = document.createElement("article");
+        card.className = "album-card";
+        card.addEventListener("click", () => {
+          location.href = `detail.html?id=${item.id}`;
         });
 
-        renderAlbums();
-    }, (error) => {
-        console.warn("フォロー情報の取得に失敗しました", error);
-        followingIds = new Set();
-        renderAlbums();
-    });
-}
+        const coverHtml = album.cover
+          ? `<img src="${escapeHtml(album.cover)}" alt="${escapeHtml(album.title || "album cover")}" loading="lazy">`
+          : `<div class="no-cover">No Cover</div>`;
 
-function normalizeKeywords(value){
-    if(Array.isArray(value)){
-        return value
-            .map(keyword => String(keyword ?? "").trim())
-            .filter(Boolean);
-    }
+        const userName = album.displayUserName || album.userName || album.nickname || "匿名ユーザー";
+        const profileUrl = album.userId ? `profile.html?uid=${album.userId}` : "#";
+        const keywordsHtml = formatKeywords(album.keywords);
 
-    if(typeof value === "string"){
-        return value
-            .split(/[\s,、#]+/)
-            .map(keyword => keyword.trim())
-            .filter(Boolean);
-    }
-
-    return [];
-}
-
-function renderKeywordTags(value){
-    const keywords = normalizeKeywords(value);
-
-    if(keywords.length === 0){
-        return `<span class="keyword-empty">なし</span>`;
-    }
-
-    return keywords.map((keyword) => {
-        const safeKeyword = escapeHTML(keyword);
-        const encodedKeyword = encodeURIComponent(keyword);
-
-        const searchUrl = `search.html?q=${encodedKeyword}`;
-
-        return `
-            <a
-                class="keyword-tag"
-                href="${searchUrl}"
-                onclick="event.preventDefault(); event.stopPropagation(); location.href='${searchUrl}'; return false;"
-            >#${safeKeyword}</a>
-        `;
-    }).join("");
-}
-
-function albumCardHTML(item, posterName){
-    const a = item.data;
-    const albumId = item.id;
-
-    return `
-<div class="album-card"
-     onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
-
-    <div class="album-main">
-        <img class="cover" src="${escapeHTML(a.cover || "")}" alt="">
-        <div class="album-text">
-            <div class="title">${escapeHTML(a.title || "")}</div>
-            <div class="artist">${escapeHTML(a.artist || "")}</div>
-            <div class="meta">${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(" / ") || a.year || "")}</div>
-            <div class="creator">投稿者：<a href="profile.html?uid=${escapeHTML(a.userId || "")}" onclick="event.stopPropagation();">${escapeHTML(posterName)}</a></div>
-            <div class="reaction-row">
-                <div class="like-area" data-like-area data-album-id="${escapeHTML(albumId)}">
-                    <button class="like-btn" onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">♡</button>
-                    <span class="like-count">0</span>
-                </div>
-                <div class="comment-count" data-comment-count data-album-id="${escapeHTML(albumId)}">コメント 0件</div>
+        card.innerHTML = `
+          <div class="cover">${coverHtml}</div>
+          <div class="card-body">
+            <div class="card-top">
+              <h2 class="album-title">${escapeHtml(album.title || "Untitled")}</h2>
+              <div class="year">${escapeHtml(album.year || "")}</div>
             </div>
-        </div>
-    </div>
 
-    <div class="mobile-post-date">${formatPostDate(a.createdAt || a.updatedAt)}</div>
+            <p class="artist">${escapeHtml(album.artist || "Unknown Artist")}</p>
 
-    <div class="album-analysis">
-        <div class="meter-list">
-            ${meter("暗い", "明るい", a.darkness)}
-            ${meter("静か", "激しい", a.intense)}
-            ${meter("シンプル", "複雑", a.complex)}
-            ${meter("絶望", "希望", a.hope)}
-            ${meter("個人", "世界", a.world)}
-        </div>
-        <div class="keyword-box">
-            <div class="keyword-title">キーワード</div>
-            <div class="keyword-tags">${renderKeywordTags(a.keywords)}</div>
-        </div>
-    </div>
-</div>`;
-}
+            <a class="user-name" href="${escapeHtml(profileUrl)}" onclick="event.stopPropagation();">
+              @${escapeHtml(userName)}
+            </a>
 
-function getSortedAlbums(){
-    return [...allAlbums].sort((a, b) => {
-        const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
-        const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
-        return bTime - aTime;
+            <p class="desc">${escapeHtml(album.desc || "")}</p>
+
+            ${keywordsHtml ? `<div class="keywords">${keywordsHtml}</div>` : ""}
+
+            <div class="meta">
+              <span>♡ ${getLikeCount(album)}</span>
+              <span>💬 ${getCommentCount(album)}</span>
+            </div>
+          </div>
+        `;
+
+        resultsEl.appendChild(card);
+      });
+    }
+
+    function filterAlbums(){
+      const rawKeyword = searchInput.value.trim();
+      const normalizedKeyword = normalizeText(rawKeyword);
+
+      if(!normalizedKeyword){
+        if(initialQuery){
+          filterAlbums();
+        }else{
+          if(initialQuery){
+          filterAlbums();
+        }else{
+          renderAlbums(publicAlbums, "");
+        }
+        }
+        return;
+      }
+
+      const filtered = publicAlbums.filter((item) => {
+        const album = item.data;
+
+        const targetText = [
+          album.title,
+          album.artist,
+          album.displayUserName,
+          album.userName,
+          album.nickname,
+          album.desc,
+          album.year,
+          getKeywordText(album.keywords)
+        ].join(" ");
+
+        return normalizeText(targetText).includes(normalizedKeyword);
+      });
+
+      renderAlbums(filtered, rawKeyword);
+    }
+
+    async function loadPublicAlbums(){
+      statusEl.textContent = "読み込み中...";
+      resultsEl.innerHTML = "";
+
+      try{
+        const albumsQuery = query(
+          collection(db, "albums"),
+          where("isPublic", "==", true),
+          orderBy("createdAt", "desc")
+        );
+
+        const snapshot = await getDocs(albumsQuery);
+
+        const albumsWithoutCounts = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          data: doc.data()
+        }));
+
+        statusEl.textContent = "いいね・コメント数を読み込み中...";
+
+        const albumsWithCounts = await attachCountsToAlbums(albumsWithoutCounts);
+        publicAlbums = await attachDisplayNamesToAlbums(albumsWithCounts);
+
+        renderAlbums(publicAlbums, "");
+      }catch(error){
+        console.error(error);
+
+        statusEl.textContent = "読み込みに失敗しました";
+
+        resultsEl.innerHTML = `
+          <div class="empty">
+            投稿を読み込めませんでした。<br>
+            Firestore のインデックスやルール、firebaseConfig を確認してください。
+          </div>
+        `;
+      }
+    }
+
+    searchButton.addEventListener("click", filterAlbums);
+
+    searchInput.addEventListener("keydown", (event) => {
+      if(event.key === "Enter"){
+        filterAlbums();
+      }
     });
-}
 
-function getRecommendAlbums(){
-    return getSortedAlbums();
-}
-
-function getFollowingAlbums(){
-    if(!currentUser){
-        return [];
-    }
-
-    return getSortedAlbums().filter((album) => {
-        const userId = album.data.userId || "";
-        return userId !== currentUser.uid && followingIds.has(userId);
+    searchInput.addEventListener("input", () => {
+      filterAlbums();
     });
-}
 
-function getPostTime(value){
-    if(!value){ return 0; }
-    if(typeof value.toDate === "function"){ return value.toDate().getTime(); }
-    if(value instanceof Date){ return value.getTime(); }
-    if(typeof value === "number"){ return value; }
-    if(typeof value === "string"){
-        const parsed = new Date(value);
-        if(!Number.isNaN(parsed.getTime())){ return parsed.getTime(); }
-    }
-    return 0;
-}
-
-function getFeedProgress(){
-    if(!feedSwipe || window.innerWidth > 900){
-        return currentFeedMode === "following" ? 1 : 0;
-    }
-
-    return Math.max(0, Math.min(1, feedSwipe.scrollLeft / Math.max(1, feedSwipe.clientWidth)));
-}
-
-function updateFeedTabs(progress = null){
-    if(!recommendTab || !followingTab){
-        return;
-    }
-
-    if(progress === null){
-        progress = getFeedProgress();
-    }
-
-    progress = Math.max(0, Math.min(1, progress));
-
-    const nextMode = progress >= 0.5 ? "following" : "recommend";
-    currentFeedMode = nextMode;
-
-    recommendTab.classList.toggle("active", nextMode === "recommend");
-    followingTab.classList.toggle("active", nextMode === "following");
-
-    const tabs = document.getElementById("mobileFeedTabs");
-
-    if(tabs){
-        tabs.style.setProperty("--feed-progress", progress.toFixed(4));
-        tabs.style.setProperty("--recommend-tab-opacity", String(1 - (progress * 0.42)));
-        tabs.style.setProperty("--following-tab-opacity", String(0.58 + (progress * 0.42)));
-    }
-
-    const recommendPanel = document.querySelector('[data-feed-panel="recommend"]');
-    const followingPanel = document.querySelector('[data-feed-panel="following"]');
-
-    if(recommendPanel){
-        recommendPanel.classList.toggle("is-visible", progress < 0.5);
-    }
-
-    if(followingPanel){
-        followingPanel.classList.toggle("is-visible", progress >= 0.5);
-    }
-}
-
-function scrollFeedTo(mode){
-    if(mode !== "recommend" && mode !== "following"){
-        return;
-    }
-
-    currentFeedMode = mode;
-    updateFeedTabs(mode === "following" ? 1 : 0);
-
-    if(feedSwipe && window.innerWidth <= 900){
-        feedSwipe.scrollTo({
-            left: mode === "following" ? feedSwipe.clientWidth : 0,
-            behavior:"smooth"
-        });
-    }
-}
-
-if(recommendTab){
-    recommendTab.addEventListener("click", () => scrollFeedTo("recommend"));
-}
-
-if(followingTab){
-    followingTab.addEventListener("click", () => scrollFeedTo("following"));
-}
-
-let feedScrollTicking = false;
-let feedTouchStartX = 0;
-let feedTouchStartY = 0;
-let feedGestureDirection = null;
-let unlockVerticalGestureTimer = null;
-
-function lockFeedForVerticalGesture(){
-    if(!feedSwipe){
-        return;
-    }
-
-    feedSwipe.classList.add("vertical-gesture");
-}
-
-function unlockFeedGestureSoon(){
-    if(!feedSwipe){
-        return;
-    }
-
-    clearTimeout(unlockVerticalGestureTimer);
-
-    unlockVerticalGestureTimer = setTimeout(() => {
-        feedSwipe.classList.remove("vertical-gesture");
-        feedGestureDirection = null;
-    }, 180);
-}
-
-if(feedSwipe){
-    feedSwipe.addEventListener("touchstart", (event) => {
-        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
-            return;
-        }
-
-        clearTimeout(unlockVerticalGestureTimer);
-        feedSwipe.classList.remove("vertical-gesture");
-
-        feedTouchStartX = event.touches[0].clientX;
-        feedTouchStartY = event.touches[0].clientY;
-        feedGestureDirection = null;
-    }, { passive:true });
-
-    feedSwipe.addEventListener("touchmove", (event) => {
-        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
-            return;
-        }
-
-        const dx = event.touches[0].clientX - feedTouchStartX;
-        const dy = event.touches[0].clientY - feedTouchStartY;
-        const absX = Math.abs(dx);
-        const absY = Math.abs(dy);
-
-        if(!feedGestureDirection && Math.max(absX, absY) > 8){
-            feedGestureDirection = absY > absX + 6 ? "vertical" : "horizontal";
-
-            if(feedGestureDirection === "vertical"){
-                lockFeedForVerticalGesture();
-            }
-        }
-    }, { passive:true });
-
-    feedSwipe.addEventListener("touchend", unlockFeedGestureSoon, { passive:true });
-    feedSwipe.addEventListener("touchcancel", unlockFeedGestureSoon, { passive:true });
-
-    feedSwipe.addEventListener("scroll", () => {
-        if(window.innerWidth > 900){
-            return;
-        }
-
-        if(feedScrollTicking){
-            return;
-        }
-
-        feedScrollTicking = true;
-
-        requestAnimationFrame(() => {
-            updateFeedTabs(getFeedProgress());
-            feedScrollTicking = false;
-        });
-    }, { passive:true });
-}
-
-window.addEventListener("resize", () => {
-    updateFeedTabs();
-});
-
-async function renderGrid(targetGrid, items, emptyHTML){
-    if(!targetGrid){ return; }
-    if(items.length === 0){ targetGrid.innerHTML = emptyHTML; return; }
-    const cards = [];
-    for(const item of items){
-        const posterName = await getDisplayNameForAlbum(item.data);
-        cards.push(albumCardHTML(item, posterName));
-    }
-    targetGrid.innerHTML = cards.join("");
-}
-
-async function renderAlbums(){
-    updateFeedTabs();
-    await renderGrid(recommendGrid, getRecommendAlbums(), `<div class="empty">保存されたアルバムがありません</div>`);
-    await renderGrid(followingGrid, getFollowingAlbums(), currentUser ? `<div class="empty">フォロー中の投稿がまだありません</div>` : `<div class="empty">ログインするとフォロー中TLを表示できます</div>`);
-    updateLikeDisplays();
-    updateCommentDisplays();
-}
-
-onSnapshot(q, async (snapshot)=>{
-    allAlbums = [];
-    snapshot.forEach((docSnap) => {
-        allAlbums.push({ id: docSnap.id, data: docSnap.data() });
-    });
-    await renderAlbums();
-}, (error) => {
-    if(recommendGrid){ recommendGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
-    if(followingGrid){ followingGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
-});
-
-</script>
-
-
-<style>
-/* ============================================================
-   PC版：ジャケット横の余白をメーター側に渡す調整
-   - 左カラムを少し狭くする
-   - 右メーター欄を広げる
-   - メーター中央の横幅を長くする
-   - スマホ版は現状維持
-============================================================ */
-@media(min-width:901px){
-    .album-card{
-        grid-template-columns:180px minmax(0,1fr) !important;
-        gap:16px !important;
-    }
-
-    .album-main{
-        width:180px !important;
-        max-width:180px !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-        margin-right:0 !important;
-    }
-
-    .album-analysis{
-        width:100% !important;
-        min-width:0 !important;
-    }
-
-    .meter{
-        grid-template-columns:44px minmax(0,1fr) 48px !important;
-        gap:8px !important;
-        width:100% !important;
-    }
-
-    .meter-graphic{
-        width:100% !important;
-        min-width:0 !important;
-    }
-
-    .connector{
-        min-width:18px !important;
-    }
-}
-
-@media(min-width:901px) and (max-width:1280px){
-    .album-card{
-        grid-template-columns:165px minmax(0,1fr) !important;
-        gap:14px !important;
-    }
-
-    .album-main{
-        width:165px !important;
-        max-width:165px !important;
-    }
-
-    .cover{
-        width:145px !important;
-        height:145px !important;
-    }
-
-    .meter{
-        grid-template-columns:40px minmax(0,1fr) 46px !important;
-        gap:7px !important;
-    }
-
-    .connector{
-        min-width:14px !important;
-    }
-}
-</style>
-
-
-<style>
-/* ============================================================
-   スマホ版：ユーザビリティ重視UI
-   - PC版には影響させない
-   - ジャケットは必ず正方形
-   - 投稿日はスマホだけ右上表示
-   - メーターは5段階の離散値のまま、画像寄せのデザインに変更
-============================================================ */
-
-.mobile-post-date{
-    display:none;
-}
-
-@media(max-width:900px){
-    body{
-        padding:16px 16px 112px !important;
-    }
-
-    .page-title{
-        font-size:38px !important;
-        line-height:1.05 !important;
-        letter-spacing:-0.055em !important;
-        margin-top:26px !important;
-    }
-
-    .topbar{
-        margin-bottom:20px !important;
-    }
-
-    .album-grid{
-        display:grid !important;
-        grid-template-columns:1fr !important;
-        gap:12px !important;
-        width:100% !important;
-        max-width:none !important;
-        margin:0 !important;
-    }
-
-    .album-card{
-        position:relative !important;
-        display:grid !important;
-        grid-template-columns:1fr !important;
-        gap:0 !important;
-        padding:14px !important;
-        border-radius:18px !important;
-        background:linear-gradient(135deg,#121415 0%,#090a0b 58%,#070808 100%) !important;
-        border:1px solid rgba(255,255,255,0.14) !important;
-        overflow:hidden !important;
-    }
-
-    .album-main{
-        display:grid !important;
-        grid-template-columns:120px minmax(0,1fr) !important;
-        gap:14px !important;
-        align-items:start !important;
-        width:100% !important;
-        max-width:none !important;
-        min-width:0 !important;
-        padding:0 50px 12px 0 !important;
-        border-bottom:1px solid rgba(255,255,255,0.10) !important;
-    }
-
-    .cover{
-        width:120px !important;
-        height:120px !important;
-        aspect-ratio:1/1 !important;
-        object-fit:cover !important;
-        border-radius:10px !important;
-        margin:0 !important;
-        border:1px solid rgba(255,255,255,0.18) !important;
-        background:#111 !important;
-    }
-
-    .album-text{
-        display:block !important;
-        min-width:0 !important;
-    }
-
-    .title{
-        font-size:20px !important;
-        line-height:1.12 !important;
-        letter-spacing:-0.035em !important;
-        margin:0 0 5px !important;
-        -webkit-line-clamp:2 !important;
-    }
-
-    .artist{
-        color:#9fcdd9 !important;
-        font-size:14px !important;
-        line-height:1.25 !important;
-        font-weight:800 !important;
-        margin:0 0 8px !important;
-    }
-
-    .meta{
-        font-size:12px !important;
-        color:#d8d8d8 !important;
-        margin:0 0 8px !important;
-        -webkit-line-clamp:1 !important;
-    }
-
-    .description{
-        display:none !important;
-    }
-
-    .creator{
-        font-size:12px !important;
-        line-height:1.45 !important;
-        color:#aaa !important;
-        margin:0 0 8px !important;
-        word-break:break-word !important;
-    }
-
-    .creator a{
-        color:#9fcdd9 !important;
-    }
-
-    .reaction-row{
-        display:flex !important;
-        flex-direction:row !important;
-        align-items:center !important;
-        gap:20px !important;
-        margin:0 !important;
-        font-size:14px !important;
-        color:#ddd !important;
-    }
-
-    .like-area{
-        gap:8px !important;
-    }
-
-    .like-btn{
-        font-size:21px !important;
-        color:#fff !important;
-        line-height:1 !important;
-    }
-
-    .like-count,
-    .comment-count{
-        font-size:14px !important;
-        color:#ddd !important;
-    }
-
-    .mobile-post-date{
-        display:block !important;
-        position:absolute !important;
-        top:20px !important;
-        right:18px !important;
-        color:#d7d7d7 !important;
-        font-size:13px !important;
-        font-weight:700 !important;
-        line-height:1 !important;
-        z-index:2 !important;
-        pointer-events:none !important;
-    }
-
-    .album-analysis{
-        width:100% !important;
-        height:auto !important;
-        min-width:0 !important;
-        display:block !important;
-        margin:0 !important;
-        padding:13px 0 0 !important;
-        border:none !important;
-        border-radius:0 !important;
-        background:transparent !important;
-    }
-
-    .meter-list{
-        flex:initial !important;
-        display:flex !important;
-        flex-direction:column !important;
-        gap:9px !important;
-        padding:0 0 13px !important;
-        border-bottom:1px solid rgba(255,255,255,0.10) !important;
-    }
-
-    .meter{
-        display:grid !important;
-        grid-template-columns:58px minmax(0,1fr) 58px !important;
-        gap:10px !important;
-        align-items:center !important;
-        margin:0 !important;
-        width:100% !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        color:#f2f2f2 !important;
-        line-height:1 !important;
-        white-space:nowrap !important;
-    }
-
-    .right-label{
-        text-align:right !important;
-    }
-
-    .meter-graphic{
-        display:flex !important;
-        align-items:center !important;
-        width:100% !important;
-        min-width:0 !important;
-        overflow:visible !important;
-    }
-
-    .dot{
-        width:8px !important;
-        height:8px !important;
-        flex:0 0 8px !important;
-        border-radius:50% !important;
-        border:0 !important;
-        background:rgba(255,255,255,0.38) !important;
-        box-shadow:none !important;
-    }
-
-    .connector{
-        height:2px !important;
-        flex:1 !important;
-        min-width:0 !important;
-        background:rgba(255,255,255,0.28) !important;
-    }
-
-    .dot.active,
-    .dot.active.level-1,
-    .dot.active.level-2,
-    .dot.active.level-3,
-    .dot.active.level-4,
-    .dot.active.level-5{
-        background:#9fcdd9 !important;
-        border-color:#9fcdd9 !important;
-    }
-
-    .connector.active,
-    .connector.active.level-1,
-    .connector.active.level-2,
-    .connector.active.level-3,
-    .connector.active.level-4{
-        background:linear-gradient(90deg,#7faebb,#d7edf0) !important;
-    }
-
-    .dot.selected{
-        width:15px !important;
-        height:15px !important;
-        flex:0 0 15px !important;
-        background:#9fcdd9 !important;
-        border:3px solid #edf8f9 !important;
-        box-shadow:0 0 12px rgba(159,205,217,0.42) !important;
-    }
-
-    .keyword-box{
-        margin:12px 0 0 !important;
-        padding:0 !important;
-        border:none !important;
-        border-radius:0 !important;
-        display:flex !important;
-        align-items:center !important;
-        gap:8px !important;
-        overflow-x:auto !important;
-        scrollbar-width:none !important;
-        -webkit-overflow-scrolling:touch !important;
-    }
-
-    .keyword-box::-webkit-scrollbar{
-        display:none !important;
-    }
-
-    .keyword-title{
-        flex:0 0 auto !important;
-        color:#9fcdd9 !important;
-        font-size:13px !important;
-        font-weight:900 !important;
-        margin-right:4px !important;
-    }
-
-    .keyword-text{
-        flex:0 0 auto !important;
-        color:#e5e5e5 !important;
-        font-size:13px !important;
-        line-height:1 !important;
-        white-space:nowrap !important;
-        display:block !important;
-        overflow:visible !important;
-        max-width:none !important;
-        border:1px solid rgba(255,255,255,0.14) !important;
-        border-radius:999px !important;
-        padding:7px 13px !important;
-        background:rgba(255,255,255,0.02) !important;
-    }
-
-    .keyword-tags{
-        flex:1 1 auto !important;
-        min-width:0 !important;
-        display:flex !important;
-        flex-wrap:nowrap !important;
-        gap:8px !important;
-        max-height:none !important;
-        overflow-x:auto !important;
-        overflow-y:hidden !important;
-        scrollbar-width:none !important;
-        -webkit-overflow-scrolling:touch !important;
-    }
-
-    .keyword-tags::-webkit-scrollbar{
-        display:none !important;
-    }
-
-    .keyword-tag{
-        flex:0 0 auto !important;
-        color:#e5e5e5 !important;
-        font-size:13px !important;
-        line-height:1 !important;
-        white-space:nowrap !important;
-        text-decoration:none !important;
-        border:1px solid rgba(255,255,255,0.14) !important;
-        border-radius:999px !important;
-        padding:7px 13px !important;
-        background:rgba(255,255,255,0.02) !important;
-    }
-}
-
-@media(max-width:430px){
-    .page-title{
-        font-size:34px !important;
-    }
-
-    .album-card{
-        padding:12px !important;
-        border-radius:17px !important;
-    }
-
-    .album-main{
-        grid-template-columns:112px minmax(0,1fr) !important;
-        gap:12px !important;
-        padding-right:42px !important;
-    }
-
-    .cover{
-        width:112px !important;
-        height:112px !important;
-    }
-
-    .title{
-        font-size:18px !important;
-    }
-
-    .artist{
-        font-size:13px !important;
-    }
-
-    .meta,
-    .creator{
-        font-size:11px !important;
-    }
-
-    .mobile-post-date{
-        top:18px !important;
-        right:15px !important;
-        font-size:12px !important;
-    }
-
-    .meter{
-        grid-template-columns:50px minmax(0,1fr) 50px !important;
-        gap:8px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .dot{
-        width:7px !important;
-        height:7px !important;
-        flex-basis:7px !important;
-    }
-
-    .dot.selected{
-        width:14px !important;
-        height:14px !important;
-        flex-basis:14px !important;
-    }
-
-    .keyword-title,
-    .keyword-text,
-    .keyword-tag{
-        font-size:12px !important;
-    }
-}
-</style>
-
-
-<style>
-/* ============================================================
-   FINAL: スマホ版メーター完全固定版
-   - PC版には影響しない
-   - メーター線は1本の背景線
-   - 値は選択ドット1個だけで表示
-   - 5段階の位置はCSS Gridで固定
-   - 左右端の未選択ドットだけでなく、中間の未選択ドットも非表示
-   - これで列ズレ・点線化・途中の小さい点を防ぐ
-============================================================ */
-@media(max-width:900px){
-    .meter-graphic{
-        position:relative !important;
-        display:grid !important;
-        grid-template-columns:repeat(5, 1fr) !important;
-        align-items:center !important;
-        width:100% !important;
-        height:18px !important;
-        min-width:0 !important;
-        overflow:visible !important;
-    }
-
-    .meter-graphic::before{
-        content:"" !important;
-        position:absolute !important;
-        left:7px !important;
-        right:7px !important;
-        top:50% !important;
-        height:2px !important;
-        transform:translateY(-50%) !important;
-        border-radius:999px !important;
-        z-index:0 !important;
-        background:linear-gradient(
-            90deg,
-            #162025 0%,
-            #162025 25%,
-            #405f69 25%,
-            #405f69 50%,
-            #8bb7c3 50%,
-            #8bb7c3 75%,
-            #d7edf0 75%,
-            #d7edf0 100%
-        ) !important;
-    }
-
-    .meter-graphic .connector{
-        display:none !important;
-    }
-
-    .meter-graphic .dot{
-        position:relative !important;
-        z-index:1 !important;
-        grid-row:1 !important;
-        justify-self:center !important;
-        align-self:center !important;
-
-        width:16px !important;
-        height:16px !important;
-        flex:none !important;
-        margin:0 !important;
-        border-radius:50% !important;
-        box-sizing:border-box !important;
-
-        opacity:0 !important;
-        transform:none !important;
-        border:0 !important;
-        box-shadow:none !important;
-        background:transparent !important;
-    }
-
-    .meter-graphic .dot.level-1{ grid-column:1 !important; }
-    .meter-graphic .dot.level-2{ grid-column:2 !important; }
-    .meter-graphic .dot.level-3{ grid-column:3 !important; }
-    .meter-graphic .dot.level-4{ grid-column:4 !important; }
-    .meter-graphic .dot.level-5{ grid-column:5 !important; }
-
-    .meter-graphic .dot.selected{
-        opacity:1 !important;
-        border:3px solid #f0fbfc !important;
-        box-shadow:0 0 12px rgba(220,245,250,0.40) !important;
-    }
-
-    .meter-graphic .dot.selected.level-1{
-        background:#162025 !important;
-        border-color:#9fcdd9 !important;
-    }
-
-    .meter-graphic .dot.selected.level-2{
-        background:#405f69 !important;
-    }
-
-    .meter-graphic .dot.selected.level-3{
-        background:#8bb7c3 !important;
-    }
-
-    .meter-graphic .dot.selected.level-4{
-        background:#d7edf0 !important;
-    }
-
-    .meter-graphic .dot.selected.level-5{
-        background:#f0fbfc !important;
-        border-color:#ffffff !important;
-    }
-}
-
-@media(max-width:430px){
-    .meter-graphic{
-        height:17px !important;
-    }
-
-    .meter-graphic::before{
-        left:7px !important;
-        right:7px !important;
-        height:2px !important;
-    }
-
-    .meter-graphic .dot{
-        width:15px !important;
-        height:15px !important;
-    }
-}
-</style>
-
-
-<style>
-/* ============================================================
-   スマホ版メーター色：グラデーション復帰版
-   - PC版には影響しない
-   - 色合いは今の黒めPale Ice系のまま
-   - 未選択ドットは非表示
-   - 選択ドット1個で5段階評価を表す
-============================================================ */
-@media(max-width:900px){
-    .meter-graphic::before{
-        background:linear-gradient(
-            90deg,
-            #162025 0%,
-            #405f69 34%,
-            #8bb7c3 66%,
-            #d7edf0 100%
-        ) !important;
-    }
-
-    .meter-graphic .dot.selected.level-1{
-        background:#162025 !important;
-        border-color:#9fcdd9 !important;
-        box-shadow:0 0 10px rgba(22,32,37,0.70) !important;
-    }
-
-    .meter-graphic .dot.selected.level-2{
-        background:#405f69 !important;
-        border-color:#edf8f9 !important;
-        box-shadow:0 0 10px rgba(64,95,105,0.48) !important;
-    }
-
-    .meter-graphic .dot.selected.level-3{
-        background:#8bb7c3 !important;
-        border-color:#edf8f9 !important;
-        box-shadow:0 0 10px rgba(139,183,195,0.42) !important;
-    }
-
-    .meter-graphic .dot.selected.level-4{
-        background:#d7edf0 !important;
-        border-color:#f7fcfd !important;
-        box-shadow:0 0 10px rgba(215,237,240,0.42) !important;
-    }
-
-    .meter-graphic .dot.selected.level-5{
-        background:#f0fbfc !important;
-        border-color:#ffffff !important;
-        box-shadow:0 0 10px rgba(240,251,252,0.48) !important;
-    }
-}
-</style>
-
+    loadPublicAlbums();
+  </script>
 </body>
 </html>
