@@ -509,6 +509,44 @@ a{
     overflow:hidden;
 }
 
+.keyword-tags{
+    min-width:0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    max-height:42px;
+    overflow:hidden;
+}
+
+.keyword-tag{
+    appearance:none;
+    -webkit-appearance:none;
+    cursor:pointer;
+    font-family:inherit;
+    display:inline-flex;
+    align-items:center;
+    max-width:100%;
+    color:#dde6e8;
+    font-size:10.5px;
+    line-height:1;
+    text-decoration:none;
+    word-break:break-word;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:999px;
+    padding:5px 8px;
+    background:rgba(255,255,255,0.025);
+}
+
+.keyword-tag:hover{
+    border-color:rgba(159,205,217,0.48);
+    color:white;
+}
+
+.keyword-empty{
+    color:#777;
+    font-size:11px;
+}
+
 .review-panel{
     margin-top:18px;
     background:#070808;
@@ -1030,6 +1068,40 @@ a{
         background:rgba(255,255,255,0.02);
     }
 
+    .keyword-tags{
+        flex:1 1 auto;
+        min-width:0;
+        display:flex;
+        flex-wrap:nowrap;
+        gap:8px;
+        max-height:none;
+        overflow-x:auto;
+        overflow-y:hidden;
+        scrollbar-width:none;
+        -webkit-overflow-scrolling:touch;
+    }
+
+    .keyword-tags::-webkit-scrollbar{
+        display:none;
+    }
+
+    .keyword-tag{
+        appearance:none;
+        -webkit-appearance:none;
+        cursor:pointer;
+        font-family:inherit;
+        flex:0 0 auto;
+        color:#e5e5e5;
+        font-size:13px;
+        line-height:1;
+        white-space:nowrap;
+        text-decoration:none;
+        border:1px solid rgba(255,255,255,0.14);
+        border-radius:999px;
+        padding:7px 13px;
+        background:rgba(255,255,255,0.02);
+    }
+
     .review-panel,
     .comments-panel{
         border-radius:18px;
@@ -1152,7 +1224,8 @@ a{
     }
 
     .keyword-title,
-    .keyword-text{
+    .keyword-text,
+    .keyword-tag{
         font-size:12px;
     }
 }
@@ -1647,25 +1720,73 @@ function meter(left, right, value){
     `;
 }
 
-function renderKeywords(keywords){
-    const raw = String(keywords || "").trim();
-
-    if(!raw){
-        return `
-            <div class="keyword-box">
-                <div class="keyword-title">キーワード</div>
-                <div class="keyword-text">未設定</div>
-            </div>
-        `;
+function normalizeKeywords(value){
+    if(Array.isArray(value)){
+        return value
+            .map(keyword => String(keyword ?? "").trim())
+            .filter(Boolean);
     }
 
+    if(typeof value === "string"){
+        return value
+            .split(/[\s,、#]+/)
+            .map(keyword => keyword.trim())
+            .filter(Boolean);
+    }
+
+    return [];
+}
+
+function renderKeywordTags(value){
+    const keywords = normalizeKeywords(value);
+
+    if(keywords.length === 0){
+        return `<span class="keyword-empty">未設定</span>`;
+    }
+
+    return keywords.map((keyword) => {
+        const safeKeyword = escapeHTML(keyword);
+        const encodedKeyword = encodeURIComponent(keyword);
+
+        return `
+            <button
+                type="button"
+                class="keyword-tag"
+                data-keyword="${encodedKeyword}"
+            >#${safeKeyword}</button>
+        `;
+    }).join("");
+}
+
+function renderKeywords(keywords){
     return `
         <div class="keyword-box">
             <div class="keyword-title">キーワード</div>
-            <div class="keyword-text">${escapeHTML(raw)}</div>
+            <div class="keyword-tags">${renderKeywordTags(keywords)}</div>
         </div>
     `;
 }
+
+document.addEventListener("click", (event) => {
+    const keywordButton = event.target.closest(".keyword-tag");
+
+    if(!keywordButton){
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const keyword = decodeURIComponent(keywordButton.dataset.keyword || "").trim();
+
+    if(!keyword){
+        return;
+    }
+
+    location.href = `./search.html?q=${encodeURIComponent(keyword)}`;
+}, true);
+
 
 function getLikeId(userId, albumId){
     return `${userId}_${albumId}`;
