@@ -687,6 +687,72 @@
 
     let currentUser = null;
     let publicAlbums = [];
+    const userNameCache = new Map();
+
+    function getUserDisplayNameFromData(data){
+      if(!data){
+        return "";
+      }
+
+      return (
+        data.displayName ||
+        data.nickname ||
+        data.nickName ||
+        data.userName ||
+        data.name ||
+        ""
+      );
+    }
+
+    async function getDisplayNameForAlbum(item){
+      const album = item?.data || {};
+      const uid = album.userId || "";
+
+      if(uid && userNameCache.has(uid)){
+        return userNameCache.get(uid);
+      }
+
+      if(uid){
+        try{
+          const userSnap = await getDoc(doc(db, "users", uid));
+
+          if(userSnap.exists()){
+            const displayName = getUserDisplayNameFromData(userSnap.data());
+
+            if(displayName){
+              userNameCache.set(uid, displayName);
+              return displayName;
+            }
+          }
+        }catch(error){
+          console.warn("投稿者名の取得に失敗しました", error);
+        }
+      }
+
+      const fallbackName = album.userName || album.nickname || album.displayName || "匿名ユーザー";
+
+      if(uid){
+        userNameCache.set(uid, fallbackName);
+      }
+
+      return fallbackName;
+    }
+
+    async function attachDisplayNamesToAlbums(items){
+      return await Promise.all(
+        items.map(async (item) => {
+          const displayUserName = await getDisplayNameForAlbum(item);
+
+          return {
+            ...item,
+            data: {
+              ...item.data,
+              displayUserName
+            }
+          };
+        })
+      );
+    }
 
     function getUserIconUrl(data){
       return (
@@ -921,7 +987,7 @@
           ? `<img src="${escapeHtml(album.cover)}" alt="${escapeHtml(album.title || "album cover")}" loading="lazy">`
           : `<div class="no-cover">No Cover</div>`;
 
-        const userName = album.userName || album.nickname || album.userEmail || "Unknown User";
+        const userName = album.displayUserName || album.userName || album.nickname || "匿名ユーザー";
         const profileUrl = album.userId ? `profile.html?uid=${album.userId}` : "#";
         const keywordsHtml = formatKeywords(album.keywords);
 
@@ -969,9 +1035,9 @@
         const targetText = [
           album.title,
           album.artist,
+          album.displayUserName,
           album.userName,
           album.nickname,
-          album.userEmail,
           album.desc,
           album.year,
           getKeywordText(album.keywords)
@@ -1003,7 +1069,8 @@
 
         statusEl.textContent = "いいね・コメント数を読み込み中...";
 
-        publicAlbums = await attachCountsToAlbums(albumsWithoutCounts);
+        const albumsWithCounts = await attachCountsToAlbums(albumsWithoutCounts);
+        publicAlbums = await attachDisplayNamesToAlbums(albumsWithCounts);
 
         renderAlbums(publicAlbums, "");
       }catch(error){
