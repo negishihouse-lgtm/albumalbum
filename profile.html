@@ -1350,6 +1350,352 @@ body{
         font-size:12px !important;
     }
 }
+
+/* ============================================================
+   FINAL: PC版マイページ投稿カード index準拠 + キーワードタグ対応
+============================================================ */
+@media(min-width:901px){
+    .main{
+        margin-left:240px !important;
+        padding:38px 30px 120px !important;
+    }
+
+    .album-grid{
+        display:grid !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:24px !important;
+        max-width:1230px !important;
+        margin:0 !important;
+    }
+
+    .album-card{
+        background:#070808 !important;
+        border:1px solid rgba(255,255,255,0.15) !important;
+        border-radius:18px !important;
+        padding:18px !important;
+        cursor:pointer !important;
+        overflow:hidden !important;
+        display:grid !important;
+        grid-template-columns:180px minmax(0, 1fr) !important;
+        gap:16px !important;
+        align-items:stretch !important;
+        box-shadow:none !important;
+    }
+
+    .album-card:hover{
+        border-color:rgba(159,205,217,0.42) !important;
+        transform:translateY(-1px) !important;
+        transition:0.18s ease !important;
+    }
+
+    .card-top{
+        display:contents !important;
+    }
+
+    .cover-wrap{
+        width:180px !important;
+        min-width:0 !important;
+    }
+
+    .cover{
+        width:160px !important;
+        height:160px !important;
+        aspect-ratio:1/1 !important;
+        object-fit:cover !important;
+        background:#111 !important;
+        display:block !important;
+        border:1px solid rgba(255,255,255,0.16) !important;
+        border-radius:4px !important;
+        margin:0 0 12px 0 !important;
+    }
+
+    .album-info{
+        min-width:0 !important;
+        width:180px !important;
+        max-width:180px !important;
+        grid-column:1 !important;
+    }
+
+    .title-row{
+        display:flex !important;
+        align-items:flex-start !important;
+        gap:6px !important;
+        flex-wrap:wrap !important;
+        margin-bottom:5px !important;
+    }
+
+    .title{
+        font-size:25px !important;
+        font-weight:900 !important;
+        line-height:1.06 !important;
+        letter-spacing:-0.045em !important;
+        margin-bottom:0 !important;
+        word-break:break-word !important;
+        display:-webkit-box !important;
+        -webkit-line-clamp:2 !important;
+        -webkit-box-orient:vertical !important;
+        overflow:hidden !important;
+    }
+
+    .artist{
+        color:#9fcdd9 !important;
+        font-size:15px !important;
+        font-weight:800 !important;
+        line-height:1.25 !important;
+        margin-bottom:6px !important;
+        word-break:break-word !important;
+        display:-webkit-box !important;
+        -webkit-line-clamp:1 !important;
+        -webkit-box-orient:vertical !important;
+        overflow:hidden !important;
+    }
+
+    .creator{
+        color:#aab3b8 !important;
+        font-size:11.5px !important;
+        line-height:1.45 !important;
+        margin-bottom:7px !important;
+        word-break:break-word !important;
+        display:-webkit-box !important;
+        -webkit-line-clamp:1 !important;
+        -webkit-box-orient:vertical !important;
+        overflow:hidden !important;
+    }
+
+    .creator a{
+        color:#9fcdd9 !important;
+        text-decoration:none !important;
+    }
+
+    .reaction-row{
+        display:flex !important;
+        align-items:center !important;
+        gap:10px !important;
+        color:#b6c0c4 !important;
+        font-size:11.5px !important;
+        flex-wrap:wrap !important;
+    }
+
+    .like-btn{
+        background:none !important;
+        border:none !important;
+        color:#b6c0c4 !important;
+        padding:0 !important;
+        font-size:16px !important;
+        cursor:pointer !important;
+        line-height:1 !important;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:11.5px !important;
+        color:#b6c0c4 !important;
+    }
+
+    .owner-actions{
+        margin-top:10px !important;
+        gap:6px !important;
+    }
+
+    .owner-actions button{
+        padding:7px 10px !important;
+        font-size:11px !important;
+        border-radius:999px !important;
+    }
+
+    .album-analysis{
+        grid-column:2 !important;
+        min-width:0 !important;
+        width:100% !important;
+        height:100% !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        align-self:stretch !important;
+        border:1px solid rgba(255,255,255,0.13) !important;
+        border-radius:14px !important;
+        padding:17px 14px 14px !important;
+        background:#070808 !important;
+        margin:0 !important;
+    }
+
+    .meter-area{
+        border:none !important;
+        border-radius:0 !important;
+        padding:0 !important;
+        min-width:0 !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        height:100% !important;
+    }
+
+    .meter{
+        display:grid !important;
+        grid-template-columns:44px minmax(0,1fr) 48px !important;
+        align-items:center !important;
+        gap:8px !important;
+        margin-bottom:0 !important;
+        min-width:0 !important;
+        width:100% !important;
+    }
+
+    .meter-label{
+        color:#f3f7f8 !important;
+        font-size:13px !important;
+        font-weight:800 !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+    }
+
+    .meter-graphic{
+        display:flex !important;
+        align-items:center !important;
+        width:100% !important;
+        min-width:0 !important;
+        overflow:hidden !important;
+    }
+
+    .dot{
+        width:16px !important;
+        height:16px !important;
+        border-radius:50% !important;
+        border:2px solid #48555b !important;
+        background:transparent !important;
+        flex:0 0 16px !important;
+    }
+
+    .connector{
+        height:1px !important;
+        background:#333d42 !important;
+        flex:1 !important;
+        min-width:18px !important;
+    }
+
+    .dot.active.level-1,
+    .connector.active.level-1{
+        background:#7faebb !important;
+        border-color:#7faebb !important;
+    }
+
+    .dot.active.level-2,
+    .connector.active.level-2{
+        background:#9bc7d0 !important;
+        border-color:#9bc7d0 !important;
+    }
+
+    .dot.active.level-3,
+    .connector.active.level-3{
+        background:#b9dde3 !important;
+        border-color:#b9dde3 !important;
+    }
+
+    .dot.active.level-4,
+    .connector.active.level-4{
+        background:#d7edf0 !important;
+        border-color:#d7edf0 !important;
+    }
+
+    .dot.active.level-5{
+        background:#edf8f9 !important;
+        border-color:#edf8f9 !important;
+    }
+
+    .keyword-box{
+        margin-top:14px !important;
+        border:1px solid rgba(255,255,255,0.10) !important;
+        border-radius:8px !important;
+        padding:9px 10px !important;
+        display:grid !important;
+        grid-template-columns:62px minmax(0,1fr) !important;
+        gap:10px !important;
+        align-items:start !important;
+    }
+
+    .keyword-title{
+        color:#9fcdd9 !important;
+        font-size:11px !important;
+        font-weight:800 !important;
+        margin:0 !important;
+    }
+
+    .description{
+        display:none !important;
+    }
+}
+
+.keyword-tags{
+    min-width:0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    max-height:42px;
+    overflow:hidden;
+}
+
+.keyword-tag{
+    display:inline-flex;
+    align-items:center;
+    max-width:100%;
+    color:#dde6e8;
+    font-size:10.5px;
+    line-height:1;
+    text-decoration:none;
+    word-break:break-word;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:999px;
+    padding:5px 8px;
+    background:rgba(255,255,255,0.025);
+}
+
+.keyword-tag:hover{
+    border-color:rgba(159,205,217,0.48);
+    color:white;
+}
+
+.keyword-empty{
+    color:#777;
+    font-size:11px;
+}
+
+@media(max-width:900px){
+    .keyword-tags{
+        flex:1 1 auto !important;
+        min-width:0 !important;
+        display:flex !important;
+        flex-wrap:nowrap !important;
+        gap:8px !important;
+        max-height:none !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        scrollbar-width:none !important;
+        -webkit-overflow-scrolling:touch !important;
+    }
+
+    .keyword-tags::-webkit-scrollbar{
+        display:none !important;
+    }
+
+    .keyword-tag{
+        flex:0 0 auto !important;
+        color:#e5e5e5 !important;
+        font-size:13px !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+        text-decoration:none !important;
+        border:1px solid rgba(255,255,255,0.14) !important;
+        border-radius:999px !important;
+        padding:7px 13px !important;
+        background:rgba(255,255,255,0.02) !important;
+    }
+}
+
+@media(max-width:430px){
+    .keyword-tag{
+        font-size:12px !important;
+    }
+}
+
 </style>
 </head>
 
@@ -1846,6 +2192,45 @@ function updateCommentDisplays(){
     });
 }
 
+
+function normalizeKeywords(value){
+    if(Array.isArray(value)){
+        return value
+            .map(keyword => String(keyword ?? "").trim())
+            .filter(Boolean);
+    }
+
+    if(typeof value === "string"){
+        return value
+            .split(/[\s,、#]+/)
+            .map(keyword => keyword.trim())
+            .filter(Boolean);
+    }
+
+    return [];
+}
+
+function renderKeywordTags(value){
+    const keywords = normalizeKeywords(value);
+
+    if(keywords.length === 0){
+        return `<span class="keyword-empty">なし</span>`;
+    }
+
+    return keywords.map((keyword) => {
+        const safeKeyword = escapeHTML(keyword);
+        const encodedKeyword = encodeURIComponent(keyword);
+
+        return `
+            <a
+                class="keyword-tag"
+                href="search.html?q=${encodedKeyword}"
+                onclick="event.stopPropagation();"
+            >#${safeKeyword}</a>
+        `;
+    }).join("");
+}
+
 function renderAlbums(){
     if(!uid) return;
 
@@ -1948,8 +2333,8 @@ function renderAlbums(){
 
                 <div class="keyword-box">
                     <div class="keyword-title">キーワード</div>
-                    <div class="keyword-text">
-                        ${escapeHTML(album.keywords || "")}
+                    <div class="keyword-tags">
+                        ${renderKeywordTags(album.keywords)}
                     </div>
                 </div>
             </div>
