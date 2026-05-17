@@ -214,6 +214,85 @@ body{
     font-size:14px;
 }
 
+.keyword-help{
+    margin-top:4px;
+    margin-bottom:10px;
+    color:#888;
+    font-size:12px;
+    line-height:1.6;
+}
+
+.keyword-suggestions{
+    margin-top:12px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.keyword-category{
+    background:#101010;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:12px;
+}
+
+.keyword-category-title{
+    color:#9fcdd9;
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:9px;
+}
+
+.keyword-candidate-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.keyword-candidate{
+    appearance:none;
+    -webkit-appearance:none;
+    width:auto;
+    margin:0;
+    padding:7px 11px;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:999px;
+    background:rgba(255,255,255,0.03);
+    color:#ddd;
+    font-size:13px;
+    line-height:1;
+    cursor:pointer;
+}
+
+.keyword-candidate:hover{
+    border-color:rgba(111,168,220,0.65);
+    color:white;
+}
+
+.keyword-candidate.selected{
+    background:#6fa8dc;
+    border-color:#6fa8dc;
+    color:white;
+    font-weight:700;
+}
+
+.selected-keyword-preview{
+    margin-top:10px;
+    color:#aaa;
+    font-size:12px;
+    line-height:1.7;
+}
+
+.selected-keyword-preview span{
+    display:inline-flex;
+    margin:0 5px 6px 0;
+    padding:5px 8px;
+    border-radius:999px;
+    background:rgba(111,168,220,0.16);
+    color:#dff3ff;
+    border:1px solid rgba(111,168,220,0.32);
+}
+
 input,
 textarea,
 select{
@@ -709,8 +788,74 @@ button:disabled{
 
             <div class="input-group">
                 <label>キーワード</label>
-                <div style="margin-top:4px; color:#888; font-size:12px;">キーワードをスペースまたはカンマで区切って入力（例：エモい 青春 夜）</div>
+                <div class="keyword-help">
+                    キーワードをスペースまたはカンマで区切って入力。候補をタップして追加・削除できます。
+                    <br>例：エモい 青春 夜
+                </div>
+
                 <input id="keywordsInput" type="text" placeholder="例：都会的, 管楽器, 明るい">
+
+                <div class="selected-keyword-preview" id="selectedKeywordPreview"></div>
+
+                <div class="keyword-suggestions" id="keywordSuggestions">
+                    <div class="keyword-category">
+                        <div class="keyword-category-title">感情</div>
+                        <div class="keyword-candidate-list">
+                            <button type="button" class="keyword-candidate" data-keyword="エモい">#エモい</button>
+                            <button type="button" class="keyword-candidate" data-keyword="切ない">#切ない</button>
+                            <button type="button" class="keyword-candidate" data-keyword="泣ける">#泣ける</button>
+                            <button type="button" class="keyword-candidate" data-keyword="楽しい">#楽しい</button>
+                            <button type="button" class="keyword-candidate" data-keyword="不安">#不安</button>
+                            <button type="button" class="keyword-candidate" data-keyword="爽やか">#爽やか</button>
+                        </div>
+                    </div>
+
+                    <div class="keyword-category">
+                        <div class="keyword-category-title">雰囲気</div>
+                        <div class="keyword-candidate-list">
+                            <button type="button" class="keyword-candidate" data-keyword="夜">#夜</button>
+                            <button type="button" class="keyword-candidate" data-keyword="夏">#夏</button>
+                            <button type="button" class="keyword-candidate" data-keyword="雨">#雨</button>
+                            <button type="button" class="keyword-candidate" data-keyword="都会">#都会</button>
+                            <button type="button" class="keyword-candidate" data-keyword="青春">#青春</button>
+                            <button type="button" class="keyword-candidate" data-keyword="深夜">#深夜</button>
+                        </div>
+                    </div>
+
+                    <div class="keyword-category">
+                        <div class="keyword-category-title">音楽性</div>
+                        <div class="keyword-candidate-list">
+                            <button type="button" class="keyword-candidate" data-keyword="疾走感">#疾走感</button>
+                            <button type="button" class="keyword-candidate" data-keyword="重厚">#重厚</button>
+                            <button type="button" class="keyword-candidate" data-keyword="静か">#静か</button>
+                            <button type="button" class="keyword-candidate" data-keyword="爆音">#爆音</button>
+                            <button type="button" class="keyword-candidate" data-keyword="実験的">#実験的</button>
+                            <button type="button" class="keyword-candidate" data-keyword="キャッチー">#キャッチー</button>
+                        </div>
+                    </div>
+
+                    <div class="keyword-category">
+                        <div class="keyword-category-title">用途</div>
+                        <div class="keyword-candidate-list">
+                            <button type="button" class="keyword-candidate" data-keyword="散歩">#散歩</button>
+                            <button type="button" class="keyword-candidate" data-keyword="ドライブ">#ドライブ</button>
+                            <button type="button" class="keyword-candidate" data-keyword="作業用">#作業用</button>
+                            <button type="button" class="keyword-candidate" data-keyword="帰り道">#帰り道</button>
+                            <button type="button" class="keyword-candidate" data-keyword="寝る前">#寝る前</button>
+                        </div>
+                    </div>
+
+                    <div class="keyword-category">
+                        <div class="keyword-category-title">ジャンル</div>
+                        <div class="keyword-candidate-list">
+                            <button type="button" class="keyword-candidate" data-keyword="邦ロック">#邦ロック</button>
+                            <button type="button" class="keyword-candidate" data-keyword="ポップ">#ポップ</button>
+                            <button type="button" class="keyword-candidate" data-keyword="ヒップホップ">#ヒップホップ</button>
+                            <button type="button" class="keyword-candidate" data-keyword="ジャズ">#ジャズ</button>
+                            <button type="button" class="keyword-candidate" data-keyword="ポストパンク">#ポストパンク</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="input-group">
@@ -840,6 +985,8 @@ const titleInput = document.getElementById("titleInput");
 const artistInput = document.getElementById("artistInput");
 const descInput = document.getElementById("descInput");
 const keywordsInput = document.getElementById("keywordsInput");
+const keywordSuggestions = document.getElementById("keywordSuggestions");
+const selectedKeywordPreview = document.getElementById("selectedKeywordPreview");
 const isPublicInput = document.getElementById("isPublicInput");
 
 const darknessInput = document.getElementById("darknessInput");
@@ -963,6 +1110,99 @@ function setLoading(isLoading){
     loadingBox.style.display = isLoading ? "block" : "none";
 }
 
+
+function parseKeywords(value){
+    return String(value || "")
+        .split(/[\s,、#]+/)
+        .map(keyword => keyword.trim())
+        .filter(Boolean);
+}
+
+function uniqueKeywords(keywords){
+    const seen = new Set();
+    const result = [];
+
+    keywords.forEach((keyword) => {
+        const key = keyword.trim();
+
+        if(!key || seen.has(key)){
+            return;
+        }
+
+        seen.add(key);
+        result.push(key);
+    });
+
+    return result;
+}
+
+function setKeywords(keywords){
+    const unique = uniqueKeywords(keywords);
+    keywordsInput.value = unique.join(" ");
+    syncKeywordCandidates();
+}
+
+function getCurrentKeywords(){
+    return uniqueKeywords(parseKeywords(keywordsInput.value));
+}
+
+function toggleKeyword(keyword){
+    const current = getCurrentKeywords();
+
+    if(current.includes(keyword)){
+        setKeywords(current.filter(item => item !== keyword));
+    }else{
+        setKeywords([...current, keyword]);
+    }
+}
+
+function syncKeywordCandidates(){
+    if(!keywordSuggestions){
+        return;
+    }
+
+    const current = new Set(getCurrentKeywords());
+
+    keywordSuggestions.querySelectorAll(".keyword-candidate").forEach((button) => {
+        const keyword = button.dataset.keyword || "";
+        button.classList.toggle("selected", current.has(keyword));
+    });
+
+    if(selectedKeywordPreview){
+        const keywords = [...current];
+
+        if(keywords.length === 0){
+            selectedKeywordPreview.innerHTML = "選択中のキーワード：なし";
+        }else{
+            selectedKeywordPreview.innerHTML = "選択中のキーワード：" + keywords
+                .map(keyword => `<span>#${escapeHTML(keyword)}</span>`)
+                .join("");
+        }
+    }
+}
+
+if(keywordSuggestions){
+    keywordSuggestions.addEventListener("click", (event) => {
+        const button = event.target.closest(".keyword-candidate");
+
+        if(!button){
+            return;
+        }
+
+        event.preventDefault();
+
+        const keyword = button.dataset.keyword || "";
+
+        if(!keyword){
+            return;
+        }
+
+        toggleKeyword(keyword);
+    });
+}
+
+keywordsInput.addEventListener("input", syncKeywordCandidates);
+
 function updateDescCount(){
     const length = descInput.value.length;
 
@@ -1021,10 +1261,7 @@ function getFormData(){
         title: titleInput.value.trim(),
         artist: artistInput.value.trim(),
         desc: descText,
-        keywords: keywordsInput.value
-            .split(/[\s,、#]+/)
-            .map(keyword => keyword.trim())
-            .filter(Boolean),
+        keywords: getCurrentKeywords(),
         isPublic: isPublicInput.value === "true",
         darkness: Number(darknessInput.value),
         intense: Number(intenseInput.value),
@@ -1052,10 +1289,12 @@ function setFormData(album){
     artistInput.value = album.artist || "";
     descInput.value = (album.desc || "").slice(0, 200);
     if(Array.isArray(album.keywords)){
-        keywordsInput.value = album.keywords.join(", ");
+        keywordsInput.value = album.keywords.join(" ");
     }else{
         keywordsInput.value = album.keywords || "";
     }
+
+    syncKeywordCandidates();
     isPublicInput.value = album.isPublic === false ? "false" : "true";
 
     darknessInput.value = album.darkness || 3;
@@ -1109,6 +1348,7 @@ function clearForm(){
     artistInput.value = "";
     descInput.value = "";
     keywordsInput.value = "";
+    syncKeywordCandidates();
     isPublicInput.value = "true";
     selectedSpotifyTrack = null;
     updateSpotifySelectedBox();
@@ -1331,6 +1571,7 @@ function clearNewPostFormOnly(){
     artistInput.value = "";
     descInput.value = "";
     keywordsInput.value = "";
+    syncKeywordCandidates();
     isPublicInput.value = "true";
     selectedSpotifyTrack = null;
     updateSpotifySelectedBox();
@@ -1392,6 +1633,7 @@ onAuthStateChanged(auth, async (user) => {
 
 setPageMode();
 updateDescCount();
+syncKeywordCandidates();
 
 </script>
 
