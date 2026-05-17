@@ -701,6 +701,194 @@ button:disabled{
     }
 }
 
+
+/* ============================================================
+   FINAL: editor 4タブ式レイアウト
+============================================================ */
+
+.editor-tabs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:0 0 18px;
+    padding:8px;
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:16px;
+}
+
+.editor-tab{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    border-radius:999px;
+    background:rgba(255,255,255,0.04);
+    color:#aaa;
+    padding:10px 14px;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.editor-tab:hover{
+    color:white;
+    background:rgba(255,255,255,0.08);
+}
+
+.editor-tab.active{
+    background:#6fa8dc;
+    color:white;
+}
+
+.editor-section{
+    display:none;
+}
+
+.editor-section.active{
+    display:block;
+}
+
+.editor-section-title{
+    font-size:18px;
+    font-weight:900;
+    margin:0 0 16px;
+    color:#f5f5f5;
+}
+
+.editor-section-note{
+    color:#999;
+    font-size:13px;
+    line-height:1.7;
+    margin:-6px 0 16px;
+}
+
+.editor-section-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-top:18px;
+}
+
+.section-next-btn{
+    width:auto !important;
+    min-width:120px;
+}
+
+.sticky-save-bar{
+    position:fixed;
+    left:240px;
+    right:0;
+    bottom:0;
+    z-index:900;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:14px 24px;
+    background:rgba(5,5,5,0.92);
+    border-top:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+}
+
+.sticky-save-bar button{
+    width:auto !important;
+    min-width:150px;
+    margin:0 !important;
+}
+
+.sticky-save-bar .sticky-save-btn{
+    background:#6fa8dc !important;
+    border-color:#6fa8dc !important;
+    font-weight:900;
+}
+
+.sticky-save-bar .sticky-save-btn:hover{
+    background:#84b7e4 !important;
+}
+
+#saveBtn,
+#clearBtn{
+    display:none !important;
+}
+
+@media(min-width:901px){
+    .form-area{
+        max-width:960px;
+    }
+
+    .editor-section.active[data-section="basic"]{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:18px;
+    }
+
+    .editor-section.active[data-section="basic"] .editor-section-title,
+    .editor-section.active[data-section="basic"] .editor-section-note,
+    .editor-section.active[data-section="basic"] .editor-section-nav{
+        grid-column:1 / -1;
+    }
+
+    .editor-section.active[data-section="review"]{
+        max-width:760px;
+    }
+}
+
+@media(max-width:900px){
+    .editor-tabs{
+        position:sticky;
+        top:0;
+        z-index:50;
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        scrollbar-width:none;
+        margin:0 -2px 16px;
+        border-radius:14px;
+    }
+
+    .editor-tabs::-webkit-scrollbar{
+        display:none;
+    }
+
+    .editor-tab{
+        flex:0 0 auto;
+        font-size:13px;
+        padding:9px 13px;
+    }
+
+    .editor-section-title{
+        font-size:17px;
+    }
+
+    .editor-section-nav{
+        margin-bottom:10px;
+    }
+
+    .section-next-btn{
+        min-width:0;
+        flex:1;
+    }
+
+    .sticky-save-bar{
+        left:0;
+        right:0;
+        bottom:72px;
+        padding:10px 12px;
+        gap:8px;
+    }
+
+    .sticky-save-bar button{
+        min-width:0;
+        flex:1;
+        padding:12px 10px;
+        font-size:14px;
+    }
+
+    body{
+        padding-bottom:170px !important;
+    }
+}
+
 </style>
 </head>
 
@@ -799,36 +987,77 @@ button:disabled{
 
             <div class="section-title">Song Form</div>
 
-            <div class="input-group">
+            <div class="editor-tabs" id="editorTabs">
+                <button type="button" class="editor-tab active" data-editor-tab="basic">基本情報</button>
+                <button type="button" class="editor-tab" data-editor-tab="impression">印象</button>
+                <button type="button" class="editor-tab" data-editor-tab="tags">タグ</button>
+                <button type="button" class="editor-tab" data-editor-tab="review">レビュー</button>
+            </div>
+
+            <section class="editor-section active" data-section="basic">
+                <h2 class="editor-section-title">基本情報</h2>
+                <p class="editor-section-note">ジャケット・曲名・アーティスト名を入力します。</p>
+<div class="input-group">
                 <label>ジャケット画像URL</label>
                 <input id="coverInput" type="text" placeholder="https://...">
             </div>
-
-            <div class="input-group">
+<div class="input-group">
                 <label>曲名</label>
                 <input id="titleInput" type="text" placeholder="例：前前前世">
             </div>
-
-            <div class="input-group">
+<div class="input-group">
                 <label>アーティスト名</label>
                 <input id="artistInput" type="text" placeholder="例：藤井風">
             </div>
-
-            <div class="input-group">
-                <label>紹介文</label>
-
-                <textarea
-                    id="descInput"
-                    maxlength="200"
-                    placeholder="紹介文を200字以内で入力"
-                ></textarea>
-
-                <div class="char-count" id="descCountBox">
-                    <span id="descCount">0</span> / 200
+                <div class="editor-section-nav">
+                    <span></span>
+                    <button type="button" class="view-btn section-next-btn" data-next-section="impression">次へ</button>
                 </div>
-            </div>
+            </section>
 
-            <div class="input-group">
+            <section class="editor-section" data-section="impression">
+                <h2 class="editor-section-title">印象メーター</h2>
+                <p class="editor-section-note">曲の印象を5段階で設定します。</p>
+<div class="input-group">
+                <div class="slider-label">
+                    <span>暗い</span><span>明るい</span>
+                </div>
+                <input id="darknessInput" type="range" min="1" max="5" value="3">
+            </div>
+<div class="input-group">
+                <div class="slider-label">
+                    <span>静か</span><span>激しい</span>
+                </div>
+                <input id="intenseInput" type="range" min="1" max="5" value="3">
+            </div>
+<div class="input-group">
+                <div class="slider-label">
+                    <span>シンプル</span><span>複雑</span>
+                </div>
+                <input id="complexInput" type="range" min="1" max="5" value="3">
+            </div>
+<div class="input-group">
+                <div class="slider-label">
+                    <span>絶望</span><span>希望</span>
+                </div>
+                <input id="hopeInput" type="range" min="1" max="5" value="3">
+            </div>
+<div class="input-group">
+                <div class="slider-label">
+                    <span>個人</span><span>世界</span>
+                </div>
+                <input id="worldInput" type="range" min="1" max="5" value="3">
+            </div>
+                <div class="editor-section-nav">
+                    <button type="button" class="view-btn section-next-btn" data-next-section="basic">戻る</button>
+                    <button type="button" class="view-btn section-next-btn" data-next-section="tags">次へ</button>
+                </div>
+            </section>
+
+            <section class="editor-section" data-section="tags">
+                <h2 class="editor-section-title">タグ</h2>
+                <p class="editor-section-note">候補から選ぶか、自由に入力できます。</p>
+<div class="input-group">
                 <label>キーワード</label>
                 <div class="keyword-help">
                     キーワードをスペースまたはカンマで区切って入力。候補をタップして追加・削除できます。
@@ -980,50 +1209,40 @@ button:disabled{
                         </div>
                     </div>
                 </div>                </div>
-            </div>
+                <div class="editor-section-nav">
+                    <button type="button" class="view-btn section-next-btn" data-next-section="impression">戻る</button>
+                    <button type="button" class="view-btn section-next-btn" data-next-section="review">次へ</button>
+                </div>
+            </section>
 
-            <div class="input-group">
+            <section class="editor-section" data-section="review">
+                <h2 class="editor-section-title">レビュー</h2>
+                <p class="editor-section-note">紹介文と公開設定を入力します。</p>
+<div class="input-group">
+                <label>紹介文</label>
+
+                <textarea
+                    id="descInput"
+                    maxlength="200"
+                    placeholder="紹介文を200字以内で入力"
+                ></textarea>
+
+                <div class="char-count" id="descCountBox">
+                    <span id="descCount">0</span> / 200
+                </div>
+            </div>
+<div class="input-group">
                 <label>公開設定</label>
                 <select id="isPublicInput">
                     <option value="true">公開</option>
                     <option value="false">非公開</option>
                 </select>
             </div>
-
-            <div class="input-group">
-                <div class="slider-label">
-                    <span>暗い</span><span>明るい</span>
+                <div class="editor-section-nav">
+                    <button type="button" class="view-btn section-next-btn" data-next-section="tags">戻る</button>
+                    <span></span>
                 </div>
-                <input id="darknessInput" type="range" min="1" max="5" value="3">
-            </div>
-
-            <div class="input-group">
-                <div class="slider-label">
-                    <span>静か</span><span>激しい</span>
-                </div>
-                <input id="intenseInput" type="range" min="1" max="5" value="3">
-            </div>
-
-            <div class="input-group">
-                <div class="slider-label">
-                    <span>シンプル</span><span>複雑</span>
-                </div>
-                <input id="complexInput" type="range" min="1" max="5" value="3">
-            </div>
-
-            <div class="input-group">
-                <div class="slider-label">
-                    <span>絶望</span><span>希望</span>
-                </div>
-                <input id="hopeInput" type="range" min="1" max="5" value="3">
-            </div>
-
-            <div class="input-group">
-                <div class="slider-label">
-                    <span>個人</span><span>世界</span>
-                </div>
-                <input id="worldInput" type="range" min="1" max="5" value="3">
-            </div>
+            </section>
 
             <button class="save-btn" id="saveBtn">
                 保存
@@ -1113,6 +1332,9 @@ const keywordSuggestions = document.getElementById("keywordSuggestions");
 const keywordCategoryTabs = document.getElementById("keywordCategoryTabs");
 const selectedKeywordPreview = document.getElementById("selectedKeywordPreview");
 const isPublicInput = document.getElementById("isPublicInput");
+const editorTabs = document.getElementById("editorTabs");
+const stickySaveBtn = document.getElementById("stickySaveBtn");
+const stickyClearBtn = document.getElementById("stickyClearBtn");
 
 const darknessInput = document.getElementById("darknessInput");
 const intenseInput = document.getElementById("intenseInput");
@@ -1236,6 +1458,70 @@ function setLoading(isLoading){
 }
 
 
+
+function showEditorSection(section){
+    const target = section || "basic";
+
+    document.querySelectorAll(".editor-tab").forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.editorTab === target);
+    });
+
+    document.querySelectorAll(".editor-section").forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.section === target);
+    });
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+if(editorTabs){
+    editorTabs.addEventListener("click", (event) => {
+        const tab = event.target.closest(".editor-tab");
+
+        if(!tab){
+            return;
+        }
+
+        event.preventDefault();
+        showEditorSection(tab.dataset.editorTab);
+    });
+}
+
+document.addEventListener("click", (event) => {
+    const nextButton = event.target.closest("[data-next-section]");
+
+    if(!nextButton){
+        return;
+    }
+
+    event.preventDefault();
+    showEditorSection(nextButton.dataset.nextSection);
+});
+
+if(stickySaveBtn){
+    stickySaveBtn.addEventListener("click", () => {
+        const saveBtn = document.getElementById("saveBtn");
+
+        if(saveBtn){
+            saveBtn.click();
+        }
+    });
+}
+
+if(stickyClearBtn){
+    stickyClearBtn.addEventListener("click", () => {
+        const clearBtn = document.getElementById("clearBtn");
+
+        if(clearBtn){
+            clearBtn.click();
+        }
+
+        showEditorSection("basic");
+    });
+}
+
 function parseKeywords(value){
     return String(value || "")
         .split(/[\s,、#]+/)
@@ -1266,6 +1552,7 @@ function setKeywords(keywords){
     keywordsInput.value = unique.join(" ");
     syncKeywordCandidates();
 showKeywordCategory("emotion");
+showEditorSection("basic");
 }
 
 function getCurrentKeywords(){
@@ -1792,6 +2079,13 @@ updateDescCount();
 syncKeywordCandidates();
 
 </script>
+
+
+<div class="sticky-save-bar">
+    <button type="button" class="save-btn sticky-save-btn" id="stickySaveBtn">保存する</button>
+    <button type="button" class="view-btn" onclick="location.href='./index.html'">ホームへ</button>
+    <button type="button" class="clear-btn" id="stickyClearBtn">クリア</button>
+</div>
 
 </body>
 </html>
