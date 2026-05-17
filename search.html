@@ -253,11 +253,21 @@
     }
 
     .keyword{
+      appearance:none;
+      -webkit-appearance:none;
+      border:0;
+      cursor:pointer;
+      font-family:inherit;
       padding:4px 9px;
       border-radius:999px;
       background:rgba(255,255,255,0.08);
       color:rgba(255,255,255,0.76);
       font-size:12px;
+    }
+
+    .keyword:hover{
+      background:rgba(111,168,220,0.22);
+      color:white;
     }
 
     .meta{
@@ -873,14 +883,25 @@
         list = keywords;
       }else if(typeof keywords === "string"){
         list = keywords
-          .split(/[、,\s]+/)
+          .split(/[、,\s#]+/)
           .map((item) => item.trim())
           .filter(Boolean);
       }
 
       return list
         .slice(0, 6)
-        .map((keyword) => `<span class="keyword">${escapeHtml(keyword)}</span>`)
+        .map((keyword) => {
+          const safeKeyword = escapeHtml(keyword);
+          const encodedKeyword = encodeURIComponent(keyword);
+
+          return `
+            <button
+              type="button"
+              class="keyword"
+              data-keyword="${encodedKeyword}"
+            >#${safeKeyword}</button>
+          `;
+        })
         .join("");
     }
 
@@ -1111,6 +1132,30 @@
     });
 
     searchInput.addEventListener("input", () => {
+      filterAlbums();
+    });
+
+    resultsEl.addEventListener("click", (event) => {
+      const keywordButton = event.target.closest(".keyword");
+
+      if(!keywordButton){
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const keyword = decodeURIComponent(keywordButton.dataset.keyword || "").trim();
+
+      if(!keyword){
+        return;
+      }
+
+      searchInput.value = keyword;
+
+      const newUrl = `${location.pathname}?q=${encodeURIComponent(keyword)}`;
+      history.pushState(null, "", newUrl);
+
       filterAlbums();
     });
 
