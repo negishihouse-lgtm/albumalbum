@@ -229,6 +229,48 @@ body{
     gap:12px;
 }
 
+.keyword-category-tabs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+}
+
+.keyword-category-tab{
+    appearance:none;
+    -webkit-appearance:none;
+    width:auto;
+    margin:0;
+    padding:8px 12px;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:999px;
+    background:rgba(255,255,255,0.03);
+    color:#bbb;
+    font-size:13px;
+    line-height:1;
+    cursor:pointer;
+}
+
+.keyword-category-tab:hover{
+    border-color:rgba(111,168,220,0.65);
+    color:white;
+}
+
+.keyword-category-tab.active{
+    background:#6fa8dc;
+    border-color:#6fa8dc;
+    color:white;
+    font-weight:700;
+}
+
+.keyword-category{
+    display:none;
+}
+
+.keyword-category.active{
+    display:block;
+}
+
 .keyword-category{
     background:#101010;
     border:1px solid rgba(255,255,255,0.08);
@@ -797,8 +839,16 @@ button:disabled{
 
                 <div class="selected-keyword-preview" id="selectedKeywordPreview"></div>
 
+                <div class="keyword-category-tabs" id="keywordCategoryTabs">
+                    <button type="button" class="keyword-category-tab active" data-category="emotion">感情</button>
+                    <button type="button" class="keyword-category-tab" data-category="mood">雰囲気</button>
+                    <button type="button" class="keyword-category-tab" data-category="sound">音楽性</button>
+                    <button type="button" class="keyword-category-tab" data-category="scene">用途</button>
+                    <button type="button" class="keyword-category-tab" data-category="genre">ジャンル</button>
+                </div>
+
                 <div class="keyword-suggestions" id="keywordSuggestions">
-                    <div class="keyword-category">
+                    <div class="keyword-category active" data-category-panel="emotion">
                         <div class="keyword-category-title">感情</div>
                         <div class="keyword-candidate-list">
                             <button type="button" class="keyword-candidate" data-keyword="エモい">#エモい</button>
@@ -810,7 +860,7 @@ button:disabled{
                         </div>
                     </div>
 
-                    <div class="keyword-category">
+                    <div class="keyword-category" data-category-panel="mood">
                         <div class="keyword-category-title">雰囲気</div>
                         <div class="keyword-candidate-list">
                             <button type="button" class="keyword-candidate" data-keyword="夜">#夜</button>
@@ -822,7 +872,7 @@ button:disabled{
                         </div>
                     </div>
 
-                    <div class="keyword-category">
+                    <div class="keyword-category" data-category-panel="sound">
                         <div class="keyword-category-title">音楽性</div>
                         <div class="keyword-candidate-list">
                             <button type="button" class="keyword-candidate" data-keyword="疾走感">#疾走感</button>
@@ -834,7 +884,7 @@ button:disabled{
                         </div>
                     </div>
 
-                    <div class="keyword-category">
+                    <div class="keyword-category" data-category-panel="scene">
                         <div class="keyword-category-title">用途</div>
                         <div class="keyword-candidate-list">
                             <button type="button" class="keyword-candidate" data-keyword="散歩">#散歩</button>
@@ -845,7 +895,7 @@ button:disabled{
                         </div>
                     </div>
 
-                    <div class="keyword-category">
+                    <div class="keyword-category" data-category-panel="genre">
                         <div class="keyword-category-title">ジャンル</div>
                         <div class="keyword-candidate-list">
                             <button type="button" class="keyword-candidate" data-keyword="邦ロック">#邦ロック</button>
@@ -855,7 +905,7 @@ button:disabled{
                             <button type="button" class="keyword-candidate" data-keyword="ポストパンク">#ポストパンク</button>
                         </div>
                     </div>
-                </div>
+                </div>                </div>
             </div>
 
             <div class="input-group">
@@ -986,6 +1036,7 @@ const artistInput = document.getElementById("artistInput");
 const descInput = document.getElementById("descInput");
 const keywordsInput = document.getElementById("keywordsInput");
 const keywordSuggestions = document.getElementById("keywordSuggestions");
+const keywordCategoryTabs = document.getElementById("keywordCategoryTabs");
 const selectedKeywordPreview = document.getElementById("selectedKeywordPreview");
 const isPublicInput = document.getElementById("isPublicInput");
 
@@ -1140,6 +1191,7 @@ function setKeywords(keywords){
     const unique = uniqueKeywords(keywords);
     keywordsInput.value = unique.join(" ");
     syncKeywordCandidates();
+showKeywordCategory("emotion");
 }
 
 function getCurrentKeywords(){
@@ -1179,6 +1231,36 @@ function syncKeywordCandidates(){
                 .join("");
         }
     }
+}
+
+
+function showKeywordCategory(category){
+    if(!keywordCategoryTabs || !keywordSuggestions){
+        return;
+    }
+
+    keywordCategoryTabs.querySelectorAll(".keyword-category-tab").forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.category === category);
+    });
+
+    keywordSuggestions.querySelectorAll(".keyword-category").forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.categoryPanel === category);
+    });
+}
+
+if(keywordCategoryTabs){
+    keywordCategoryTabs.addEventListener("click", (event) => {
+        const tab = event.target.closest(".keyword-category-tab");
+
+        if(!tab){
+            return;
+        }
+
+        event.preventDefault();
+
+        const category = tab.dataset.category || "emotion";
+        showKeywordCategory(category);
+    });
 }
 
 if(keywordSuggestions){
