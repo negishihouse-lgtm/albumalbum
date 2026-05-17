@@ -871,6 +871,84 @@ body{
     }
 }
 
+
+/* ============================================================
+   FINAL: index準拠 スマホ下部タブバー
+   - 絵文字アイコンを廃止
+   - indexと同じ ⌂ / ⌕ / ＋ / ♡ / アイコン画像or◯
+   - スマホでは右下FABを非表示
+============================================================ */
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+@media(max-width:900px){
+    .mobile-tabbar{
+        display:grid !important;
+        position:fixed !important;
+        left:0 !important;
+        right:0 !important;
+        bottom:0 !important;
+        height:72px !important;
+        background:rgba(8,8,8,0.96) !important;
+        border-top:1px solid rgba(255,255,255,0.12) !important;
+        grid-template-columns:repeat(5,1fr) !important;
+        z-index:9999 !important;
+        backdrop-filter:blur(14px) !important;
+        -webkit-backdrop-filter:blur(14px) !important;
+        padding-bottom:env(safe-area-inset-bottom) !important;
+    }
+
+    .mobile-tabbar a{
+        height:72px !important;
+        color:#9ca6ac !important;
+        text-decoration:none !important;
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:center !important;
+        justify-content:center !important;
+        gap:4px !important;
+        font-size:11px !important;
+        flex:1 !important;
+    }
+
+    .mobile-tabbar a.active{
+        color:#ffffff !important;
+        font-weight:700 !important;
+    }
+
+    .mobile-tabbar .icon{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    .fab,
+    .floating-post-btn,
+    .post-fab{
+        display:none !important;
+    }
+}
+
 </style>
 </head>
 
@@ -899,28 +977,29 @@ body{
     
 <nav class="mobile-tabbar">
     <a href="index.html">
-        <div class="icon">🏠</div>
-        <div>ホーム</div>
+        <span class="icon">⌂</span>
+        <span class="label">ホーム</span>
     </a>
 
     <a href="search.html">
-        <div class="icon">🔍</div>
-        <div>検索</div>
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
     </a>
 
     <a href="editor.html">
-        <div class="icon">➕</div>
-        <div>投稿</div>
+        <span class="icon">＋</span>
+        <span class="label">投稿</span>
     </a>
 
     <a href="notifications.html">
-        <div class="icon">🔔</div>
-        <div>通知</div>
+        <span class="icon">♡</span>
+        <span class="label">通知</span>
     </a>
 
     <a id="mobileMyPageLink" href="login.html" class="active">
-        <div class="icon">👤</div>
-        <div>マイページ</div>
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">マイページ</span>
     </a>
 </nav>
 
@@ -1023,6 +1102,8 @@ const followerCount = document.getElementById("followerCount");
 const followingLink = document.getElementById("followingLink");
 const followerLink = document.getElementById("followerLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 const ownerNotice = document.getElementById("ownerNotice");
 const profileEditBtn = document.getElementById("profileEditBtn");
 const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
@@ -1055,6 +1136,70 @@ function getUserDisplayNameFromData(data){
         data.name ||
         ""
     );
+}
+
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
+
+async function updateMobileMyPageTab(user){
+    if(!mobileMyPageLink){
+        return;
+    }
+
+    if(!user){
+        mobileMyPageLink.href = "login.html";
+
+        if(mobileMyPageAvatar){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+            mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+    }
+
+    mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+
+    try{
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+
+        if(!userSnap.exists()){
+            return;
+        }
+
+        const iconUrl = getUserIconUrl(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.src = iconUrl;
+            mobileMyPageAvatar.style.display = "block";
+            mobileMyPageFallback.style.display = "none";
+
+            mobileMyPageAvatar.onerror = () => {
+                mobileMyPageAvatar.style.display = "none";
+                mobileMyPageFallback.style.display = "flex";
+            };
+        }else if(mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageFallback.style.display = "flex";
+        }
+    }catch(error){
+        console.warn("マイページアイコンの取得に失敗しました", error);
+    }
 }
 
 async function getCurrentUserName(db, currentUser){
@@ -1690,6 +1835,7 @@ if(followerLink){
 }
 
 onAuthStateChanged(auth, async (user) => {
+    updateMobileMyPageTab(user);
     currentUser = user;
 
     if (!uid && currentUser) {
