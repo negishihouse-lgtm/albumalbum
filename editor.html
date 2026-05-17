@@ -644,11 +644,6 @@ button:disabled{
 
             <div class="login-status" id="loginStatus">ログイン状態を確認中...</div>
 
-            <div class="notice">
-                過去の投稿を編集・削除する場合は、マイページから自分の投稿を開いてください。
-                自分の投稿には「編集」「削除」ボタンが表示される想定です。
-            </div>
-
             <div class="loading-box" id="loadingBox" style="display:none;">
                 投稿データを読み込み中...
             </div>
@@ -1025,7 +1020,10 @@ function getFormData(){
         title: titleInput.value.trim(),
         artist: artistInput.value.trim(),
         desc: descText,
-        keywords: keywordsInput.value.trim(),
+        keywords: keywordsInput.value
+            .split(/[\s,、#]+/)
+            .map(keyword => keyword.trim())
+            .filter(Boolean),
         isPublic: isPublicInput.value === "true",
         darkness: Number(darknessInput.value),
         intense: Number(intenseInput.value),
@@ -1052,7 +1050,11 @@ function setFormData(album){
     titleInput.value = album.title || "";
     artistInput.value = album.artist || "";
     descInput.value = (album.desc || "").slice(0, 200);
-    keywordsInput.value = album.keywords || "";
+    if(Array.isArray(album.keywords)){
+        keywordsInput.value = album.keywords.join(", ");
+    }else{
+        keywordsInput.value = album.keywords || "";
+    }
     isPublicInput.value = album.isPublic === false ? "false" : "true";
 
     darknessInput.value = album.darkness || 3;
