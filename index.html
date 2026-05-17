@@ -1627,20 +1627,6 @@ function normalizeKeywords(value){
     return [];
 }
 
-
-function goKeywordSearch(keyword){
-    const q = String(keyword ?? "").trim();
-
-    if(!q){
-        return false;
-    }
-
-    location.href = `search.html?q=${encodeURIComponent(q)}`;
-    return false;
-}
-
-window.goKeywordSearch = goKeywordSearch;
-
 function renderKeywordTags(value){
     const keywords = normalizeKeywords(value);
 
@@ -1656,11 +1642,31 @@ function renderKeywordTags(value){
             <button
                 type="button"
                 class="keyword-tag"
-                onclick="event.preventDefault(); event.stopPropagation(); return goKeywordSearch('${encodedKeyword}');"
+                data-keyword="${encodedKeyword}"
             >#${safeKeyword}</button>
         `;
     }).join("");
 }
+
+document.addEventListener("click", (event) => {
+    const keywordButton = event.target.closest(".keyword-tag");
+
+    if(!keywordButton){
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const keyword = decodeURIComponent(keywordButton.dataset.keyword || "").trim();
+
+    if(!keyword){
+        return;
+    }
+
+    location.href = `./search.html?q=${encodeURIComponent(keyword)}`;
+}, true);
 
 function albumCardHTML(item, posterName){
     const a = item.data;
