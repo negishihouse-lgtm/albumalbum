@@ -815,20 +815,6 @@ button:disabled{
             </div>
 
             <div class="input-group">
-                <label>紹介文</label>
-
-                <textarea
-                    id="descInput"
-                    maxlength="200"
-                    placeholder="紹介文を200字以内で入力"
-                ></textarea>
-
-                <div class="char-count" id="descCountBox">
-                    <span id="descCount">0</span> / 200
-                </div>
-            </div>
-
-            <div class="input-group">
                 <label>キーワード</label>
                 <div class="keyword-help">
                     キーワードをスペースまたはカンマで区切って入力。候補をタップして追加・削除できます。
@@ -979,7 +965,21 @@ button:disabled{
                             <button type="button" class="keyword-candidate" data-keyword="令和">#令和</button>
                         </div>
                     </div>
-                </div>                </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>紹介文</label>
+
+                <textarea
+                    id="descInput"
+                    maxlength="200"
+                    placeholder="紹介文を200字以内で入力"
+                ></textarea>
+
+                <div class="char-count" id="descCountBox">
+                    <span id="descCount">0</span> / 200
+                </div>
             </div>
 
             <div class="input-group">
