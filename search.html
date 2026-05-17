@@ -1035,7 +1035,11 @@
         if(initialQuery){
           filterAlbums();
         }else{
+          if(initialQuery){
+          filterAlbums();
+        }else{
           renderAlbums(publicAlbums, "");
+        }
         }
         return;
       }
