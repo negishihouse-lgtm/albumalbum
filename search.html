@@ -3,325 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profile - Album Collection</title>
+<title>Album Collection</title>
 
 <style>
+/* ============================================================
+   Album Collection index.html
+   CSS整理・安定版
+   - PC版：2列カード / 左に投稿情報 / 右にメーター
+   - スマホ版：1列表示 / カード内部はPC版に近い横型
+   - メーター色：Pale Ice
+   - 追加styleの多重上書きなし
+============================================================ */
+
+:root{
+    --bg:#050505;
+    --panel:#080909;
+    --panel-2:#0b0d0e;
+    --border:rgba(255,255,255,0.15);
+    --border-soft:rgba(255,255,255,0.10);
+
+    --text:#ffffff;
+    --text-soft:#dce3e6;
+    --muted:#aab3b8;
+
+    --accent:#9fcdd9;
+    --accent-hover:#b7dfe7;
+
+    --pale-1:#7faebb;
+    --pale-2:#9bc7d0;
+    --pale-3:#b9dde3;
+    --pale-4:#d7edf0;
+    --pale-5:#edf8f9;
+
+    --meter-off:#48555b;
+    --meter-line-off:#333d42;
+}
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
+html,
 body{
-    background:#050505;
-    color:white;
-    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    padding-bottom:120px;
+    min-height:100%;
 }
 
-.wrapper{
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Noto Sans JP",sans-serif;
+    padding:38px 30px 120px 252px;
+}
+
+a{
+    color:inherit;
+}
+
+/* ===== Header ===== */
+
+.topbar{
     display:flex;
-    min-height:100vh;
-}
-
-/* ===== PC用サイドバー ===== */
-.sidebar{
-    width:280px;
-    background:#0b0b0b;
-    border-right:1px solid rgba(255,255,255,0.1);
-    padding:30px 20px;
-    position:fixed;
-    top:0;
-    left:0;
-    height:100vh;
-    z-index:100;
-}
-
-.sidebar-title{
-    font-size:26px;
-    font-weight:800;
-    margin-bottom:28px;
-}
-
-.side-menu button{
-    width:100%;
-    padding:14px 16px;
-    margin-bottom:8px;
-    border:none;
-    border-radius:10px;
-    background:transparent;
-    color:white;
-    cursor:pointer;
-    font-size:15px;
-    text-align:left;
-}
-
-.side-menu button:hover{
-    background:#1a1a1a;
-}
-
-.side-menu .active{
-    background:#6fa8dc;
-}
-
-#sideProfileEditBtn{
-    display:none;
-}
-
-/* ===== スマホ用下部タブバー ===== */
-.mobile-tabbar{
-    display:none;
-}
-
-.mobile-tabbar a{
-    color:#999;
-    text-decoration:none;
-    display:flex;
-    flex-direction:column;
+    justify-content:space-between;
     align-items:center;
-    justify-content:center;
-    gap:4px;
-    font-size:11px;
-    flex:1;
+    margin-bottom:26px;
 }
 
-.mobile-tabbar a.active{
-    color:#6fa8dc;
-}
-
-.mobile-tabbar .icon{
-    font-size:22px;
-    line-height:1;
-}
-
-/* ===== 右下投稿ボタン ===== */
-.fab{
-    position:fixed;
-    right:24px;
-    bottom:24px;
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    background:#6fa8dc;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:36px;
-    text-decoration:none;
-    box-shadow:0 8px 24px rgba(0,0,0,0.45);
-    z-index:1000;
-}
-
-.fab:hover{
-    background:#84b7e4;
-}
-
-/* ===== メイン ===== */
-.main{
-    flex:1;
-    margin-left:280px;
-    padding:40px;
-}
-
-.profile-header{
-    margin-bottom:34px;
-    padding-bottom:24px;
-    border-bottom:1px solid rgba(255,255,255,0.1);
-}
-
-.profile-name{
+.page-title{
     font-size:42px;
-    font-weight:800;
-    margin-bottom:10px;
+    font-weight:900;
+    letter-spacing:-0.045em;
 }
 
-.profile-email{
-    display:none;
-}
+/* ===== Layout ===== */
 
-.follow-stats{
-    display:flex;
-    gap:18px;
-    color:#ddd;
-    margin-bottom:20px;
-    font-size:15px;
-}
-
-.follow-stat-link{
-    background:none;
-    border:none;
-    color:#ddd;
-    padding:0;
-    font:inherit;
-    cursor:pointer;
-}
-
-.follow-stat-link:hover{
-    color:white;
-    text-decoration:underline;
-}
-
-.profile-actions{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    align-items:center;
-}
-
-.follow-btn{
-    background:#6fa8dc;
-    color:white;
-    border:none;
-    border-radius:10px;
-    padding:12px 20px;
-    font-size:16px;
-    cursor:pointer;
-}
-
-.follow-btn:hover{
-    background:#84b7e4;
-}
-
-.follow-btn:disabled{
-    opacity:0.6;
-    cursor:not-allowed;
-}
-
-.profile-edit-btn{
-    display:none;
-    background:#333;
-    color:white;
-    border:none;
-    border-radius:10px;
-    padding:12px 20px;
-    font-size:16px;
-    cursor:pointer;
-}
-
-.profile-edit-btn:hover{
-    background:#444;
-}
-
-.mobile-logout-btn{
-    display:none;
-    background:#522;
-    color:white;
-    border:none;
-    border-radius:10px;
-    padding:12px 20px;
-    font-size:16px;
-    cursor:pointer;
-}
-
-.mobile-logout-btn:hover{
-    background:#733;
-}
-
-.owner-notice{
-    display:none;
-    color:#aaa;
-    font-size:14px;
-    line-height:1.7;
-    background:#0b0b0b;
-    border:1px solid rgba(255,255,255,0.12);
-    border-radius:14px;
-    padding:14px;
-    margin-bottom:22px;
-}
-
-/* ===== 投稿カード ===== */
 .album-grid{
     display:grid;
     grid-template-columns:repeat(2, minmax(0, 1fr));
     gap:24px;
-    max-width:1400px;
+    max-width:1230px;
+    margin:0;
 }
 
 .album-card{
-    background:#0b0b0b;
-    border:1px solid rgba(255,255,255,0.14);
+    background:#070808;
+    border:1px solid var(--border);
     border-radius:18px;
     padding:18px;
     cursor:pointer;
     overflow:hidden;
+    display:grid;
+    grid-template-columns:200px minmax(0, 1fr);
+    gap:20px;
+    align-items:stretch;
+    box-shadow:none;
 }
 
 .album-card:hover{
-    border-color:rgba(111,168,220,0.55);
+    border-color:rgba(159,205,217,0.42);
+    transform:translateY(-1px);
+    transition:0.18s ease;
 }
 
-.card-top{
-    display:grid;
-    grid-template-columns:120px 1fr 260px;
-    gap:18px;
-    align-items:start;
-}
+/* ===== Left side ===== */
 
-.cover-wrap{
+.album-main{
     min-width:0;
-}
-
-.cover{
-    width:100%;
-    aspect-ratio:1/1;
-    object-fit:cover;
-    background:#111;
-    border-radius:10px;
-    border:1px solid rgba(255,255,255,0.18);
     display:block;
 }
 
-.album-info,
-.album-analysis{
+.cover{
+    width:160px;
+    height:160px;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    background:#111;
+    display:block;
+    border:1px solid rgba(255,255,255,0.16);
+    border-radius:4px;
+    margin:0 0 12px 0;
+}
+
+.album-text{
     min-width:0;
 }
 
-.title-row{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-bottom:6px;
-}
-
 .title{
-    font-size:24px;
-    font-weight:800;
-    line-height:1.2;
+    font-size:25px;
+    font-weight:900;
+    line-height:1.06;
+    letter-spacing:-0.045em;
+    margin-bottom:5px;
     word-break:break-word;
-}
 
-.private-badge{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    padding:4px 8px;
-    border-radius:999px;
-    background:#333;
-    color:#ddd;
-    font-size:11px;
-    font-weight:700;
-    white-space:nowrap;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
 }
 
 .artist{
-    color:#6fa8dc;
-    font-size:18px;
-    margin-bottom:8px;
+    color:var(--accent);
+    font-size:15px;
+    font-weight:800;
+    line-height:1.25;
+    margin-bottom:6px;
     word-break:break-word;
 }
 
+.meta{
+    color:#c5cbd0;
+    font-size:11px;
+    line-height:1.35;
+    margin-bottom:8px;
+    word-break:break-word;
+
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.description{
+    color:var(--text-soft);
+    font-size:11.5px;
+    line-height:1.58;
+    margin-bottom:8px;
+    word-break:break-word;
+
+    display:-webkit-box;
+    -webkit-line-clamp:4;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
 .creator{
-    margin-bottom:10px;
-    color:#ccc;
-    font-size:14px;
-    line-height:1.5;
+    color:var(--muted);
+    font-size:11.5px;
+    line-height:1.45;
+    margin-bottom:7px;
     word-break:break-word;
 }
 
 .creator a{
-    color:#6fa8dc;
+    color:var(--accent);
     text-decoration:none;
 }
 
@@ -332,9 +198,9 @@ body{
 .reaction-row{
     display:flex;
     align-items:center;
-    gap:16px;
-    color:#aaa;
-    font-size:14px;
+    gap:10px;
+    color:#b6c0c4;
+    font-size:11.5px;
     flex-wrap:wrap;
 }
 
@@ -347,78 +213,63 @@ body{
 .like-btn{
     background:none;
     border:none;
-    color:#aaa;
+    color:#b6c0c4;
     padding:0;
-    font-size:20px;
+    font-size:16px;
     cursor:pointer;
+    line-height:1;
 }
 
-.like-btn:hover{
-    color:white;
-}
-
+.like-btn:hover,
 .like-btn.liked{
     color:white;
 }
 
 .like-count,
 .comment-count{
-    font-size:14px;
-    color:#aaa;
+    font-size:11.5px;
+    color:#b6c0c4;
 }
 
-.owner-actions{
-    display:flex;
-    gap:8px;
-    margin-top:14px;
-    flex-wrap:wrap;
-}
+/* ===== Right side: meter panel ===== */
 
-.owner-actions button{
-    border:none;
-    border-radius:10px;
-    padding:9px 12px;
-    color:white;
-    cursor:pointer;
-    font-size:13px;
-}
-
-.edit-post-btn{
-    background:#555;
-}
-
-.edit-post-btn:hover{
-    background:#666;
-}
-
-.delete-post-btn{
-    background:#733;
-}
-
-.delete-post-btn:hover{
-    background:#944;
-}
-
-.meter-area{
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:14px;
-    padding:12px;
+.album-analysis{
     min-width:0;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+
+    border:1px solid rgba(255,255,255,0.13);
+    border-radius:14px;
+    padding:17px 14px 14px;
+    background:#070808;
+}
+
+.meter-list{
+    display:block;
 }
 
 .meter{
     display:grid;
-    grid-template-columns:46px minmax(0,1fr) 46px;
+    grid-template-columns:52px minmax(0,1fr) 58px;
     align-items:center;
-    gap:6px;
-    margin-bottom:10px;
+    gap:10px;
+    margin-bottom:26px;
     min-width:0;
+    width:100%;
+}
+
+.meter:last-of-type{
+    margin-bottom:0;
 }
 
 .meter-label{
-    font-size:11px;
-    font-weight:700;
-    color:#e8e8e8;
+    color:#f3f7f8;
+    font-size:13px;
+    font-weight:800;
+    line-height:1;
     white-space:nowrap;
 }
 
@@ -435,1193 +286,84 @@ body{
 }
 
 .dot{
-    width:8px;
-    height:8px;
+    width:16px;
+    height:16px;
     border-radius:50%;
-    border:2px solid #555;
-    background:#0b0b0b;
-    flex-shrink:0;
+    border:2px solid var(--meter-off);
+    background:transparent;
+    flex:0 0 16px;
 }
 
 .connector{
-    height:2px;
-    background:#4a5158;
+    height:1px;
+    background:var(--meter-line-off);
     flex:1;
-    min-width:0;
+    min-width:8px;
 }
 
+/* Pale Ice gradient */
 .dot.active.level-1,
 .connector.active.level-1{
-    background:#3f8ec7;
-    border-color:#3f8ec7;
+    background:var(--pale-1);
+    border-color:var(--pale-1);
 }
 
 .dot.active.level-2,
 .connector.active.level-2{
-    background:#4d9bd0;
-    border-color:#4d9bd0;
+    background:var(--pale-2);
+    border-color:var(--pale-2);
 }
 
 .dot.active.level-3,
 .connector.active.level-3{
-    background:#5fa7d8;
-    border-color:#5fa7d8;
+    background:var(--pale-3);
+    border-color:var(--pale-3);
 }
 
 .dot.active.level-4,
 .connector.active.level-4{
-    background:#73b6e3;
-    border-color:#73b6e3;
+    background:var(--pale-4);
+    border-color:var(--pale-4);
 }
 
-.dot.active.level-5{
-    background:#8bc8ef;
-    border-color:#8bc8ef;
+.dot.active.level-5,
+.connector.active.level-5{
+    background:var(--pale-5);
+    border-color:var(--pale-5);
+}
+
+.dot.active{
+    box-shadow:0 0 16px rgba(159,205,217,0.14);
 }
 
 .keyword-box{
-    margin-top:10px;
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:12px;
-    padding:10px;
+    margin-top:14px;
+    border:1px solid var(--border-soft);
+    border-radius:8px;
+    padding:9px 10px;
+
+    display:grid;
+    grid-template-columns:62px minmax(0,1fr);
+    gap:10px;
+    align-items:start;
 }
 
 .keyword-title{
-    color:#6fa8dc;
-    font-size:12px;
-    font-weight:700;
-    margin-bottom:4px;
+    color:var(--accent);
+    font-size:11px;
+    font-weight:800;
 }
 
 .keyword-text{
-    color:#ddd;
-    font-size:12px;
+    color:#dde6e8;
+    font-size:10.5px;
     line-height:1.5;
     word-break:break-word;
-}
 
-.description{
-    color:#ddd;
-    font-size:14px;
-    line-height:1.7;
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1px solid rgba(255,255,255,0.1);
-    word-break:break-word;
-}
-
-.empty{
-    color:#777;
-    font-size:24px;
-}
-
-/* ===== タブレット以下 ===== */
-@media(max-width:1300px){
-    .album-grid{
-        grid-template-columns:1fr;
-    }
-}
-
-/* ===== スマホUI ===== */
-@media(min-width:901px){
-    .mobile-logout-btn{
-        display:none !important;
-    }
-}
-
-@media(max-width:900px){
-    body{
-        padding-bottom:110px;
-    }
-
-    .wrapper{
-        display:block;
-    }
-
-    .sidebar{
-        display:none;
-    }
-
-    .mobile-tabbar{
-        display:flex;
-        position:fixed;
-        left:0;
-        right:0;
-        bottom:0;
-        height:72px;
-        background:#0b0b0b;
-        border-top:1px solid rgba(255,255,255,0.1);
-        z-index:999;
-        padding-bottom:env(safe-area-inset-bottom);
-    }
-
-    .main{
-        margin-left:0;
-        padding:16px;
-    }
-
-    .profile-header{
-        margin-bottom:20px;
-        padding-bottom:18px;
-    }
-
-    .profile-name{
-        font-size:30px;
-    }
-
-    .profile-email{
-        display:none;
-    }
-
-    .follow-stats{
-        font-size:13px;
-        gap:14px;
-    }
-
-    .profile-actions{
-        gap:8px;
-    }
-
-    .follow-btn,
-    .profile-edit-btn,
-    .mobile-logout-btn{
-        font-size:14px;
-        padding:10px 16px;
-    }
-
-    .mobile-logout-btn{
-        display:inline-block;
-    }
-
-    .owner-notice{
-        font-size:12px;
-        margin-bottom:16px;
-    }
-
-    .album-grid{
-        grid-template-columns:1fr;
-        gap:14px;
-    }
-
-    .album-card{
-        padding:14px;
-        border-radius:14px;
-    }
-
-    .card-top{
-        grid-template-columns:72px minmax(0,1fr) 120px;
-        gap:10px;
-        align-items:start;
-    }
-
-    .title{
-        font-size:16px;
-        margin-bottom:0;
-        line-height:1.3;
-    }
-
-    .private-badge{
-        font-size:9px;
-        padding:3px 6px;
-    }
-
-    .artist{
-        font-size:13px;
-        margin-bottom:4px;
-    }
-
-    .creator{
-        font-size:11px;
-        margin-bottom:6px;
-        line-height:1.4;
-    }
-
-    .reaction-row{
-        gap:8px;
-        font-size:11px;
-    }
-
-    .like-btn{
-        font-size:16px;
-    }
-
-    .like-count,
-    .comment-count{
-        font-size:11px;
-    }
-
-    .owner-actions{
-        gap:6px;
-        margin-top:10px;
-    }
-
-    .owner-actions button{
-        padding:7px 9px;
-        font-size:11px;
-        border-radius:8px;
-    }
-
-    .meter-area{
-        padding:8px;
-    }
-
-    .meter{
-        grid-template-columns:26px minmax(0,1fr) 26px;
-        gap:3px;
-        margin-bottom:5px;
-    }
-
-    .meter-label{
-        font-size:8px;
-    }
-
-    .dot{
-        width:5px;
-        height:5px;
-        border-width:1px;
-    }
-
-    .connector{
-        height:1px;
-    }
-
-    .keyword-box{
-        margin-top:6px;
-        padding:6px;
-    }
-
-    .keyword-title{
-        font-size:9px;
-        margin-bottom:2px;
-    }
-
-    .keyword-text{
-        font-size:9px;
-        line-height:1.3;
-    }
-
-    .description{
-        font-size:12px;
-        line-height:1.6;
-        margin-top:10px;
-        padding-top:10px;
-    }
-
-    .fab{
-        right:16px;
-        bottom:88px;
-        width:58px;
-        height:58px;
-        font-size:32px;
-    }
-}
-
-/* かなり狭いスマホ用 */
-@media(max-width:390px){
-    .card-top{
-        grid-template-columns:64px minmax(0,1fr) 110px;
-        gap:8px;
-    }
-
-    .title{
-        font-size:15px;
-    }
-
-    .artist{
-        font-size:12px;
-    }
-
-    .meter-area{
-        padding:6px;
-    }
-
-    .meter{
-        grid-template-columns:24px minmax(0,1fr) 24px;
-    }
-
-    .meter-label{
-        font-size:7px;
-    }
-
-    .keyword-text{
-        font-size:8px;
-    }
-}
-
-/* ===== 共通PCサイドバー ===== */
-.sidebar{
-    position:fixed;
-    top:0;
-    left:0;
-    width:240px;
-    height:100vh;
-    background:#0b0b0b;
-    border-right:1px solid rgba(255,255,255,0.1);
-    padding:30px 20px;
-    overflow-y:auto;
-    z-index:100;
-}
-
-.logo{
-    font-size:28px;
-    font-weight:700;
-    margin-bottom:30px;
-}
-
-.sidebar a{
-    display:block;
-    color:white;
-    text-decoration:none;
-    padding:14px 16px;
-    margin-bottom:8px;
-    border-radius:10px;
-    font-size:15px;
-}
-
-.sidebar a:hover,
-.sidebar a.active{
-    background:#1a1a1a;
-}
-
-.sidebar a.active{
-    color:#6fa8dc;
-}
-
-/* ===== 共通スマホ下部タブバー ===== */
-.mobile-tabbar{
-    display:none;
-}
-
-.mobile-tabbar a{
-    color:#999;
-    text-decoration:none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    font-size:11px;
-    flex:1;
-}
-
-.mobile-tabbar a.active{
-    color:#6fa8dc;
-}
-
-.mobile-tabbar .icon{
-    font-size:22px;
-    line-height:1;
-}
-
-/* ===== 共通右下投稿ボタン ===== */
-.fab{
-    position:fixed;
-    right:24px;
-    bottom:24px;
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    background:#6fa8dc;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:36px;
-    text-decoration:none;
-    box-shadow:0 8px 24px rgba(0,0,0,0.45);
-    z-index:1000;
-}
-
-.fab:hover{
-    background:#84b7e4;
-}
-
-@media(max-width:900px){
-    body{
-        padding-left:16px !important;
-        padding-right:16px !important;
-        padding-bottom:110px !important;
-    }
-
-    .sidebar{
-        display:none;
-    }
-
-    .mobile-tabbar{
-        display:flex;
-        position:fixed;
-        left:0;
-        right:0;
-        bottom:0;
-        height:72px;
-        background:#0b0b0b;
-        border-top:1px solid rgba(255,255,255,0.1);
-        z-index:999;
-        padding-bottom:env(safe-area-inset-bottom);
-    }
-
-    .fab{
-        right:16px;
-        bottom:88px;
-        width:58px;
-        height:58px;
-        font-size:32px;
-    }
-}
-
-
-/* ============================================================
-   FINAL: index準拠 スマホ下部タブバー
-   - 絵文字アイコンを廃止
-   - indexと同じ ⌂ / ⌕ / ＋ / ♡ / アイコン画像or◯
-   - スマホでは右下FABを非表示
-============================================================ */
-.mobile-tabbar .label{
-    line-height:1;
-    white-space:nowrap;
-}
-
-.mobile-tabbar .tab-avatar{
-    width:28px;
-    height:28px;
-    border-radius:50%;
-    object-fit:cover;
-    background:#111;
-    border:1px solid rgba(255,255,255,0.35);
-    display:none;
-}
-
-.mobile-tabbar .mypage-icon-text{
-    font-size:22px;
-    line-height:1;
-    height:24px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-@media(max-width:900px){
-    .mobile-tabbar{
-        display:grid !important;
-        position:fixed !important;
-        left:0 !important;
-        right:0 !important;
-        bottom:0 !important;
-        height:72px !important;
-        background:rgba(8,8,8,0.96) !important;
-        border-top:1px solid rgba(255,255,255,0.12) !important;
-        grid-template-columns:repeat(5,1fr) !important;
-        z-index:9999 !important;
-        backdrop-filter:blur(14px) !important;
-        -webkit-backdrop-filter:blur(14px) !important;
-        padding-bottom:env(safe-area-inset-bottom) !important;
-    }
-
-    .mobile-tabbar a{
-        height:72px !important;
-        color:#9ca6ac !important;
-        text-decoration:none !important;
-        display:flex !important;
-        flex-direction:column !important;
-        align-items:center !important;
-        justify-content:center !important;
-        gap:4px !important;
-        font-size:11px !important;
-        flex:1 !important;
-    }
-
-    .mobile-tabbar a.active{
-        color:#ffffff !important;
-        font-weight:700 !important;
-    }
-
-    .mobile-tabbar .icon{
-        font-size:22px !important;
-        line-height:1 !important;
-    }
-
-    .fab,
-    .floating-post-btn,
-    .post-fab{
-        display:none !important;
-    }
-}
-
-
-
-/* ============================================================
-   FINAL: スマホ版マイページ投稿カード index準拠
-   - profile.html の過去投稿カードを index.html のスマホカード寄せに統一
-   - 既存HTML構造は維持してCSSで整形
-   - スマホではレビュー本文をカード内に出さず、indexと同じくコンパクト表示
-============================================================ */
-@media(max-width:900px){
-    .album-grid{
-        display:grid !important;
-        grid-template-columns:1fr !important;
-        gap:12px !important;
-        width:100% !important;
-        max-width:none !important;
-        margin:0 !important;
-    }
-
-    .album-card{
-        position:relative !important;
-        display:grid !important;
-        grid-template-columns:1fr !important;
-        gap:0 !important;
-        padding:14px !important;
-        border-radius:18px !important;
-        background:linear-gradient(135deg,#121415 0%,#090a0b 58%,#070808 100%) !important;
-        border:1px solid rgba(255,255,255,0.14) !important;
-        overflow:hidden !important;
-    }
-
-    .album-card:hover{
-        border-color:rgba(159,205,217,0.42) !important;
-        transform:none !important;
-    }
-
-    .card-top{
-        display:grid !important;
-        grid-template-columns:120px minmax(0,1fr) !important;
-        gap:14px !important;
-        align-items:start !important;
-        width:100% !important;
-        min-width:0 !important;
-    }
-
-    .cover-wrap{
-        width:120px !important;
-        min-width:0 !important;
-    }
-
-    .cover{
-        width:120px !important;
-        height:120px !important;
-        aspect-ratio:1/1 !important;
-        object-fit:cover !important;
-        border-radius:10px !important;
-        margin:0 !important;
-        border:1px solid rgba(255,255,255,0.18) !important;
-        background:#111 !important;
-    }
-
-    .album-info{
-        display:block !important;
-        min-width:0 !important;
-        padding-right:42px !important;
-    }
-
-    .title-row{
-        display:flex !important;
-        align-items:flex-start !important;
-        gap:6px !important;
-        flex-wrap:wrap !important;
-        margin:0 0 5px !important;
-    }
-
-    .title{
-        font-size:20px !important;
-        line-height:1.12 !important;
-        letter-spacing:-0.035em !important;
-        margin:0 !important;
-        font-weight:900 !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:2 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .private-badge{
-        font-size:9px !important;
-        padding:3px 7px !important;
-        border-radius:999px !important;
-        background:rgba(255,255,255,0.12) !important;
-        color:#ddd !important;
-    }
-
-    .artist{
-        color:#9fcdd9 !important;
-        font-size:14px !important;
-        line-height:1.25 !important;
-        font-weight:800 !important;
-        margin:0 0 8px !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:1 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .creator{
-        font-size:12px !important;
-        line-height:1.45 !important;
-        color:#aaa !important;
-        margin:0 0 8px !important;
-        word-break:break-word !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:1 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .creator a{
-        color:#9fcdd9 !important;
-    }
-
-    .reaction-row{
-        display:flex !important;
-        flex-direction:row !important;
-        align-items:center !important;
-        gap:20px !important;
-        margin:0 !important;
-        font-size:14px !important;
-        color:#ddd !important;
-    }
-
-    .like-area{
-        gap:8px !important;
-    }
-
-    .like-btn{
-        font-size:21px !important;
-        color:#fff !important;
-        line-height:1 !important;
-    }
-
-    .like-count,
-    .comment-count{
-        font-size:14px !important;
-        color:#ddd !important;
-    }
-
-    .owner-actions{
-        display:flex !important;
-        gap:7px !important;
-        margin-top:10px !important;
-        flex-wrap:wrap !important;
-    }
-
-    .owner-actions button{
-        padding:7px 10px !important;
-        font-size:11px !important;
-        border-radius:999px !important;
-    }
-
-    .album-analysis{
-        grid-column:1 / -1 !important;
-        width:100% !important;
-        height:auto !important;
-        min-width:0 !important;
-        display:block !important;
-        margin:12px 0 0 !important;
-        padding:13px 0 0 !important;
-        border:none !important;
-        border-top:1px solid rgba(255,255,255,0.10) !important;
-        border-radius:0 !important;
-        background:transparent !important;
-    }
-
-    .meter-area{
-        border:none !important;
-        border-radius:0 !important;
-        padding:0 !important;
-        background:transparent !important;
-    }
-
-    .meter{
-        display:grid !important;
-        grid-template-columns:58px minmax(0,1fr) 58px !important;
-        gap:10px !important;
-        align-items:center !important;
-        margin:0 0 9px !important;
-        width:100% !important;
-    }
-
-    .meter:last-of-type{
-        margin-bottom:13px !important;
-    }
-
-    .meter-label{
-        font-size:13px !important;
-        font-weight:800 !important;
-        color:#f2f2f2 !important;
-        line-height:1 !important;
-        white-space:nowrap !important;
-    }
-
-    .right-label{
-        text-align:right !important;
-    }
-
-    .meter-graphic{
-        position:relative !important;
-        display:grid !important;
-        grid-template-columns:repeat(5, 1fr) !important;
-        align-items:center !important;
-        width:100% !important;
-        height:18px !important;
-        min-width:0 !important;
-        overflow:visible !important;
-    }
-
-    .meter-graphic::before{
-        content:"" !important;
-        position:absolute !important;
-        left:7px !important;
-        right:7px !important;
-        top:50% !important;
-        height:2px !important;
-        transform:translateY(-50%) !important;
-        border-radius:999px !important;
-        z-index:0 !important;
-        background:linear-gradient(
-            90deg,
-            #162025 0%,
-            #405f69 34%,
-            #8bb7c3 66%,
-            #d7edf0 100%
-        ) !important;
-    }
-
-    .meter-graphic .connector{
-        display:none !important;
-    }
-
-    .meter-graphic .dot{
-        position:relative !important;
-        z-index:1 !important;
-        grid-row:1 !important;
-        justify-self:center !important;
-        align-self:center !important;
-        width:16px !important;
-        height:16px !important;
-        flex:none !important;
-        margin:0 !important;
-        border-radius:50% !important;
-        box-sizing:border-box !important;
-        opacity:0 !important;
-        transform:none !important;
-        border:0 !important;
-        box-shadow:none !important;
-        background:transparent !important;
-    }
-
-    .meter-graphic .dot.level-1{ grid-column:1 !important; }
-    .meter-graphic .dot.level-2{ grid-column:2 !important; }
-    .meter-graphic .dot.level-3{ grid-column:3 !important; }
-    .meter-graphic .dot.level-4{ grid-column:4 !important; }
-    .meter-graphic .dot.level-5{ grid-column:5 !important; }
-
-    .meter-graphic .dot.selected{
-        opacity:1 !important;
-        border:3px solid #f0fbfc !important;
-        box-shadow:0 0 12px rgba(220,245,250,0.40) !important;
-    }
-
-    .meter-graphic .dot.selected.level-1{
-        background:#162025 !important;
-        border-color:#9fcdd9 !important;
-        box-shadow:0 0 10px rgba(22,32,37,0.70) !important;
-    }
-
-    .meter-graphic .dot.selected.level-2{
-        background:#405f69 !important;
-        border-color:#edf8f9 !important;
-        box-shadow:0 0 10px rgba(64,95,105,0.48) !important;
-    }
-
-    .meter-graphic .dot.selected.level-3{
-        background:#8bb7c3 !important;
-        border-color:#edf8f9 !important;
-        box-shadow:0 0 10px rgba(139,183,195,0.42) !important;
-    }
-
-    .meter-graphic .dot.selected.level-4{
-        background:#d7edf0 !important;
-        border-color:#f7fcfd !important;
-        box-shadow:0 0 10px rgba(215,237,240,0.42) !important;
-    }
-
-    .meter-graphic .dot.selected.level-5{
-        background:#f0fbfc !important;
-        border-color:#ffffff !important;
-        box-shadow:0 0 10px rgba(240,251,252,0.48) !important;
-    }
-
-    .keyword-box{
-        margin:12px 0 0 !important;
-        padding:0 !important;
-        border:none !important;
-        border-radius:0 !important;
-        display:flex !important;
-        align-items:center !important;
-        gap:8px !important;
-        overflow-x:auto !important;
-        scrollbar-width:none !important;
-        -webkit-overflow-scrolling:touch !important;
-    }
-
-    .keyword-box::-webkit-scrollbar{
-        display:none !important;
-    }
-
-    .keyword-title{
-        flex:0 0 auto !important;
-        color:#9fcdd9 !important;
-        font-size:13px !important;
-        font-weight:900 !important;
-        margin:0 4px 0 0 !important;
-    }
-
-    .keyword-text{
-        flex:0 0 auto !important;
-        color:#e5e5e5 !important;
-        font-size:13px !important;
-        line-height:1 !important;
-        white-space:nowrap !important;
-        display:block !important;
-        overflow:visible !important;
-        max-width:none !important;
-        border:1px solid rgba(255,255,255,0.14) !important;
-        border-radius:999px !important;
-        padding:7px 13px !important;
-        background:rgba(255,255,255,0.02) !important;
-    }
-
-    .description{
-        display:none !important;
-    }
-}
-
-@media(max-width:430px){
-    .album-card{
-        padding:12px !important;
-        border-radius:17px !important;
-    }
-
-    .card-top{
-        grid-template-columns:112px minmax(0,1fr) !important;
-        gap:12px !important;
-    }
-
-    .cover-wrap,
-    .cover{
-        width:112px !important;
-        height:112px !important;
-    }
-
-    .album-info{
-        padding-right:36px !important;
-    }
-
-    .title{
-        font-size:18px !important;
-    }
-
-    .artist{
-        font-size:13px !important;
-    }
-
-    .creator{
-        font-size:11px !important;
-    }
-
-    .meter{
-        grid-template-columns:50px minmax(0,1fr) 50px !important;
-        gap:8px !important;
-    }
-
-    .meter-label{
-        font-size:12px !important;
-    }
-
-    .meter-graphic{
-        height:17px !important;
-    }
-
-    .meter-graphic .dot{
-        width:15px !important;
-        height:15px !important;
-    }
-
-    .keyword-title,
-    .keyword-text{
-        font-size:12px !important;
-    }
-}
-
-/* ============================================================
-   FINAL: PC版マイページ投稿カード index準拠 + キーワードタグ対応
-============================================================ */
-@media(min-width:901px){
-    .main{
-        margin-left:240px !important;
-        padding:38px 30px 120px !important;
-    }
-
-    .album-grid{
-        display:grid !important;
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        gap:24px !important;
-        max-width:1230px !important;
-        margin:0 !important;
-    }
-
-    .album-card{
-        background:#070808 !important;
-        border:1px solid rgba(255,255,255,0.15) !important;
-        border-radius:18px !important;
-        padding:18px !important;
-        cursor:pointer !important;
-        overflow:hidden !important;
-        display:grid !important;
-        grid-template-columns:180px minmax(0, 1fr) !important;
-        gap:16px !important;
-        align-items:stretch !important;
-        box-shadow:none !important;
-    }
-
-    .album-card:hover{
-        border-color:rgba(159,205,217,0.42) !important;
-        transform:translateY(-1px) !important;
-        transition:0.18s ease !important;
-    }
-
-    .card-top{
-        display:contents !important;
-    }
-
-    .cover-wrap{
-        width:180px !important;
-        min-width:0 !important;
-    }
-
-    .cover{
-        width:160px !important;
-        height:160px !important;
-        aspect-ratio:1/1 !important;
-        object-fit:cover !important;
-        background:#111 !important;
-        display:block !important;
-        border:1px solid rgba(255,255,255,0.16) !important;
-        border-radius:4px !important;
-        margin:0 0 12px 0 !important;
-    }
-
-    .album-info{
-        min-width:0 !important;
-        width:180px !important;
-        max-width:180px !important;
-        grid-column:1 !important;
-    }
-
-    .title-row{
-        display:flex !important;
-        align-items:flex-start !important;
-        gap:6px !important;
-        flex-wrap:wrap !important;
-        margin-bottom:5px !important;
-    }
-
-    .title{
-        font-size:25px !important;
-        font-weight:900 !important;
-        line-height:1.06 !important;
-        letter-spacing:-0.045em !important;
-        margin-bottom:0 !important;
-        word-break:break-word !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:2 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .artist{
-        color:#9fcdd9 !important;
-        font-size:15px !important;
-        font-weight:800 !important;
-        line-height:1.25 !important;
-        margin-bottom:6px !important;
-        word-break:break-word !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:1 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .creator{
-        color:#aab3b8 !important;
-        font-size:11.5px !important;
-        line-height:1.45 !important;
-        margin-bottom:7px !important;
-        word-break:break-word !important;
-        display:-webkit-box !important;
-        -webkit-line-clamp:1 !important;
-        -webkit-box-orient:vertical !important;
-        overflow:hidden !important;
-    }
-
-    .creator a{
-        color:#9fcdd9 !important;
-        text-decoration:none !important;
-    }
-
-    .reaction-row{
-        display:flex !important;
-        align-items:center !important;
-        gap:10px !important;
-        color:#b6c0c4 !important;
-        font-size:11.5px !important;
-        flex-wrap:wrap !important;
-    }
-
-    .like-btn{
-        background:none !important;
-        border:none !important;
-        color:#b6c0c4 !important;
-        padding:0 !important;
-        font-size:16px !important;
-        cursor:pointer !important;
-        line-height:1 !important;
-    }
-
-    .like-count,
-    .comment-count{
-        font-size:11.5px !important;
-        color:#b6c0c4 !important;
-    }
-
-    .owner-actions{
-        margin-top:10px !important;
-        gap:6px !important;
-    }
-
-    .owner-actions button{
-        padding:7px 10px !important;
-        font-size:11px !important;
-        border-radius:999px !important;
-    }
-
-    .album-analysis{
-        grid-column:2 !important;
-        min-width:0 !important;
-        width:100% !important;
-        height:100% !important;
-        display:flex !important;
-        flex-direction:column !important;
-        justify-content:space-between !important;
-        align-self:stretch !important;
-        border:1px solid rgba(255,255,255,0.13) !important;
-        border-radius:14px !important;
-        padding:17px 14px 14px !important;
-        background:#070808 !important;
-        margin:0 !important;
-    }
-
-    .meter-area{
-        border:none !important;
-        border-radius:0 !important;
-        padding:0 !important;
-        min-width:0 !important;
-        display:flex !important;
-        flex-direction:column !important;
-        justify-content:space-between !important;
-        height:100% !important;
-    }
-
-    .meter{
-        display:grid !important;
-        grid-template-columns:44px minmax(0,1fr) 48px !important;
-        align-items:center !important;
-        gap:8px !important;
-        margin-bottom:0 !important;
-        min-width:0 !important;
-        width:100% !important;
-    }
-
-    .meter-label{
-        color:#f3f7f8 !important;
-        font-size:13px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        white-space:nowrap !important;
-    }
-
-    .meter-graphic{
-        display:flex !important;
-        align-items:center !important;
-        width:100% !important;
-        min-width:0 !important;
-        overflow:hidden !important;
-    }
-
-    .dot{
-        width:16px !important;
-        height:16px !important;
-        border-radius:50% !important;
-        border:2px solid #48555b !important;
-        background:transparent !important;
-        flex:0 0 16px !important;
-    }
-
-    .connector{
-        height:1px !important;
-        background:#333d42 !important;
-        flex:1 !important;
-        min-width:18px !important;
-    }
-
-    .dot.active.level-1,
-    .connector.active.level-1{
-        background:#7faebb !important;
-        border-color:#7faebb !important;
-    }
-
-    .dot.active.level-2,
-    .connector.active.level-2{
-        background:#9bc7d0 !important;
-        border-color:#9bc7d0 !important;
-    }
-
-    .dot.active.level-3,
-    .connector.active.level-3{
-        background:#b9dde3 !important;
-        border-color:#b9dde3 !important;
-    }
-
-    .dot.active.level-4,
-    .connector.active.level-4{
-        background:#d7edf0 !important;
-        border-color:#d7edf0 !important;
-    }
-
-    .dot.active.level-5{
-        background:#edf8f9 !important;
-        border-color:#edf8f9 !important;
-    }
-
-    .keyword-box{
-        margin-top:14px !important;
-        border:1px solid rgba(255,255,255,0.10) !important;
-        border-radius:8px !important;
-        padding:9px 10px !important;
-        display:grid !important;
-        grid-template-columns:62px minmax(0,1fr) !important;
-        gap:10px !important;
-        align-items:start !important;
-    }
-
-    .keyword-title{
-        color:#9fcdd9 !important;
-        font-size:11px !important;
-        font-weight:800 !important;
-        margin:0 !important;
-    }
-
-    .description{
-        display:none !important;
-    }
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
 }
 
 .keyword-tags{
@@ -1653,77 +395,688 @@ body{
     color:white;
 }
 
-.keyword-empty{
-    color:#777;
-    font-size:11px;
+/* ===== Empty ===== */
+
+.empty{
+    color:#888;
+    font-size:24px;
+}
+
+/* ===== PC Sidebar ===== */
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:220px;
+    height:100vh;
+    background:#060708;
+    border-right:1px solid rgba(255,255,255,0.08);
+    padding:28px 20px;
+    overflow-y:auto;
+    z-index:100;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:800;
+    line-height:1.04;
+    margin-bottom:28px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:12px;
+    font-size:15px;
+}
+
+.sidebar a:hover{
+    background:#141617;
+}
+
+.sidebar a.active{
+    background:#17191a;
+    color:var(--accent);
+}
+
+
+/* ===== Mobile Feed Tabs ===== */
+
+.mobile-feed-tabs{
+    display:none;
+}
+
+.feed-tab{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    background:transparent;
+    color:#7b858b;
+    font:inherit;
+    cursor:pointer;
 }
 
 @media(max-width:900px){
-    .keyword-tags{
-        flex:1 1 auto !important;
-        min-width:0 !important;
-        display:flex !important;
-        flex-wrap:nowrap !important;
-        gap:8px !important;
-        max-height:none !important;
-        overflow-x:auto !important;
-        overflow-y:hidden !important;
-        scrollbar-width:none !important;
-        -webkit-overflow-scrolling:touch !important;
+    .mobile-feed-tabs{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        position:sticky;
+        top:0;
+        z-index:900;
+        margin:-16px -16px 16px;
+        padding-top:env(safe-area-inset-top);
+        background:rgba(5,5,5,0.96);
+        border-bottom:1px solid rgba(255,255,255,0.10);
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
     }
 
-    .keyword-tags::-webkit-scrollbar{
-        display:none !important;
+    .feed-tab{
+        position:relative;
+        height:54px;
+        color:#7d858b;
+        font-size:16px;
+        font-weight:900;
+        letter-spacing:-0.02em;
     }
 
-    .keyword-tag{
-        flex:0 0 auto !important;
-        color:#e5e5e5 !important;
-        font-size:13px !important;
-        line-height:1 !important;
-        white-space:nowrap !important;
-        text-decoration:none !important;
-        border:1px solid rgba(255,255,255,0.14) !important;
-        border-radius:999px !important;
-        padding:7px 13px !important;
-        background:rgba(255,255,255,0.02) !important;
+    .feed-tab.active{
+        color:#ffffff;
+    }
+
+    .feed-tab.active::after{
+        content:"";
+        position:absolute;
+        left:50%;
+        bottom:0;
+        width:72px;
+        height:4px;
+        transform:translateX(-50%);
+        border-radius:999px;
+        background:#1d9bf0;
     }
 }
 
-@media(max-width:430px){
-    .keyword-tag{
-        font-size:12px !important;
+/* ===== Mobile Tabbar ===== */
+
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#9ca6ac;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:white;
+    font-weight:700;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* ===== Floating Post Button ===== */
+
+.fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:var(--accent);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    z-index:1000;
+}
+
+.fab:hover{
+    background:var(--accent-hover);
+}
+
+/* ===== PC narrow ===== */
+
+@media(min-width:901px) and (max-width:1280px){
+    body{
+        padding-left:236px;
+        padding-right:20px;
     }
+
+    .sidebar{
+        width:210px;
+    }
+
+    .album-grid{
+        max-width:none;
+        width:100%;
+    }
+
+    .album-card{
+        grid-template-columns:180px minmax(0,1fr);
+        gap:16px;
+        padding:16px;
+    }
+
+    .cover{
+        width:150px;
+        height:150px;
+    }
+
+    .title{
+        font-size:22px;
+    }
+
+    .meter{
+        grid-template-columns:48px minmax(0,1fr) 54px;
+        gap:8px;
+        margin-bottom:22px;
+    }
+
+    .meter-label{
+        font-size:12px;
+    }
+
+    .dot{
+        width:14px;
+        height:14px;
+        flex-basis:14px;
+    }
+}
+
+/* ===== Smartphone ===== */
+
+@media(max-width:900px){
+    body{
+        padding:16px;
+        padding-left:16px;
+        padding-bottom:110px;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .topbar{
+        margin-bottom:18px;
+    }
+
+    .page-title{
+        font-size:30px;
+    }
+
+    .album-grid{
+        grid-template-columns:1fr;
+        gap:14px;
+        width:100%;
+        max-width:none;
+        margin:0;
+    }
+
+    /*
+      スマホは投稿自体は縦一列。
+      カード内部はPC版に近く、左：投稿情報 / 右：メーター。
+    */
+    .album-card{
+        grid-template-columns:minmax(0,0.94fr) minmax(0,1.06fr);
+        gap:10px;
+        align-items:stretch;
+        padding:12px;
+        border-radius:16px;
+    }
+
+    .album-main{
+        display:grid;
+        grid-template-columns:92px minmax(0,1fr);
+        gap:9px;
+        align-content:start;
+        min-width:0;
+    }
+
+    .cover{
+        width:92px;
+        height:auto;
+        border-radius:8px;
+        margin:0;
+    }
+
+    .album-text{
+        min-width:0;
+    }
+
+    .title{
+        font-size:16px;
+        line-height:1.12;
+        margin-bottom:4px;
+        -webkit-line-clamp:2;
+    }
+
+    .artist{
+        font-size:13px;
+        margin-bottom:3px;
+    }
+
+    .meta{
+        font-size:10px;
+        line-height:1.35;
+        margin-bottom:5px;
+    }
+
+    .description{
+        grid-column:1 / -1;
+        font-size:11px;
+        line-height:1.55;
+        margin-top:0;
+        margin-bottom:7px;
+        -webkit-line-clamp:4;
+    }
+
+    .creator{
+        grid-column:1 / -1;
+        font-size:11px;
+        margin-top:0;
+        margin-bottom:5px;
+    }
+
+    .reaction-row{
+        grid-column:1 / -1;
+        gap:9px;
+        font-size:11px;
+        margin-top:5px;
+    }
+
+    .like-btn{
+        font-size:16px;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:11px;
+    }
+
+    .album-analysis{
+        height:100%;
+        margin-top:0;
+        padding:9px 9px 8px;
+        border-radius:12px;
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        min-width:0;
+    }
+
+    .meter{
+        grid-template-columns:32px minmax(0,1fr) 32px;
+        gap:5px;
+        margin-bottom:15px;
+    }
+
+    .meter:last-of-type{
+        margin-bottom:0;
+    }
+
+    .meter-label{
+        font-size:8px;
+        font-weight:800;
+    }
+
+    .dot{
+        width:10px;
+        height:10px;
+        border-width:1.4px;
+        flex-basis:10px;
+    }
+
+    .connector{
+        height:1px;
+        min-width:4px;
+    }
+
+    .keyword-box{
+        margin-top:10px;
+        padding:7px;
+        border-radius:8px;
+        grid-template-columns:48px minmax(0,1fr);
+        gap:6px;
+    }
+
+    .keyword-title{
+        font-size:8px;
+    }
+
+    .keyword-text{
+        font-size:8px;
+        line-height:1.4;
+    }
+
+    .mobile-tabbar{
+        display:grid;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:rgba(8,8,8,0.96);
+        border-top:1px solid rgba(255,255,255,0.12);
+        grid-template-columns:repeat(5,1fr);
+        z-index:9999;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .mobile-tabbar a{
+        height:72px;
+    }
+
+    .fab,
+    .floating-post-btn,
+    .post-fab{
+        display:none !important;
+    }
+}
+
+/* ===== Narrow smartphone ===== */
+
+@media(max-width:430px){
+    .album-card{
+        grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr);
+        gap:8px;
+        padding:10px;
+    }
+
+    .album-main{
+        grid-template-columns:78px minmax(0,1fr);
+        gap:8px;
+    }
+
+    .cover{
+        width:78px;
+    }
+
+    .title{
+        font-size:14px;
+    }
+
+    .artist{
+        font-size:12px;
+    }
+
+    .description{
+        font-size:10px;
+        -webkit-line-clamp:4;
+    }
+
+    .meter{
+        grid-template-columns:29px minmax(0,1fr) 29px;
+        gap:4px;
+        margin-bottom:13px;
+    }
+
+    .meter-label{
+        font-size:7px;
+    }
+
+    .dot{
+        width:9px;
+        height:9px;
+        flex-basis:9px;
+    }
+
+    .keyword-box{
+        grid-template-columns:42px minmax(0,1fr);
+        padding:6px;
+    }
+
+    .keyword-title,
+    .keyword-text{
+        font-size:7px;
+    }
+}
+
+/* ===== Meter height sync fix =====
+   メーター間隔を投稿カードの高さに連動させる。
+   固定marginではなく、右メーター欄の残り高さに合わせて5本を均等配置。
+*/
+@media(min-width:901px){
+    .album-analysis{
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        align-self:stretch;
+        height:100%;
+    }
+
+    .meter-list{
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        min-height:0;
+        padding-bottom:14px;
+    }
+
+    .meter{
+        margin-bottom:0;
+    }
+
+    .keyword-box{
+        flex-shrink:0;
+        margin-top:0;
+    }
+}
+
+@media(max-width:900px){
+    .album-analysis{
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        align-self:stretch;
+        height:100%;
+    }
+
+    .meter-list{
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        min-height:0;
+        padding-bottom:8px;
+    }
+
+    .meter{
+        margin-bottom:0;
+    }
+
+    .keyword-box{
+        flex-shrink:0;
+        margin-top:0;
+    }
+}
+
+
+/* indexでは紹介文を表示しない */
+.description{
+    display:none !important;
 }
 
 </style>
+
+<style>
+.feed-swipe{
+    width:100%;
+}
+
+.feed-panel{
+    min-width:0;
+}
+
+@media(max-width:900px){
+    body{
+        overflow-x:hidden !important;
+    }
+
+    .mobile-feed-tabs{
+        --feed-progress:0;
+        --recommend-tab-opacity:1;
+        --following-tab-opacity:0.58;
+    }
+
+    .mobile-feed-tabs .feed-tab::after{
+        display:none !important;
+    }
+
+    .mobile-feed-tabs::after{
+        content:"";
+        position:absolute;
+        left:calc(25% + (50% * var(--feed-progress, 0)));
+        bottom:0;
+        width:92px;
+        height:4px;
+        transform:translateX(-50%);
+        border-radius:999px;
+        background:#1d9bf0;
+        pointer-events:none;
+        will-change:left;
+    }
+
+    .feed-tab{
+        transition:color .18s ease, opacity .18s ease, transform .18s ease;
+        will-change:opacity, transform;
+    }
+
+    #recommendTab{
+        opacity:var(--recommend-tab-opacity);
+        transform:scale(calc(0.96 + (0.04 * (1 - var(--feed-progress, 0)))));
+    }
+
+    #followingTab{
+        opacity:var(--following-tab-opacity);
+        transform:scale(calc(0.96 + (0.04 * var(--feed-progress, 0))));
+    }
+
+    .feed-tab.active{
+        color:#ffffff;
+    }
+
+    .feed-swipe{
+        display:flex;
+        width:100vw;
+        margin-left:-16px;
+        margin-right:-16px;
+        overflow-x:auto;
+        overflow-y:visible;
+        scroll-snap-type:x mandatory;
+        scroll-behavior:smooth;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+        overscroll-behavior-x:contain;
+        touch-action:pan-x pan-y;
+    }
+
+    .feed-swipe.vertical-gesture{
+        overflow-x:hidden !important;
+        scroll-snap-type:none !important;
+        touch-action:pan-y !important;
+    }
+
+    .feed-swipe::-webkit-scrollbar{
+        display:none;
+    }
+
+    .feed-panel{
+        flex:0 0 100vw;
+        width:100vw;
+        scroll-snap-align:start;
+        scroll-snap-stop:always;
+        padding:0 16px;
+        min-height:55vh;
+        opacity:0.96;
+        transform:scale(0.995);
+        transition:opacity .16s ease, transform .16s ease;
+        will-change:opacity, transform;
+    }
+
+    .feed-panel.is-visible{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+@media(min-width:901px){
+    .feed-swipe{
+        display:block;
+        overflow:visible;
+    }
+
+    .feed-panel[data-feed-panel="following"]{
+        display:none;
+    }
+}
+</style>
+
 </head>
 
 <body>
 
-<div class="wrapper">
-
-    <!-- PC用サイドバー -->
-    
 <!-- PC用サイドバー -->
 <nav class="sidebar">
-    <div class="logo">Album Collection</div>
+    <div class="logo">Album<br>Collection</div>
 
-    <a href="index.html">ホーム</a>
+    <a href="index.html" class="active">ホーム</a>
     <a href="search.html">検索</a>
     <a href="editor.html">投稿する</a>
     <a href="notifications.html">通知</a>
-    <a id="myPageLink" href="login.html" class="active">マイページ</a>
+    <a id="myPageLink" href="login.html">マイページ</a>
     <a href="profile-edit.html">プロフィール編集</a>
     <a href="login.html">ログイン</a>
 </nav>
 
-
-
-    <!-- スマホ用下部タブバー -->
-    
+<!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
-    <a href="index.html">
+    <a href="index.html" class="active">
         <span class="icon">⌂</span>
         <span class="label">ホーム</span>
     </a>
@@ -1743,55 +1096,33 @@ body{
         <span class="label">通知</span>
     </a>
 
-    <a id="mobileMyPageLink" href="login.html" class="active">
+    <a id="mobileMyPageLink" href="login.html">
         <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
         <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
         <span class="label">マイページ</span>
     </a>
 </nav>
 
-
-
-    <!-- PC / スマホ両方に表示される右下投稿ボタン -->
 <a href="editor.html" class="fab">＋</a>
 
-    <main class="main">
+<!-- スマホ用：おすすめ / フォロー中 タブ -->
+<div class="mobile-feed-tabs" id="mobileFeedTabs">
+    <button type="button" class="feed-tab active" id="recommendTab">おすすめ</button>
+    <button type="button" class="feed-tab" id="followingTab">フォロー中</button>
+</div>
 
-        <div class="profile-header">
-            <div class="profile-name" id="profileName">読み込み中...</div>
-            <div class="profile-email" id="profileEmail"></div>
+<div class="topbar">
+    <h1 class="page-title">Album Collection</h1>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;"></div>
+</div>
 
-            <div class="follow-stats">
-                <button class="follow-stat-link" id="followingLink" type="button">
-                    <span id="followingCount">フォロー中 0</span>
-                </button>
-
-                <button class="follow-stat-link" id="followerLink" type="button">
-                    <span id="followerCount">フォロワー 0</span>
-                </button>
-            </div>
-
-            <div class="profile-actions">
-                <button class="follow-btn" id="followBtn">フォロー</button>
-
-                <button class="profile-edit-btn" id="profileEditBtn">
-                    プロフィール編集
-                </button>
-
-                <button class="mobile-logout-btn" id="mobileLogoutBtn" type="button">
-                    ログアウト
-                </button>
-            </div>
-        </div>
-
-        <div class="owner-notice" id="ownerNotice">
-            自分のマイページです。自分の投稿には「編集」「削除」ボタンが表示されます。非公開投稿もここでは確認できます。
-        </div>
-
-        <div class="album-grid" id="albumGrid"></div>
-
-    </main>
-
+<div class="feed-swipe" id="feedSwipe">
+    <section class="feed-panel" data-feed-panel="recommend">
+        <div class="album-grid" id="recommendGrid"></div>
+    </section>
+    <section class="feed-panel" data-feed-panel="following">
+        <div class="album-grid" id="followingGrid"></div>
+    </section>
 </div>
 
 <script type="module">
@@ -1800,23 +1131,21 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/fireba
 
 import {
     initializeFirestore,
-    doc,
-    getDoc,
     collection,
+    onSnapshot,
     query,
     where,
-    getDocs,
+    doc,
+    getDoc,
     addDoc,
-    deleteDoc,
     setDoc,
-    onSnapshot,
+    deleteDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 import {
     getAuth,
-    onAuthStateChanged,
-    signOut
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -1837,41 +1166,61 @@ const db = initializeFirestore(app, {
 
 const auth = getAuth(app);
 
-const params = new URLSearchParams(location.search);
-let uid = params.get("uid");
-
-const profileName = document.getElementById("profileName");
-const profileEmail = document.getElementById("profileEmail");
-if(profileEmail){
-    profileEmail.style.display = "none";
-}
-const albumGrid = document.getElementById("albumGrid");
-const followBtn = document.getElementById("followBtn");
-const followingCount = document.getElementById("followingCount");
-const followerCount = document.getElementById("followerCount");
-const followingLink = document.getElementById("followingLink");
-const followerLink = document.getElementById("followerLink");
+const feedSwipe = document.getElementById("feedSwipe");
+const recommendGrid = document.getElementById("recommendGrid");
+const followingGrid = document.getElementById("followingGrid");
+const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
 const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
-const ownerNotice = document.getElementById("ownerNotice");
-const profileEditBtn = document.getElementById("profileEditBtn");
-const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
-const sideProfileEditBtn = document.getElementById("sideProfileEditBtn");
-const myPageLink = document.getElementById("myPageLink");
+const recommendTab = document.getElementById("recommendTab");
+const followingTab = document.getElementById("followingTab");
+
+let currentFeedMode = "recommend";
+let allAlbums = [];
+let followingIds = new Set();
+let unsubscribeFollowing = null;
+let touchStartX = 0;
+let touchStartY = 0;
 
 let currentUser = null;
-let profileDisplayName = "匿名ユーザー";
-let followDocId = null;
-let isFollowing = false;
-
-let profileAlbums = [];
 let allLikes = [];
 let allComments = [];
+const userNameCache = new Map();
 
-let unsubscribeAlbums = null;
-let unsubscribeLikes = null;
-let unsubscribeComments = null;
+onAuthStateChanged(auth, (user) => {
+    updateMobileMyPageTab(user);
+    currentUser = user;
+    setupFollowingListener(user);
+
+    const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
+
+    if(myPageLink){
+        myPageLink.href = url;
+    }
+
+    if(mobileMyPageLink){
+        mobileMyPageLink.href = url;
+    }
+
+    renderAlbums();
+    updateLikeDisplays();
+    updateCommentDisplays();
+});
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
 
 
 function getUserDisplayNameFromData(data){
@@ -1889,31 +1238,37 @@ function getUserDisplayNameFromData(data){
     );
 }
 
-function getAlbumDisplayName(album){
-    return (
-        album.displayName ||
-        album.nickname ||
-        album.nickName ||
-        album.userName ||
-        album.name ||
-        profileDisplayName ||
-        "匿名ユーザー"
-    );
-}
+async function getDisplayNameForAlbum(album){
+    const uid = album?.userId || "";
 
-function getUserIconUrl(data){
-    return (
-        data?.photoURL ||
-        data?.iconURL ||
-        data?.iconUrl ||
-        data?.avatar ||
-        data?.avatarUrl ||
-        data?.profileImage ||
-        data?.profileImageUrl ||
-        data?.imageUrl ||
-        data?.icon ||
-        ""
-    );
+    if(uid && userNameCache.has(uid)){
+        return userNameCache.get(uid);
+    }
+
+    if(uid){
+        try{
+            const userSnap = await getDoc(doc(db, "users", uid));
+
+            if(userSnap.exists()){
+                const displayName = getUserDisplayNameFromData(userSnap.data());
+
+                if(displayName){
+                    userNameCache.set(uid, displayName);
+                    return displayName;
+                }
+            }
+        }catch(error){
+            console.warn("投稿者名の取得に失敗しました", error);
+        }
+    }
+
+    const fallbackName = album?.userName || album?.displayName || album?.nickname || "匿名ユーザー";
+
+    if(uid){
+        userNameCache.set(uid, fallbackName);
+    }
+
+    return fallbackName;
 }
 
 async function updateMobileMyPageTab(user){
@@ -1956,14 +1311,21 @@ async function updateMobileMyPageTab(user){
                 mobileMyPageAvatar.style.display = "none";
                 mobileMyPageFallback.style.display = "flex";
             };
-        }else if(mobileMyPageAvatar && mobileMyPageFallback){
-            mobileMyPageAvatar.style.display = "none";
-            mobileMyPageFallback.style.display = "flex";
         }
     }catch(error){
         console.warn("マイページアイコンの取得に失敗しました", error);
     }
 }
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
 
 async function getCurrentUserName(db, currentUser){
     if(!currentUser){
@@ -2008,28 +1370,69 @@ async function createNotification(db, {
     });
 }
 
-async function notifyFollow(db, currentUser, targetUserId){
-    if(!currentUser || !targetUserId) return;
+async function notifyLike(db, currentUser, albumId){
+    if(!currentUser || !albumId) return;
+    const albumSnap = await getDoc(doc(db, "albums", albumId));
+    if(!albumSnap.exists()) return;
+    const albumData = albumSnap.data();
     const fromUserName = await getCurrentUserName(db, currentUser);
     await createNotification(db, {
-        toUserId: targetUserId,
+        toUserId: albumData.userId,
         fromUserId: currentUser.uid,
         fromUserName,
-        type: "follow"
+        type: "like",
+        albumId,
+        albumTitle: albumData.title || ""
     });
 }
 
-function escapeHTML(value){
-    return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
+function formatPostDate(value){
+    if(!value){
+        return "";
+    }
 
-function isOwner(){
-    return currentUser && uid && currentUser.uid === uid;
+    let date = null;
+
+    if(typeof value.toDate === "function"){
+        date = value.toDate();
+    } else if(value instanceof Date){
+        date = value;
+    } else if(typeof value === "number"){
+        date = new Date(value);
+    } else if(typeof value === "string"){
+        const parsed = new Date(value);
+        if(!Number.isNaN(parsed.getTime())){
+            date = parsed;
+        }
+    }
+
+    if(!date || Number.isNaN(date.getTime())){
+        return "";
+    }
+
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMinutes = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if(diffMinutes < 1){
+        return "今";
+    }
+
+    if(diffMinutes < 60){
+        return `${diffMinutes}分前`;
+    }
+
+    if(diffHours < 24){
+        return `${diffHours}時間前`;
+    }
+
+    if(diffDays < 7){
+        return `${diffDays}日前`;
+    }
+
+    return `${date.getMonth() + 1}/${date.getDate()}`;
 }
 
 function meter(left, right, value){
@@ -2067,10 +1470,6 @@ function getLikeCount(albumId){
     return allLikes.filter(like => like.albumId === albumId).length;
 }
 
-function getCommentCount(albumId){
-    return allComments.filter(comment => comment.albumId === albumId).length;
-}
-
 function isLikedByMe(albumId){
     if(!currentUser) return false;
 
@@ -2097,66 +1496,22 @@ async function toggleLike(albumId){
             albumId: albumId,
             createdAt: serverTimestamp()
         });
+
+        await notifyLike(db, currentUser, albumId);
     }
-}
-
-async function deleteAlbum(albumId){
-    if(!currentUser){
-        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
-        return;
-    }
-
-    const target = profileAlbums.find(album => album.id === albumId);
-
-    if(!target){
-        alert("削除対象の投稿が見つかりません");
-        return;
-    }
-
-    if(target.userId !== currentUser.uid){
-        alert("自分の投稿以外は削除できません");
-        return;
-    }
-
-    const ok = confirm("この投稿を削除しますか？\n削除すると元に戻せません。");
-
-    if(!ok){
-        return;
-    }
-
-    try {
-        await deleteDoc(doc(db, "albums", albumId));
-        alert("削除しました");
-    } catch (error) {
-        console.error("削除失敗:", error);
-        alert("削除に失敗しました: " + error.message);
-    }
-}
-
-function editAlbum(albumId){
-    if(!currentUser){
-        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
-        return;
-    }
-
-    const target = profileAlbums.find(album => album.id === albumId);
-
-    if(!target){
-        alert("編集対象の投稿が見つかりません");
-        return;
-    }
-
-    if(target.userId !== currentUser.uid){
-        alert("自分の投稿以外は編集できません");
-        return;
-    }
-
-    location.href = `editor.html?id=${encodeURIComponent(albumId)}`;
 }
 
 window.toggleLike = toggleLike;
-window.deleteAlbum = deleteAlbum;
-window.editAlbum = editAlbum;
+
+onSnapshot(collection(db, "likes"), (snapshot) => {
+    allLikes = [];
+
+    snapshot.forEach((docSnap) => {
+        allLikes.push(docSnap.data());
+    });
+
+    updateLikeDisplays();
+});
 
 function updateLikeDisplays(){
     const likeAreas = document.querySelectorAll("[data-like-area]");
@@ -2182,6 +1537,23 @@ function updateLikeDisplays(){
     });
 }
 
+onSnapshot(collection(db, "comments"), (snapshot) => {
+    allComments = [];
+
+    snapshot.forEach((docSnap) => {
+        allComments.push({
+            id: docSnap.id,
+            ...docSnap.data()
+        });
+    });
+
+    updateCommentDisplays();
+});
+
+function getCommentCount(albumId){
+    return allComments.filter(comment => comment.albumId === albumId).length;
+}
+
 function updateCommentDisplays(){
     const commentCounts = document.querySelectorAll("[data-comment-count]");
 
@@ -2192,6 +1564,46 @@ function updateCommentDisplays(){
     });
 }
 
+const q = query(
+    collection(db, "albums"),
+    where("isPublic", "==", true)
+);
+
+function setupFollowingListener(user){
+    if(unsubscribeFollowing){
+        unsubscribeFollowing();
+        unsubscribeFollowing = null;
+    }
+
+    followingIds = new Set();
+
+    if(!user){
+        renderAlbums();
+        return;
+    }
+
+    const followQuery = query(
+        collection(db, "follows"),
+        where("followerId", "==", user.uid)
+    );
+
+    unsubscribeFollowing = onSnapshot(followQuery, (snapshot) => {
+        followingIds = new Set();
+
+        snapshot.forEach((docSnap) => {
+            const follow = docSnap.data();
+            if(follow.followingId){
+                followingIds.add(follow.followingId);
+            }
+        });
+
+        renderAlbums();
+    }, (error) => {
+        console.warn("フォロー情報の取得に失敗しました", error);
+        followingIds = new Set();
+        renderAlbums();
+    });
+}
 
 function normalizeKeywords(value){
     if(Array.isArray(value)){
@@ -2233,494 +1645,910 @@ function renderKeywordTags(value){
     }).join("");
 }
 
-function renderAlbums(){
-    if(!uid) return;
+function albumCardHTML(item, posterName){
+    const a = item.data;
+    const albumId = item.id;
 
-    if(profileAlbums.length === 0){
-        albumGrid.innerHTML = `<div class="empty">まだ投稿がありません。</div>`;
-        return;
-    }
-
-    const owner = isOwner();
-
-    albumGrid.innerHTML = "";
-
-    profileAlbums.forEach((album) => {
-        const albumId = album.id;
-        const privateBadge = album.isPublic === false
-            ? `<span class="private-badge">非公開</span>`
-            : "";
-
-        const ownerActions = owner
-            ? `
-                <div class="owner-actions">
-                    <button
-                        class="edit-post-btn"
-                        type="button"
-                        onclick="event.stopPropagation(); editAlbum('${escapeHTML(albumId)}')">
-                        編集
-                    </button>
-
-                    <button
-                        class="delete-post-btn"
-                        type="button"
-                        onclick="event.stopPropagation(); deleteAlbum('${escapeHTML(albumId)}')">
-                        削除
-                    </button>
-                </div>
-            `
-            : "";
-
-        albumGrid.innerHTML += `
+    return `
 <div class="album-card"
      onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
 
-    <div class="card-top">
-
-        <div class="cover-wrap">
-            <img class="cover"
-                 src="${escapeHTML(album.cover || "")}"
-                 alt="">
-        </div>
-
-        <div class="album-info">
-            <div class="title-row">
-                <div class="title">
-                    ${escapeHTML(album.title || "")}
-                </div>
-                ${privateBadge}
-            </div>
-
-            <div class="artist">
-                ${escapeHTML(album.artist || "")}
-            </div>
-
-            <div class="creator">
-                投稿者：
-                <a href="profile.html?uid=${escapeHTML(album.userId || "")}"
-                   onclick="event.stopPropagation();">
-                    ${escapeHTML(getAlbumDisplayName(album))}
-                </a>
-            </div>
-
+    <div class="album-main">
+        <img class="cover" src="${escapeHTML(a.cover || "")}" alt="">
+        <div class="album-text">
+            <div class="title">${escapeHTML(a.title || "")}</div>
+            <div class="artist">${escapeHTML(a.artist || "")}</div>
+            <div class="meta">${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(" / ") || a.year || "")}</div>
+            <div class="creator">投稿者：<a href="profile.html?uid=${escapeHTML(a.userId || "")}" onclick="event.stopPropagation();">${escapeHTML(posterName)}</a></div>
             <div class="reaction-row">
-                <div class="like-area"
-                     data-like-area
-                     data-album-id="${escapeHTML(albumId)}">
-                    <button class="like-btn"
-                            type="button"
-                            onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">
-                        ♡
-                    </button>
+                <div class="like-area" data-like-area data-album-id="${escapeHTML(albumId)}">
+                    <button class="like-btn" onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">♡</button>
                     <span class="like-count">0</span>
                 </div>
-
-                <div class="comment-count"
-                     data-comment-count
-                     data-album-id="${escapeHTML(albumId)}">
-                    コメント 0件
-                </div>
-            </div>
-
-            ${ownerActions}
-        </div>
-
-        <div class="album-analysis">
-            <div class="meter-area">
-                ${meter("暗い", "明るい", album.darkness)}
-                ${meter("静か", "激しい", album.intense)}
-                ${meter("シンプル", "複雑", album.complex)}
-                ${meter("絶望", "希望", album.hope)}
-                ${meter("個人", "世界", album.world)}
-
-                <div class="keyword-box">
-                    <div class="keyword-title">キーワード</div>
-                    <div class="keyword-tags">
-                        ${renderKeywordTags(album.keywords)}
-                    </div>
-                </div>
+                <div class="comment-count" data-comment-count data-album-id="${escapeHTML(albumId)}">コメント 0件</div>
             </div>
         </div>
-
     </div>
 
-    <div class="description">
-        ${escapeHTML(album.desc || "")}
-    </div>
+    <div class="mobile-post-date">${formatPostDate(a.createdAt || a.updatedAt)}</div>
 
-</div>
-        `;
+    <div class="album-analysis">
+        <div class="meter-list">
+            ${meter("暗い", "明るい", a.darkness)}
+            ${meter("静か", "激しい", a.intense)}
+            ${meter("シンプル", "複雑", a.complex)}
+            ${meter("絶望", "希望", a.hope)}
+            ${meter("個人", "世界", a.world)}
+        </div>
+        <div class="keyword-box">
+            <div class="keyword-title">キーワード</div>
+            <div class="keyword-tags">${renderKeywordTags(a.keywords)}</div>
+        </div>
+    </div>
+</div>`;
+}
+
+function getSortedAlbums(){
+    return [...allAlbums].sort((a, b) => {
+        const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
+        const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
+        return bTime - aTime;
     });
+}
 
+function getRecommendAlbums(){
+    return getSortedAlbums();
+}
+
+function getFollowingAlbums(){
+    if(!currentUser){
+        return [];
+    }
+
+    return getSortedAlbums().filter((album) => {
+        const userId = album.data.userId || "";
+        return userId !== currentUser.uid && followingIds.has(userId);
+    });
+}
+
+function getPostTime(value){
+    if(!value){ return 0; }
+    if(typeof value.toDate === "function"){ return value.toDate().getTime(); }
+    if(value instanceof Date){ return value.getTime(); }
+    if(typeof value === "number"){ return value; }
+    if(typeof value === "string"){
+        const parsed = new Date(value);
+        if(!Number.isNaN(parsed.getTime())){ return parsed.getTime(); }
+    }
+    return 0;
+}
+
+function getFeedProgress(){
+    if(!feedSwipe || window.innerWidth > 900){
+        return currentFeedMode === "following" ? 1 : 0;
+    }
+
+    return Math.max(0, Math.min(1, feedSwipe.scrollLeft / Math.max(1, feedSwipe.clientWidth)));
+}
+
+function updateFeedTabs(progress = null){
+    if(!recommendTab || !followingTab){
+        return;
+    }
+
+    if(progress === null){
+        progress = getFeedProgress();
+    }
+
+    progress = Math.max(0, Math.min(1, progress));
+
+    const nextMode = progress >= 0.5 ? "following" : "recommend";
+    currentFeedMode = nextMode;
+
+    recommendTab.classList.toggle("active", nextMode === "recommend");
+    followingTab.classList.toggle("active", nextMode === "following");
+
+    const tabs = document.getElementById("mobileFeedTabs");
+
+    if(tabs){
+        tabs.style.setProperty("--feed-progress", progress.toFixed(4));
+        tabs.style.setProperty("--recommend-tab-opacity", String(1 - (progress * 0.42)));
+        tabs.style.setProperty("--following-tab-opacity", String(0.58 + (progress * 0.42)));
+    }
+
+    const recommendPanel = document.querySelector('[data-feed-panel="recommend"]');
+    const followingPanel = document.querySelector('[data-feed-panel="following"]');
+
+    if(recommendPanel){
+        recommendPanel.classList.toggle("is-visible", progress < 0.5);
+    }
+
+    if(followingPanel){
+        followingPanel.classList.toggle("is-visible", progress >= 0.5);
+    }
+}
+
+function scrollFeedTo(mode){
+    if(mode !== "recommend" && mode !== "following"){
+        return;
+    }
+
+    currentFeedMode = mode;
+    updateFeedTabs(mode === "following" ? 1 : 0);
+
+    if(feedSwipe && window.innerWidth <= 900){
+        feedSwipe.scrollTo({
+            left: mode === "following" ? feedSwipe.clientWidth : 0,
+            behavior:"smooth"
+        });
+    }
+}
+
+if(recommendTab){
+    recommendTab.addEventListener("click", () => scrollFeedTo("recommend"));
+}
+
+if(followingTab){
+    followingTab.addEventListener("click", () => scrollFeedTo("following"));
+}
+
+let feedScrollTicking = false;
+let feedTouchStartX = 0;
+let feedTouchStartY = 0;
+let feedGestureDirection = null;
+let unlockVerticalGestureTimer = null;
+
+function lockFeedForVerticalGesture(){
+    if(!feedSwipe){
+        return;
+    }
+
+    feedSwipe.classList.add("vertical-gesture");
+}
+
+function unlockFeedGestureSoon(){
+    if(!feedSwipe){
+        return;
+    }
+
+    clearTimeout(unlockVerticalGestureTimer);
+
+    unlockVerticalGestureTimer = setTimeout(() => {
+        feedSwipe.classList.remove("vertical-gesture");
+        feedGestureDirection = null;
+    }, 180);
+}
+
+if(feedSwipe){
+    feedSwipe.addEventListener("touchstart", (event) => {
+        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
+            return;
+        }
+
+        clearTimeout(unlockVerticalGestureTimer);
+        feedSwipe.classList.remove("vertical-gesture");
+
+        feedTouchStartX = event.touches[0].clientX;
+        feedTouchStartY = event.touches[0].clientY;
+        feedGestureDirection = null;
+    }, { passive:true });
+
+    feedSwipe.addEventListener("touchmove", (event) => {
+        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
+            return;
+        }
+
+        const dx = event.touches[0].clientX - feedTouchStartX;
+        const dy = event.touches[0].clientY - feedTouchStartY;
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+
+        if(!feedGestureDirection && Math.max(absX, absY) > 8){
+            feedGestureDirection = absY > absX + 6 ? "vertical" : "horizontal";
+
+            if(feedGestureDirection === "vertical"){
+                lockFeedForVerticalGesture();
+            }
+        }
+    }, { passive:true });
+
+    feedSwipe.addEventListener("touchend", unlockFeedGestureSoon, { passive:true });
+    feedSwipe.addEventListener("touchcancel", unlockFeedGestureSoon, { passive:true });
+
+    feedSwipe.addEventListener("scroll", () => {
+        if(window.innerWidth > 900){
+            return;
+        }
+
+        if(feedScrollTicking){
+            return;
+        }
+
+        feedScrollTicking = true;
+
+        requestAnimationFrame(() => {
+            updateFeedTabs(getFeedProgress());
+            feedScrollTicking = false;
+        });
+    }, { passive:true });
+}
+
+window.addEventListener("resize", () => {
+    updateFeedTabs();
+});
+
+async function renderGrid(targetGrid, items, emptyHTML){
+    if(!targetGrid){ return; }
+    if(items.length === 0){ targetGrid.innerHTML = emptyHTML; return; }
+    const cards = [];
+    for(const item of items){
+        const posterName = await getDisplayNameForAlbum(item.data);
+        cards.push(albumCardHTML(item, posterName));
+    }
+    targetGrid.innerHTML = cards.join("");
+}
+
+async function renderAlbums(){
+    updateFeedTabs();
+    await renderGrid(recommendGrid, getRecommendAlbums(), `<div class="empty">保存されたアルバムがありません</div>`);
+    await renderGrid(followingGrid, getFollowingAlbums(), currentUser ? `<div class="empty">フォロー中の投稿がまだありません</div>` : `<div class="empty">ログインするとフォロー中TLを表示できます</div>`);
     updateLikeDisplays();
     updateCommentDisplays();
 }
 
-async function loadProfile() {
-    try {
-        const userDoc = await getDoc(doc(db, "users", uid));
-
-        if (userDoc.exists()) {
-            const user = userDoc.data();
-
-            profileDisplayName =
-                getUserDisplayNameFromData(user) || "匿名ユーザー";
-
-            profileName.textContent = profileDisplayName;
-            profileEmail.textContent = "";
-        } else {
-            profileDisplayName = "匿名ユーザー";
-            profileName.textContent = "ユーザーが見つかりません";
-            profileEmail.textContent = "";
-            followBtn.style.display = "none";
-            profileEditBtn.style.display = "none";
-            if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
-        }
-    } catch (error) {
-        console.error("プロフィール取得失敗:", error);
-        profileName.textContent = "プロフィール取得失敗";
-    }
-}
-
-function listenAlbums(){
-    if(unsubscribeAlbums){
-        unsubscribeAlbums();
-        unsubscribeAlbums = null;
-    }
-
-    let albumsQuery;
-
-    if(isOwner()){
-        albumsQuery = query(
-            collection(db, "albums"),
-            where("userId", "==", uid)
-        );
-    } else {
-        albumsQuery = query(
-            collection(db, "albums"),
-            where("userId", "==", uid),
-            where("isPublic", "==", true)
-        );
-    }
-
-    unsubscribeAlbums = onSnapshot(albumsQuery, (snapshot) => {
-        profileAlbums = [];
-
-        snapshot.forEach((docSnap) => {
-            profileAlbums.push({
-                id: docSnap.id,
-                ...docSnap.data()
-            });
-        });
-
-        profileAlbums.sort((a, b) => {
-            const aTime = a.createdAt?.seconds || 0;
-            const bTime = b.createdAt?.seconds || 0;
-            return bTime - aTime;
-        });
-
-        renderAlbums();
-
-    }, (error) => {
-        console.error("投稿取得失敗:", error);
-        albumGrid.innerHTML = `<div class="empty">投稿の読み込みに失敗しました。</div>`;
+onSnapshot(q, async (snapshot)=>{
+    allAlbums = [];
+    snapshot.forEach((docSnap) => {
+        allAlbums.push({ id: docSnap.id, data: docSnap.data() });
     });
-}
-
-function listenLikes(){
-    if(unsubscribeLikes){
-        unsubscribeLikes();
-        unsubscribeLikes = null;
-    }
-
-    unsubscribeLikes = onSnapshot(collection(db, "likes"), (snapshot) => {
-        allLikes = [];
-
-        snapshot.forEach((docSnap) => {
-            allLikes.push({
-                id: docSnap.id,
-                ...docSnap.data()
-            });
-        });
-
-        updateLikeDisplays();
-
-    }, (error) => {
-        console.error("いいね取得失敗:", error);
-    });
-}
-
-function listenComments(){
-    if(unsubscribeComments){
-        unsubscribeComments();
-        unsubscribeComments = null;
-    }
-
-    unsubscribeComments = onSnapshot(collection(db, "comments"), (snapshot) => {
-        allComments = [];
-
-        snapshot.forEach((docSnap) => {
-            allComments.push({
-                id: docSnap.id,
-                ...docSnap.data()
-            });
-        });
-
-        updateCommentDisplays();
-
-    }, (error) => {
-        console.error("コメント取得失敗:", error);
-    });
-}
-
-async function loadFollowCounts() {
-    try {
-        const followingQuery = query(
-            collection(db, "follows"),
-            where("followerId", "==", uid)
-        );
-
-        const followerQuery = query(
-            collection(db, "follows"),
-            where("followingId", "==", uid)
-        );
-
-        const followingSnapshot = await getDocs(followingQuery);
-        const followerSnapshot = await getDocs(followerQuery);
-
-        followingCount.textContent = `フォロー中 ${followingSnapshot.size}`;
-        followerCount.textContent = `フォロワー ${followerSnapshot.size}`;
-
-    } catch (error) {
-        console.error("フォロー数取得失敗:", error);
-    }
-}
-
-async function checkFollowStatus() {
-    try {
-        const followsQuery = query(
-            collection(db, "follows"),
-            where("followerId", "==", currentUser.uid),
-            where("followingId", "==", uid)
-        );
-
-        const snapshot = await getDocs(followsQuery);
-
-        if (!snapshot.empty) {
-            followDocId = snapshot.docs[0].id;
-            isFollowing = true;
-            followBtn.textContent = "フォロー中";
-        } else {
-            followDocId = null;
-            isFollowing = false;
-            followBtn.textContent = "フォロー";
-        }
-    } catch (error) {
-        console.error("フォロー状態確認失敗:", error);
-        followDocId = null;
-        isFollowing = false;
-        followBtn.textContent = "フォロー";
-    }
-}
-
-async function followUser() {
-    if (!currentUser) {
-        location.href =
-            `login.html?redirect=${encodeURIComponent(location.href)}`;
-        return;
-    }
-
-    if (currentUser.uid === uid) {
-        alert("自分自身はフォローできません");
-        return;
-    }
-
-    try {
-        followBtn.disabled = true;
-        followBtn.textContent = "処理中...";
-
-        const docRef = await addDoc(collection(db, "follows"), {
-            followerId: currentUser.uid,
-            followingId: uid,
-            createdAt: serverTimestamp()
-        });
-
-        await notifyFollow(db, currentUser, uid);
-
-        followDocId = docRef.id;
-        isFollowing = true;
-        followBtn.textContent = "フォロー中";
-
-        await loadFollowCounts();
-
-    } catch (error) {
-        console.error("フォロー失敗:", error);
-        alert("フォロー失敗: " + error.message);
-        followBtn.textContent = "フォロー";
-    } finally {
-        followBtn.disabled = false;
-    }
-}
-
-async function unfollowUser() {
-    if (!followDocId) {
-        return;
-    }
-
-    try {
-        followBtn.disabled = true;
-        followBtn.textContent = "処理中...";
-
-        await deleteDoc(doc(db, "follows", followDocId));
-
-        followDocId = null;
-        isFollowing = false;
-        followBtn.textContent = "フォロー";
-
-        await loadFollowCounts();
-
-    } catch (error) {
-        console.error("解除失敗:", error);
-        alert("解除失敗: " + error.message);
-        followBtn.textContent = "フォロー中";
-    } finally {
-        followBtn.disabled = false;
-    }
-}
-
-function updateOwnerUI(){
-    if(isOwner()){
-        ownerNotice.style.display = "block";
-        profileEditBtn.style.display = "inline-block";
-        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "inline-block";
-        if(sideProfileEditBtn) sideProfileEditBtn.style.display = "block";
-    } else {
-        ownerNotice.style.display = "none";
-        profileEditBtn.style.display = "none";
-        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
-        if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
-    }
-}
-
-profileEditBtn.addEventListener("click", () => {
-    if(!currentUser){
-        location.href = "login.html";
-        return;
-    }
-
-    location.href = "profile-edit.html";
-});
-
-mobileLogoutBtn.addEventListener("click", async () => {
-    try{
-        await signOut(auth);
-        location.href = "login.html";
-    }catch(error){
-        console.error("ログアウト失敗:", error);
-        alert("ログアウトに失敗しました: " + error.message);
-    }
-});
-
-if(followingLink){
-    followingLink.addEventListener("click", () => {
-        if(!uid) return;
-        location.href = `follows.html?uid=${encodeURIComponent(uid)}&type=following`;
-    });
-}
-
-if(followerLink){
-    followerLink.addEventListener("click", () => {
-        if(!uid) return;
-        location.href = `follows.html?uid=${encodeURIComponent(uid)}&type=followers`;
-    });
-}
-
-onAuthStateChanged(auth, async (user) => {
-    updateMobileMyPageTab(user);
-    currentUser = user;
-
-    if (!uid && currentUser) {
-        uid = currentUser.uid;
-    }
-
-    if (myPageLink) {
-        if (currentUser) {
-            myPageLink.href = `profile.html?uid=${currentUser.uid}`;
-        } else {
-            myPageLink.href = "login.html";
-        }
-    }
-
-    if (mobileMyPageLink) {
-        if (currentUser) {
-            mobileMyPageLink.href = `profile.html?uid=${currentUser.uid}`;
-        } else {
-            mobileMyPageLink.href = "login.html";
-        }
-    }
-
-    if (!uid) {
-        profileName.textContent = "ユーザーが指定されていません";
-        albumGrid.innerHTML =
-            `<div class="empty">ログインしていないため、マイページを表示できません。</div>`;
-        followBtn.style.display = "none";
-        profileEditBtn.style.display = "none";
-        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
-        if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
-        ownerNotice.style.display = "none";
-        return;
-    }
-
-    updateOwnerUI();
-
-    await loadProfile();
-    await loadFollowCounts();
-
-    listenAlbums();
-    listenLikes();
-    listenComments();
-
-    if (!currentUser) {
-        followBtn.style.display = "inline-block";
-        profileEditBtn.style.display = "none";
-        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
-        if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
-
-        followBtn.textContent = "ログインしてフォロー";
-        followBtn.onclick = () => {
-            location.href =
-                `login.html?redirect=${encodeURIComponent(location.href)}`;
-        };
-        return;
-    }
-
-    if (currentUser.uid === uid) {
-        followBtn.style.display = "none";
-        profileEditBtn.style.display = "inline-block";
-        if(mobileLogoutBtn) mobileLogoutBtn.style.display = "inline-block";
-        if(sideProfileEditBtn) sideProfileEditBtn.style.display = "block";
-        return;
-    }
-
-    followBtn.style.display = "inline-block";
-    profileEditBtn.style.display = "none";
-    if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
-    if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
-
-    followBtn.textContent = "フォロー";
-
-    followBtn.onclick = async () => {
-        if (isFollowing) {
-            await unfollowUser();
-        } else {
-            await followUser();
-        }
-    };
-
-    await checkFollowStatus();
+    await renderAlbums();
+}, (error) => {
+    if(recommendGrid){ recommendGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
+    if(followingGrid){ followingGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
 });
 
 </script>
+
+
+<style>
+/* ============================================================
+   PC版：ジャケット横の余白をメーター側に渡す調整
+   - 左カラムを少し狭くする
+   - 右メーター欄を広げる
+   - メーター中央の横幅を長くする
+   - スマホ版は現状維持
+============================================================ */
+@media(min-width:901px){
+    .album-card{
+        grid-template-columns:180px minmax(0,1fr) !important;
+        gap:16px !important;
+    }
+
+    .album-main{
+        width:180px !important;
+        max-width:180px !important;
+    }
+
+    .cover{
+        width:160px !important;
+        height:160px !important;
+        margin-right:0 !important;
+    }
+
+    .album-analysis{
+        width:100% !important;
+        min-width:0 !important;
+    }
+
+    .meter{
+        grid-template-columns:44px minmax(0,1fr) 48px !important;
+        gap:8px !important;
+        width:100% !important;
+    }
+
+    .meter-graphic{
+        width:100% !important;
+        min-width:0 !important;
+    }
+
+    .connector{
+        min-width:18px !important;
+    }
+}
+
+@media(min-width:901px) and (max-width:1280px){
+    .album-card{
+        grid-template-columns:165px minmax(0,1fr) !important;
+        gap:14px !important;
+    }
+
+    .album-main{
+        width:165px !important;
+        max-width:165px !important;
+    }
+
+    .cover{
+        width:145px !important;
+        height:145px !important;
+    }
+
+    .meter{
+        grid-template-columns:40px minmax(0,1fr) 46px !important;
+        gap:7px !important;
+    }
+
+    .connector{
+        min-width:14px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   スマホ版：ユーザビリティ重視UI
+   - PC版には影響させない
+   - ジャケットは必ず正方形
+   - 投稿日はスマホだけ右上表示
+   - メーターは5段階の離散値のまま、画像寄せのデザインに変更
+============================================================ */
+
+.mobile-post-date{
+    display:none;
+}
+
+@media(max-width:900px){
+    body{
+        padding:16px 16px 112px !important;
+    }
+
+    .page-title{
+        font-size:38px !important;
+        line-height:1.05 !important;
+        letter-spacing:-0.055em !important;
+        margin-top:26px !important;
+    }
+
+    .topbar{
+        margin-bottom:20px !important;
+    }
+
+    .album-grid{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+        width:100% !important;
+        max-width:none !important;
+        margin:0 !important;
+    }
+
+    .album-card{
+        position:relative !important;
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:0 !important;
+        padding:14px !important;
+        border-radius:18px !important;
+        background:linear-gradient(135deg,#121415 0%,#090a0b 58%,#070808 100%) !important;
+        border:1px solid rgba(255,255,255,0.14) !important;
+        overflow:hidden !important;
+    }
+
+    .album-main{
+        display:grid !important;
+        grid-template-columns:120px minmax(0,1fr) !important;
+        gap:14px !important;
+        align-items:start !important;
+        width:100% !important;
+        max-width:none !important;
+        min-width:0 !important;
+        padding:0 50px 12px 0 !important;
+        border-bottom:1px solid rgba(255,255,255,0.10) !important;
+    }
+
+    .cover{
+        width:120px !important;
+        height:120px !important;
+        aspect-ratio:1/1 !important;
+        object-fit:cover !important;
+        border-radius:10px !important;
+        margin:0 !important;
+        border:1px solid rgba(255,255,255,0.18) !important;
+        background:#111 !important;
+    }
+
+    .album-text{
+        display:block !important;
+        min-width:0 !important;
+    }
+
+    .title{
+        font-size:20px !important;
+        line-height:1.12 !important;
+        letter-spacing:-0.035em !important;
+        margin:0 0 5px !important;
+        -webkit-line-clamp:2 !important;
+    }
+
+    .artist{
+        color:#9fcdd9 !important;
+        font-size:14px !important;
+        line-height:1.25 !important;
+        font-weight:800 !important;
+        margin:0 0 8px !important;
+    }
+
+    .meta{
+        font-size:12px !important;
+        color:#d8d8d8 !important;
+        margin:0 0 8px !important;
+        -webkit-line-clamp:1 !important;
+    }
+
+    .description{
+        display:none !important;
+    }
+
+    .creator{
+        font-size:12px !important;
+        line-height:1.45 !important;
+        color:#aaa !important;
+        margin:0 0 8px !important;
+        word-break:break-word !important;
+    }
+
+    .creator a{
+        color:#9fcdd9 !important;
+    }
+
+    .reaction-row{
+        display:flex !important;
+        flex-direction:row !important;
+        align-items:center !important;
+        gap:20px !important;
+        margin:0 !important;
+        font-size:14px !important;
+        color:#ddd !important;
+    }
+
+    .like-area{
+        gap:8px !important;
+    }
+
+    .like-btn{
+        font-size:21px !important;
+        color:#fff !important;
+        line-height:1 !important;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:14px !important;
+        color:#ddd !important;
+    }
+
+    .mobile-post-date{
+        display:block !important;
+        position:absolute !important;
+        top:20px !important;
+        right:18px !important;
+        color:#d7d7d7 !important;
+        font-size:13px !important;
+        font-weight:700 !important;
+        line-height:1 !important;
+        z-index:2 !important;
+        pointer-events:none !important;
+    }
+
+    .album-analysis{
+        width:100% !important;
+        height:auto !important;
+        min-width:0 !important;
+        display:block !important;
+        margin:0 !important;
+        padding:13px 0 0 !important;
+        border:none !important;
+        border-radius:0 !important;
+        background:transparent !important;
+    }
+
+    .meter-list{
+        flex:initial !important;
+        display:flex !important;
+        flex-direction:column !important;
+        gap:9px !important;
+        padding:0 0 13px !important;
+        border-bottom:1px solid rgba(255,255,255,0.10) !important;
+    }
+
+    .meter{
+        display:grid !important;
+        grid-template-columns:58px minmax(0,1fr) 58px !important;
+        gap:10px !important;
+        align-items:center !important;
+        margin:0 !important;
+        width:100% !important;
+    }
+
+    .meter-label{
+        font-size:13px !important;
+        font-weight:800 !important;
+        color:#f2f2f2 !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+    }
+
+    .right-label{
+        text-align:right !important;
+    }
+
+    .meter-graphic{
+        display:flex !important;
+        align-items:center !important;
+        width:100% !important;
+        min-width:0 !important;
+        overflow:visible !important;
+    }
+
+    .dot{
+        width:8px !important;
+        height:8px !important;
+        flex:0 0 8px !important;
+        border-radius:50% !important;
+        border:0 !important;
+        background:rgba(255,255,255,0.38) !important;
+        box-shadow:none !important;
+    }
+
+    .connector{
+        height:2px !important;
+        flex:1 !important;
+        min-width:0 !important;
+        background:rgba(255,255,255,0.28) !important;
+    }
+
+    .dot.active,
+    .dot.active.level-1,
+    .dot.active.level-2,
+    .dot.active.level-3,
+    .dot.active.level-4,
+    .dot.active.level-5{
+        background:#9fcdd9 !important;
+        border-color:#9fcdd9 !important;
+    }
+
+    .connector.active,
+    .connector.active.level-1,
+    .connector.active.level-2,
+    .connector.active.level-3,
+    .connector.active.level-4{
+        background:linear-gradient(90deg,#7faebb,#d7edf0) !important;
+    }
+
+    .dot.selected{
+        width:15px !important;
+        height:15px !important;
+        flex:0 0 15px !important;
+        background:#9fcdd9 !important;
+        border:3px solid #edf8f9 !important;
+        box-shadow:0 0 12px rgba(159,205,217,0.42) !important;
+    }
+
+    .keyword-box{
+        margin:12px 0 0 !important;
+        padding:0 !important;
+        border:none !important;
+        border-radius:0 !important;
+        display:flex !important;
+        align-items:center !important;
+        gap:8px !important;
+        overflow-x:auto !important;
+        scrollbar-width:none !important;
+        -webkit-overflow-scrolling:touch !important;
+    }
+
+    .keyword-box::-webkit-scrollbar{
+        display:none !important;
+    }
+
+    .keyword-title{
+        flex:0 0 auto !important;
+        color:#9fcdd9 !important;
+        font-size:13px !important;
+        font-weight:900 !important;
+        margin-right:4px !important;
+    }
+
+    .keyword-text{
+        flex:0 0 auto !important;
+        color:#e5e5e5 !important;
+        font-size:13px !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+        display:block !important;
+        overflow:visible !important;
+        max-width:none !important;
+        border:1px solid rgba(255,255,255,0.14) !important;
+        border-radius:999px !important;
+        padding:7px 13px !important;
+        background:rgba(255,255,255,0.02) !important;
+    }
+
+    .keyword-tags{
+        flex:1 1 auto !important;
+        min-width:0 !important;
+        display:flex !important;
+        flex-wrap:nowrap !important;
+        gap:8px !important;
+        max-height:none !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        scrollbar-width:none !important;
+        -webkit-overflow-scrolling:touch !important;
+    }
+
+    .keyword-tags::-webkit-scrollbar{
+        display:none !important;
+    }
+
+    .keyword-tag{
+        flex:0 0 auto !important;
+        color:#e5e5e5 !important;
+        font-size:13px !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+        text-decoration:none !important;
+        border:1px solid rgba(255,255,255,0.14) !important;
+        border-radius:999px !important;
+        padding:7px 13px !important;
+        background:rgba(255,255,255,0.02) !important;
+    }
+}
+
+@media(max-width:430px){
+    .page-title{
+        font-size:34px !important;
+    }
+
+    .album-card{
+        padding:12px !important;
+        border-radius:17px !important;
+    }
+
+    .album-main{
+        grid-template-columns:112px minmax(0,1fr) !important;
+        gap:12px !important;
+        padding-right:42px !important;
+    }
+
+    .cover{
+        width:112px !important;
+        height:112px !important;
+    }
+
+    .title{
+        font-size:18px !important;
+    }
+
+    .artist{
+        font-size:13px !important;
+    }
+
+    .meta,
+    .creator{
+        font-size:11px !important;
+    }
+
+    .mobile-post-date{
+        top:18px !important;
+        right:15px !important;
+        font-size:12px !important;
+    }
+
+    .meter{
+        grid-template-columns:50px minmax(0,1fr) 50px !important;
+        gap:8px !important;
+    }
+
+    .meter-label{
+        font-size:12px !important;
+    }
+
+    .dot{
+        width:7px !important;
+        height:7px !important;
+        flex-basis:7px !important;
+    }
+
+    .dot.selected{
+        width:14px !important;
+        height:14px !important;
+        flex-basis:14px !important;
+    }
+
+    .keyword-title,
+    .keyword-text,
+    .keyword-tag{
+        font-size:12px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   FINAL: スマホ版メーター完全固定版
+   - PC版には影響しない
+   - メーター線は1本の背景線
+   - 値は選択ドット1個だけで表示
+   - 5段階の位置はCSS Gridで固定
+   - 左右端の未選択ドットだけでなく、中間の未選択ドットも非表示
+   - これで列ズレ・点線化・途中の小さい点を防ぐ
+============================================================ */
+@media(max-width:900px){
+    .meter-graphic{
+        position:relative !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, 1fr) !important;
+        align-items:center !important;
+        width:100% !important;
+        height:18px !important;
+        min-width:0 !important;
+        overflow:visible !important;
+    }
+
+    .meter-graphic::before{
+        content:"" !important;
+        position:absolute !important;
+        left:7px !important;
+        right:7px !important;
+        top:50% !important;
+        height:2px !important;
+        transform:translateY(-50%) !important;
+        border-radius:999px !important;
+        z-index:0 !important;
+        background:linear-gradient(
+            90deg,
+            #162025 0%,
+            #162025 25%,
+            #405f69 25%,
+            #405f69 50%,
+            #8bb7c3 50%,
+            #8bb7c3 75%,
+            #d7edf0 75%,
+            #d7edf0 100%
+        ) !important;
+    }
+
+    .meter-graphic .connector{
+        display:none !important;
+    }
+
+    .meter-graphic .dot{
+        position:relative !important;
+        z-index:1 !important;
+        grid-row:1 !important;
+        justify-self:center !important;
+        align-self:center !important;
+
+        width:16px !important;
+        height:16px !important;
+        flex:none !important;
+        margin:0 !important;
+        border-radius:50% !important;
+        box-sizing:border-box !important;
+
+        opacity:0 !important;
+        transform:none !important;
+        border:0 !important;
+        box-shadow:none !important;
+        background:transparent !important;
+    }
+
+    .meter-graphic .dot.level-1{ grid-column:1 !important; }
+    .meter-graphic .dot.level-2{ grid-column:2 !important; }
+    .meter-graphic .dot.level-3{ grid-column:3 !important; }
+    .meter-graphic .dot.level-4{ grid-column:4 !important; }
+    .meter-graphic .dot.level-5{ grid-column:5 !important; }
+
+    .meter-graphic .dot.selected{
+        opacity:1 !important;
+        border:3px solid #f0fbfc !important;
+        box-shadow:0 0 12px rgba(220,245,250,0.40) !important;
+    }
+
+    .meter-graphic .dot.selected.level-1{
+        background:#162025 !important;
+        border-color:#9fcdd9 !important;
+    }
+
+    .meter-graphic .dot.selected.level-2{
+        background:#405f69 !important;
+    }
+
+    .meter-graphic .dot.selected.level-3{
+        background:#8bb7c3 !important;
+    }
+
+    .meter-graphic .dot.selected.level-4{
+        background:#d7edf0 !important;
+    }
+
+    .meter-graphic .dot.selected.level-5{
+        background:#f0fbfc !important;
+        border-color:#ffffff !important;
+    }
+}
+
+@media(max-width:430px){
+    .meter-graphic{
+        height:17px !important;
+    }
+
+    .meter-graphic::before{
+        left:7px !important;
+        right:7px !important;
+        height:2px !important;
+    }
+
+    .meter-graphic .dot{
+        width:15px !important;
+        height:15px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   スマホ版メーター色：グラデーション復帰版
+   - PC版には影響しない
+   - 色合いは今の黒めPale Ice系のまま
+   - 未選択ドットは非表示
+   - 選択ドット1個で5段階評価を表す
+============================================================ */
+@media(max-width:900px){
+    .meter-graphic::before{
+        background:linear-gradient(
+            90deg,
+            #162025 0%,
+            #405f69 34%,
+            #8bb7c3 66%,
+            #d7edf0 100%
+        ) !important;
+    }
+
+    .meter-graphic .dot.selected.level-1{
+        background:#162025 !important;
+        border-color:#9fcdd9 !important;
+        box-shadow:0 0 10px rgba(22,32,37,0.70) !important;
+    }
+
+    .meter-graphic .dot.selected.level-2{
+        background:#405f69 !important;
+        border-color:#edf8f9 !important;
+        box-shadow:0 0 10px rgba(64,95,105,0.48) !important;
+    }
+
+    .meter-graphic .dot.selected.level-3{
+        background:#8bb7c3 !important;
+        border-color:#edf8f9 !important;
+        box-shadow:0 0 10px rgba(139,183,195,0.42) !important;
+    }
+
+    .meter-graphic .dot.selected.level-4{
+        background:#d7edf0 !important;
+        border-color:#f7fcfd !important;
+        box-shadow:0 0 10px rgba(215,237,240,0.42) !important;
+    }
+
+    .meter-graphic .dot.selected.level-5{
+        background:#f0fbfc !important;
+        border-color:#ffffff !important;
+        box-shadow:0 0 10px rgba(240,251,252,0.48) !important;
+    }
+}
+</style>
 
 </body>
 </html>
