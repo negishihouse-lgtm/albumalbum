@@ -2770,12 +2770,12 @@ async function unfollowUser() {
 
 function updateOwnerUI(){
     if(isOwner()){
-        ownerNotice.style.display = "block";
+        if(ownerNotice) ownerNotice.style.display = "block";
         profileEditBtn.style.display = "inline-block";
         if(mobileLogoutBtn) mobileLogoutBtn.style.display = "inline-block";
         if(sideProfileEditBtn) sideProfileEditBtn.style.display = "block";
     } else {
-        ownerNotice.style.display = "none";
+        if(ownerNotice) ownerNotice.style.display = "none";
         profileEditBtn.style.display = "none";
         if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
         if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
@@ -2847,7 +2847,7 @@ onAuthStateChanged(auth, async (user) => {
         profileEditBtn.style.display = "none";
         if(mobileLogoutBtn) mobileLogoutBtn.style.display = "none";
         if(sideProfileEditBtn) sideProfileEditBtn.style.display = "none";
-        ownerNotice.style.display = "none";
+        if(ownerNotice) ownerNotice.style.display = "none";
         return;
     }
 
