@@ -1112,6 +1112,7 @@ const sideProfileEditBtn = document.getElementById("sideProfileEditBtn");
 const myPageLink = document.getElementById("myPageLink");
 
 let currentUser = null;
+let profileDisplayName = "匿名ユーザー";
 let followDocId = null;
 let isFollowing = false;
 
@@ -1146,6 +1147,7 @@ function getAlbumDisplayName(album){
         album.nickName ||
         album.userName ||
         album.name ||
+        profileDisplayName ||
         "匿名ユーザー"
     );
 }
@@ -1571,11 +1573,13 @@ async function loadProfile() {
         if (userDoc.exists()) {
             const user = userDoc.data();
 
-            profileName.textContent =
-                user.displayName || user.userName || "名無しユーザー";
+            profileDisplayName =
+                getUserDisplayNameFromData(user) || "匿名ユーザー";
 
+            profileName.textContent = profileDisplayName;
             profileEmail.textContent = "";
         } else {
+            profileDisplayName = "匿名ユーザー";
             profileName.textContent = "ユーザーが見つかりません";
             profileEmail.textContent = "";
             followBtn.style.display = "none";
