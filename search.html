@@ -685,11 +685,14 @@
     const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
     const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 
-    let currentUser = null;
-
     const urlParams = new URLSearchParams(location.search);
     const initialQuery = (urlParams.get("q") || "").trim();
 
+    if(initialQuery){
+      searchInput.value = initialQuery;
+    }
+
+    let currentUser = null;
     let publicAlbums = [];
     const userNameCache = new Map();
 
@@ -1030,7 +1033,6 @@
 
       if(!normalizedKeyword){
         if(initialQuery){
-          searchInput.value = initialQuery;
           filterAlbums();
         }else{
           renderAlbums(publicAlbums, "");
