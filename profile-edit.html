@@ -171,6 +171,7 @@ button:hover{
 
 /* =====================
    Mobile Tab Bar
+   index.html準拠
 ===================== */
 
 .mobile-tabbar{
@@ -178,7 +179,7 @@ button:hover{
 }
 
 .mobile-tabbar a{
-    color:#999;
+    color:#9ca6ac;
     text-decoration:none;
     display:flex;
     flex-direction:column;
@@ -190,12 +191,37 @@ button:hover{
 }
 
 .mobile-tabbar a.active{
-    color:#6fa8dc;
+    color:white;
+    font-weight:700;
 }
 
 .mobile-tabbar .icon{
     font-size:22px;
     line-height:1;
+}
+
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 /* =====================
@@ -248,24 +274,29 @@ button:hover{
     }
 
     .mobile-tabbar{
-        display:flex;
+        display:grid;
         position:fixed;
         left:0;
         right:0;
         bottom:0;
         height:72px;
-        background:#0b0b0b;
-        border-top:1px solid rgba(255,255,255,0.1);
-        z-index:999;
+        background:rgba(8,8,8,0.96);
+        border-top:1px solid rgba(255,255,255,0.12);
+        grid-template-columns:repeat(5,1fr);
+        z-index:9999;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
         padding-bottom:env(safe-area-inset-bottom);
     }
 
-    .fab{
-        right:16px;
-        bottom:88px;
-        width:58px;
-        height:58px;
-        font-size:32px;
+    .mobile-tabbar a{
+        height:72px;
+    }
+
+    .fab,
+    .floating-post-btn,
+    .post-fab{
+        display:none !important;
     }
 }
 </style>
@@ -290,32 +321,33 @@ button:hover{
 <!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
     <a href="index.html">
-        <div class="icon">🏠</div>
-        <div>ホーム</div>
+        <span class="icon">⌂</span>
+        <span class="label">ホーム</span>
     </a>
 
     <a href="search.html">
-        <div class="icon">🔍</div>
-        <div>検索</div>
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
     </a>
 
     <a href="editor.html">
-        <div class="icon">➕</div>
-        <div>投稿</div>
+        <span class="icon">＋</span>
+        <span class="label">投稿</span>
     </a>
 
     <a href="notifications.html">
-        <div class="icon">🔔</div>
-        <div>通知</div>
+        <span class="icon">♡</span>
+        <span class="label">通知</span>
     </a>
 
-    <a id="mobileMyPageLink" href="login.html">
-        <div class="icon">👤</div>
-        <div>マイページ</div>
+    <a id="mobileMyPageLink" href="login.html" class="active">
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">マイページ</span>
     </a>
 </nav>
 
-<!-- PC / スマホ両方に表示される右下投稿ボタン -->
+<!-- PC用右下投稿ボタン。スマホでは非表示 -->
 <a href="editor.html" class="fab">＋</a>
 
 <h1 class="page-title">プロフィール編集</h1>
@@ -391,12 +423,50 @@ const backBtn = document.getElementById("backBtn");
 const message = document.getElementById("message");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 
 let currentUser = null;
 
 function setDefaultAvatar(){
     avatarPreview.src =
         "https://placehold.co/300x300/111111/ffffff?text=User";
+}
+
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
+
+function updateMobileMyPageIcon(iconUrl){
+    if(!mobileMyPageAvatar || !mobileMyPageFallback){
+        return;
+    }
+
+    if(iconUrl){
+        mobileMyPageAvatar.src = iconUrl;
+        mobileMyPageAvatar.style.display = "block";
+        mobileMyPageFallback.style.display = "none";
+
+        mobileMyPageAvatar.onerror = () => {
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageFallback.style.display = "flex";
+        };
+    } else {
+        mobileMyPageAvatar.style.display = "none";
+        mobileMyPageAvatar.src = "";
+        mobileMyPageFallback.style.display = "flex";
+    }
 }
 
 function goMyPage(){
@@ -413,8 +483,10 @@ photoURLInput.addEventListener("input", () => {
 
     if(url){
         avatarPreview.src = url;
+        updateMobileMyPageIcon(url);
     } else {
         setDefaultAvatar();
+        updateMobileMyPageIcon("");
     }
 });
 
@@ -440,8 +512,9 @@ onAuthStateChanged(auth, async (user) => {
 
     if(userSnap.exists()){
         const data = userSnap.data();
+        const iconUrl = getUserIconUrl(data);
 
-        photoURLInput.value = data.photoURL || data.iconURL || "";
+        photoURLInput.value = iconUrl;
         nicknameInput.value = data.nickname || data.userName || data.displayName || "";
         birthdateInput.value = data.birthdate || "";
 
@@ -450,8 +523,11 @@ onAuthStateChanged(auth, async (user) => {
         } else {
             setDefaultAvatar();
         }
+
+        updateMobileMyPageIcon(iconUrl);
     } else {
         setDefaultAvatar();
+        updateMobileMyPageIcon("");
 
         await setDoc(userRef, {
             uid: user.uid,
@@ -515,6 +591,7 @@ saveBtn.addEventListener("click", async () => {
 
         await batch.commit();
 
+        updateMobileMyPageIcon(photoURL);
         message.textContent = "保存しました。";
 
     } catch (error) {
