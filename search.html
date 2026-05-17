@@ -1135,7 +1135,7 @@
       filterAlbums();
     });
 
-    resultsEl.addEventListener("click", (event) => {
+    document.addEventListener("click", (event) => {
       const keywordButton = event.target.closest(".keyword");
 
       if(!keywordButton){
@@ -1144,6 +1144,7 @@
 
       event.preventDefault();
       event.stopPropagation();
+      event.stopImmediatePropagation();
 
       const keyword = decodeURIComponent(keywordButton.dataset.keyword || "").trim();
 
@@ -1157,7 +1158,7 @@
       history.pushState(null, "", newUrl);
 
       filterAlbums();
-    });
+    }, true);
 
     loadPublicAlbums();
   </script>
