@@ -456,13 +456,13 @@
     color:#6fa8dc;
 }
 
-/* ===== 共通スマホ下部タブバー ===== */
+/* ===== 共通スマホ下部タブバー：index準拠 ===== */
 .mobile-tabbar{
     display:none;
 }
 
 .mobile-tabbar a{
-    color:#999;
+    color:#9ca6ac;
     text-decoration:none;
     display:flex;
     flex-direction:column;
@@ -474,12 +474,37 @@
 }
 
 .mobile-tabbar a.active{
-    color:#6fa8dc;
+    color:white;
+    font-weight:700;
 }
 
 .mobile-tabbar .icon{
     font-size:22px;
     line-height:1;
+}
+
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 /* ===== 共通右下投稿ボタン ===== */
@@ -517,24 +542,29 @@
     }
 
     .mobile-tabbar{
-        display:flex;
+        display:grid;
         position:fixed;
         left:0;
         right:0;
         bottom:0;
         height:72px;
-        background:#0b0b0b;
-        border-top:1px solid rgba(255,255,255,0.1);
-        z-index:999;
+        background:rgba(8,8,8,0.96);
+        border-top:1px solid rgba(255,255,255,0.12);
+        grid-template-columns:repeat(5,1fr);
+        z-index:9999;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
         padding-bottom:env(safe-area-inset-bottom);
     }
 
-    .fab{
-        right:16px;
-        bottom:88px;
-        width:58px;
-        height:58px;
-        font-size:32px;
+    .mobile-tabbar a{
+        height:72px;
+    }
+
+    .fab,
+    .floating-post-btn,
+    .post-fab{
+        display:none !important;
     }
 }
 
@@ -586,28 +616,29 @@
   <!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
     <a href="index.html">
-        <div class="icon">🏠</div>
-        <div>ホーム</div>
+        <span class="icon">⌂</span>
+        <span class="label">ホーム</span>
     </a>
 
     <a href="search.html" class="active">
-        <div class="icon">🔍</div>
-        <div>検索</div>
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
     </a>
 
     <a href="editor.html">
-        <div class="icon">➕</div>
-        <div>投稿</div>
+        <span class="icon">＋</span>
+        <span class="label">投稿</span>
     </a>
 
     <a href="notifications.html">
-        <div class="icon">🔔</div>
-        <div>通知</div>
+        <span class="icon">♡</span>
+        <span class="label">通知</span>
     </a>
 
     <a id="mobileMyPageLink" href="login.html">
-        <div class="icon">👤</div>
-        <div>マイページ</div>
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">マイページ</span>
     </a>
 </nav>
 
@@ -621,6 +652,8 @@
       collection,
       getDocs,
       query,
+      doc,
+      getDoc,
       where,
       orderBy
     } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
@@ -649,20 +682,84 @@
     const resultsEl = document.getElementById("results");
     const myPageLink = document.getElementById("myPageLink");
     const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+    const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+    const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 
     let currentUser = null;
     let publicAlbums = [];
 
+    function getUserIconUrl(data){
+      return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+      );
+    }
+
+    async function updateMobileMyPageTab(user){
+      if(!mobileMyPageLink){
+        return;
+      }
+
+      if(!user){
+        mobileMyPageLink.href = "login.html";
+
+        if(mobileMyPageAvatar){
+          mobileMyPageAvatar.style.display = "none";
+          mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+          mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+      }
+
+      mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+
+      try{
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+
+        if(!userSnap.exists()){
+          return;
+        }
+
+        const iconUrl = getUserIconUrl(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+          mobileMyPageAvatar.src = iconUrl;
+          mobileMyPageAvatar.style.display = "block";
+          mobileMyPageFallback.style.display = "none";
+
+          mobileMyPageAvatar.onerror = () => {
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageFallback.style.display = "flex";
+          };
+        }
+      }catch(error){
+        console.warn("マイページアイコンの取得に失敗しました", error);
+      }
+    }
+
     onAuthStateChanged(auth, (user) => {
+      updateMobileMyPageTab(user);
       currentUser = user;
 
       if(user){
-        const myPageUrl = `profile.html?uid=${user.uid}`;
-        myPageLink.href = myPageUrl;
-        mobileMyPageLink.href = myPageUrl;
+        const myPageUrl = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+        if(myPageLink){ myPageLink.href = myPageUrl; }
+        if(mobileMyPageLink){ mobileMyPageLink.href = myPageUrl; }
       }else{
-        myPageLink.href = "login.html";
-        mobileMyPageLink.href = "login.html";
+        if(myPageLink){ myPageLink.href = "login.html"; }
+        if(mobileMyPageLink){ mobileMyPageLink.href = "login.html"; }
       }
     });
 
