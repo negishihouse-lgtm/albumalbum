@@ -376,6 +376,11 @@ a{
 }
 
 .keyword-tag{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
     display:inline-flex;
     align-items:center;
     max-width:100%;
@@ -1622,6 +1627,20 @@ function normalizeKeywords(value){
     return [];
 }
 
+
+function goKeywordSearch(keyword){
+    const q = String(keyword ?? "").trim();
+
+    if(!q){
+        return false;
+    }
+
+    location.href = `search.html?q=${encodeURIComponent(q)}`;
+    return false;
+}
+
+window.goKeywordSearch = goKeywordSearch;
+
 function renderKeywordTags(value){
     const keywords = normalizeKeywords(value);
 
@@ -1634,11 +1653,11 @@ function renderKeywordTags(value){
         const encodedKeyword = encodeURIComponent(keyword);
 
         return `
-            <a
+            <button
+                type="button"
                 class="keyword-tag"
-                href="search.html?q=${encodedKeyword}"
-                onclick="event.stopPropagation();"
-            >#${safeKeyword}</a>
+                onclick="event.preventDefault(); event.stopPropagation(); return goKeywordSearch('${encodedKeyword}');"
+            >#${safeKeyword}</button>
         `;
     }).join("");
 }
@@ -2290,6 +2309,10 @@ onSnapshot(q, async (snapshot)=>{
     }
 
     .keyword-tag{
+        appearance:none !important;
+        -webkit-appearance:none !important;
+        cursor:pointer !important;
+        font-family:inherit !important;
         flex:0 0 auto !important;
         color:#e5e5e5 !important;
         font-size:13px !important;
