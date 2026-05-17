@@ -230,6 +230,42 @@ body{
     margin-bottom:22px;
 }
 
+.profile-content-tabs{
+    display:flex;
+    gap:10px;
+    margin:0 0 22px;
+    border-bottom:1px solid rgba(255,255,255,0.10);
+}
+
+.profile-content-tab{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    background:transparent;
+    color:#999;
+    padding:12px 4px;
+    margin-right:18px;
+    font-size:15px;
+    font-weight:800;
+    cursor:pointer;
+    position:relative;
+}
+
+.profile-content-tab.active{
+    color:white;
+}
+
+.profile-content-tab.active::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-1px;
+    height:3px;
+    border-radius:999px;
+    background:#9fcdd9;
+}
+
 /* ===== 投稿カード ===== */
 .album-grid{
     display:grid;
@@ -1634,6 +1670,11 @@ body{
 }
 
 .keyword-tag{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
     display:inline-flex;
     align-items:center;
     max-width:100%;
@@ -1677,6 +1718,10 @@ body{
     }
 
     .keyword-tag{
+        appearance:none !important;
+        -webkit-appearance:none !important;
+        cursor:pointer !important;
+        font-family:inherit !important;
         flex:0 0 auto !important;
         color:#e5e5e5 !important;
         font-size:13px !important;
@@ -1788,6 +1833,15 @@ body{
             自分のマイページです。自分の投稿には「編集」「削除」ボタンが表示されます。非公開投稿もここでは確認できます。
         </div>
 
+        <div class="profile-content-tabs" id="profileContentTabs">
+            <button class="profile-content-tab active" type="button" data-tab="posts">
+                投稿
+            </button>
+            <button class="profile-content-tab" type="button" data-tab="liked">
+                いいねしたもの
+            </button>
+        </div>
+
         <div class="album-grid" id="albumGrid"></div>
 
     </main>
@@ -1859,6 +1913,7 @@ const profileEditBtn = document.getElementById("profileEditBtn");
 const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
 const sideProfileEditBtn = document.getElementById("sideProfileEditBtn");
 const myPageLink = document.getElementById("myPageLink");
+const profileContentTabs = document.getElementById("profileContentTabs");
 
 let currentUser = null;
 let profileDisplayName = "匿名ユーザー";
@@ -1866,8 +1921,10 @@ let followDocId = null;
 let isFollowing = false;
 
 let profileAlbums = [];
+let likedAlbums = [];
 let allLikes = [];
 let allComments = [];
+let activeProfileTab = "posts";
 
 let unsubscribeAlbums = null;
 let unsubscribeLikes = null;
@@ -2222,54 +2279,86 @@ function renderKeywordTags(value){
         const encodedKeyword = encodeURIComponent(keyword);
 
         return `
-            <a
+            <button
+                type="button"
                 class="keyword-tag"
-                href="search.html?q=${encodedKeyword}"
-                onclick="event.stopPropagation();"
-            >#${safeKeyword}</a>
+                data-keyword="${encodedKeyword}"
+            >#${safeKeyword}</button>
         `;
     }).join("");
 }
 
-function renderAlbums(){
-    if(!uid) return;
 
-    if(profileAlbums.length === 0){
-        albumGrid.innerHTML = `<div class="empty">まだ投稿がありません。</div>`;
-        return;
+function getPostTime(value){
+    if(!value){ return 0; }
+    if(typeof value.toDate === "function"){ return value.toDate().getTime(); }
+    if(value instanceof Date){ return value.getTime(); }
+    if(typeof value === "number"){ return value; }
+    if(typeof value === "string"){
+        const parsed = new Date(value);
+        if(!Number.isNaN(parsed.getTime())){ return parsed.getTime(); }
+    }
+    if(typeof value.seconds === "number"){
+        return value.seconds * 1000;
+    }
+    return 0;
+}
+
+function setProfileTab(tab){
+    activeProfileTab = tab === "liked" ? "liked" : "posts";
+
+    if(profileContentTabs){
+        profileContentTabs.querySelectorAll(".profile-content-tab").forEach((button) => {
+            button.classList.toggle("active", button.dataset.tab === activeProfileTab);
+        });
     }
 
-    const owner = isOwner();
+    renderAlbums();
+}
 
-    albumGrid.innerHTML = "";
+if(profileContentTabs){
+    profileContentTabs.addEventListener("click", (event) => {
+        const button = event.target.closest(".profile-content-tab");
 
-    profileAlbums.forEach((album) => {
-        const albumId = album.id;
-        const privateBadge = album.isPublic === false
-            ? `<span class="private-badge">非公開</span>`
-            : "";
+        if(!button){
+            return;
+        }
 
-        const ownerActions = owner
-            ? `
-                <div class="owner-actions">
-                    <button
-                        class="edit-post-btn"
-                        type="button"
-                        onclick="event.stopPropagation(); editAlbum('${escapeHTML(albumId)}')">
-                        編集
-                    </button>
+        event.preventDefault();
+        setProfileTab(button.dataset.tab);
+    });
+}
 
-                    <button
-                        class="delete-post-btn"
-                        type="button"
-                        onclick="event.stopPropagation(); deleteAlbum('${escapeHTML(albumId)}')">
-                        削除
-                    </button>
-                </div>
-            `
-            : "";
+function albumCardHTML(album, options = {}){
+    const albumId = album.id;
+    const owner = Boolean(options.owner);
+    const showOwnerActions = owner && album.userId === currentUser?.uid;
 
-        albumGrid.innerHTML += `
+    const privateBadge = album.isPublic === false
+        ? `<span class="private-badge">非公開</span>`
+        : "";
+
+    const ownerActions = showOwnerActions
+        ? `
+            <div class="owner-actions">
+                <button
+                    class="edit-post-btn"
+                    type="button"
+                    onclick="event.stopPropagation(); editAlbum('${escapeHTML(albumId)}')">
+                    編集
+                </button>
+
+                <button
+                    class="delete-post-btn"
+                    type="button"
+                    onclick="event.stopPropagation(); deleteAlbum('${escapeHTML(albumId)}')">
+                    削除
+                </button>
+            </div>
+        `
+        : "";
+
+    return `
 <div class="album-card"
      onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
 
@@ -2347,8 +2436,51 @@ function renderAlbums(){
     </div>
 
 </div>
-        `;
-    });
+    `;
+}
+
+
+document.addEventListener("click", (event) => {
+    const keywordButton = event.target.closest(".keyword-tag");
+
+    if(!keywordButton){
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const keyword = decodeURIComponent(keywordButton.dataset.keyword || "").trim();
+
+    if(!keyword){
+        return;
+    }
+
+    location.href = `./search.html?q=${encodeURIComponent(keyword)}`;
+}, true);
+
+function renderAlbums(){
+    if(!uid) return;
+
+    const owner = isOwner();
+    const items = activeProfileTab === "liked" ? likedAlbums : profileAlbums;
+
+    if(activeProfileTab === "liked" && !owner){
+        albumGrid.innerHTML = `<div class="empty">いいねしたものは本人だけが確認できます。</div>`;
+        return;
+    }
+
+    if(items.length === 0){
+        albumGrid.innerHTML = activeProfileTab === "liked"
+            ? `<div class="empty">まだいいねした投稿がありません。</div>`
+            : `<div class="empty">まだ投稿がありません。</div>`;
+        return;
+    }
+
+    albumGrid.innerHTML = items
+        .map((album) => albumCardHTML(album, { owner: activeProfileTab === "posts" && owner }))
+        .join("");
 
     updateLikeDisplays();
     updateCommentDisplays();
@@ -2425,6 +2557,57 @@ function listenAlbums(){
     });
 }
 
+
+async function loadLikedAlbums(){
+    likedAlbums = [];
+
+    if(!currentUser || !isOwner()){
+        renderAlbums();
+        return;
+    }
+
+    try{
+        const myLikes = allLikes.filter((like) => like.userId === currentUser.uid);
+        const albumIds = [...new Set(myLikes.map((like) => like.albumId).filter(Boolean))];
+
+        const albums = [];
+
+        for(const albumId of albumIds){
+            try{
+                const albumSnap = await getDoc(doc(db, "albums", albumId));
+
+                if(!albumSnap.exists()){
+                    continue;
+                }
+
+                const album = {
+                    id: albumSnap.id,
+                    ...albumSnap.data()
+                };
+
+                if(album.isPublic === false && album.userId !== currentUser.uid){
+                    continue;
+                }
+
+                albums.push(album);
+            }catch(error){
+                console.warn("いいねした投稿の取得に失敗しました", albumId, error);
+            }
+        }
+
+        albums.sort((a, b) => {
+            return getPostTime(b.createdAt || b.updatedAt) - getPostTime(a.createdAt || a.updatedAt);
+        });
+
+        likedAlbums = albums;
+        renderAlbums();
+    }catch(error){
+        console.error("いいねしたものの取得に失敗しました:", error);
+        likedAlbums = [];
+        renderAlbums();
+    }
+}
+
 function listenLikes(){
     if(unsubscribeLikes){
         unsubscribeLikes();
@@ -2442,6 +2625,7 @@ function listenLikes(){
         });
 
         updateLikeDisplays();
+        loadLikedAlbums();
 
     }, (error) => {
         console.error("いいね取得失敗:", error);
