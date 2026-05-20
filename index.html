@@ -1827,45 +1827,188 @@ async function generateInstagramStoryImage(){
     }
 
     const album = item.data || {};
-    const shareUrl = getShareUrl(selectedShareAlbumId);
+    const posterProfile = await getPosterProfileForAlbum(album);
     const canvas = document.createElement("canvas");
     canvas.width = 1080;
     canvas.height = 1920;
 
     const ctx = canvas.getContext("2d");
 
-    const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
-    gradient.addColorStop(0, "#151819");
-    gradient.addColorStop(0.55, "#070808");
-    gradient.addColorStop(1, "#0f1b20");
-    ctx.fillStyle = gradient;
+    function fillRoundRect(x, y, width, height, radius, color){
+        ctx.save();
+        roundRect(ctx, x, y, width, height, radius);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function strokeRoundRect(x, y, width, height, radius, color, lineWidth = 1){
+        ctx.save();
+        roundRect(ctx, x, y, width, height, radius);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function splitWrappedLines(textValue, maxWidth, maxLines){
+        const chars = Array.from(String(textValue || ""));
+        let line = "";
+        let lines = [];
+
+        for(const char of chars){
+            const testLine = line + char;
+            if(ctx.measureText(testLine).width > maxWidth && line){
+                lines.push(line);
+                line = char;
+            }else{
+                line = testLine;
+            }
+        }
+
+        if(line){
+            lines.push(line);
+        }
+
+        if(lines.length > maxLines){
+            lines = lines.slice(0, maxLines);
+            let lastLine = lines[maxLines - 1];
+            while(lastLine.length > 0 && ctx.measureText(lastLine + "…").width > maxWidth){
+                lastLine = lastLine.slice(0, -1);
+            }
+            lines[maxLines - 1] = lastLine + "…";
+        }
+
+        return lines;
+    }
+
+    function drawCenteredWrappedText(textValue, centerX, topY, maxWidth, lineHeight, maxLines){
+        const lines = splitWrappedLines(textValue, maxWidth, maxLines);
+        lines.forEach((lineText, index) => {
+            const width = ctx.measureText(lineText).width;
+            ctx.fillText(lineText, centerX - (width / 2), topY + (index * lineHeight));
+        });
+        return lines.length;
+    }
+
+    function drawMeterRow(y, icon, leftLabel, rightLabel, value){
+        const safeValue = Math.max(1, Math.min(5, Number(value) || 3));
+        const lineLeft = 320;
+        const lineRight = 868;
+        const step = (lineRight - lineLeft) / 4;
+        const selectedX = lineLeft + ((safeValue - 1) * step);
+
+        ctx.fillStyle = "#f0d6a8";
+        ctx.font = "700 34px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(icon, 112, y + 12);
+
+        ctx.fillStyle = "rgba(255,245,228,0.96)";
+        ctx.font = "700 24px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(leftLabel, 166, y + 10);
+
+        const rightWidth = ctx.measureText(rightLabel).width;
+        ctx.fillText(rightLabel, 930 - rightWidth, y + 10);
+
+        const lineGradient = ctx.createLinearGradient(lineLeft, y, lineRight, y);
+        lineGradient.addColorStop(0, "rgba(102,136,186,0.82)");
+        lineGradient.addColorStop(0.5, "rgba(205,208,215,0.74)");
+        lineGradient.addColorStop(1, "rgba(246,155,107,0.90)");
+        ctx.strokeStyle = lineGradient;
+        ctx.lineWidth = 4;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(lineLeft, y);
+        ctx.lineTo(lineRight, y);
+        ctx.stroke();
+
+        ctx.save();
+        ctx.shadowColor = "rgba(255,255,255,0.42)";
+        ctx.shadowBlur = 18;
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(selectedX, y, 15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawKeywordChip(textValue, x, y){
+        const label = `#${String(textValue || "").replace(/^#+/, "")}`;
+        ctx.font = "600 21px -apple-system, BlinkMacSystemFont, sans-serif";
+        const width = Math.ceil(ctx.measureText(label).width) + 44;
+        fillRoundRect(x, y, width, 54, 27, "rgba(20,22,25,0.40)");
+        strokeRoundRect(x, y, width, 54, 27, "rgba(255,255,255,0.18)", 1.6);
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.fillText(label, x + 22, y + 34);
+        return width;
+    }
+
+    function getDisplayDescription(){
+        return (
+            album.desc ||
+            album.description ||
+            album.comment ||
+            album.review ||
+            "この音楽の魅力を、Album Collectionで記録しよう。"
+        );
+    }
+
+    function getKeywordList(){
+        return normalizeKeywords(album.keywords).slice(0, 4);
+    }
+
+    const coverImage = await loadImageForCanvas(album.cover || "");
+
+    if(coverImage){
+        try{
+            ctx.save();
+            ctx.filter = "blur(34px)";
+            ctx.globalAlpha = 0.58;
+            const scale = Math.max(canvas.width / coverImage.width, canvas.height / coverImage.height);
+            const drawW = coverImage.width * scale;
+            const drawH = coverImage.height * scale;
+            const drawX = (canvas.width - drawW) / 2;
+            const drawY = (canvas.height - drawH) / 2;
+            ctx.drawImage(coverImage, drawX, drawY, drawW, drawH);
+            ctx.restore();
+        }catch(error){
+            console.warn("背景画像の描画に失敗しました", error);
+        }
+    }
+
+    const bgGradient = ctx.createLinearGradient(0, 0, 0, 1920);
+    bgGradient.addColorStop(0, "rgba(40,30,18,0.16)");
+    bgGradient.addColorStop(0.26, "rgba(15,18,24,0.30)");
+    bgGradient.addColorStop(0.60, "rgba(9,12,17,0.60)");
+    bgGradient.addColorStop(1, "rgba(5,7,10,0.92)");
+    ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, 1080, 1920);
 
-    ctx.fillStyle = "rgba(159,205,217,0.10)";
+    const darkGradient = ctx.createLinearGradient(0, 240, 0, 1920);
+    darkGradient.addColorStop(0, "rgba(255,255,255,0.00)");
+    darkGradient.addColorStop(0.38, "rgba(8,11,16,0.24)");
+    darkGradient.addColorStop(1, "rgba(5,7,10,0.72)");
+    ctx.fillStyle = darkGradient;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    ctx.fillStyle = "rgba(255,255,255,0.34)";
     ctx.beginPath();
-    ctx.arc(930, 220, 280, 0, Math.PI * 2);
+    ctx.arc(120, 84, 2.5, 0, Math.PI * 2);
+    ctx.arc(212, 66, 1.8, 0, Math.PI * 2);
+    ctx.arc(932, 145, 3.0, 0, Math.PI * 2);
+    ctx.arc(845, 110, 2.0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = "rgba(255,255,255,0.06)";
-    ctx.beginPath();
-    ctx.arc(110, 1650, 360, 0, Math.PI * 2);
-    ctx.fill();
+    const coverSize = 596;
+    const coverX = (1080 - coverSize) / 2;
+    const coverY = 118;
 
-    ctx.fillStyle = "#9fcdd9";
-    ctx.font = "800 40px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText("Album Collection", 80, 120);
-
-    const coverSize = 760;
-    const coverX = 160;
-    const coverY = 250;
+    fillRoundRect(coverX - 6, coverY + 14, coverSize + 12, coverSize + 12, 36, "rgba(0,0,0,0.16)");
 
     ctx.save();
     roundRect(ctx, coverX, coverY, coverSize, coverSize, 34);
     ctx.clip();
-    ctx.fillStyle = "#111516";
+    ctx.fillStyle = "rgba(255,255,255,0.94)";
     ctx.fillRect(coverX, coverY, coverSize, coverSize);
-
-    const coverImage = await loadImageForCanvas(album.cover || "");
 
     if(coverImage){
         try{
@@ -1875,42 +2018,140 @@ async function generateInstagramStoryImage(){
             ctx.drawImage(coverImage, sx, sy, sourceSize, sourceSize, coverX, coverY, coverSize, coverSize);
         }catch(error){
             console.warn("ジャケット画像の描画に失敗しました", error);
-            ctx.fillStyle = "#1a2022";
+            ctx.fillStyle = "#f5f1eb";
             ctx.fillRect(coverX, coverY, coverSize, coverSize);
         }
     }
 
     ctx.restore();
+    strokeRoundRect(coverX, coverY, coverSize, coverSize, 34, "rgba(255,255,255,0.70)", 2.2);
 
-    ctx.strokeStyle = "rgba(255,255,255,0.18)";
-    ctx.lineWidth = 3;
-    roundRect(ctx, coverX, coverY, coverSize, coverSize, 34);
-    ctx.stroke();
+    const centerX = 540;
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "900 74px -apple-system, BlinkMacSystemFont, sans-serif";
-    drawWrappedText(ctx, album.title || "Untitled", 80, 1130, 920, 86, 3);
+    ctx.font = "900 76px -apple-system, BlinkMacSystemFont, sans-serif";
+    const titleLineCount = drawCenteredWrappedText(album.title || "Untitled", centerX, 794, 770, 84, 2);
 
-    ctx.fillStyle = "#9fcdd9";
-    ctx.font = "800 46px -apple-system, BlinkMacSystemFont, sans-serif";
-    drawWrappedText(ctx, album.artist || "Unknown Artist", 80, 1400, 920, 56, 2);
+    const artistTop = 794 + (titleLineCount * 84) + 8;
+    ctx.fillStyle = "#f1d39b";
+    ctx.font = "800 38px -apple-system, BlinkMacSystemFont, sans-serif";
+    drawCenteredWrappedText(album.artist || "Unknown Artist", centerX, artistTop, 760, 48, 2);
 
-    const posterName = album.userName || album.displayName || album.nickname || "匿名ユーザー";
-    ctx.fillStyle = "#dce3e6";
-    ctx.font = "700 34px -apple-system, BlinkMacSystemFont, sans-serif";
-    drawWrappedText(ctx, `投稿者：${posterName}`, 80, 1540, 920, 44, 1);
+    drawMeterRow(1006, "☾", "暗い", "明るい", album.darkness);
+    drawMeterRow(1090, "⚡", "静か", "激しい", album.intense);
+    drawMeterRow(1174, "◯", "シンプル", "複雑", album.complex);
+    drawMeterRow(1258, "✩", "絶望", "希望", album.hope);
+    drawMeterRow(1342, "◉", "個人", "世界", album.world);
 
-    ctx.fillStyle = "rgba(255,255,255,0.12)";
-    roundRect(ctx, 80, 1640, 920, 122, 30);
-    ctx.fill();
+    fillRoundRect(92, 1408, 896, 268, 32, "rgba(18,20,24,0.46)");
+    strokeRoundRect(92, 1408, 896, 268, 32, "rgba(255,255,255,0.12)", 1.8);
 
-    ctx.fillStyle = "#edf8f9";
-    ctx.font = "700 30px -apple-system, BlinkMacSystemFont, sans-serif";
-    drawWrappedText(ctx, shareUrl, 110, 1690, 860, 38, 2);
+    ctx.fillStyle = "rgba(241,211,155,0.96)";
+    ctx.font = "900 72px Georgia, serif";
+    ctx.fillText("“", 118, 1490);
+    ctx.fillText("”", 924, 1640);
 
-    ctx.fillStyle = "#aab3b8";
-    ctx.font = "700 28px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText("リンクから投稿を見る", 80, 1835);
+    ctx.fillStyle = "rgba(255,255,255,0.96)";
+    ctx.font = "500 25px -apple-system, BlinkMacSystemFont, sans-serif";
+    const description = getDisplayDescription();
+    const descLines = splitWrappedLines(description, 720, 5);
+    descLines.forEach((lineText, index) => {
+        ctx.fillText(lineText, 210, 1492 + (index * 48));
+    });
+
+    let chipX = 150;
+    const chipY = 1710;
+    const keywords = getKeywordList();
+
+    if(keywords.length === 0){
+        ["music", "album"].forEach((keyword) => {
+            const width = drawKeywordChip(keyword, chipX, chipY);
+            chipX += width + 16;
+        });
+    }else{
+        keywords.forEach((keyword) => {
+            const width = drawKeywordChip(keyword, chipX, chipY);
+            chipX += width + 16;
+        });
+    }
+
+    const avatarX = 185;
+    const avatarY = 1792;
+    const avatarSize = 74;
+    const avatarImage = posterProfile?.iconUrl ? await loadImageForCanvas(posterProfile.iconUrl) : null;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(avatarX + (avatarSize / 2), avatarY + (avatarSize / 2), avatarSize / 2, 0, Math.PI * 2);
+    ctx.clip();
+
+    if(avatarImage){
+        try{
+            ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
+        }catch(error){
+            console.warn("アバター描画に失敗しました", error);
+            fillRoundRect(avatarX, avatarY, avatarSize, avatarSize, 37, "rgba(255,255,255,0.88)");
+        }
+    }else{
+        fillRoundRect(avatarX, avatarY, avatarSize, avatarSize, 37, "rgba(255,255,255,0.88)");
+        ctx.fillStyle = "#1d2430";
+        ctx.font = "800 30px -apple-system, BlinkMacSystemFont, sans-serif";
+        const initial = getInitialLetter(posterProfile?.name || "匿");
+        const initialWidth = ctx.measureText(initial).width;
+        ctx.fillText(initial, avatarX + (avatarSize / 2) - (initialWidth / 2), avatarY + 47);
+    }
+
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(avatarX + (avatarSize / 2), avatarY + (avatarSize / 2), (avatarSize / 2) - 1, 0, Math.PI * 2);
+    ctx.stroke();
+
+    const displayName = posterProfile?.name || "music_lover";
+    const handleBase = String(displayName)
+        .trim()
+        .replace(/^@+/, "")
+        .replace(/\s+/g, "_")
+        .replace(/[^a-zA-Z0-9_ぁ-んァ-ヶ一-龠]/g, "") || "music_lover";
+
+    ctx.fillStyle = "rgba(255,255,255,0.98)";
+    ctx.font = "500 27px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText(`by @${handleBase}`, 282, 1840);
+
+    fillRoundRect(170, 1888, 740, 108, 54, "rgba(255,255,255,0.94)");
+    ctx.fillStyle = "#090b10";
+    ctx.font = "900 44px -apple-system, BlinkMacSystemFont, sans-serif";
+    const buttonText = "投稿を見る →";
+    const buttonWidth = ctx.measureText(buttonText).width;
+    ctx.fillText(buttonText, 540 - (buttonWidth / 2), 1956);
+
+    ctx.fillStyle = "rgba(255,255,255,0.88)";
+    ctx.font = "500 20px -apple-system, BlinkMacSystemFont, sans-serif";
+    const noteText = "タップで投稿ページに移動します";
+    const noteWidth = ctx.measureText(noteText).width;
+    ctx.fillText(noteText, 540 - (noteWidth / 2), 2036);
+
+    ctx.strokeStyle = "rgba(255,255,255,0.95)";
+    ctx.lineWidth = 6;
+    ctx.lineCap = "round";
+    const logoBaseX = 334;
+    const logoY = 2126;
+    [24, 52, 78, 52, 24].forEach((height, index) => {
+        const x = logoBaseX + (index * 18);
+        ctx.beginPath();
+        ctx.moveTo(x, logoY - (height / 2));
+        ctx.lineTo(x, logoY + (height / 2));
+        ctx.stroke();
+    });
+
+    ctx.fillStyle = "rgba(255,255,255,0.96)";
+    ctx.font = "500 42px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText("Album Collection", 434, 2118);
+    ctx.font = "500 24px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
+    ctx.fillText("音楽の感情を、記録しよう。", 434, 2160);
 
     const blob = await canvasToBlob(canvas);
 
