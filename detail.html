@@ -310,6 +310,207 @@ a{
     text-decoration:underline;
 }
 
+
+.creator-highlight{
+    margin-bottom:10px;
+}
+
+.creator-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:0;
+    border:none;
+    border-radius:0;
+    background:transparent;
+    text-decoration:none;
+    max-width:100%;
+}
+
+.creator-link:hover{
+    background:transparent;
+    text-decoration:none !important;
+}
+
+.creator-avatar,
+.creator-avatar-fallback{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    flex:0 0 30px;
+    background:rgba(255,255,255,0.10);
+    border:1px solid rgba(255,255,255,0.12);
+}
+
+.creator-avatar{
+    display:block;
+    object-fit:cover;
+}
+
+.creator-avatar-fallback{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#edf8f9;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:-0.03em;
+}
+
+.creator-text{
+    display:inline-flex;
+    align-items:baseline;
+    gap:2px;
+    min-width:0;
+    max-width:100%;
+}
+
+.creator-prefix{
+    color:#aab3b8;
+    font-size:12px;
+    font-weight:500;
+    line-height:1.1;
+    white-space:nowrap;
+}
+
+.creator-name{
+    color:#ffffff;
+    font-size:14px;
+    font-weight:650;
+    line-height:1.1;
+    letter-spacing:-0.02em;
+
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+/* ===== Share button / Share sheet ===== */
+.share-area{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+.share-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    background:rgba(255,255,255,0.055);
+    color:#dbe4e7;
+    font-family:inherit;
+    font-size:11.5px;
+    font-weight:700;
+    line-height:1;
+    border-radius:999px;
+    padding:7px 10px;
+    cursor:pointer;
+}
+
+.share-btn:hover{
+    background:rgba(159,205,217,0.16);
+    color:#ffffff;
+}
+
+.share-sheet{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    background:rgba(0,0,0,0.58);
+    z-index:20000;
+    padding:18px;
+}
+
+.share-sheet.open{
+    display:flex;
+}
+
+.share-panel{
+    width:min(420px,100%);
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:22px;
+    padding:16px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.55);
+}
+
+.share-panel-title{
+    font-size:16px;
+    font-weight:900;
+    margin-bottom:4px;
+}
+
+.share-panel-subtitle{
+    color:#aab3b8;
+    font-size:12px;
+    line-height:1.45;
+    margin-bottom:14px;
+}
+
+.share-actions{
+    display:grid;
+    gap:8px;
+}
+
+.share-action-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.045);
+    color:white;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:800;
+    text-align:left;
+    border-radius:14px;
+    padding:13px 14px;
+    cursor:pointer;
+}
+
+.share-action-btn:hover{
+    border-color:rgba(159,205,217,0.42);
+    background:rgba(159,205,217,0.10);
+}
+
+.share-close-btn{
+    margin-top:10px;
+    width:100%;
+    border:none;
+    background:transparent;
+    color:#aab3b8;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:800;
+    padding:12px;
+    cursor:pointer;
+}
+
+.share-toast{
+    position:fixed;
+    left:50%;
+    bottom:92px;
+    transform:translateX(-50%) translateY(10px);
+    background:#edf8f9;
+    color:#050505;
+    border-radius:999px;
+    padding:10px 15px;
+    font-size:13px;
+    font-weight:900;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
+    z-index:21000;
+}
+
+.share-toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
 .avatar{
     width:24px;
     height:24px;
@@ -744,6 +945,42 @@ a{
 /* ===== Smartphone ===== */
 
 @media(max-width:900px){
+
+    .creator-highlight{
+        margin-bottom:8px !important;
+    }
+
+    .creator-link{
+        gap:6px !important;
+        padding:0 !important;
+        border:none !important;
+        border-radius:0 !important;
+        background:transparent !important;
+    }
+
+    .creator-text{
+        gap:2px !important;
+        min-width:0 !important;
+    }
+
+    .creator-avatar,
+    .creator-avatar-fallback{
+        width:28px !important;
+        height:28px !important;
+        flex-basis:28px !important;
+        font-size:13px !important;
+    }
+
+    .creator-prefix{
+        font-size:12px !important;
+        font-weight:500 !important;
+    }
+
+    .creator-name{
+        font-size:15px !important;
+        font-weight:650 !important;
+    }
+
     body{
         padding:16px 16px 112px;
         overflow-x:hidden;
@@ -1229,6 +1466,117 @@ a{
         font-size:12px;
     }
 }
+
+/* ============================================================
+   共有ボタン：スマホ版調整
+============================================================ */
+@media(max-width:900px){
+    .reaction-row{
+        display:flex !important;
+        flex-direction:row !important;
+        align-items:center !important;
+        justify-content:flex-start !important;
+        flex-wrap:nowrap !important;
+        gap:10px !important;
+        width:100% !important;
+        margin-top:2px !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+    }
+
+    .like-area,
+    .share-area{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        flex:0 0 auto !important;
+        min-width:0 !important;
+        line-height:1 !important;
+    }
+
+    .like-area{
+        gap:6px !important;
+    }
+
+    .like-btn{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        width:22px !important;
+        height:22px !important;
+        padding:0 !important;
+        margin:0 !important;
+        font-size:20px !important;
+        line-height:1 !important;
+        vertical-align:middle !important;
+    }
+
+    .like-count,
+    .comment-count{
+        display:inline-flex !important;
+        align-items:center !important;
+        height:24px !important;
+        margin:0 !important;
+        padding:0 !important;
+        font-size:13px !important;
+        line-height:1 !important;
+        color:#ddd !important;
+        white-space:nowrap !important;
+        vertical-align:middle !important;
+    }
+
+    .comment-count{
+        flex:0 1 auto !important;
+        overflow:hidden !important;
+        text-overflow:ellipsis !important;
+    }
+
+    .share-btn{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        height:24px !important;
+        min-height:24px !important;
+        margin:0 !important;
+        padding:0 9px !important;
+        border-radius:999px !important;
+        font-size:12px !important;
+        font-weight:700 !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+        vertical-align:middle !important;
+        background:rgba(255,255,255,0.08) !important;
+        color:#ffffff !important;
+    }
+
+    .share-sheet{
+        padding:10px !important;
+        padding-bottom:calc(10px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .share-panel{
+        border-radius:22px 22px 18px 18px !important;
+    }
+}
+
+@media(max-width:430px){
+    .reaction-row{
+        gap:8px !important;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:12px !important;
+    }
+
+    .share-btn{
+        height:23px !important;
+        min-height:23px !important;
+        padding:0 8px !important;
+        font-size:11px !important;
+    }
+}
+
 </style>
 </head>
 
@@ -1293,6 +1641,25 @@ a{
     <div class="empty">読み込み中...</div>
 </div>
 
+
+<div class="share-sheet" id="shareSheet" onclick="closeShareMenu()">
+    <div class="share-panel" onclick="event.stopPropagation();">
+        <div class="share-panel-title">共有</div>
+        <div class="share-panel-subtitle" id="sharePanelSubtitle">この投稿を共有します</div>
+
+        <div class="share-actions">
+            <button type="button" class="share-action-btn" onclick="copyShareLink()">リンクをコピー</button>
+            <button type="button" class="share-action-btn" onclick="openNativeShare()">端末の共有メニューを開く</button>
+            <button type="button" class="share-action-btn" onclick="generateInstagramStoryImage()">ストーリー用画像を生成</button>
+        </div>
+
+        <button type="button" class="share-close-btn" onclick="closeShareMenu()">閉じる</button>
+    </div>
+</div>
+
+<div class="share-toast" id="shareToast">コピーしました</div>
+
+
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
@@ -1340,6 +1707,9 @@ const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
 const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
+const shareSheet = document.getElementById("shareSheet");
+const sharePanelSubtitle = document.getElementById("sharePanelSubtitle");
+const shareToast = document.getElementById("shareToast");
 
 const params = new URLSearchParams(location.search);
 const albumId = params.get("id");
@@ -1348,6 +1718,7 @@ let currentUser = null;
 let albumData = null;
 let allLikes = [];
 let allComments = [];
+let selectedShareAlbumId = "";
 
 /*
     アイコン反映用キャッシュ。
@@ -1473,6 +1844,560 @@ function getUserDisplayNameFromData(data){
     );
 }
 
+function getAlbumItemById(targetAlbumId){
+    if(!albumData || !targetAlbumId || targetAlbumId !== albumId){
+        return null;
+    }
+
+    return {
+        id: albumId,
+        data: albumData
+    };
+}
+
+function getShareUrl(albumId){
+    const url = new URL("detail.html", location.href);
+    url.searchParams.set("id", albumId);
+    return url.href;
+}
+
+function getShareText(albumId){
+    const item = getAlbumItemById(albumId);
+    const album = item?.data || {};
+    const title = album.title || "Album Collectionの投稿";
+    const artist = album.artist ? ` / ${album.artist}` : "";
+    return `${title}${artist}`;
+}
+
+function showShareToast(message){
+    if(!shareToast){
+        return;
+    }
+
+    shareToast.textContent = message;
+    shareToast.classList.add("show");
+
+    clearTimeout(showShareToast.timer);
+    showShareToast.timer = setTimeout(() => {
+        shareToast.classList.remove("show");
+    }, 1800);
+}
+
+let selectedShareAlbumId = "";
+
+function openShareMenu(albumId){
+    selectedShareAlbumId = albumId || "";
+
+    if(sharePanelSubtitle){
+        sharePanelSubtitle.textContent = getShareText(selectedShareAlbumId);
+    }
+
+    if(shareSheet){
+        shareSheet.classList.add("open");
+    }
+}
+
+function closeShareMenu(){
+    if(shareSheet){
+        shareSheet.classList.remove("open");
+    }
+}
+
+async function copyShareLink(){
+    if(!selectedShareAlbumId){
+        return;
+    }
+
+    const shareUrl = getShareUrl(selectedShareAlbumId);
+
+    try{
+        await navigator.clipboard.writeText(shareUrl);
+        showShareToast("リンクをコピーしました");
+        closeShareMenu();
+    }catch(error){
+        console.warn("リンクコピーに失敗しました", error);
+        prompt("このリンクをコピーしてください", shareUrl);
+    }
+}
+
+
+async function openNativeShare(){
+    if(!selectedShareAlbumId){
+        return;
+    }
+
+    const shareUrl = getShareUrl(selectedShareAlbumId);
+    const title = getShareText(selectedShareAlbumId);
+
+    if(navigator.share){
+        try{
+            await navigator.share({
+                title,
+                text:title,
+                url:shareUrl
+            });
+            closeShareMenu();
+            return;
+        }catch(error){
+            if(error?.name !== "AbortError"){
+                console.warn("共有メニューを開けませんでした", error);
+            }
+        }
+    }
+
+    await copyShareLink();
+}
+
+function loadImageForCanvas(src){
+    return new Promise((resolve) => {
+        if(!src){
+            resolve(null);
+            return;
+        }
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+    });
+}
+
+function roundRect(ctx, x, y, width, height, radius){
+    const r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + width, y, x + width, y + height, r);
+    ctx.arcTo(x + width, y + height, x, y + height, r);
+    ctx.arcTo(x, y + height, x, y, r);
+    ctx.arcTo(x, y, x + width, y, r);
+    ctx.closePath();
+}
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines){
+    const chars = Array.from(String(text || ""));
+    let line = "";
+    let lines = [];
+
+    for(const char of chars){
+        const testLine = line + char;
+        if(ctx.measureText(testLine).width > maxWidth && line){
+            lines.push(line);
+            line = char;
+        }else{
+            line = testLine;
+        }
+    }
+
+    if(line){
+        lines.push(line);
+    }
+
+    lines = lines.slice(0, maxLines);
+
+    lines.forEach((lineText, index) => {
+        const isLast = index === maxLines - 1 && lines.length === maxLines;
+        let output = lineText;
+
+        if(isLast && ctx.measureText(output).width > maxWidth){
+            while(output.length > 0 && ctx.measureText(output + "…").width > maxWidth){
+                output = output.slice(0, -1);
+            }
+            output += "…";
+        }
+
+        ctx.fillText(output, x, y + (index * lineHeight));
+    });
+}
+
+function canvasToBlob(canvas){
+    return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), "image/png", 0.95);
+    });
+}
+
+async function generateInstagramStoryImage(){
+    if(!selectedShareAlbumId){
+        return;
+    }
+
+    const item = getAlbumItemById(selectedShareAlbumId);
+    if(!item){
+        showShareToast("投稿データを取得できませんでした");
+        return;
+    }
+
+    const album = item.data || {};
+    const posterProfile = await getPosterProfileForAlbum(album);
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1920;
+
+    const ctx = canvas.getContext("2d");
+
+    function fillRoundRect(x, y, width, height, radius, color){
+        ctx.save();
+        roundRect(ctx, x, y, width, height, radius);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function strokeRoundRect(x, y, width, height, radius, color, lineWidth = 1){
+        ctx.save();
+        roundRect(ctx, x, y, width, height, radius);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function splitWrappedLines(textValue, maxWidth, maxLines){
+        const chars = Array.from(String(textValue || ""));
+        let line = "";
+        let lines = [];
+
+        for(const char of chars){
+            const testLine = line + char;
+            if(ctx.measureText(testLine).width > maxWidth && line){
+                lines.push(line);
+                line = char;
+            }else{
+                line = testLine;
+            }
+        }
+
+        if(line){
+            lines.push(line);
+        }
+
+        if(lines.length > maxLines){
+            lines = lines.slice(0, maxLines);
+            let lastLine = lines[maxLines - 1];
+            while(lastLine.length > 0 && ctx.measureText(lastLine + "…").width > maxWidth){
+                lastLine = lastLine.slice(0, -1);
+            }
+            lines[maxLines - 1] = lastLine + "…";
+        }
+
+        return lines;
+    }
+
+    function drawCenteredWrappedText(textValue, centerX, topY, maxWidth, lineHeight, maxLines){
+        const lines = splitWrappedLines(textValue, maxWidth, maxLines);
+        lines.forEach((lineText, index) => {
+            const width = ctx.measureText(lineText).width;
+            ctx.fillText(lineText, centerX - (width / 2), topY + (index * lineHeight));
+        });
+        return lines.length;
+    }
+
+    function drawMeterRow(y, leftIcon, leftLabel, rightIcon, rightLabel, value){
+        const safeValue = Math.max(1, Math.min(5, Number(value) || 3));
+        const leftIconCenterX = 110;
+        const leftLabelX = 144;
+        const lineLeft = 272;
+        const lineRight = 820;
+        const rightIconCenterX = 876;
+        const rightAreaRight = 980;
+        const step = (lineRight - lineLeft) / 4;
+        const selectedX = lineLeft + ((safeValue - 1) * step);
+
+        ctx.save();
+        ctx.fillStyle = "#f0d6a8";
+        ctx.font = "700 34px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(leftIcon, leftIconCenterX, y);
+
+        ctx.font = "700 30px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(rightIcon, rightIconCenterX, y);
+        ctx.restore();
+
+        ctx.fillStyle = "rgba(255,245,228,0.96)";
+        ctx.font = "700 24px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        ctx.fillText(leftLabel, leftLabelX, y + 10);
+
+        const rightWidth = ctx.measureText(rightLabel).width;
+        ctx.fillText(rightLabel, rightAreaRight - rightWidth, y + 10);
+
+        const lineGradient = ctx.createLinearGradient(lineLeft, y, lineRight, y);
+        lineGradient.addColorStop(0, "rgba(102,136,186,0.82)");
+        lineGradient.addColorStop(0.5, "rgba(205,208,215,0.74)");
+        lineGradient.addColorStop(1, "rgba(246,155,107,0.90)");
+        ctx.strokeStyle = lineGradient;
+        ctx.lineWidth = 4;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(lineLeft, y);
+        ctx.lineTo(lineRight, y);
+        ctx.stroke();
+
+        ctx.save();
+        ctx.shadowColor = "rgba(255,255,255,0.42)";
+        ctx.shadowBlur = 18;
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(selectedX, y, 15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawKeywordChip(textValue, x, y){
+        const label = `#${String(textValue || "").replace(/^#+/, "")}`;
+        ctx.font = "600 21px -apple-system, BlinkMacSystemFont, sans-serif";
+        const width = Math.ceil(ctx.measureText(label).width) + 44;
+        fillRoundRect(x, y, width, 54, 27, "rgba(20,22,25,0.42)");
+        strokeRoundRect(x, y, width, 54, 27, "rgba(255,255,255,0.18)", 1.6);
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.fillText(label, x + 22, y + 34);
+        return width;
+    }
+
+    function getDisplayDescription(){
+        return (
+            album.desc ||
+            album.description ||
+            album.comment ||
+            album.review ||
+            "この音楽の魅力を、Album Collectionで記録しよう。"
+        );
+    }
+
+    function getKeywordList(){
+        return normalizeKeywords(album.keywords ?? []).filter(Boolean).slice(0, 4);
+    }
+
+    const coverImage = await loadImageForCanvas(album.cover || "");
+
+    if(coverImage){
+        try{
+            ctx.save();
+            ctx.filter = "blur(34px)";
+            ctx.globalAlpha = 0.58;
+            const scale = Math.max(canvas.width / coverImage.width, canvas.height / coverImage.height);
+            const drawW = coverImage.width * scale;
+            const drawH = coverImage.height * scale;
+            const drawX = (canvas.width - drawW) / 2;
+            const drawY = (canvas.height - drawH) / 2;
+            ctx.drawImage(coverImage, drawX, drawY, drawW, drawH);
+            ctx.restore();
+        }catch(error){
+            console.warn("背景画像の描画に失敗しました", error);
+        }
+    }
+
+    const bgGradient = ctx.createLinearGradient(0, 0, 0, 1920);
+    bgGradient.addColorStop(0, "rgba(40,30,18,0.16)");
+    bgGradient.addColorStop(0.26, "rgba(15,18,24,0.30)");
+    bgGradient.addColorStop(0.60, "rgba(9,12,17,0.60)");
+    bgGradient.addColorStop(1, "rgba(5,7,10,0.92)");
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    const darkGradient = ctx.createLinearGradient(0, 220, 0, 1920);
+    darkGradient.addColorStop(0, "rgba(255,255,255,0.00)");
+    darkGradient.addColorStop(0.38, "rgba(8,11,16,0.24)");
+    darkGradient.addColorStop(1, "rgba(5,7,10,0.72)");
+    ctx.fillStyle = darkGradient;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    ctx.fillStyle = "rgba(255,255,255,0.34)";
+    ctx.beginPath();
+    ctx.arc(120, 84, 2.5, 0, Math.PI * 2);
+    ctx.arc(212, 66, 1.8, 0, Math.PI * 2);
+    ctx.arc(932, 145, 3.0, 0, Math.PI * 2);
+    ctx.arc(845, 110, 2.0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const coverSize = 540;
+    const coverX = (1080 - coverSize) / 2;
+    const coverY = 108;
+
+    fillRoundRect(coverX - 6, coverY + 14, coverSize + 12, coverSize + 12, 36, "rgba(0,0,0,0.16)");
+
+    ctx.save();
+    roundRect(ctx, coverX, coverY, coverSize, coverSize, 34);
+    ctx.clip();
+    ctx.fillStyle = "rgba(255,255,255,0.94)";
+    ctx.fillRect(coverX, coverY, coverSize, coverSize);
+
+    if(coverImage){
+        try{
+            const sourceSize = Math.min(coverImage.width, coverImage.height);
+            const sx = (coverImage.width - sourceSize) / 2;
+            const sy = (coverImage.height - sourceSize) / 2;
+            ctx.drawImage(coverImage, sx, sy, sourceSize, sourceSize, coverX, coverY, coverSize, coverSize);
+        }catch(error){
+            console.warn("ジャケット画像の描画に失敗しました", error);
+            ctx.fillStyle = "#f5f1eb";
+            ctx.fillRect(coverX, coverY, coverSize, coverSize);
+        }
+    }
+
+    ctx.restore();
+    strokeRoundRect(coverX, coverY, coverSize, coverSize, 34, "rgba(255,255,255,0.70)", 2.2);
+
+    const centerX = 540;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 76px -apple-system, BlinkMacSystemFont, sans-serif";
+    const titleTop = 760;
+    const titleLineCount = drawCenteredWrappedText(album.title || "Untitled", centerX, titleTop, 770, 84, 2);
+
+    const artistTop = titleTop + (titleLineCount * 84) + 12;
+    ctx.fillStyle = "#f1d39b";
+    ctx.font = "800 38px -apple-system, BlinkMacSystemFont, sans-serif";
+    drawCenteredWrappedText(album.artist || "Unknown Artist", centerX, artistTop, 760, 48, 2);
+
+    drawMeterRow(960, "☾", "暗い", "☼", "明るい", album.darkness);
+    drawMeterRow(1032, "♪", "静か", "✹", "激しい", album.intense);
+    drawMeterRow(1104, "◯", "シンプル", "◈", "複雑", album.complex);
+    drawMeterRow(1176, "✩", "絶望", "✦", "希望", album.hope);
+    drawMeterRow(1248, "◉", "個人", "◎", "世界", album.world);
+
+    const description = getDisplayDescription();
+    ctx.font = "500 25px -apple-system, BlinkMacSystemFont, sans-serif";
+    const descLines = splitWrappedLines(description, 730, 4);
+    const reviewBoxX = 92;
+    const reviewBoxY = 1308;
+    const reviewBoxW = 896;
+    const reviewBoxH = Math.max(166, 62 + (descLines.length * 44));
+
+    fillRoundRect(reviewBoxX, reviewBoxY, reviewBoxW, reviewBoxH, 32, "rgba(18,20,24,0.46)");
+    strokeRoundRect(reviewBoxX, reviewBoxY, reviewBoxW, reviewBoxH, 32, "rgba(255,255,255,0.12)", 1.8);
+
+    ctx.fillStyle = "rgba(255,255,255,0.96)";
+    ctx.font = "500 25px -apple-system, BlinkMacSystemFont, sans-serif";
+    descLines.forEach((lineText, index) => {
+        ctx.fillText(lineText, 132, reviewBoxY + 62 + (index * 44));
+    });
+
+    const keywords = getKeywordList();
+    let avatarY;
+
+    if(keywords.length > 0){
+        let chipX = 128;
+        const chipY = reviewBoxY + reviewBoxH + 28;
+        keywords.forEach((keyword) => {
+            const width = drawKeywordChip(keyword, chipX, chipY);
+            chipX += width + 16;
+        });
+        avatarY = chipY + 96;
+    }else{
+        avatarY = reviewBoxY + reviewBoxH + 38;
+    }
+
+    const avatarX = 188;
+    const avatarSize = 70;
+    const avatarImage = posterProfile?.iconUrl ? await loadImageForCanvas(posterProfile.iconUrl) : null;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(avatarX + (avatarSize / 2), avatarY + (avatarSize / 2), avatarSize / 2, 0, Math.PI * 2);
+    ctx.clip();
+
+    if(avatarImage){
+        try{
+            ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
+        }catch(error){
+            console.warn("アバター描画に失敗しました", error);
+            fillRoundRect(avatarX, avatarY, avatarSize, avatarSize, 35, "rgba(255,255,255,0.88)");
+        }
+    }else{
+        fillRoundRect(avatarX, avatarY, avatarSize, avatarSize, 35, "rgba(255,255,255,0.88)");
+        ctx.fillStyle = "#1d2430";
+        ctx.font = "800 28px -apple-system, BlinkMacSystemFont, sans-serif";
+        const initial = getInitialLetter(posterProfile?.name || "匿");
+        const initialWidth = ctx.measureText(initial).width;
+        ctx.fillText(initial, avatarX + (avatarSize / 2) - (initialWidth / 2), avatarY + 44);
+    }
+
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(avatarX + (avatarSize / 2), avatarY + (avatarSize / 2), (avatarSize / 2) - 1, 0, Math.PI * 2);
+    ctx.stroke();
+
+    const displayName = posterProfile?.name || "music_lover";
+    const handleBase = String(displayName)
+        .trim()
+        .replace(/^@+/, "")
+        .replace(/\s+/g, "_")
+        .replace(/[^a-zA-Z0-9_ぁ-んァ-ヶ一-龠]/g, "") || "music_lover";
+
+    ctx.fillStyle = "rgba(255,255,255,0.98)";
+    ctx.font = "500 27px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText(`by @${handleBase}`, 280, avatarY + 43);
+
+    const logoCenterY = Math.min(avatarY + 154, 1852);
+    ctx.strokeStyle = "rgba(255,255,255,0.95)";
+    ctx.lineWidth = 6;
+    ctx.lineCap = "round";
+    const logoBaseX = 340;
+    [24, 52, 78, 52, 24].forEach((height, index) => {
+        const x = logoBaseX + (index * 18);
+        ctx.beginPath();
+        ctx.moveTo(x, logoCenterY - (height / 2));
+        ctx.lineTo(x, logoCenterY + (height / 2));
+        ctx.stroke();
+    });
+
+    ctx.fillStyle = "rgba(255,255,255,0.98)";
+    ctx.font = "500 38px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText("Album Collection", 438, logoCenterY + 8);
+
+    const blob = await canvasToBlob(canvas);
+
+    if(!blob){
+        showShareToast("画像生成に失敗しました");
+        return;
+    }
+
+    const fileName = `album-collection-story-${selectedShareAlbumId}.png`;
+    const file = new File([blob], fileName, { type:"image/png" });
+
+    if(navigator.canShare && navigator.canShare({ files:[file] }) && navigator.share){
+        try{
+            await navigator.share({
+                files:[file],
+                title:"Album Collection",
+                text:"ストーリー用画像"
+            });
+            closeShareMenu();
+            return;
+        }catch(error){
+            if(error?.name !== "AbortError"){
+                console.warn("画像共有に失敗しました", error);
+            }
+        }
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(objectUrl);
+
+    showShareToast("ストーリー用画像を生成しました");
+    closeShareMenu();
+}
+
+window.openShareMenu = openShareMenu;
+window.closeShareMenu = closeShareMenu;
+window.copyShareLink = copyShareLink;
+window.openNativeShare = openNativeShare;
+window.generateInstagramStoryImage = generateInstagramStoryImage;
+
+
+
 async function getCurrentUserName(db, currentUser){
     if(!currentUser){
         return "匿名ユーザー";
@@ -1533,6 +2458,23 @@ async function notifyComment(db, currentUser, albumId, commentText){
     });
 }
 
+
+async function notifyLike(db, currentUser, albumId){
+    if(!currentUser || !albumId) return;
+    const albumSnap = await getDoc(doc(db, "albums", albumId));
+    if(!albumSnap.exists()) return;
+    const albumData = albumSnap.data();
+    const fromUserName = await getCurrentUserName(db, currentUser);
+    await createNotification(db, {
+        toUserId: albumData.userId,
+        fromUserId: currentUser.uid,
+        fromUserName,
+        type: "like",
+        albumId,
+        albumTitle: albumData.title || ""
+    });
+}
+
 function escapeHTML(value){
     return String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -1540,6 +2482,36 @@ function escapeHTML(value){
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+
+async function getPosterProfileForAlbum(album){
+    const uid = album?.userId || "";
+    const fallbackName = album?.userName || album?.displayName || album?.nickname || album?.userEmail || "匿名ユーザー";
+
+    if(uid){
+        await ensureUserLoaded(uid);
+    }
+
+    return {
+        name: getUserName(uid, fallbackName),
+        iconUrl: getUserIcon(uid)
+    };
+}
+
+function getInitialLetter(name){
+    return getFirstLetter(name || "匿名ユーザー");
+}
+
+function creatorAvatarHTML(profile){
+    const iconUrl = profile?.iconUrl || "";
+    const initialLetter = getInitialLetter(profile?.name);
+
+    if(iconUrl){
+        return `<img class="creator-avatar" src="${escapeHTML(iconUrl)}" alt="${escapeHTML(initialLetter)}">`;
+    }
+
+    return `<span class="creator-avatar-fallback">${escapeHTML(initialLetter)}</span>`;
 }
 
 function getFirstLetter(name){
@@ -1822,6 +2794,8 @@ async function toggleLike(){
             albumId: albumId,
             createdAt: serverTimestamp()
         });
+
+        await notifyLike(db, currentUser, albumId);
     }
 }
 
@@ -1987,15 +2961,13 @@ function renderDetail(){
                         : ""
                     }
 
-                    <div class="creator">
-                        <div class="creator-with-avatar">
-                            ${avatarHTML(albumData.userId, creatorName)}
-                            <span>
-                                投稿者：<a href="profile.html?uid=${escapeHTML(albumData.userId || "")}">
-                                    ${escapeHTML(creatorName)}
-                                </a>
+                    <div class="creator creator-highlight">
+                        <a href="profile.html?uid=${escapeHTML(albumData.userId || "")}" class="creator-link">
+                            ${creatorAvatarHTML({ name: creatorName, iconUrl: getUserIcon(albumData.userId) })}
+                            <span class="creator-text">
+                                <span class="creator-prefix">投稿者：</span><span class="creator-name">${escapeHTML(creatorName)}</span>
                             </span>
-                        </div>
+                        </a>
                     </div>
 
                     <div class="reaction-row">
@@ -2008,6 +2980,10 @@ function renderDetail(){
                         </div>
 
                         <div class="comment-count">コメント ${commentCount}件</div>
+
+                        <div class="share-area">
+                            <button class="share-btn" type="button" onclick="openShareMenu('${escapeHTML(albumId)}')">↗ 共有</button>
+                        </div>
                     </div>
                 </div>
             </div>
