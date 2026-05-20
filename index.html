@@ -307,6 +307,134 @@ a{
     color:#b6c0c4;
 }
 
+
+
+/* ===== Share button / Share sheet ===== */
+.share-area{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+.share-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    background:rgba(255,255,255,0.055);
+    color:#dbe4e7;
+    font-family:inherit;
+    font-size:11.5px;
+    font-weight:700;
+    line-height:1;
+    border-radius:999px;
+    padding:7px 10px;
+    cursor:pointer;
+}
+
+.share-btn:hover{
+    background:rgba(159,205,217,0.16);
+    color:#ffffff;
+}
+
+.share-sheet{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    background:rgba(0,0,0,0.58);
+    z-index:20000;
+    padding:18px;
+}
+
+.share-sheet.open{
+    display:flex;
+}
+
+.share-panel{
+    width:min(420px,100%);
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:22px;
+    padding:16px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.55);
+}
+
+.share-panel-title{
+    font-size:16px;
+    font-weight:900;
+    margin-bottom:4px;
+}
+
+.share-panel-subtitle{
+    color:#aab3b8;
+    font-size:12px;
+    line-height:1.45;
+    margin-bottom:14px;
+}
+
+.share-actions{
+    display:grid;
+    gap:8px;
+}
+
+.share-action-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.045);
+    color:white;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:800;
+    text-align:left;
+    border-radius:14px;
+    padding:13px 14px;
+    cursor:pointer;
+}
+
+.share-action-btn:hover{
+    border-color:rgba(159,205,217,0.42);
+    background:rgba(159,205,217,0.10);
+}
+
+.share-close-btn{
+    margin-top:10px;
+    width:100%;
+    border:none;
+    background:transparent;
+    color:#aab3b8;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:800;
+    padding:12px;
+    cursor:pointer;
+}
+
+.share-toast{
+    position:fixed;
+    left:50%;
+    bottom:92px;
+    transform:translateX(-50%) translateY(10px);
+    background:#edf8f9;
+    color:#050505;
+    border-radius:999px;
+    padding:10px 15px;
+    font-size:13px;
+    font-weight:900;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
+    z-index:21000;
+}
+
+.share-toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+
 /* ===== Right side: meter panel ===== */
 
 .album-analysis{
@@ -1175,6 +1303,35 @@ a{
 }
 </style>
 
+
+
+<style>
+/* ============================================================
+   共有ボタン：スマホ版調整
+============================================================ */
+@media(max-width:900px){
+    .reaction-row{
+        gap:12px !important;
+    }
+
+    .share-btn{
+        font-size:13px !important;
+        padding:7px 10px !important;
+        background:rgba(255,255,255,0.08) !important;
+        color:#ffffff !important;
+    }
+
+    .share-sheet{
+        padding:10px !important;
+        padding-bottom:calc(10px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .share-panel{
+        border-radius:22px 22px 18px 18px !important;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -1243,6 +1400,26 @@ a{
     </section>
 </div>
 
+
+
+<div class="share-sheet" id="shareSheet" onclick="closeShareMenu()">
+    <div class="share-panel" onclick="event.stopPropagation();">
+        <div class="share-panel-title">共有</div>
+        <div class="share-panel-subtitle" id="sharePanelSubtitle">この投稿を共有します</div>
+
+        <div class="share-actions">
+            <button type="button" class="share-action-btn" onclick="copyShareLink()">リンクをコピー</button>
+            <button type="button" class="share-action-btn" onclick="shareToLine()">LINEで送る</button>
+            <button type="button" class="share-action-btn" onclick="openNativeShare()">端末の共有メニューを開く</button>
+            <button type="button" class="share-action-btn" onclick="generateInstagramStoryImage()">ストーリー用画像を生成</button>
+        </div>
+
+        <button type="button" class="share-close-btn" onclick="closeShareMenu()">閉じる</button>
+    </div>
+</div>
+
+<div class="share-toast" id="shareToast">コピーしました</div>
+
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
@@ -1293,6 +1470,9 @@ const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
 const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 const recommendTab = document.getElementById("recommendTab");
 const followingTab = document.getElementById("followingTab");
+const shareSheet = document.getElementById("shareSheet");
+const sharePanelSubtitle = document.getElementById("sharePanelSubtitle");
+const shareToast = document.getElementById("shareToast");
 
 let currentFeedMode = "recommend";
 let allAlbums = [];
@@ -1469,6 +1649,327 @@ function escapeHTML(value){
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
+
+
+function getAlbumItemById(albumId){
+    return allAlbums.find(item => item.id === albumId) || null;
+}
+
+function getShareUrl(albumId){
+    const url = new URL("detail.html", location.href);
+    url.searchParams.set("id", albumId);
+    return url.href;
+}
+
+function getShareText(albumId){
+    const item = getAlbumItemById(albumId);
+    const album = item?.data || {};
+    const title = album.title || "Album Collectionの投稿";
+    const artist = album.artist ? ` / ${album.artist}` : "";
+    return `${title}${artist}`;
+}
+
+function showShareToast(message){
+    if(!shareToast){
+        return;
+    }
+
+    shareToast.textContent = message;
+    shareToast.classList.add("show");
+
+    clearTimeout(showShareToast.timer);
+    showShareToast.timer = setTimeout(() => {
+        shareToast.classList.remove("show");
+    }, 1800);
+}
+
+let selectedShareAlbumId = "";
+
+function openShareMenu(albumId){
+    selectedShareAlbumId = albumId || "";
+
+    if(sharePanelSubtitle){
+        sharePanelSubtitle.textContent = getShareText(selectedShareAlbumId);
+    }
+
+    if(shareSheet){
+        shareSheet.classList.add("open");
+    }
+}
+
+function closeShareMenu(){
+    if(shareSheet){
+        shareSheet.classList.remove("open");
+    }
+}
+
+async function copyShareLink(){
+    if(!selectedShareAlbumId){
+        return;
+    }
+
+    const shareUrl = getShareUrl(selectedShareAlbumId);
+
+    try{
+        await navigator.clipboard.writeText(shareUrl);
+        showShareToast("リンクをコピーしました");
+        closeShareMenu();
+    }catch(error){
+        console.warn("リンクコピーに失敗しました", error);
+        prompt("このリンクをコピーしてください", shareUrl);
+    }
+}
+
+function shareToLine(){
+    if(!selectedShareAlbumId){
+        return;
+    }
+
+    const shareUrl = getShareUrl(selectedShareAlbumId);
+    const text = `${getShareText(selectedShareAlbumId)} ${shareUrl}`;
+    const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
+
+    window.open(lineUrl, "_blank", "noopener,noreferrer");
+    closeShareMenu();
+}
+
+async function openNativeShare(){
+    if(!selectedShareAlbumId){
+        return;
+    }
+
+    const shareUrl = getShareUrl(selectedShareAlbumId);
+    const title = getShareText(selectedShareAlbumId);
+
+    if(navigator.share){
+        try{
+            await navigator.share({
+                title,
+                text:title,
+                url:shareUrl
+            });
+            closeShareMenu();
+            return;
+        }catch(error){
+            if(error?.name !== "AbortError"){
+                console.warn("共有メニューを開けませんでした", error);
+            }
+        }
+    }
+
+    await copyShareLink();
+}
+
+function loadImageForCanvas(src){
+    return new Promise((resolve) => {
+        if(!src){
+            resolve(null);
+            return;
+        }
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+    });
+}
+
+function roundRect(ctx, x, y, width, height, radius){
+    const r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + width, y, x + width, y + height, r);
+    ctx.arcTo(x + width, y + height, x, y + height, r);
+    ctx.arcTo(x, y + height, x, y, r);
+    ctx.arcTo(x, y, x + width, y, r);
+    ctx.closePath();
+}
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines){
+    const chars = Array.from(String(text || ""));
+    let line = "";
+    let lines = [];
+
+    for(const char of chars){
+        const testLine = line + char;
+        if(ctx.measureText(testLine).width > maxWidth && line){
+            lines.push(line);
+            line = char;
+        }else{
+            line = testLine;
+        }
+    }
+
+    if(line){
+        lines.push(line);
+    }
+
+    lines = lines.slice(0, maxLines);
+
+    lines.forEach((lineText, index) => {
+        const isLast = index === maxLines - 1 && lines.length === maxLines;
+        let output = lineText;
+
+        if(isLast && ctx.measureText(output).width > maxWidth){
+            while(output.length > 0 && ctx.measureText(output + "…").width > maxWidth){
+                output = output.slice(0, -1);
+            }
+            output += "…";
+        }
+
+        ctx.fillText(output, x, y + (index * lineHeight));
+    });
+}
+
+function canvasToBlob(canvas){
+    return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), "image/png", 0.95);
+    });
+}
+
+async function generateInstagramStoryImage(){
+    if(!selectedShareAlbumId){
+        return;
+    }
+
+    const item = getAlbumItemById(selectedShareAlbumId);
+    if(!item){
+        showShareToast("投稿データを取得できませんでした");
+        return;
+    }
+
+    const album = item.data || {};
+    const shareUrl = getShareUrl(selectedShareAlbumId);
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1920;
+
+    const ctx = canvas.getContext("2d");
+
+    const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+    gradient.addColorStop(0, "#151819");
+    gradient.addColorStop(0.55, "#070808");
+    gradient.addColorStop(1, "#0f1b20");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    ctx.fillStyle = "rgba(159,205,217,0.10)";
+    ctx.beginPath();
+    ctx.arc(930, 220, 280, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "rgba(255,255,255,0.06)";
+    ctx.beginPath();
+    ctx.arc(110, 1650, 360, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#9fcdd9";
+    ctx.font = "800 40px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText("Album Collection", 80, 120);
+
+    const coverSize = 760;
+    const coverX = 160;
+    const coverY = 250;
+
+    ctx.save();
+    roundRect(ctx, coverX, coverY, coverSize, coverSize, 34);
+    ctx.clip();
+    ctx.fillStyle = "#111516";
+    ctx.fillRect(coverX, coverY, coverSize, coverSize);
+
+    const coverImage = await loadImageForCanvas(album.cover || "");
+
+    if(coverImage){
+        try{
+            const sourceSize = Math.min(coverImage.width, coverImage.height);
+            const sx = (coverImage.width - sourceSize) / 2;
+            const sy = (coverImage.height - sourceSize) / 2;
+            ctx.drawImage(coverImage, sx, sy, sourceSize, sourceSize, coverX, coverY, coverSize, coverSize);
+        }catch(error){
+            console.warn("ジャケット画像の描画に失敗しました", error);
+            ctx.fillStyle = "#1a2022";
+            ctx.fillRect(coverX, coverY, coverSize, coverSize);
+        }
+    }
+
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+    ctx.lineWidth = 3;
+    roundRect(ctx, coverX, coverY, coverSize, coverSize, 34);
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 74px -apple-system, BlinkMacSystemFont, sans-serif";
+    drawWrappedText(ctx, album.title || "Untitled", 80, 1130, 920, 86, 3);
+
+    ctx.fillStyle = "#9fcdd9";
+    ctx.font = "800 46px -apple-system, BlinkMacSystemFont, sans-serif";
+    drawWrappedText(ctx, album.artist || "Unknown Artist", 80, 1400, 920, 56, 2);
+
+    const posterName = album.userName || album.displayName || album.nickname || "匿名ユーザー";
+    ctx.fillStyle = "#dce3e6";
+    ctx.font = "700 34px -apple-system, BlinkMacSystemFont, sans-serif";
+    drawWrappedText(ctx, `投稿者：${posterName}`, 80, 1540, 920, 44, 1);
+
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    roundRect(ctx, 80, 1640, 920, 122, 30);
+    ctx.fill();
+
+    ctx.fillStyle = "#edf8f9";
+    ctx.font = "700 30px -apple-system, BlinkMacSystemFont, sans-serif";
+    drawWrappedText(ctx, shareUrl, 110, 1690, 860, 38, 2);
+
+    ctx.fillStyle = "#aab3b8";
+    ctx.font = "700 28px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText("リンクから投稿を見る", 80, 1835);
+
+    const blob = await canvasToBlob(canvas);
+
+    if(!blob){
+        showShareToast("画像生成に失敗しました");
+        return;
+    }
+
+    const fileName = `album-collection-story-${selectedShareAlbumId}.png`;
+    const file = new File([blob], fileName, { type:"image/png" });
+
+    if(navigator.canShare && navigator.canShare({ files:[file] }) && navigator.share){
+        try{
+            await navigator.share({
+                files:[file],
+                title:"Album Collection",
+                text:"ストーリー用画像"
+            });
+            closeShareMenu();
+            return;
+        }catch(error){
+            if(error?.name !== "AbortError"){
+                console.warn("画像共有に失敗しました", error);
+            }
+        }
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(objectUrl);
+
+    showShareToast("ストーリー用画像を生成しました");
+    closeShareMenu();
+}
+
+window.openShareMenu = openShareMenu;
+window.closeShareMenu = closeShareMenu;
+window.copyShareLink = copyShareLink;
+window.shareToLine = shareToLine;
+window.openNativeShare = openNativeShare;
+window.generateInstagramStoryImage = generateInstagramStoryImage;
 
 
 async function getCurrentUserName(db, currentUser){
@@ -1835,6 +2336,9 @@ function albumCardHTML(item, posterProfile){
                     <span class="like-count">0</span>
                 </div>
                 <div class="comment-count" data-comment-count data-album-id="${escapeHTML(albumId)}">コメント 0件</div>
+                <div class="share-area">
+                    <button class="share-btn" type="button" onclick="event.stopPropagation(); openShareMenu('${escapeHTML(albumId)}')">↗ 共有</button>
+                </div>
             </div>
         </div>
     </div>
