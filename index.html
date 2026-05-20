@@ -1891,24 +1891,31 @@ async function generateInstagramStoryImage(){
         return lines.length;
     }
 
-    function drawMeterRow(y, icon, leftLabel, rightLabel, value){
+    function drawMeterRow(y, leftIcon, leftLabel, rightIcon, rightLabel, value){
         const safeValue = Math.max(1, Math.min(5, Number(value) || 3));
-        const iconX = 108;
-        const leftX = 158;
-        const lineLeft = 282;
-        const lineRight = 804;
-        const rightAreaRight = 972;
+        const iconLeftX = 92;
+        const labelLeftX = 144;
+        const lineLeft = 272;
+        const lineRight = 820;
+        const rightIconX = 864;
+        const rightAreaRight = 980;
         const step = (lineRight - lineLeft) / 4;
         const selectedX = lineLeft + ((safeValue - 1) * step);
 
         ctx.fillStyle = "#f0d6a8";
         ctx.font = "700 34px -apple-system, BlinkMacSystemFont, sans-serif";
-        ctx.fillText(icon, iconX, y + 12);
+        ctx.fillText(leftIcon, iconLeftX, y + 12);
 
         ctx.fillStyle = "rgba(255,245,228,0.96)";
         ctx.font = "700 24px -apple-system, BlinkMacSystemFont, sans-serif";
-        ctx.fillText(leftLabel, leftX, y + 10);
+        ctx.fillText(leftLabel, labelLeftX, y + 10);
 
+        ctx.fillStyle = "#f0d6a8";
+        ctx.font = "700 30px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(rightIcon, rightIconX, y + 10);
+
+        ctx.fillStyle = "rgba(255,245,228,0.96)";
+        ctx.font = "700 24px -apple-system, BlinkMacSystemFont, sans-serif";
         const rightWidth = ctx.measureText(rightLabel).width;
         ctx.fillText(rightLabel, rightAreaRight - rightWidth, y + 10);
 
@@ -2001,7 +2008,7 @@ async function generateInstagramStoryImage(){
     ctx.arc(845, 110, 2.0, 0, Math.PI * 2);
     ctx.fill();
 
-    const coverSize = 560;
+    const coverSize = 540;
     const coverX = (1080 - coverSize) / 2;
     const coverY = 108;
 
@@ -2033,47 +2040,53 @@ async function generateInstagramStoryImage(){
 
     ctx.fillStyle = "#ffffff";
     ctx.font = "900 76px -apple-system, BlinkMacSystemFont, sans-serif";
-    const titleLineCount = drawCenteredWrappedText(album.title || "Untitled", centerX, 730, 770, 84, 2);
+    const titleTop = 760;
+    const titleLineCount = drawCenteredWrappedText(album.title || "Untitled", centerX, titleTop, 770, 84, 2);
 
-    const artistTop = 730 + (titleLineCount * 84) + 8;
+    const artistTop = titleTop + (titleLineCount * 84) + 12;
     ctx.fillStyle = "#f1d39b";
     ctx.font = "800 38px -apple-system, BlinkMacSystemFont, sans-serif";
     drawCenteredWrappedText(album.artist || "Unknown Artist", centerX, artistTop, 760, 48, 2);
 
-    drawMeterRow(920, "☾", "暗い", "明るい", album.darkness);
-    drawMeterRow(992, "⚡", "静か", "激しい", album.intense);
-    drawMeterRow(1064, "◯", "シンプル", "複雑", album.complex);
-    drawMeterRow(1136, "✩", "絶望", "希望", album.hope);
-    drawMeterRow(1208, "◉", "個人", "世界", album.world);
+    drawMeterRow(960, "☾", "暗い", "☼", "明るい", album.darkness);
+    drawMeterRow(1032, "⚡", "静か", "✹", "激しい", album.intense);
+    drawMeterRow(1104, "◯", "シンプル", "◈", "複雑", album.complex);
+    drawMeterRow(1176, "✩", "絶望", "✦", "希望", album.hope);
+    drawMeterRow(1248, "◉", "個人", "◎", "世界", album.world);
 
-    fillRoundRect(92, 1264, 896, 194, 32, "rgba(18,20,24,0.46)");
-    strokeRoundRect(92, 1264, 896, 194, 32, "rgba(255,255,255,0.12)", 1.8);
+    const description = getDisplayDescription();
+    ctx.font = "500 25px -apple-system, BlinkMacSystemFont, sans-serif";
+    const descLines = splitWrappedLines(description, 730, 4);
+    const reviewBoxX = 92;
+    const reviewBoxY = 1308;
+    const reviewBoxW = 896;
+    const reviewBoxH = Math.max(166, 62 + (descLines.length * 44));
 
-    ctx.fillStyle = "rgba(241,211,155,0.96)";
-    ctx.font = "900 72px Georgia, serif";
-    ctx.fillText("“", 118, 1344);
-    ctx.fillText("”", 922, 1436);
+    fillRoundRect(reviewBoxX, reviewBoxY, reviewBoxW, reviewBoxH, 32, "rgba(18,20,24,0.46)");
+    strokeRoundRect(reviewBoxX, reviewBoxY, reviewBoxW, reviewBoxH, 32, "rgba(255,255,255,0.12)", 1.8);
 
     ctx.fillStyle = "rgba(255,255,255,0.96)";
     ctx.font = "500 25px -apple-system, BlinkMacSystemFont, sans-serif";
-    const description = getDisplayDescription();
-    const descLines = splitWrappedLines(description, 710, 3);
     descLines.forEach((lineText, index) => {
-        ctx.fillText(lineText, 210, 1346 + (index * 46));
+        ctx.fillText(lineText, 132, reviewBoxY + 62 + (index * 44));
     });
 
     const keywords = getKeywordList();
+    let avatarY;
+
     if(keywords.length > 0){
         let chipX = 128;
-        const chipY = 1488;
+        const chipY = reviewBoxY + reviewBoxH + 28;
         keywords.forEach((keyword) => {
             const width = drawKeywordChip(keyword, chipX, chipY);
             chipX += width + 16;
         });
+        avatarY = chipY + 96;
+    }else{
+        avatarY = reviewBoxY + reviewBoxH + 38;
     }
 
     const avatarX = 188;
-    const avatarY = keywords.length > 0 ? 1584 : 1534;
     const avatarSize = 70;
     const avatarImage = posterProfile?.iconUrl ? await loadImageForCanvas(posterProfile.iconUrl) : null;
 
@@ -2117,7 +2130,7 @@ async function generateInstagramStoryImage(){
     ctx.font = "500 27px -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.fillText(`by @${handleBase}`, 280, avatarY + 43);
 
-    const logoCenterY = avatarY + 122;
+    const logoCenterY = Math.min(avatarY + 130, 1826);
     ctx.strokeStyle = "rgba(255,255,255,0.95)";
     ctx.lineWidth = 6;
     ctx.lineCap = "round";
@@ -2136,14 +2149,6 @@ async function generateInstagramStoryImage(){
     ctx.font = "500 21px -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.fillStyle = "rgba(255,255,255,0.90)";
     ctx.fillText("音楽の感情を、記録しよう。", 438, logoCenterY + 28);
-
-    const buttonY = avatarY + 164;
-    fillRoundRect(170, buttonY, 740, 96, 48, "rgba(255,255,255,0.94)");
-    ctx.fillStyle = "#090b10";
-    ctx.font = "900 44px -apple-system, BlinkMacSystemFont, sans-serif";
-    const buttonText = "投稿を見る →";
-    const buttonWidth = ctx.measureText(buttonText).width;
-    ctx.fillText(buttonText, 540 - (buttonWidth / 2), buttonY + 64);
 
     const blob = await canvasToBlob(canvas);
 
