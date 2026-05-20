@@ -1332,6 +1332,213 @@ a{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   初回チュートリアル
+   - 初回訪問時だけ自動表示
+   - localStorageで表示済みを保存
+   - openTutorial() であとから再表示可能
+============================================================ */
+
+.tutorial-overlay{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:rgba(0,0,0,0.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    z-index:30000;
+}
+
+.tutorial-overlay.is-active{
+    display:flex;
+}
+
+.tutorial-card{
+    width:100%;
+    max-width:430px;
+    background:linear-gradient(145deg,#151819,#080909);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:28px;
+    padding:28px 24px 22px;
+    box-shadow:0 24px 80px rgba(0,0,0,0.58);
+    color:white;
+    position:relative;
+    overflow:hidden;
+}
+
+.tutorial-card::before{
+    content:"";
+    position:absolute;
+    inset:-120px -80px auto auto;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    background:rgba(159,205,217,0.14);
+    filter:blur(10px);
+    pointer-events:none;
+}
+
+.tutorial-close{
+    position:absolute;
+    top:14px;
+    right:14px;
+    width:34px;
+    height:34px;
+    border:none;
+    border-radius:999px;
+    background:rgba(255,255,255,0.08);
+    color:white;
+    font-family:inherit;
+    font-size:22px;
+    line-height:1;
+    cursor:pointer;
+    z-index:2;
+}
+
+.tutorial-icon{
+    width:60px;
+    height:60px;
+    border-radius:20px;
+    background:rgba(159,205,217,0.14);
+    border:1px solid rgba(159,205,217,0.20);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    margin-bottom:18px;
+    position:relative;
+    z-index:1;
+}
+
+.tutorial-title{
+    font-size:23px;
+    font-weight:900;
+    line-height:1.35;
+    letter-spacing:-0.035em;
+    margin-bottom:12px;
+    position:relative;
+    z-index:1;
+}
+
+.tutorial-text{
+    color:#dce3e6;
+    font-size:15px;
+    line-height:1.8;
+    min-height:86px;
+    position:relative;
+    z-index:1;
+}
+
+.tutorial-dots{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin:24px 0 18px;
+    position:relative;
+    z-index:1;
+}
+
+.tutorial-dot{
+    width:7px;
+    height:7px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.24);
+    transition:0.2s ease;
+}
+
+.tutorial-dot.active{
+    width:24px;
+    background:#9fcdd9;
+}
+
+.tutorial-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    position:relative;
+    z-index:1;
+}
+
+.tutorial-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    border-radius:999px;
+    height:46px;
+    padding:0 18px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.tutorial-btn.back{
+    background:rgba(255,255,255,0.08);
+    color:#dce3e6;
+    flex:0 0 auto;
+}
+
+.tutorial-btn.next{
+    background:#9fcdd9;
+    color:#050505;
+    flex:1;
+}
+
+.tutorial-btn:active{
+    transform:scale(0.98);
+}
+
+.tutorial-reopen-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    display:block;
+    width:100%;
+    color:white;
+    text-align:left;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:12px;
+    font-family:inherit;
+    font-size:15px;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+}
+
+.tutorial-reopen-btn:hover{
+    background:#141617;
+}
+
+@media(max-width:900px){
+    .tutorial-overlay{
+        padding:18px;
+        align-items:flex-end;
+        padding-bottom:calc(88px + env(safe-area-inset-bottom));
+    }
+
+    .tutorial-card{
+        max-width:none;
+        border-radius:26px;
+        padding:26px 22px 20px;
+    }
+
+    .tutorial-title{
+        font-size:22px;
+    }
+
+    .tutorial-text{
+        font-size:14px;
+        min-height:84px;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -1344,6 +1551,7 @@ a{
     <a href="search.html">検索</a>
     <a href="editor.html">投稿する</a>
     <a href="notifications.html">通知</a>
+    <button type="button" class="tutorial-reopen-btn" onclick="openTutorial()">使い方</button>
     <a id="myPageLink" href="login.html">マイページ</a>
     <a href="profile-edit.html">プロフィール編集</a>
     <a href="login.html">ログイン</a>
@@ -3558,6 +3766,147 @@ onSnapshot(q, async (snapshot)=>{
     }
 }
 </style>
+
+
+<!-- 初回チュートリアル -->
+<div class="tutorial-overlay" id="tutorialOverlay">
+    <div class="tutorial-card">
+        <button class="tutorial-close" type="button" onclick="closeTutorial(true)">×</button>
+
+        <div class="tutorial-icon" id="tutorialIcon">🎧</div>
+
+        <div class="tutorial-title" id="tutorialTitle">
+            ようこそ Album Collection（仮）へ
+        </div>
+
+        <div class="tutorial-text" id="tutorialText">
+            Album Collection（仮）は、聴いた音楽を記録して、感想や気分を共有できるサービスです。
+        </div>
+
+        <div class="tutorial-dots" id="tutorialDots"></div>
+
+        <div class="tutorial-actions">
+            <button class="tutorial-btn back" type="button" id="tutorialBackBtn" onclick="prevTutorialSlide()">
+                戻る
+            </button>
+
+            <button class="tutorial-btn next" type="button" id="tutorialNextBtn" onclick="nextTutorialSlide()">
+                次へ
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+const tutorialSlides = [
+    {
+        icon:"🎧",
+        title:"ようこそ Album Collection（仮）へ",
+        text:"Album Collection（仮）は、聴いた音楽を記録して、感想や気分を共有できるサービスです。"
+    },
+    {
+        icon:"🏠",
+        title:"投稿を見てみよう",
+        text:"ホームでは、みんなの音楽投稿が流れてきます。気になる投稿を押すと、詳しい感想を見られます。"
+    },
+    {
+        icon:"🔍",
+        title:"検索して探そう",
+        text:"曲名・アーティスト名・キーワードから投稿を探せます。"
+    },
+    {
+        icon:"✍️",
+        title:"自分でも投稿しよう",
+        text:"好きな音楽について、感想・気分メーター・キーワードをつけて記録できます。"
+    },
+    {
+        icon:"👤",
+        title:"マイページを育てよう",
+        text:"自分の投稿を一覧で見たり、気になる人をフォローできます。"
+    }
+];
+
+let tutorialIndex = 0;
+
+function renderTutorial(){
+    const slide = tutorialSlides[tutorialIndex];
+
+    const iconEl = document.getElementById("tutorialIcon");
+    const titleEl = document.getElementById("tutorialTitle");
+    const textEl = document.getElementById("tutorialText");
+    const dotsEl = document.getElementById("tutorialDots");
+    const backBtn = document.getElementById("tutorialBackBtn");
+    const nextBtn = document.getElementById("tutorialNextBtn");
+
+    if(!iconEl || !titleEl || !textEl || !dotsEl || !backBtn || !nextBtn){
+        return;
+    }
+
+    iconEl.textContent = slide.icon;
+    titleEl.textContent = slide.title;
+    textEl.textContent = slide.text;
+
+    dotsEl.innerHTML = "";
+
+    tutorialSlides.forEach((_, index) => {
+        const dot = document.createElement("div");
+        dot.className = "tutorial-dot" + (index === tutorialIndex ? " active" : "");
+        dotsEl.appendChild(dot);
+    });
+
+    backBtn.style.visibility = tutorialIndex === 0 ? "hidden" : "visible";
+    nextBtn.textContent = tutorialIndex === tutorialSlides.length - 1 ? "はじめる" : "次へ";
+}
+
+function openTutorial(){
+    const overlay = document.getElementById("tutorialOverlay");
+
+    if(!overlay){
+        return;
+    }
+
+    tutorialIndex = 0;
+    renderTutorial();
+    overlay.classList.add("is-active");
+}
+
+function closeTutorial(saveSeen = false){
+    const overlay = document.getElementById("tutorialOverlay");
+
+    if(overlay){
+        overlay.classList.remove("is-active");
+    }
+
+    if(saveSeen){
+        localStorage.setItem("albumCollectionTutorialSeen", "true");
+    }
+}
+
+function nextTutorialSlide(){
+    if(tutorialIndex < tutorialSlides.length - 1){
+        tutorialIndex++;
+        renderTutorial();
+    }else{
+        closeTutorial(true);
+    }
+}
+
+function prevTutorialSlide(){
+    if(tutorialIndex > 0){
+        tutorialIndex--;
+        renderTutorial();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const seen = localStorage.getItem("albumCollectionTutorialSeen");
+
+    if(!seen){
+        openTutorial();
+    }
+});
+</script>
+
 
 </body>
 </html>
