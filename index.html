@@ -195,6 +195,59 @@ a{
     text-decoration:underline;
 }
 
+
+.creator-highlight{
+    margin-bottom:10px;
+}
+
+.creator-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 10px;
+    border:2px solid rgba(29,155,240,0.75);
+    border-radius:12px;
+    background:rgba(29,155,240,0.08);
+    text-decoration:none;
+}
+
+.creator-link:hover{
+    background:rgba(29,155,240,0.14);
+    text-decoration:none !important;
+}
+
+.creator-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,0.08);
+    font-size:15px;
+    flex-shrink:0;
+}
+
+.creator-badge{
+    display:inline-block;
+    padding:3px 6px;
+    border-radius:6px;
+    background:#1d9bf0;
+    color:#fff;
+    font-size:10px;
+    font-weight:800;
+    line-height:1;
+    letter-spacing:-0.02em;
+}
+
+.creator-name{
+    color:#ffffff;
+    font-size:18px;
+    font-weight:900;
+    line-height:1;
+    letter-spacing:-0.03em;
+}
+
 .reaction-row{
     display:flex;
     align-items:center;
@@ -632,6 +685,33 @@ a{
 }
 
 /* ===== Smartphone ===== */
+
+@media(max-width:900px){
+    .creator-highlight{
+        margin-bottom:8px !important;
+    }
+
+    .creator-link{
+        gap:6px !important;
+        padding:5px 8px !important;
+        border-radius:10px !important;
+    }
+
+    .creator-avatar{
+        width:24px !important;
+        height:24px !important;
+        font-size:13px !important;
+    }
+
+    .creator-badge{
+        font-size:9px !important;
+        padding:3px 5px !important;
+    }
+
+    .creator-name{
+        font-size:16px !important;
+    }
+}
 
 @media(max-width:900px){
     body{
@@ -1682,7 +1762,13 @@ function albumCardHTML(item, posterName){
             <div class="title">${escapeHTML(a.title || "")}</div>
             <div class="artist">${escapeHTML(a.artist || "")}</div>
             <div class="meta">${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(" / ") || a.year || "")}</div>
-            <div class="creator">投稿者：<a href="profile.html?uid=${escapeHTML(a.userId || "")}" onclick="event.stopPropagation();">${escapeHTML(posterName)}</a></div>
+            <div class="creator creator-highlight">
+                <a href="profile.html?uid=${escapeHTML(a.userId || "")}" class="creator-link" onclick="event.stopPropagation();">
+                    <span class="creator-avatar">👤</span>
+                    <span class="creator-badge">投稿者</span>
+                    <span class="creator-name">${escapeHTML(posterName)}</span>
+                </a>
+            </div>
             <div class="reaction-row">
                 <div class="like-area" data-like-area data-album-id="${escapeHTML(albumId)}">
                     <button class="like-btn" onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">♡</button>
