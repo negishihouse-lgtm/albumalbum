@@ -236,9 +236,10 @@ a{
     display:flex;
     align-items:center;
     justify-content:center;
-    color:#b7c3c9;
-    font-size:14px;
-    font-weight:800;
+    color:#edf8f9;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:-0.03em;
 }
 
 .creator-text{
@@ -1393,14 +1394,25 @@ async function getPosterProfileForAlbum(album){
     return fallbackProfile;
 }
 
-function creatorAvatarHTML(profile){
-    const iconUrl = profile?.iconUrl || "";
+function getInitialLetter(name){
+    const text = String(name || "匿名ユーザー").trim();
 
-    if(iconUrl){
-        return `<img class="creator-avatar" src="${escapeHTML(iconUrl)}" alt="">`;
+    if(!text){
+        return "匿";
     }
 
-    return `<span class="creator-avatar-fallback">👤</span>`;
+    return Array.from(text)[0];
+}
+
+function creatorAvatarHTML(profile){
+    const iconUrl = profile?.iconUrl || "";
+    const initialLetter = getInitialLetter(profile?.name);
+
+    if(iconUrl){
+        return `<img class="creator-avatar" src="${escapeHTML(iconUrl)}" alt="${escapeHTML(initialLetter)}">`;
+    }
+
+    return `<span class="creator-avatar-fallback">${escapeHTML(initialLetter)}</span>`;
 }
 
 async function updateMobileMyPageTab(user){
