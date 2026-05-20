@@ -1893,29 +1893,32 @@ async function generateInstagramStoryImage(){
 
     function drawMeterRow(y, leftIcon, leftLabel, rightIcon, rightLabel, value){
         const safeValue = Math.max(1, Math.min(5, Number(value) || 3));
-        const iconLeftX = 92;
-        const labelLeftX = 144;
+        const leftIconCenterX = 110;
+        const leftLabelX = 144;
         const lineLeft = 272;
         const lineRight = 820;
-        const rightIconX = 864;
+        const rightIconCenterX = 876;
         const rightAreaRight = 980;
         const step = (lineRight - lineLeft) / 4;
         const selectedX = lineLeft + ((safeValue - 1) * step);
 
+        ctx.save();
         ctx.fillStyle = "#f0d6a8";
         ctx.font = "700 34px -apple-system, BlinkMacSystemFont, sans-serif";
-        ctx.fillText(leftIcon, iconLeftX, y + 12);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(leftIcon, leftIconCenterX, y);
 
-        ctx.fillStyle = "rgba(255,245,228,0.96)";
-        ctx.font = "700 24px -apple-system, BlinkMacSystemFont, sans-serif";
-        ctx.fillText(leftLabel, labelLeftX, y + 10);
-
-        ctx.fillStyle = "#f0d6a8";
         ctx.font = "700 30px -apple-system, BlinkMacSystemFont, sans-serif";
-        ctx.fillText(rightIcon, rightIconX, y + 10);
+        ctx.fillText(rightIcon, rightIconCenterX, y);
+        ctx.restore();
 
         ctx.fillStyle = "rgba(255,245,228,0.96)";
         ctx.font = "700 24px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        ctx.fillText(leftLabel, leftLabelX, y + 10);
+
         const rightWidth = ctx.measureText(rightLabel).width;
         ctx.fillText(rightLabel, rightAreaRight - rightWidth, y + 10);
 
@@ -2049,7 +2052,7 @@ async function generateInstagramStoryImage(){
     drawCenteredWrappedText(album.artist || "Unknown Artist", centerX, artistTop, 760, 48, 2);
 
     drawMeterRow(960, "☾", "暗い", "☼", "明るい", album.darkness);
-    drawMeterRow(1032, "⚡", "静か", "✹", "激しい", album.intense);
+    drawMeterRow(1032, "♪", "静か", "✹", "激しい", album.intense);
     drawMeterRow(1104, "◯", "シンプル", "◈", "複雑", album.complex);
     drawMeterRow(1176, "✩", "絶望", "✦", "希望", album.hope);
     drawMeterRow(1248, "◉", "個人", "◎", "世界", album.world);
@@ -2130,7 +2133,7 @@ async function generateInstagramStoryImage(){
     ctx.font = "500 27px -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.fillText(`by @${handleBase}`, 280, avatarY + 43);
 
-    const logoCenterY = Math.min(avatarY + 130, 1826);
+    const logoCenterY = Math.min(avatarY + 154, 1852);
     ctx.strokeStyle = "rgba(255,255,255,0.95)";
     ctx.lineWidth = 6;
     ctx.lineCap = "round";
@@ -2145,10 +2148,7 @@ async function generateInstagramStoryImage(){
 
     ctx.fillStyle = "rgba(255,255,255,0.98)";
     ctx.font = "500 38px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText("Album Collection", 438, logoCenterY - 4);
-    ctx.font = "500 21px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillStyle = "rgba(255,255,255,0.90)";
-    ctx.fillText("音楽の感情を、記録しよう。", 438, logoCenterY + 28);
+    ctx.fillText("Album Collection", 438, logoCenterY + 8);
 
     const blob = await canvasToBlob(canvas);
 
