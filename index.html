@@ -1409,7 +1409,6 @@ a{
 
         <div class="share-actions">
             <button type="button" class="share-action-btn" onclick="copyShareLink()">リンクをコピー</button>
-            <button type="button" class="share-action-btn" onclick="shareToLine()">LINEで送る</button>
             <button type="button" class="share-action-btn" onclick="openNativeShare()">端末の共有メニューを開く</button>
             <button type="button" class="share-action-btn" onclick="generateInstagramStoryImage()">ストーリー用画像を生成</button>
         </div>
@@ -1720,18 +1719,6 @@ async function copyShareLink(){
     }
 }
 
-function shareToLine(){
-    if(!selectedShareAlbumId){
-        return;
-    }
-
-    const shareUrl = getShareUrl(selectedShareAlbumId);
-    const text = `${getShareText(selectedShareAlbumId)} ${shareUrl}`;
-    const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
-
-    window.open(lineUrl, "_blank", "noopener,noreferrer");
-    closeShareMenu();
-}
 
 async function openNativeShare(){
     if(!selectedShareAlbumId){
@@ -1967,7 +1954,6 @@ async function generateInstagramStoryImage(){
 window.openShareMenu = openShareMenu;
 window.closeShareMenu = closeShareMenu;
 window.copyShareLink = copyShareLink;
-window.shareToLine = shareToLine;
 window.openNativeShare = openNativeShare;
 window.generateInstagramStoryImage = generateInstagramStoryImage;
 
@@ -3223,6 +3209,114 @@ onSnapshot(q, async (snapshot)=>{
         background:#f0fbfc !important;
         border-color:#ffffff !important;
         box-shadow:0 0 10px rgba(240,251,252,0.48) !important;
+    }
+}
+</style>
+
+
+
+<style>
+/* ============================================================
+   FINAL FIX: スマホ版 reaction-row の縦ズレ防止
+   - コメント数と共有ボタンを同じ行・同じ高さに揃える
+   - 共有ボタンが下段に落ちにくいように余白を圧縮
+   - PC版にも悪影響が出ないようスマホ幅だけ上書き
+============================================================ */
+@media(max-width:900px){
+    .reaction-row{
+        display:flex !important;
+        flex-direction:row !important;
+        align-items:center !important;
+        justify-content:flex-start !important;
+        flex-wrap:nowrap !important;
+        gap:10px !important;
+        width:100% !important;
+        margin-top:2px !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+    }
+
+    .like-area,
+    .share-area{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        flex:0 0 auto !important;
+        min-width:0 !important;
+        line-height:1 !important;
+    }
+
+    .like-area{
+        gap:6px !important;
+    }
+
+    .like-btn{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        width:22px !important;
+        height:22px !important;
+        padding:0 !important;
+        margin:0 !important;
+        font-size:20px !important;
+        line-height:1 !important;
+        vertical-align:middle !important;
+    }
+
+    .like-count,
+    .comment-count{
+        display:inline-flex !important;
+        align-items:center !important;
+        height:24px !important;
+        margin:0 !important;
+        padding:0 !important;
+        font-size:13px !important;
+        line-height:1 !important;
+        color:#ddd !important;
+        white-space:nowrap !important;
+        vertical-align:middle !important;
+    }
+
+    .comment-count{
+        flex:0 1 auto !important;
+        overflow:hidden !important;
+        text-overflow:ellipsis !important;
+    }
+
+    .share-btn{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        height:24px !important;
+        min-height:24px !important;
+        margin:0 !important;
+        padding:0 9px !important;
+        border-radius:999px !important;
+        font-size:12px !important;
+        font-weight:700 !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+        vertical-align:middle !important;
+        background:rgba(255,255,255,0.08) !important;
+        color:#ffffff !important;
+    }
+}
+
+@media(max-width:430px){
+    .reaction-row{
+        gap:8px !important;
+    }
+
+    .like-count,
+    .comment-count{
+        font-size:12px !important;
+    }
+
+    .share-btn{
+        height:23px !important;
+        min-height:23px !important;
+        padding:0 8px !important;
+        font-size:11px !important;
     }
 }
 </style>
