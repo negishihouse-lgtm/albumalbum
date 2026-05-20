@@ -203,49 +203,55 @@ a{
 .creator-link{
     display:inline-flex;
     align-items:center;
-    gap:8px;
-    padding:6px 10px;
-    border:2px solid rgba(29,155,240,0.75);
-    border-radius:12px;
-    background:rgba(29,155,240,0.08);
+    gap:9px;
+    padding:0;
+    border:none;
+    border-radius:0;
+    background:transparent;
     text-decoration:none;
+    max-width:100%;
 }
 
 .creator-link:hover{
-    background:rgba(29,155,240,0.14);
+    background:transparent;
     text-decoration:none !important;
 }
 
-.creator-avatar{
-    width:28px;
-    height:28px;
+.creator-avatar,
+.creator-avatar-fallback{
+    width:30px;
+    height:30px;
     border-radius:50%;
+    flex:0 0 30px;
+    background:rgba(255,255,255,0.10);
+    border:1px solid rgba(255,255,255,0.12);
+}
+
+.creator-avatar{
+    display:block;
+    object-fit:cover;
+}
+
+.creator-avatar-fallback{
     display:flex;
     align-items:center;
     justify-content:center;
-    background:rgba(255,255,255,0.08);
-    font-size:15px;
-    flex-shrink:0;
-}
-
-.creator-badge{
-    display:inline-block;
-    padding:3px 6px;
-    border-radius:6px;
-    background:#1d9bf0;
-    color:#fff;
-    font-size:10px;
+    color:#b7c3c9;
+    font-size:14px;
     font-weight:800;
-    line-height:1;
-    letter-spacing:-0.02em;
 }
 
 .creator-name{
     color:#ffffff;
-    font-size:18px;
+    font-size:14px;
     font-weight:900;
-    line-height:1;
+    line-height:1.1;
     letter-spacing:-0.03em;
+
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
 }
 
 .reaction-row{
@@ -692,20 +698,19 @@ a{
     }
 
     .creator-link{
-        gap:6px !important;
-        padding:5px 8px !important;
-        border-radius:10px !important;
+        gap:8px !important;
+        padding:0 !important;
+        border:none !important;
+        border-radius:0 !important;
+        background:transparent !important;
     }
 
-    .creator-avatar{
-        width:24px !important;
-        height:24px !important;
+    .creator-avatar,
+    .creator-avatar-fallback{
+        width:28px !important;
+        height:28px !important;
+        flex-basis:28px !important;
         font-size:13px !important;
-    }
-
-    .creator-badge{
-        font-size:9px !important;
-        padding:3px 5px !important;
     }
 
     .creator-name{
@@ -1271,7 +1276,7 @@ let touchStartY = 0;
 let currentUser = null;
 let allLikes = [];
 let allComments = [];
-const userNameCache = new Map();
+const userProfileCache = new Map();
 
 onAuthStateChanged(auth, (user) => {
     updateMobileMyPageTab(user);
@@ -1323,37 +1328,52 @@ function getUserDisplayNameFromData(data){
     );
 }
 
-async function getDisplayNameForAlbum(album){
+async function getPosterProfileForAlbum(album){
     const uid = album?.userId || "";
 
-    if(uid && userNameCache.has(uid)){
-        return userNameCache.get(uid);
+    if(uid && userProfileCache.has(uid)){
+        return userProfileCache.get(uid);
     }
+
+    const fallbackProfile = {
+        name: album?.userName || album?.displayName || album?.nickname || "匿名ユーザー",
+        iconUrl: album?.userIconUrl || album?.userPhotoURL || album?.photoURL || album?.avatarUrl || ""
+    };
 
     if(uid){
         try{
             const userSnap = await getDoc(doc(db, "users", uid));
 
             if(userSnap.exists()){
-                const displayName = getUserDisplayNameFromData(userSnap.data());
+                const userData = userSnap.data();
+                const profile = {
+                    name: getUserDisplayNameFromData(userData) || fallbackProfile.name,
+                    iconUrl: getUserIconUrl(userData) || fallbackProfile.iconUrl
+                };
 
-                if(displayName){
-                    userNameCache.set(uid, displayName);
-                    return displayName;
-                }
+                userProfileCache.set(uid, profile);
+                return profile;
             }
         }catch(error){
-            console.warn("投稿者名の取得に失敗しました", error);
+            console.warn("投稿者プロフィールの取得に失敗しました", error);
         }
     }
 
-    const fallbackName = album?.userName || album?.displayName || album?.nickname || "匿名ユーザー";
-
     if(uid){
-        userNameCache.set(uid, fallbackName);
+        userProfileCache.set(uid, fallbackProfile);
     }
 
-    return fallbackName;
+    return fallbackProfile;
+}
+
+function creatorAvatarHTML(profile){
+    const iconUrl = profile?.iconUrl || "";
+
+    if(iconUrl){
+        return `<img class="creator-avatar" src="${escapeHTML(iconUrl)}" alt="">`;
+    }
+
+    return `<span class="creator-avatar-fallback">👤</span>`;
 }
 
 async function updateMobileMyPageTab(user){
@@ -1748,7 +1768,7 @@ document.addEventListener("click", (event) => {
     location.href = `./search.html?q=${encodeURIComponent(keyword)}`;
 }, true);
 
-function albumCardHTML(item, posterName){
+function albumCardHTML(item, posterProfile){
     const a = item.data;
     const albumId = item.id;
 
@@ -1764,9 +1784,8 @@ function albumCardHTML(item, posterName){
             <div class="meta">${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(" / ") || a.year || "")}</div>
             <div class="creator creator-highlight">
                 <a href="profile.html?uid=${escapeHTML(a.userId || "")}" class="creator-link" onclick="event.stopPropagation();">
-                    <span class="creator-avatar">👤</span>
-                    <span class="creator-badge">投稿者</span>
-                    <span class="creator-name">${escapeHTML(posterName)}</span>
+                    ${creatorAvatarHTML(posterProfile)}
+                    <span class="creator-name">${escapeHTML(posterProfile?.name || "匿名ユーザー")}</span>
                 </a>
             </div>
             <div class="reaction-row">
@@ -1991,8 +2010,8 @@ async function renderGrid(targetGrid, items, emptyHTML){
     if(items.length === 0){ targetGrid.innerHTML = emptyHTML; return; }
     const cards = [];
     for(const item of items){
-        const posterName = await getDisplayNameForAlbum(item.data);
-        cards.push(albumCardHTML(item, posterName));
+        const posterProfile = await getPosterProfileForAlbum(item.data);
+        cards.push(albumCardHTML(item, posterProfile));
     }
     targetGrid.innerHTML = cards.join("");
 }
