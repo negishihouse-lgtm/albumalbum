@@ -61,12 +61,6 @@ body{
     font-weight:700;
 }
 
-.user-email{
-    font-size:14px;
-    color:#999;
-    margin-top:4px;
-}
-
 .empty{
     color:#777;
     font-size:22px;
@@ -325,7 +319,6 @@ function getDisplayName(user){
         user.nickname ||
         user.userName ||
         user.displayName ||
-        user.email ||
         "匿名ユーザー"
     );
 }
@@ -416,9 +409,7 @@ async function loadUsers(){
                     <div class="user-name">
                         ${escapeHTML(getDisplayName(user))}
                     </div>
-                    <div class="user-email">
-                        ${escapeHTML(user.email || "")}
-                    </div>
+
                 </div>
             </div>
         `;
