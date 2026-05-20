@@ -241,12 +241,20 @@ a{
     font-weight:800;
 }
 
+.creator-prefix{
+    color:#aab3b8;
+    font-size:12px;
+    font-weight:500;
+    line-height:1.1;
+    white-space:nowrap;
+}
+
 .creator-name{
     color:#ffffff;
     font-size:14px;
-    font-weight:900;
+    font-weight:650;
     line-height:1.1;
-    letter-spacing:-0.03em;
+    letter-spacing:-0.02em;
 
     display:-webkit-box;
     -webkit-line-clamp:1;
@@ -713,8 +721,14 @@ a{
         font-size:13px !important;
     }
 
+    .creator-prefix{
+        font-size:12px !important;
+        font-weight:500 !important;
+    }
+
     .creator-name{
-        font-size:16px !important;
+        font-size:15px !important;
+        font-weight:650 !important;
     }
 }
 
@@ -1785,6 +1799,7 @@ function albumCardHTML(item, posterProfile){
             <div class="creator creator-highlight">
                 <a href="profile.html?uid=${escapeHTML(a.userId || "")}" class="creator-link" onclick="event.stopPropagation();">
                     ${creatorAvatarHTML(posterProfile)}
+                    <span class="creator-prefix">投稿者：</span>
                     <span class="creator-name">${escapeHTML(posterProfile?.name || "匿名ユーザー")}</span>
                 </a>
             </div>
