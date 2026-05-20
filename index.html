@@ -1893,11 +1893,11 @@ async function generateInstagramStoryImage(){
 
     function drawMeterRow(y, icon, leftLabel, rightLabel, value){
         const safeValue = Math.max(1, Math.min(5, Number(value) || 3));
-        const iconX = 112;
-        const leftX = 164;
-        const lineLeft = 300;
-        const lineRight = 822;
-        const rightAreaRight = 968;
+        const iconX = 108;
+        const leftX = 158;
+        const lineLeft = 282;
+        const lineRight = 804;
+        const rightAreaRight = 972;
         const step = (lineRight - lineLeft) / 4;
         const selectedX = lineLeft + ((safeValue - 1) * step);
 
@@ -1938,7 +1938,7 @@ async function generateInstagramStoryImage(){
         const label = `#${String(textValue || "").replace(/^#+/, "")}`;
         ctx.font = "600 21px -apple-system, BlinkMacSystemFont, sans-serif";
         const width = Math.ceil(ctx.measureText(label).width) + 44;
-        fillRoundRect(x, y, width, 54, 27, "rgba(20,22,25,0.40)");
+        fillRoundRect(x, y, width, 54, 27, "rgba(20,22,25,0.42)");
         strokeRoundRect(x, y, width, 54, 27, "rgba(255,255,255,0.18)", 1.6);
         ctx.fillStyle = "rgba(255,255,255,0.95)";
         ctx.fillText(label, x + 22, y + 34);
@@ -1956,8 +1956,7 @@ async function generateInstagramStoryImage(){
     }
 
     function getKeywordList(){
-        const raw = album.keywords ?? album.keyword ?? album.tags ?? album.tag ?? [];
-        return normalizeKeywords(raw).filter(Boolean).slice(0, 4);
+        return normalizeKeywords(album.keywords ?? []).filter(Boolean).slice(0, 4);
     }
 
     const coverImage = await loadImageForCanvas(album.cover || "");
@@ -2041,38 +2040,40 @@ async function generateInstagramStoryImage(){
     ctx.font = "800 38px -apple-system, BlinkMacSystemFont, sans-serif";
     drawCenteredWrappedText(album.artist || "Unknown Artist", centerX, artistTop, 760, 48, 2);
 
-    drawMeterRow(930, "☾", "暗い", "明るい", album.darkness);
-    drawMeterRow(1008, "⚡", "静か", "激しい", album.intense);
-    drawMeterRow(1086, "◯", "シンプル", "複雑", album.complex);
-    drawMeterRow(1164, "✩", "絶望", "希望", album.hope);
-    drawMeterRow(1242, "◉", "個人", "世界", album.world);
+    drawMeterRow(920, "☾", "暗い", "明るい", album.darkness);
+    drawMeterRow(992, "⚡", "静か", "激しい", album.intense);
+    drawMeterRow(1064, "◯", "シンプル", "複雑", album.complex);
+    drawMeterRow(1136, "✩", "絶望", "希望", album.hope);
+    drawMeterRow(1208, "◉", "個人", "世界", album.world);
 
-    fillRoundRect(92, 1306, 896, 228, 32, "rgba(18,20,24,0.46)");
-    strokeRoundRect(92, 1306, 896, 228, 32, "rgba(255,255,255,0.12)", 1.8);
+    fillRoundRect(92, 1264, 896, 194, 32, "rgba(18,20,24,0.46)");
+    strokeRoundRect(92, 1264, 896, 194, 32, "rgba(255,255,255,0.12)", 1.8);
 
     ctx.fillStyle = "rgba(241,211,155,0.96)";
     ctx.font = "900 72px Georgia, serif";
-    ctx.fillText("“", 118, 1388);
-    ctx.fillText("”", 922, 1496);
+    ctx.fillText("“", 118, 1344);
+    ctx.fillText("”", 922, 1436);
 
     ctx.fillStyle = "rgba(255,255,255,0.96)";
     ctx.font = "500 25px -apple-system, BlinkMacSystemFont, sans-serif";
     const description = getDisplayDescription();
-    const descLines = splitWrappedLines(description, 710, 4);
+    const descLines = splitWrappedLines(description, 710, 3);
     descLines.forEach((lineText, index) => {
-        ctx.fillText(lineText, 210, 1388 + (index * 46));
+        ctx.fillText(lineText, 210, 1346 + (index * 46));
     });
 
-    let chipX = 128;
-    const chipY = 1566;
     const keywords = getKeywordList();
-    keywords.forEach((keyword) => {
-        const width = drawKeywordChip(keyword, chipX, chipY);
-        chipX += width + 16;
-    });
+    if(keywords.length > 0){
+        let chipX = 128;
+        const chipY = 1488;
+        keywords.forEach((keyword) => {
+            const width = drawKeywordChip(keyword, chipX, chipY);
+            chipX += width + 16;
+        });
+    }
 
     const avatarX = 188;
-    const avatarY = 1652;
+    const avatarY = keywords.length > 0 ? 1584 : 1534;
     const avatarSize = 70;
     const avatarImage = posterProfile?.iconUrl ? await loadImageForCanvas(posterProfile.iconUrl) : null;
 
@@ -2114,26 +2115,13 @@ async function generateInstagramStoryImage(){
 
     ctx.fillStyle = "rgba(255,255,255,0.98)";
     ctx.font = "500 27px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText(`by @${handleBase}`, 280, 1695);
+    ctx.fillText(`by @${handleBase}`, 280, avatarY + 43);
 
-    fillRoundRect(170, 1748, 740, 102, 51, "rgba(255,255,255,0.94)");
-    ctx.fillStyle = "#090b10";
-    ctx.font = "900 44px -apple-system, BlinkMacSystemFont, sans-serif";
-    const buttonText = "投稿を見る →";
-    const buttonWidth = ctx.measureText(buttonText).width;
-    ctx.fillText(buttonText, 540 - (buttonWidth / 2), 1814);
-
-    ctx.fillStyle = "rgba(255,255,255,0.88)";
-    ctx.font = "500 20px -apple-system, BlinkMacSystemFont, sans-serif";
-    const noteText = "タップで投稿ページに移動します";
-    const noteWidth = ctx.measureText(noteText).width;
-    ctx.fillText(noteText, 540 - (noteWidth / 2), 1888);
-
+    const logoCenterY = avatarY + 122;
     ctx.strokeStyle = "rgba(255,255,255,0.95)";
     ctx.lineWidth = 6;
     ctx.lineCap = "round";
-    const logoBaseX = 336;
-    const logoCenterY = 1844;
+    const logoBaseX = 340;
     [24, 52, 78, 52, 24].forEach((height, index) => {
         const x = logoBaseX + (index * 18);
         ctx.beginPath();
@@ -2142,12 +2130,20 @@ async function generateInstagramStoryImage(){
         ctx.stroke();
     });
 
-    ctx.fillStyle = "rgba(255,255,255,0.96)";
-    ctx.font = "500 42px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText("Album Collection", 434, 1840);
-    ctx.font = "500 24px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillStyle = "rgba(255,255,255,0.92)";
-    ctx.fillText("音楽の感情を、記録しよう。", 434, 1876);
+    ctx.fillStyle = "rgba(255,255,255,0.98)";
+    ctx.font = "500 38px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText("Album Collection", 438, logoCenterY - 4);
+    ctx.font = "500 21px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.90)";
+    ctx.fillText("音楽の感情を、記録しよう。", 438, logoCenterY + 28);
+
+    const buttonY = avatarY + 164;
+    fillRoundRect(170, buttonY, 740, 96, 48, "rgba(255,255,255,0.94)");
+    ctx.fillStyle = "#090b10";
+    ctx.font = "900 44px -apple-system, BlinkMacSystemFont, sans-serif";
+    const buttonText = "投稿を見る →";
+    const buttonWidth = ctx.measureText(buttonText).width;
+    ctx.fillText(buttonText, 540 - (buttonWidth / 2), buttonY + 64);
 
     const blob = await canvasToBlob(canvas);
 
