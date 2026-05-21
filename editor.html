@@ -383,6 +383,44 @@ textarea{
     font-size:14px;
 }
 
+
+.meter-step-dots{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-top:10px;
+    padding:0 2px;
+}
+
+.meter-step-dot{
+    flex:1 1 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.meter-step-dot::before{
+    content:"";
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,0.35);
+    background:transparent;
+    transition:all .16s ease;
+}
+
+.meter-step-dot.active::before{
+    background:#6fa8dc;
+    border-color:#6fa8dc;
+    box-shadow:0 0 0 3px rgba(111,168,220,0.16);
+}
+
+.meter-step-dot.current::before{
+    transform:scale(1.16);
+    border-color:#d8ecff;
+}
+
 button{
     width:100%;
     padding:15px;
@@ -616,6 +654,17 @@ button:disabled{
     .spotify-select-btn{
         grid-column:1 / -1;
         width:100%;
+    }
+
+
+    .meter-step-dots{
+        gap:8px;
+        margin-top:8px;
+    }
+
+    .meter-step-dot::before{
+        width:11px;
+        height:11px;
     }
 
     .bottom-tab{
@@ -995,6 +1044,13 @@ button:disabled{
                     <span>暗い</span><span>明るい</span>
                 </div>
                 <input id="darknessInput" type="range" min="1" max="5" value="3">
+                <div class="meter-step-dots" data-meter-dots="darknessInput" aria-hidden="true">
+                    <span class="meter-step-dot" data-step="1"></span>
+                    <span class="meter-step-dot" data-step="2"></span>
+                    <span class="meter-step-dot" data-step="3"></span>
+                    <span class="meter-step-dot" data-step="4"></span>
+                    <span class="meter-step-dot" data-step="5"></span>
+                </div>
             </div>
 
             <div class="input-group">
@@ -1002,6 +1058,13 @@ button:disabled{
                     <span>静か</span><span>激しい</span>
                 </div>
                 <input id="intenseInput" type="range" min="1" max="5" value="3">
+                <div class="meter-step-dots" data-meter-dots="intenseInput" aria-hidden="true">
+                    <span class="meter-step-dot" data-step="1"></span>
+                    <span class="meter-step-dot" data-step="2"></span>
+                    <span class="meter-step-dot" data-step="3"></span>
+                    <span class="meter-step-dot" data-step="4"></span>
+                    <span class="meter-step-dot" data-step="5"></span>
+                </div>
             </div>
 
             <div class="input-group">
@@ -1009,6 +1072,13 @@ button:disabled{
                     <span>シンプル</span><span>複雑</span>
                 </div>
                 <input id="complexInput" type="range" min="1" max="5" value="3">
+                <div class="meter-step-dots" data-meter-dots="complexInput" aria-hidden="true">
+                    <span class="meter-step-dot" data-step="1"></span>
+                    <span class="meter-step-dot" data-step="2"></span>
+                    <span class="meter-step-dot" data-step="3"></span>
+                    <span class="meter-step-dot" data-step="4"></span>
+                    <span class="meter-step-dot" data-step="5"></span>
+                </div>
             </div>
 
             <div class="input-group">
@@ -1016,6 +1086,13 @@ button:disabled{
                     <span>絶望</span><span>希望</span>
                 </div>
                 <input id="hopeInput" type="range" min="1" max="5" value="3">
+                <div class="meter-step-dots" data-meter-dots="hopeInput" aria-hidden="true">
+                    <span class="meter-step-dot" data-step="1"></span>
+                    <span class="meter-step-dot" data-step="2"></span>
+                    <span class="meter-step-dot" data-step="3"></span>
+                    <span class="meter-step-dot" data-step="4"></span>
+                    <span class="meter-step-dot" data-step="5"></span>
+                </div>
             </div>
 
             <div class="input-group">
@@ -1023,6 +1100,13 @@ button:disabled{
                     <span>個人</span><span>世界</span>
                 </div>
                 <input id="worldInput" type="range" min="1" max="5" value="3">
+                <div class="meter-step-dots" data-meter-dots="worldInput" aria-hidden="true">
+                    <span class="meter-step-dot" data-step="1"></span>
+                    <span class="meter-step-dot" data-step="2"></span>
+                    <span class="meter-step-dot" data-step="3"></span>
+                    <span class="meter-step-dot" data-step="4"></span>
+                    <span class="meter-step-dot" data-step="5"></span>
+                </div>
             </div>
 
             <button class="save-btn" id="saveBtn">
@@ -1265,7 +1349,6 @@ function setKeywords(keywords){
     const unique = uniqueKeywords(keywords);
     keywordsInput.value = unique.join(" ");
     syncKeywordCandidates();
-showKeywordCategory("emotion");
 }
 
 function getCurrentKeywords(){
@@ -1358,6 +1441,37 @@ if(keywordSuggestions){
 }
 
 keywordsInput.addEventListener("input", syncKeywordCandidates);
+
+
+function updateMeterDots(inputId){
+    const input = document.getElementById(inputId);
+    const dotsWrap = document.querySelector(`[data-meter-dots="${inputId}"]`);
+
+    if(!input || !dotsWrap){
+        return;
+    }
+
+    const value = Number(input.value) || 1;
+
+    dotsWrap.querySelectorAll(".meter-step-dot").forEach((dot) => {
+        const step = Number(dot.dataset.step) || 0;
+        dot.classList.toggle("active", step <= value);
+        dot.classList.toggle("current", step === value);
+    });
+}
+
+function initMeterDots(){
+    ["darknessInput", "intenseInput", "complexInput", "hopeInput", "worldInput"].forEach((inputId) => {
+        const input = document.getElementById(inputId);
+
+        if(!input){
+            return;
+        }
+
+        input.addEventListener("input", () => updateMeterDots(inputId));
+        updateMeterDots(inputId);
+    });
+}
 
 function updateDescCount(){
     const length = descInput.value.length;
@@ -1790,6 +1904,7 @@ onAuthStateChanged(auth, async (user) => {
 setPageMode();
 updateDescCount();
 syncKeywordCandidates();
+initMeterDots();
 
 </script>
 
