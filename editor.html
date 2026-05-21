@@ -384,41 +384,91 @@ textarea{
 }
 
 
+/* ===== 5段階メーター：線上の縦目盛り ===== */
+input[type="range"]{
+    width:100%;
+    height:30px;
+    padding:0;
+    margin:0;
+    border:none;
+    background:transparent;
+    accent-color:#6fa8dc;
+}
+
+input[type="range"]::-webkit-slider-runnable-track{
+    height:4px;
+    border-radius:999px;
+    background:linear-gradient(90deg,#6fa8dc 0%,#9fcdd9 50%,rgba(255,255,255,0.38) 100%);
+}
+
+input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    appearance:none;
+    width:22px;
+    height:22px;
+    margin-top:-9px;
+    border-radius:50%;
+    background:#ffffff;
+    border:3px solid rgba(255,255,255,0.96);
+    box-shadow:0 0 0 6px rgba(111,168,220,0.13), 0 6px 18px rgba(0,0,0,0.38);
+    cursor:pointer;
+}
+
+input[type="range"]::-moz-range-track{
+    height:4px;
+    border-radius:999px;
+    background:linear-gradient(90deg,#6fa8dc 0%,#9fcdd9 50%,rgba(255,255,255,0.38) 100%);
+}
+
+input[type="range"]::-moz-range-thumb{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#ffffff;
+    border:3px solid rgba(255,255,255,0.96);
+    box-shadow:0 0 0 6px rgba(111,168,220,0.13), 0 6px 18px rgba(0,0,0,0.38);
+    cursor:pointer;
+}
+
 .meter-step-dots{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    margin-top:10px;
-    padding:0 2px;
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    align-items:start;
+    gap:0;
+    margin-top:-10px;
+    padding:0 10px;
+    height:18px;
+    pointer-events:none;
 }
 
 .meter-step-dot{
-    flex:1 1 0;
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:center;
+    min-width:0;
 }
 
 .meter-step-dot::before{
     content:"";
-    width:12px;
-    height:12px;
-    border-radius:50%;
-    border:2px solid rgba(255,255,255,0.35);
-    background:transparent;
-    transition:all .16s ease;
+    width:2px;
+    height:8px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.32);
+    box-shadow:none;
+    transition:height .16s ease, background .16s ease, box-shadow .16s ease, transform .16s ease;
 }
 
 .meter-step-dot.active::before{
-    background:#6fa8dc;
-    border-color:#6fa8dc;
-    box-shadow:0 0 0 3px rgba(111,168,220,0.16);
+    background:rgba(111,168,220,0.95);
 }
 
 .meter-step-dot.current::before{
-    transform:scale(1.16);
-    border-color:#d8ecff;
+    width:3px;
+    height:16px;
+    background:#ffffff;
+    box-shadow:0 0 0 4px rgba(111,168,220,0.18), 0 0 14px rgba(111,168,220,0.65);
+    transform:translateY(-4px);
 }
 
 button{
@@ -657,14 +707,31 @@ button:disabled{
     }
 
 
+    input[type="range"]{
+        height:28px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb{
+        width:21px;
+        height:21px;
+        margin-top:-8.5px;
+    }
+
     .meter-step-dots{
-        gap:8px;
-        margin-top:8px;
+        margin-top:-9px;
+        padding:0 9px;
+        height:17px;
     }
 
     .meter-step-dot::before{
-        width:11px;
-        height:11px;
+        width:2px;
+        height:7px;
+    }
+
+    .meter-step-dot.current::before{
+        width:3px;
+        height:15px;
+        transform:translateY(-4px);
     }
 
     .bottom-tab{
@@ -1043,7 +1110,7 @@ button:disabled{
                 <div class="slider-label">
                     <span>暗い</span><span>明るい</span>
                 </div>
-                <input id="darknessInput" type="range" min="1" max="5" value="3">
+                <input id="darknessInput" type="range" min="1" max="5" step="1" value="3">
                 <div class="meter-step-dots" data-meter-dots="darknessInput" aria-hidden="true">
                     <span class="meter-step-dot" data-step="1"></span>
                     <span class="meter-step-dot" data-step="2"></span>
@@ -1057,7 +1124,7 @@ button:disabled{
                 <div class="slider-label">
                     <span>静か</span><span>激しい</span>
                 </div>
-                <input id="intenseInput" type="range" min="1" max="5" value="3">
+                <input id="intenseInput" type="range" min="1" max="5" step="1" value="3">
                 <div class="meter-step-dots" data-meter-dots="intenseInput" aria-hidden="true">
                     <span class="meter-step-dot" data-step="1"></span>
                     <span class="meter-step-dot" data-step="2"></span>
@@ -1071,7 +1138,7 @@ button:disabled{
                 <div class="slider-label">
                     <span>シンプル</span><span>複雑</span>
                 </div>
-                <input id="complexInput" type="range" min="1" max="5" value="3">
+                <input id="complexInput" type="range" min="1" max="5" step="1" value="3">
                 <div class="meter-step-dots" data-meter-dots="complexInput" aria-hidden="true">
                     <span class="meter-step-dot" data-step="1"></span>
                     <span class="meter-step-dot" data-step="2"></span>
@@ -1085,7 +1152,7 @@ button:disabled{
                 <div class="slider-label">
                     <span>絶望</span><span>希望</span>
                 </div>
-                <input id="hopeInput" type="range" min="1" max="5" value="3">
+                <input id="hopeInput" type="range" min="1" max="5" step="1" value="3">
                 <div class="meter-step-dots" data-meter-dots="hopeInput" aria-hidden="true">
                     <span class="meter-step-dot" data-step="1"></span>
                     <span class="meter-step-dot" data-step="2"></span>
@@ -1099,7 +1166,7 @@ button:disabled{
                 <div class="slider-label">
                     <span>個人</span><span>世界</span>
                 </div>
-                <input id="worldInput" type="range" min="1" max="5" value="3">
+                <input id="worldInput" type="range" min="1" max="5" step="1" value="3">
                 <div class="meter-step-dots" data-meter-dots="worldInput" aria-hidden="true">
                     <span class="meter-step-dot" data-step="1"></span>
                     <span class="meter-step-dot" data-step="2"></span>
