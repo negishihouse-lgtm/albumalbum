@@ -408,6 +408,33 @@ a{
     cursor:pointer;
 }
 
+.spotify-link-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:26px;
+    border:1px solid rgba(30,215,96,0.34);
+    background:rgba(30,215,96,0.12);
+    color:#dfffe9;
+    font-family:inherit;
+    font-size:11.5px;
+    font-weight:800;
+    line-height:1;
+    text-decoration:none;
+    border-radius:999px;
+    padding:7px 11px;
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.spotify-link-btn:hover{
+    background:rgba(30,215,96,0.20);
+    border-color:rgba(30,215,96,0.56);
+    color:#ffffff;
+}
+
 .share-btn:hover{
     background:rgba(159,205,217,0.16);
     color:#ffffff;
@@ -1485,7 +1512,8 @@ a{
     }
 
     .like-area,
-    .share-area{
+    .share-area,
+    .spotify-area{
         display:inline-flex !important;
         align-items:center !important;
         justify-content:center !important;
@@ -1549,6 +1577,18 @@ a{
         color:#ffffff !important;
     }
 
+    .spotify-link-btn{
+        height:24px !important;
+        min-height:24px !important;
+        margin:0 !important;
+        padding:0 9px !important;
+        border-radius:999px !important;
+        font-size:12px !important;
+        font-weight:800 !important;
+        line-height:1 !important;
+        white-space:nowrap !important;
+    }
+
     .share-sheet{
         padding:10px !important;
         padding-bottom:calc(10px + env(safe-area-inset-bottom)) !important;
@@ -1570,6 +1610,14 @@ a{
     }
 
     .share-btn{
+        height:23px !important;
+        min-height:23px !important;
+        padding:0 8px !important;
+        font-size:11px !important;
+    }
+
+
+    .spotify-link-btn{
         height:23px !important;
         min-height:23px !important;
         padding:0 8px !important;
@@ -1867,6 +1915,60 @@ function getShareText(albumId){
     const title = album.title || "Album Collectionの投稿";
     const artist = album.artist ? ` / ${album.artist}` : "";
     return `${title}${artist}`;
+}
+
+function isSpotifyUrl(value){
+    if(!value || typeof value !== "string"){
+        return false;
+    }
+
+    try{
+        const url = new URL(value);
+        const host = url.hostname.toLowerCase();
+
+        return (
+            host === "open.spotify.com" ||
+            host.endsWith(".spotify.com") ||
+            host === "spotify.link" ||
+            host.endsWith(".spotify.link")
+        );
+    }catch(error){
+        return false;
+    }
+}
+
+function getSpotifyUrlFromAlbum(album){
+    const candidates = [
+        album?.spotifyUrl,
+        album?.spotifyURL,
+        album?.spotifyTrackUrl,
+        album?.spotifySongUrl,
+        album?.trackSpotifyUrl,
+        album?.songSpotifyUrl,
+        album?.trackUrl,
+        album?.songUrl,
+        album?.musicUrl,
+        album?.externalUrl,
+        album?.spotify?.external_urls?.spotify,
+        album?.spotify?.externalUrls?.spotify,
+        album?.external_urls?.spotify,
+        album?.externalUrls?.spotify
+    ];
+
+    return candidates.find(isSpotifyUrl) || "";
+}
+
+function getSpotifySearchUrl(album){
+    const queryText = [album?.title, album?.artist]
+        .filter(Boolean)
+        .join(" ")
+        .trim() || "music";
+
+    return `https://open.spotify.com/search/${encodeURIComponent(queryText)}`;
+}
+
+function getSpotifyLink(album){
+    return getSpotifyUrlFromAlbum(album) || getSpotifySearchUrl(album);
 }
 
 function showShareToast(message){
@@ -2980,6 +3082,15 @@ function renderDetail(){
                         </div>
 
                         <div class="comment-count">コメント ${commentCount}件</div>
+
+                        <div class="spotify-area">
+                            <a class="spotify-link-btn"
+                               href="${escapeHTML(getSpotifyLink(albumData))}"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                Spotify
+                            </a>
+                        </div>
 
                         <div class="share-area">
                             <button class="share-btn" type="button" onclick="openShareMenu('${escapeHTML(albumId)}')">↗ 共有</button>
