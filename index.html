@@ -1758,6 +1758,70 @@ a{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   自分の投稿だけ：編集・削除ボタン
+============================================================ */
+.owner-actions{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:8px;
+    flex-wrap:wrap;
+}
+
+.owner-action-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:auto;
+    min-width:auto;
+    height:26px;
+    margin:0;
+    padding:0 10px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.045);
+    color:#dce3e6;
+    font-family:inherit;
+    font-size:11px;
+    font-weight:800;
+    line-height:1;
+    cursor:pointer;
+}
+
+.owner-action-btn:hover{
+    background:rgba(159,205,217,0.12);
+    border-color:rgba(159,205,217,0.35);
+    color:#ffffff;
+}
+
+.owner-action-btn.delete{
+    color:#ffb4b4;
+    border-color:rgba(255,120,120,0.22);
+    background:rgba(255,80,80,0.055);
+}
+
+.owner-action-btn.delete:hover{
+    background:rgba(255,80,80,0.12);
+    border-color:rgba(255,120,120,0.42);
+    color:#ffd1d1;
+}
+
+@media(max-width:900px){
+    .owner-actions{
+        margin-top:7px;
+        gap:6px;
+    }
+
+    .owner-action-btn{
+        height:24px;
+        padding:0 9px;
+        font-size:10.5px;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -2837,6 +2901,50 @@ async function toggleLike(albumId){
     }
 }
 
+
+function canManageAlbum(album){
+    return Boolean(currentUser && album && album.userId === currentUser.uid);
+}
+
+function editAlbum(albumId){
+    if(!albumId){
+        return;
+    }
+
+    location.href = `editor.html?id=${encodeURIComponent(albumId)}`;
+}
+
+async function deleteAlbumPost(albumId){
+    if(!currentUser || !albumId){
+        return;
+    }
+
+    const item = getAlbumItemById(albumId);
+
+    if(!item || item.data?.userId !== currentUser.uid){
+        alert("自分の投稿だけ削除できます");
+        return;
+    }
+
+    const ok = confirm("この投稿を削除しますか？
+削除すると元に戻せません。");
+
+    if(!ok){
+        return;
+    }
+
+    try{
+        await deleteDoc(doc(db, "albums", albumId));
+        showShareToast("投稿を削除しました");
+    }catch(error){
+        console.error("投稿削除に失敗しました", error);
+        alert("投稿の削除に失敗しました：" + error.message);
+    }
+}
+
+window.editAlbum = editAlbum;
+window.deleteAlbumPost = deleteAlbumPost;
+
 window.toggleLike = toggleLike;
 
 onSnapshot(collection(db, "likes"), (snapshot) => {
@@ -3011,6 +3119,22 @@ document.addEventListener("click", (event) => {
 function albumCardHTML(item, posterProfile){
     const a = item.data;
     const albumId = item.id;
+    const ownerActions = canManageAlbum(a)
+        ? `
+            <div class="owner-actions">
+                <button
+                    type="button"
+                    class="owner-action-btn edit"
+                    onclick="event.stopPropagation(); editAlbum('${escapeHTML(albumId)}')"
+                >編集</button>
+                <button
+                    type="button"
+                    class="owner-action-btn delete"
+                    onclick="event.stopPropagation(); deleteAlbumPost('${escapeHTML(albumId)}')"
+                >削除</button>
+            </div>
+        `
+        : "";
 
     return `
 <div class="album-card"
@@ -3084,6 +3208,7 @@ function albumCardHTML(item, posterProfile){
                     </button>
                 </div>
             </div>
+            ${ownerActions}
         </div>
     </div>
 
