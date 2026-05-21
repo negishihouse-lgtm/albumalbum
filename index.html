@@ -3045,7 +3045,11 @@ function albumCardHTML(item, posterProfile){
                     aria-label="コメントを見る"
                     title="コメントを見る"
                 >
-                    <span class="comment-icon" aria-hidden="true"></span>
+                    <span class="comment-icon-clean" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M7.2 18.2c1.3.7 2.9 1.1 4.8 1.1 4.6 0 8-2.7 8-6.5s-3.4-6.5-8-6.5-8 2.7-8 6.5c0 1.6.6 3 1.7 4.1l-.7 3.1 2.2-1.8Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
                     <span class="comment-count-number">0</span>
                 </button>
 
@@ -4542,6 +4546,75 @@ document.addEventListener("DOMContentLoaded", () => {
         border-top-width:4.5px !important;
         border-bottom-width:4.5px !important;
         border-left-width:6.5px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   FINAL: index コメントアイコンをクリーン化
+   - 変な尻尾つきCSS吹き出しをやめて、細いSVG吹き出しに変更
+   - 背景の丸カプセル感を弱めて、いいね・共有と並べても自然にする
+============================================================ */
+.comment-icon-wrap{
+    background:transparent !important;
+    border:none !important;
+    color:#b6c0c4 !important;
+    width:auto !important;
+    min-width:auto !important;
+    height:28px !important;
+    min-height:28px !important;
+    padding:0 !important;
+    gap:4px !important;
+    border-radius:0 !important;
+}
+
+.comment-icon-wrap:hover{
+    color:#ffffff !important;
+    background:transparent !important;
+}
+
+.comment-icon-clean{
+    width:19px !important;
+    height:19px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex:0 0 19px !important;
+    color:inherit !important;
+}
+
+.comment-icon-clean svg{
+    width:19px !important;
+    height:19px !important;
+    display:block !important;
+}
+
+.comment-count-number{
+    color:inherit !important;
+    font-size:12px !important;
+    font-weight:700 !important;
+    line-height:1 !important;
+}
+
+@media(max-width:900px){
+    .comment-icon-wrap{
+        height:24px !important;
+        min-height:24px !important;
+        background:transparent !important;
+        padding:0 !important;
+        gap:4px !important;
+    }
+
+    .comment-icon-clean,
+    .comment-icon-clean svg{
+        width:18px !important;
+        height:18px !important;
+    }
+
+    .comment-count-number{
+        font-size:12px !important;
     }
 }
 </style>
