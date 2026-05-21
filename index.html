@@ -2926,8 +2926,7 @@ async function deleteAlbumPost(albumId){
         return;
     }
 
-    const ok = confirm("この投稿を削除しますか？
-削除すると元に戻せません。");
+    const ok = confirm("この投稿を削除しますか？\n削除すると元に戻せません。");
 
     if(!ok){
         return;
@@ -4567,7 +4566,7 @@ document.addEventListener("DOMContentLoaded", () => {
     letter-spacing:-0.01em;
 }
 
-(max-width:900px){
+@media(max-width:900px){
     .share-pill-btn{
         height:26px !important;
         min-height:26px !important;
@@ -4587,7 +4586,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-(max-width:430px){
+@media(max-width:430px){
     .share-pill-btn{
         padding:0 8px !important;
         gap:5px !important;
@@ -4600,7 +4599,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </style>
 
 
-</html>
+
 <style>
 /* ============================================================
    FINAL: Spotifyボタンを再生アイコン風に変更
@@ -4743,7 +4742,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 </style>
-</body>
+
 
 <style>
 /* ============================================================
@@ -4761,3 +4760,5 @@ document.addEventListener("DOMContentLoaded", () => {
     padding-left:2px !important;
 }
 </style>
+</body>
+</html>
