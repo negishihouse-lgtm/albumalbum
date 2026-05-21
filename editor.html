@@ -13,6 +13,16 @@
     box-sizing:border-box;
 }
 
+:root{
+    --pale-1:#7faebb;
+    --pale-2:#9bc7d0;
+    --pale-3:#b9dde3;
+    --pale-4:#d7edf0;
+    --pale-5:#edf8f9;
+    --meter-off:#48555b;
+    --meter-line-off:rgba(255,255,255,0.22);
+}
+
 body{
     background:#050505;
     color:white;
@@ -384,91 +394,109 @@ textarea{
 }
 
 
-/* ===== 5段階メーター：線上の縦目盛り ===== */
 input[type="range"]{
+    -webkit-appearance:none;
+    appearance:none;
     width:100%;
-    height:30px;
+    height:28px;
     padding:0;
-    margin:0;
     border:none;
+    border-radius:0;
     background:transparent;
-    accent-color:#6fa8dc;
+    cursor:pointer;
+    --value-percent:50%;
+    --current-color:var(--pale-3);
+}
+
+input[type="range"]:focus{
+    outline:none;
+    border:none;
 }
 
 input[type="range"]::-webkit-slider-runnable-track{
-    height:4px;
+    height:10px;
     border-radius:999px;
-    background:linear-gradient(90deg,#6fa8dc 0%,#9fcdd9 50%,rgba(255,255,255,0.38) 100%);
+    background:linear-gradient(
+        90deg,
+        var(--current-color) 0%,
+        var(--current-color) var(--value-percent),
+        rgba(255,255,255,0.20) var(--value-percent),
+        rgba(255,255,255,0.20) 100%
+    );
+    border:1px solid rgba(255,255,255,0.12);
 }
 
 input[type="range"]::-webkit-slider-thumb{
     -webkit-appearance:none;
     appearance:none;
-    width:22px;
-    height:22px;
-    margin-top:-9px;
+    width:30px;
+    height:30px;
+    margin-top:-11px;
     border-radius:50%;
+    border:4px solid #edf8f9;
     background:#ffffff;
-    border:3px solid rgba(255,255,255,0.96);
-    box-shadow:0 0 0 6px rgba(111,168,220,0.13), 0 6px 18px rgba(0,0,0,0.38);
-    cursor:pointer;
+    box-shadow:0 0 0 6px rgba(159,205,217,0.12), 0 0 18px rgba(159,205,217,0.22);
 }
 
 input[type="range"]::-moz-range-track{
-    height:4px;
+    height:10px;
+    border:none;
     border-radius:999px;
-    background:linear-gradient(90deg,#6fa8dc 0%,#9fcdd9 50%,rgba(255,255,255,0.38) 100%);
+    background:rgba(255,255,255,0.20);
+}
+
+input[type="range"]::-moz-range-progress{
+    height:10px;
+    border-radius:999px;
+    background:var(--current-color);
 }
 
 input[type="range"]::-moz-range-thumb{
-    width:18px;
-    height:18px;
+    width:30px;
+    height:30px;
     border-radius:50%;
+    border:4px solid #edf8f9;
     background:#ffffff;
-    border:3px solid rgba(255,255,255,0.96);
-    box-shadow:0 0 0 6px rgba(111,168,220,0.13), 0 6px 18px rgba(0,0,0,0.38);
-    cursor:pointer;
+    box-shadow:0 0 0 6px rgba(159,205,217,0.12), 0 0 18px rgba(159,205,217,0.22);
 }
 
 .meter-step-dots{
-    position:relative;
     display:grid;
-    grid-template-columns:repeat(5, 1fr);
-    align-items:start;
+    grid-template-columns:repeat(5, minmax(0, 1fr));
+    align-items:center;
     gap:0;
-    margin-top:-10px;
-    padding:0 10px;
-    height:18px;
-    pointer-events:none;
+    margin-top:12px;
+    padding:0 2px;
 }
 
 .meter-step-dot{
     display:flex;
-    align-items:flex-start;
+    align-items:center;
     justify-content:center;
-    min-width:0;
 }
 
 .meter-step-dot::before{
     content:"";
-    width:2px;
-    height:8px;
-    border-radius:999px;
-    background:rgba(255,255,255,0.32);
-    box-shadow:none;
-    transition:height .16s ease, background .16s ease, box-shadow .16s ease, transform .16s ease;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,0.18);
+    background:transparent;
+    transition:all .16s ease;
 }
 
 .meter-step-dot.active::before{
-    background:rgba(111,168,220,0.95);
+    background:var(--step-color, var(--pale-3));
+    border-color:var(--step-color, var(--pale-3));
+    box-shadow:0 0 10px rgba(159,205,217,0.16);
 }
 
 .meter-step-dot.current::before{
-    width:3px;
+    width:16px;
     height:16px;
-    background:#ffffff;
-    box-shadow:0 0 0 4px rgba(111,168,220,0.18), 0 0 14px rgba(111,168,220,0.65);
-    transform:translateY(-4px);
+    border-width:3px;
+    border-color:#edf8f9;
+    box-shadow:0 0 14px rgba(159,205,217,0.38);
 }
 
 button{
@@ -648,6 +676,35 @@ button:disabled{
 ===================== */
 
 @media(max-width:900px){
+    input[type="range"]{
+        height:26px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb{
+        width:28px;
+        height:28px;
+        margin-top:-10px;
+    }
+
+    input[type="range"]::-moz-range-thumb{
+        width:28px;
+        height:28px;
+    }
+
+    .meter-step-dots{
+        margin-top:10px;
+    }
+
+    .meter-step-dot::before{
+        width:11px;
+        height:11px;
+    }
+
+    .meter-step-dot.current::before{
+        width:15px;
+        height:15px;
+    }
+
     body{
         padding-bottom:86px;
     }
@@ -704,34 +761,6 @@ button:disabled{
     .spotify-select-btn{
         grid-column:1 / -1;
         width:100%;
-    }
-
-
-    input[type="range"]{
-        height:28px;
-    }
-
-    input[type="range"]::-webkit-slider-thumb{
-        width:21px;
-        height:21px;
-        margin-top:-8.5px;
-    }
-
-    .meter-step-dots{
-        margin-top:-9px;
-        padding:0 9px;
-        height:17px;
-    }
-
-    .meter-step-dot::before{
-        width:2px;
-        height:7px;
-    }
-
-    .meter-step-dot.current::before{
-        width:3px;
-        height:15px;
-        transform:translateY(-4px);
     }
 
     .bottom-tab{
@@ -1518,12 +1547,33 @@ function updateMeterDots(inputId){
         return;
     }
 
-    const value = Number(input.value) || 1;
+    const palette = [
+        "var(--pale-1)",
+        "var(--pale-2)",
+        "var(--pale-3)",
+        "var(--pale-4)",
+        "var(--pale-5)"
+    ];
+
+    const value = Math.max(1, Math.min(5, Number(input.value) || 3));
+    const percent = ((value - 1) / 4) * 100;
+    const currentColor = palette[value - 1] || palette[2];
+
+    input.style.setProperty("--value-percent", `${percent}%`);
+    input.style.setProperty("--current-color", currentColor);
 
     dotsWrap.querySelectorAll(".meter-step-dot").forEach((dot) => {
         const step = Number(dot.dataset.step) || 0;
+        const stepColor = palette[Math.max(0, step - 1)] || palette[2];
+        dot.style.setProperty("--step-color", stepColor);
         dot.classList.toggle("active", step <= value);
         dot.classList.toggle("current", step === value);
+    });
+}
+
+function updateAllMeterDots(){
+    ["darknessInput", "intenseInput", "complexInput", "hopeInput", "worldInput"].forEach((inputId) => {
+        updateMeterDots(inputId);
     });
 }
 
@@ -1531,13 +1581,15 @@ function initMeterDots(){
     ["darknessInput", "intenseInput", "complexInput", "hopeInput", "worldInput"].forEach((inputId) => {
         const input = document.getElementById(inputId);
 
-        if(!input){
+        if(!input || input.dataset.meterBound === "true"){
             return;
         }
 
         input.addEventListener("input", () => updateMeterDots(inputId));
-        updateMeterDots(inputId);
+        input.dataset.meterBound = "true";
     });
+
+    updateAllMeterDots();
 }
 
 function updateDescCount(){
@@ -1663,6 +1715,7 @@ function setFormData(album){
         updateSpotifySelectedBox();
     }
 
+    updateAllMeterDots();
     updateDescCount();
 }
 
@@ -1696,6 +1749,7 @@ function clearForm(){
     hopeInput.value = 3;
     worldInput.value = 3;
 
+    updateAllMeterDots();
     updateDescCount();
 }
 
