@@ -3046,7 +3046,7 @@ function albumCardHTML(item, posterProfile){
                     title="コメントを見る"
                 >
                     <span class="comment-icon-clean" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <svg viewBox="-2 -2 28 28" fill="none" aria-hidden="true">
                             <path d="M7.2 18.2c1.3.7 2.9 1.1 4.8 1.1 4.6 0 8-2.7 8-6.5s-3.4-6.5-8-6.5-8 2.7-8 6.5c0 1.6.6 3 1.7 4.1l-.7 3.1 2.2-1.8Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </span>
@@ -4619,3 +4619,20 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 </style>
 </body>
+
+<style>
+/* ============================================================
+   FINAL FIX: コメントアイコン左端見切れ対策
+   - SVGに余白を持たせる
+   - 既存CSSの overflow:hidden を上書き
+============================================================ */
+.comment-icon-wrap,
+.comment-icon-clean,
+.comment-icon-clean svg{
+    overflow:visible !important;
+}
+
+.comment-icon-wrap{
+    padding-left:2px !important;
+}
+</style>
