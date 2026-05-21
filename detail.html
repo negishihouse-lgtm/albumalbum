@@ -393,46 +393,120 @@ a{
     align-items:center;
 }
 
-.share-btn{
-    appearance:none;
-    -webkit-appearance:none;
-    border:none;
-    background:rgba(255,255,255,0.055);
-    color:#dbe4e7;
-    font-family:inherit;
-    font-size:11.5px;
-    font-weight:700;
-    line-height:1;
-    border-radius:999px;
-    padding:7px 10px;
-    cursor:pointer;
-}
-
+.share-btn,
 .spotify-link-btn{
     appearance:none;
     -webkit-appearance:none;
+    width:30px;
+    height:30px;
+    min-width:30px;
+    min-height:30px;
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    min-height:26px;
+    border-radius:999px;
+    font-family:inherit;
+    line-height:1;
+    cursor:pointer;
+    text-decoration:none;
+    padding:0;
+}
+
+.share-btn{
+    border:1px solid rgba(255,255,255,0.13);
+    background:rgba(255,255,255,0.055);
+    color:#dbe4e7;
+}
+
+.spotify-link-btn{
     border:1px solid rgba(30,215,96,0.34);
     background:rgba(30,215,96,0.12);
     color:#dfffe9;
-    font-family:inherit;
-    font-size:11.5px;
-    font-weight:800;
-    line-height:1;
-    text-decoration:none;
+}
+
+.spotify-logo{
+    position:relative;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:#1ed760;
+    display:block;
+    box-shadow:0 0 12px rgba(30,215,96,0.18);
+}
+
+.spotify-logo::before,
+.spotify-logo::after,
+.spotify-logo span{
+    content:"";
+    position:absolute;
+    left:5px;
+    height:2px;
     border-radius:999px;
-    padding:7px 11px;
-    cursor:pointer;
-    white-space:nowrap;
+    background:#07100b;
+    transform:rotate(10deg);
+    transform-origin:left center;
+}
+
+.spotify-logo::before{
+    top:6px;
+    width:11px;
+}
+
+.spotify-logo span{
+    top:10px;
+    width:10px;
+}
+
+.spotify-logo::after{
+    top:14px;
+    width:8px;
+}
+
+.share-icon{
+    position:relative;
+    width:18px;
+    height:18px;
+    display:block;
+}
+
+.share-icon::before{
+    content:"";
+    position:absolute;
+    left:8px;
+    top:3px;
+    width:2px;
+    height:10px;
+    border-radius:999px;
+    background:currentColor;
+}
+
+.share-icon::after{
+    content:"";
+    position:absolute;
+    left:5px;
+    top:3px;
+    width:7px;
+    height:7px;
+    border-left:2px solid currentColor;
+    border-top:2px solid currentColor;
+    transform:rotate(45deg);
+    border-radius:1px;
+}
+
+.share-tray{
+    position:absolute;
+    left:4px;
+    bottom:2px;
+    width:10px;
+    height:6px;
+    border:2px solid currentColor;
+    border-top:none;
+    border-radius:0 0 4px 4px;
 }
 
 .spotify-link-btn:hover{
     background:rgba(30,215,96,0.20);
     border-color:rgba(30,215,96,0.56);
-    color:#ffffff;
 }
 
 .share-btn:hover{
@@ -1559,34 +1633,36 @@ a{
         text-overflow:ellipsis !important;
     }
 
-    .share-btn{
+    .share-btn,
+    .spotify-link-btn{
         display:inline-flex !important;
         align-items:center !important;
         justify-content:center !important;
-        height:24px !important;
-        min-height:24px !important;
+        width:28px !important;
+        height:28px !important;
+        min-width:28px !important;
+        min-height:28px !important;
         margin:0 !important;
-        padding:0 9px !important;
+        padding:0 !important;
         border-radius:999px !important;
-        font-size:12px !important;
-        font-weight:700 !important;
         line-height:1 !important;
         white-space:nowrap !important;
         vertical-align:middle !important;
+    }
+
+    .share-btn{
         background:rgba(255,255,255,0.08) !important;
         color:#ffffff !important;
     }
 
-    .spotify-link-btn{
-        height:24px !important;
-        min-height:24px !important;
-        margin:0 !important;
-        padding:0 9px !important;
-        border-radius:999px !important;
-        font-size:12px !important;
-        font-weight:800 !important;
-        line-height:1 !important;
-        white-space:nowrap !important;
+    .spotify-logo{
+        width:19px !important;
+        height:19px !important;
+    }
+
+    .share-icon{
+        width:17px !important;
+        height:17px !important;
     }
 
     .share-sheet{
@@ -1609,19 +1685,23 @@ a{
         font-size:12px !important;
     }
 
-    .share-btn{
-        height:23px !important;
-        min-height:23px !important;
-        padding:0 8px !important;
-        font-size:11px !important;
+    .share-btn,
+    .spotify-link-btn{
+        width:27px !important;
+        height:27px !important;
+        min-width:27px !important;
+        min-height:27px !important;
+        padding:0 !important;
     }
 
+    .spotify-logo{
+        width:18px !important;
+        height:18px !important;
+    }
 
-    .spotify-link-btn{
-        height:23px !important;
-        min-height:23px !important;
-        padding:0 8px !important;
-        font-size:11px !important;
+    .share-icon{
+        width:16px !important;
+        height:16px !important;
     }
 }
 
@@ -3087,13 +3167,21 @@ function renderDetail(){
                             <a class="spotify-link-btn"
                                href="${escapeHTML(getSpotifyLink(albumData))}"
                                target="_blank"
-                               rel="noopener noreferrer">
-                                Spotify
+                               rel="noopener noreferrer"
+                               aria-label="Spotifyで開く"
+                               title="Spotifyで開く">
+                                <span class="spotify-logo" aria-hidden="true"><span></span></span>
                             </a>
                         </div>
 
                         <div class="share-area">
-                            <button class="share-btn" type="button" onclick="openShareMenu('${escapeHTML(albumId)}')">↗ 共有</button>
+                            <button class="share-btn"
+                                    type="button"
+                                    onclick="openShareMenu('${escapeHTML(albumId)}')"
+                                    aria-label="共有"
+                                    title="共有">
+                                <span class="share-icon" aria-hidden="true"><span class="share-tray"></span></span>
+                            </button>
                         </div>
                     </div>
                 </div>
