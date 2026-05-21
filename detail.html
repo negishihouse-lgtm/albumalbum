@@ -3175,12 +3175,19 @@ function renderDetail(){
                         </div>
 
                         <div class="share-area">
-                            <button class="share-btn"
+                            <button class="share-btn share-pill-btn"
                                     type="button"
                                     onclick="openShareMenu('${escapeHTML(albumId)}')"
                                     aria-label="共有"
                                     title="共有">
-                                <span class="share-icon" aria-hidden="true"><span class="share-tray"></span></span>
+                                <span class="share-pill-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M8.5 6.5L12 3l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M5 12.5v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                                <span class="share-pill-label">共有</span>
                             </button>
                         </div>
                     </div>
@@ -3303,6 +3310,97 @@ onSnapshot(commentsQuery, (snapshot) => {
 loadAlbum();
 
 </script>
+
+<style>
+/* ============================================================
+   FINAL: ChatGPT風 共有ボタン
+============================================================ */
+.share-pill-btn{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    border:1px solid rgba(255,255,255,0.14) !important;
+    background:rgba(255,255,255,0.04) !important;
+    color:#f2f5f7 !important;
+    width:auto !important;
+    min-width:auto !important;
+    height:30px !important;
+    min-height:30px !important;
+    padding:0 11px !important;
+    border-radius:999px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:7px !important;
+    font-size:12px !important;
+    font-weight:700 !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+    box-shadow:none !important;
+    transform:none !important;
+}
+
+.share-pill-btn:hover{
+    background:rgba(255,255,255,0.08) !important;
+    border-color:rgba(255,255,255,0.22) !important;
+    color:#ffffff !important;
+    transform:none !important;
+}
+
+.share-pill-icon{
+    width:16px;
+    height:16px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    color:inherit;
+    flex:0 0 auto;
+}
+
+.share-pill-icon svg{
+    width:16px;
+    height:16px;
+    display:block;
+}
+
+.share-pill-label{
+    display:inline-block;
+    color:inherit;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+}
+
+(max-width:900px){
+    .share-pill-btn{
+        height:26px !important;
+        min-height:26px !important;
+        padding:0 9px !important;
+        gap:6px !important;
+        background:rgba(255,255,255,0.08) !important;
+    }
+
+    .share-pill-icon,
+    .share-pill-icon svg{
+        width:14px !important;
+        height:14px !important;
+    }
+
+    .share-pill-label{
+        font-size:11px !important;
+    }
+}
+
+(max-width:430px){
+    .share-pill-btn{
+        padding:0 8px !important;
+        gap:5px !important;
+    }
+
+    .share-pill-label{
+        font-size:10.5px !important;
+    }
+}
+</style>
 
 </body>
 </html>
