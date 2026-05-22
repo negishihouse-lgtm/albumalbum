@@ -2356,6 +2356,109 @@ body{
     }
 }
 
+
+/* ============================================================
+   CALENDAR COVER VISIBILITY UPDATE
+   - 日付セルにはジャケット1枚だけ表示
+   - 2件以上の日は右下に件数バッジ
+   - 視認性を上げるためジャケットを大きく表示
+============================================================ */
+.calendar-day{
+    position:relative !important;
+    overflow:hidden !important;
+}
+
+.calendar-day-covers{
+    position:relative !important;
+    width:100% !important;
+    min-height:46px !important;
+    max-height:46px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:visible !important;
+}
+
+.calendar-cover.single{
+    width:44px !important;
+    height:44px !important;
+    margin-left:0 !important;
+    border-radius:50% !important;
+    object-fit:cover !important;
+    border:2px solid rgba(255,255,255,0.44) !important;
+    box-shadow:0 5px 16px rgba(0,0,0,0.35) !important;
+}
+
+.calendar-more.count{
+    position:absolute !important;
+    right:50% !important;
+    bottom:0 !important;
+    transform:translateX(25px) !important;
+    width:19px !important;
+    height:19px !important;
+    min-width:19px !important;
+    min-height:19px !important;
+    margin-left:0 !important;
+    border-radius:50% !important;
+    background:#edf8f9 !important;
+    color:#050505 !important;
+    border:1.5px solid #070808 !important;
+    font-size:10px !important;
+    font-weight:950 !important;
+    line-height:1 !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    box-shadow:0 3px 10px rgba(0,0,0,0.38) !important;
+}
+
+.calendar-day.has-posts{
+    background:rgba(159,205,217,0.055) !important;
+}
+
+@media(max-width:900px){
+    .calendar-day-covers{
+        min-height:36px !important;
+        max-height:36px !important;
+    }
+
+    .calendar-cover.single{
+        width:34px !important;
+        height:34px !important;
+        border-width:1.7px !important;
+    }
+
+    .calendar-more.count{
+        transform:translateX(20px) !important;
+        width:17px !important;
+        height:17px !important;
+        min-width:17px !important;
+        min-height:17px !important;
+        font-size:9px !important;
+    }
+}
+
+@media(max-width:390px){
+    .calendar-day-covers{
+        min-height:33px !important;
+        max-height:33px !important;
+    }
+
+    .calendar-cover.single{
+        width:31px !important;
+        height:31px !important;
+    }
+
+    .calendar-more.count{
+        transform:translateX(18px) !important;
+        width:16px !important;
+        height:16px !important;
+        min-width:16px !important;
+        min-height:16px !important;
+        font-size:8.5px !important;
+    }
+}
+
 </style>
 </head>
 
@@ -3609,11 +3712,12 @@ function renderCalendarView(){
             const dateKey = getDateKeyFromDate(date);
             const posts = postsByDate.get(dateKey) || [];
             const hasPosts = posts.length > 0;
-            const covers = posts.slice(0, 2).map((album) => `
-                <img class="calendar-cover" src="${escapeHTML(album.cover || "")}" alt="">
-            `).join("");
-            const more = posts.length > 2
-                ? `<span class="calendar-more">+${posts.length - 2}</span>`
+            const firstCover = posts[0]?.cover || "";
+            const covers = firstCover
+                ? `<img class="calendar-cover single" src="${escapeHTML(firstCover)}" alt="">`
+                : "";
+            const more = posts.length > 1
+                ? `<span class="calendar-more count">${posts.length}</span>`
                 : "";
 
             cells += `
