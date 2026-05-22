@@ -635,7 +635,7 @@ body{
     cursor:pointer;
     display:flex;
     align-items:center;
-    justify-content:space-between;
+    justify-content:flex-start;
     gap:10px;
 }
 
@@ -2154,7 +2154,7 @@ body{
 .calendar-month-header{
     display:flex;
     align-items:center;
-    justify-content:space-between;
+    justify-content:flex-start;
     gap:10px;
     margin-bottom:14px;
 }
@@ -3744,11 +3744,6 @@ function renderCalendarView(){
                         class="calendar-month-title-btn"
                         onclick="openMonthPicker()"
                     >${escapeHTML(formatCalendarMonthTitle(monthKey))}</button>
-                    <button
-                        type="button"
-                        class="calendar-jump-btn"
-                        onclick="openMonthPicker()"
-                    >月を選ぶ</button>
                 </div>
                 <div class="calendar-weekdays">
                     ${weekdayLabels.map(label => `<div class="calendar-weekday">${label}</div>`).join("")}
