@@ -2144,6 +2144,218 @@ body{
     }
 }
 
+
+/* ============================================================
+   CALENDAR UPDATE:
+   - 年月タイトルをタップして月選択
+   - 複数投稿日のマスが縦に伸びないよう固定
+   - 丸ジャケットは重ねて表示
+============================================================ */
+.calendar-month-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:14px;
+}
+
+.calendar-month-title-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    border:none;
+    background:transparent;
+    color:#ffffff;
+    font-family:inherit;
+    font-size:22px;
+    font-weight:900;
+    letter-spacing:-0.03em;
+    cursor:pointer;
+    padding:0;
+    text-align:left;
+}
+
+.calendar-month-title-btn::after{
+    content:"⌄";
+    display:inline-block;
+    margin-left:8px;
+    color:#9fcdd9;
+    font-size:15px;
+    transform:translateY(-1px);
+}
+
+.calendar-jump-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.045);
+    color:#dce3e6;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:850;
+    border-radius:999px;
+    padding:8px 11px;
+    cursor:pointer;
+}
+
+.calendar-jump-btn:hover,
+.calendar-month-title-btn:hover{
+    color:#ffffff;
+}
+
+.calendar-day{
+    height:86px !important;
+    min-height:86px !important;
+    max-height:86px !important;
+}
+
+.calendar-day-covers{
+    width:100%;
+    min-height:34px !important;
+    max-height:34px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex-wrap:nowrap !important;
+    gap:0 !important;
+    overflow:visible !important;
+}
+
+.calendar-cover{
+    flex:0 0 auto;
+    margin-left:-8px;
+}
+
+.calendar-cover:first-child{
+    margin-left:0;
+}
+
+.calendar-more{
+    flex:0 0 auto;
+    margin-left:-8px;
+}
+
+.month-picker-sheet{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    background:rgba(0,0,0,0.62);
+    z-index:23000;
+    padding:18px;
+}
+
+.month-picker-sheet.open{
+    display:flex;
+}
+
+.month-picker-panel{
+    width:min(430px,100%);
+    max-height:min(70vh,620px);
+    overflow:auto;
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:24px;
+    padding:16px;
+    box-shadow:0 22px 70px rgba(0,0,0,0.58);
+}
+
+.month-picker-title{
+    font-size:17px;
+    font-weight:900;
+    margin-bottom:12px;
+}
+
+.month-picker-actions{
+    display:grid;
+    gap:8px;
+}
+
+.month-picker-action{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.045);
+    color:white;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:850;
+    text-align:left;
+    border-radius:15px;
+    padding:13px 14px;
+    cursor:pointer;
+}
+
+.month-picker-action:hover{
+    border-color:rgba(159,205,217,0.42);
+    background:rgba(159,205,217,0.10);
+}
+
+.month-picker-close{
+    margin-top:10px;
+    width:100%;
+    border:none;
+    background:transparent;
+    color:#aab3b8;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:800;
+    padding:12px;
+    cursor:pointer;
+}
+
+@media(max-width:900px){
+    .calendar-month-header{
+        margin-bottom:13px;
+    }
+
+    .calendar-month-title-btn{
+        font-size:20px;
+    }
+
+    .calendar-jump-btn{
+        font-size:11px;
+        padding:7px 10px;
+    }
+
+    .calendar-day{
+        height:64px !important;
+        min-height:64px !important;
+        max-height:64px !important;
+    }
+
+    .calendar-day-covers{
+        min-height:26px !important;
+        max-height:26px !important;
+    }
+
+    .calendar-cover{
+        margin-left:-7px;
+    }
+
+    .calendar-more{
+        margin-left:-7px;
+    }
+
+    .month-picker-sheet{
+        padding:10px;
+        padding-bottom:calc(82px + env(safe-area-inset-bottom));
+    }
+
+    .month-picker-panel{
+        border-radius:24px 24px 18px 18px;
+    }
+}
+
+@media(max-width:390px){
+    .calendar-day{
+        height:58px !important;
+        min-height:58px !important;
+        max-height:58px !important;
+    }
+}
+
 </style>
 </head>
 
@@ -2249,6 +2461,15 @@ body{
         <div class="listen-actions" id="listenActions"></div>
         <button type="button" class="listen-close-btn" onclick="closeListenMenu()">閉じる</button>
     </div>
+
+</div>
+
+<div class="month-picker-sheet" id="monthPickerSheet" onclick="closeMonthPicker()">
+    <div class="month-picker-panel" onclick="event.stopPropagation();">
+        <div class="month-picker-title">月を選択</div>
+        <div class="month-picker-actions" id="monthPickerActions"></div>
+        <button type="button" class="month-picker-close" onclick="closeMonthPicker()">閉じる</button>
+    </div>
 </div>
 
 <script type="module">
@@ -2320,6 +2541,8 @@ const profileContentTabs = document.getElementById("profileContentTabs");
 const listenSheet = document.getElementById("listenSheet");
 const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
 const listenActions = document.getElementById("listenActions");
+const monthPickerSheet = document.getElementById("monthPickerSheet");
+const monthPickerActions = document.getElementById("monthPickerActions");
 
 let currentUser = null;
 let profileDisplayName = "匿名ユーザー";
@@ -3281,6 +3504,58 @@ function openCalendarDay(dateKey){
 
 window.openCalendarDay = openCalendarDay;
 
+
+function closeMonthPicker(){
+    if(monthPickerSheet){
+        monthPickerSheet.classList.remove("open");
+    }
+}
+
+function jumpToCalendarMonth(monthKey){
+    const target = document.getElementById(`calendar-month-${monthKey}`);
+
+    if(target){
+        target.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+    }
+
+    closeMonthPicker();
+}
+
+function openMonthPicker(){
+    const albums = getCalendarAlbums();
+    const monthKeys = [];
+
+    albums.forEach((album) => {
+        const monthKey = getMonthKeyFromDate(album.__calendarDate);
+        if(!monthKeys.includes(monthKey)){
+            monthKeys.push(monthKey);
+        }
+    });
+
+    if(monthPickerActions){
+        monthPickerActions.innerHTML = monthKeys.map((monthKey) => `
+            <button
+                type="button"
+                class="month-picker-action"
+                onclick="event.stopPropagation(); jumpToCalendarMonth('${escapeHTML(monthKey)}')"
+            >
+                ${escapeHTML(formatCalendarMonthTitle(monthKey))}
+            </button>
+        `).join("");
+    }
+
+    if(monthPickerSheet){
+        monthPickerSheet.classList.add("open");
+    }
+}
+
+window.openMonthPicker = openMonthPicker;
+window.closeMonthPicker = closeMonthPicker;
+window.jumpToCalendarMonth = jumpToCalendarMonth;
+
 function renderCalendarView(){
     if(!isOwner()){
         albumGrid.innerHTML = `<div class="empty">カレンダーは本人だけが確認できます。</div>`;
@@ -3334,11 +3609,11 @@ function renderCalendarView(){
             const dateKey = getDateKeyFromDate(date);
             const posts = postsByDate.get(dateKey) || [];
             const hasPosts = posts.length > 0;
-            const covers = posts.slice(0, 3).map((album) => `
+            const covers = posts.slice(0, 2).map((album) => `
                 <img class="calendar-cover" src="${escapeHTML(album.cover || "")}" alt="">
             `).join("");
-            const more = posts.length > 3
-                ? `<span class="calendar-more">+${posts.length - 3}</span>`
+            const more = posts.length > 2
+                ? `<span class="calendar-more">+${posts.length - 2}</span>`
                 : "";
 
             cells += `
@@ -3358,8 +3633,19 @@ function renderCalendarView(){
         }
 
         return `
-            <section class="calendar-month">
-                <div class="calendar-month-title">${escapeHTML(formatCalendarMonthTitle(monthKey))}</div>
+            <section class="calendar-month" id="calendar-month-${escapeHTML(monthKey)}">
+                <div class="calendar-month-header">
+                    <button
+                        type="button"
+                        class="calendar-month-title-btn"
+                        onclick="openMonthPicker()"
+                    >${escapeHTML(formatCalendarMonthTitle(monthKey))}</button>
+                    <button
+                        type="button"
+                        class="calendar-jump-btn"
+                        onclick="openMonthPicker()"
+                    >月を選ぶ</button>
+                </div>
                 <div class="calendar-weekdays">
                     ${weekdayLabels.map(label => `<div class="calendar-weekday">${label}</div>`).join("")}
                 </div>
