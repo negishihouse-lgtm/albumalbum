@@ -2419,14 +2419,117 @@ function getListenTitle(album){
 const listenServiceLabels = [
     { key:"spotify", name:"Spotify", icon:"▶" },
     { key:"appleMusic", name:"Apple Music", icon:"🍎" },
+    { key:"lineMusic", name:"LINE MUSIC", icon:"♪" },
     { key:"youtubeMusic", name:"YouTube Music", icon:"▶" },
     { key:"amazonMusic", name:"Amazon Music", icon:"a" },
-    { key:"lineMusic", name:"LINE MUSIC", icon:"♪" },
     { key:"awa", name:"AWA", icon:"A" },
     { key:"deezer", name:"Deezer", icon:"D" },
     { key:"tidal", name:"TIDAL", icon:"T" },
     { key:"soundcloud", name:"SoundCloud", icon:"☁" }
 ];
+
+const priorityListenKeys = [
+    "spotify",
+    "appleMusic",
+    "lineMusic",
+    "youtubeMusic",
+    "amazonMusic",
+    "awa"
+];
+
+function getListenSearchQuery(album){
+    return [album?.title, album?.artist]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+}
+
+function buildServiceSearchUrl(serviceKey, queryText){
+    const q = encodeURIComponent(queryText || "");
+
+    if(!q){
+        return "";
+    }
+
+    if(serviceKey === "appleMusic"){
+        return `https://music.apple.com/jp/search?term=${q}`;
+    }
+
+    if(serviceKey === "lineMusic"){
+        return `https://music.line.me/webapp/search?query=${q}`;
+    }
+
+    if(serviceKey === "youtubeMusic"){
+        return `https://music.youtube.com/search?q=${q}`;
+    }
+
+    if(serviceKey === "amazonMusic"){
+        return `https://music.amazon.co.jp/search/${q}`;
+    }
+
+    if(serviceKey === "awa"){
+        return `https://s.awa.fm/search?q=${q}`;
+    }
+
+    if(serviceKey === "spotify"){
+        return `https://open.spotify.com/search/${q}`;
+    }
+
+    return "";
+}
+
+function getServiceLabelByKey(key){
+    return listenServiceLabels.find(service => service.key === key) || null;
+}
+
+function createSearchFallbackServices(album, existingKeys = new Set()){
+    const queryText = getListenSearchQuery(album);
+
+    if(!queryText){
+        return [];
+    }
+
+    return priorityListenKeys
+        .filter(key => !existingKeys.has(key))
+        .map((key) => {
+            const label = getServiceLabelByKey(key);
+            const url = buildServiceSearchUrl(key, queryText);
+
+            if(!label || !url){
+                return null;
+            }
+
+            return {
+                key,
+                name:`${label.name}で検索`,
+                icon:label.icon,
+                url
+            };
+        })
+        .filter(Boolean);
+}
+
+function mergeUniqueServices(services){
+    const seen = new Set();
+    const result = [];
+
+    services.forEach((service) => {
+        if(!service?.url){
+            return;
+        }
+
+        const uniqueKey = service.key || service.url;
+
+        if(seen.has(uniqueKey)){
+            return;
+        }
+
+        seen.add(uniqueKey);
+        result.push(service);
+    });
+
+    return result;
+}
 
 function openUrlBlank(url){
     if(!url){
@@ -2524,13 +2627,18 @@ async function openListenMenu(albumId){
     setListenLoading(album);
 
     if(!directUrl){
-        renderListenActions([
-            {
+        const fallbackServices = createSearchFallbackServices(album);
+
+        if(fallbackServices.length === 0){
+            fallbackServices.push({
+                key:"spotifyFallback",
                 name:"Spotifyで検索",
                 icon:"▶",
                 url:fallbackSpotifySearchUrl
-            }
-        ]);
+            });
+        }
+
+        renderListenActions(fallbackServices);
         return;
     }
 
@@ -2544,17 +2652,52 @@ async function openListenMenu(albumId){
 
         const data = await res.json();
         const links = data?.linksByPlatform || {};
+        const existingKeys = new Set();
 
-        const services = listenServiceLabels
+        const directPriorityServices = priorityListenKeys
+            .map((key) => {
+                const label = getServiceLabelByKey(key);
+
+                if(!label || !links?.[key]?.url){
+                    return null;
+                }
+
+                existingKeys.add(key);
+
+                return {
+                    key,
+                    name:label.name,
+                    icon:label.icon,
+                    url:links[key].url
+                };
+            })
+            .filter(Boolean);
+
+        const otherOdesliServices = listenServiceLabels
+            .filter(service => !existingKeys.has(service.key))
             .filter(service => links?.[service.key]?.url)
-            .map(service => ({
-                name:service.name,
-                icon:service.icon,
-                url:links[service.key].url
-            }));
+            .map((service) => {
+                existingKeys.add(service.key);
+
+                return {
+                    key:service.key,
+                    name:service.name,
+                    icon:service.icon,
+                    url:links[service.key].url
+                };
+            });
+
+        const searchFallbackServices = createSearchFallbackServices(album, existingKeys);
+
+        const services = mergeUniqueServices([
+            ...directPriorityServices,
+            ...searchFallbackServices,
+            ...otherOdesliServices
+        ]);
 
         if(data?.pageUrl){
             services.push({
+                key:"odesliPage",
                 name:"その他のサービスで開く",
                 icon:"🔗",
                 url:data.pageUrl
@@ -2563,6 +2706,7 @@ async function openListenMenu(albumId){
 
         if(services.length === 0){
             services.push({
+                key:"original",
                 name:"元のリンクで開く",
                 icon:"♪",
                 url:directUrl
@@ -2573,19 +2717,24 @@ async function openListenMenu(albumId){
     }catch(error){
         console.warn("Odesliリンクの取得に失敗しました", error);
 
-        renderListenActions([
+        const fallbackServices = createSearchFallbackServices(album);
+        const services = mergeUniqueServices([
             {
+                key:"original",
                 name:"元のリンクで開く",
                 icon:"♪",
                 url:directUrl
             },
+            ...fallbackServices,
             {
+                key:"spotifyFallback",
                 name:"Spotifyで検索",
                 icon:"▶",
                 url:fallbackSpotifySearchUrl
             }
         ]);
 
+        renderListenActions(services);
         showShareToast("配信リンク取得に失敗しました");
     }
 }
