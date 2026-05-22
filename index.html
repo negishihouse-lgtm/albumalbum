@@ -1825,8 +1825,9 @@ a{
 
 <style>
 /* ============================================================
-   Odesli / Songlink：聴くサービス選択シート
-   - Spotify固定ではなく「聴く」ボタンから各サブスクを選択
+   聴くサービス選択シート
+   - Odesliなし
+   - Spotify直接リンク + 日本向け主要サブスク検索リンク
 ============================================================ */
 .listen-sheet{
     position:fixed;
@@ -2104,8 +2105,6 @@ const shareToast = document.getElementById("shareToast");
 const listenSheet = document.getElementById("listenSheet");
 const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
 const listenActions = document.getElementById("listenActions");
-
-const ODESLI_PROXY_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
 let currentFeedMode = "recommend";
 let allAlbums = [];
@@ -2624,119 +2623,38 @@ async function openListenMenu(albumId){
         listenSheet.classList.add("open");
     }
 
-    setListenLoading(album);
-
-    if(!directUrl){
-        const fallbackServices = createSearchFallbackServices(album);
-
-        if(fallbackServices.length === 0){
-            fallbackServices.push({
-                key:"spotifyFallback",
-                name:"Spotifyで検索",
-                icon:"▶",
-                url:fallbackSpotifySearchUrl
-            });
-        }
-
-        renderListenActions(fallbackServices);
-        return;
+    if(listenPanelSubtitle){
+        listenPanelSubtitle.textContent = getListenTitle(album);
     }
 
-    try{
-        const apiUrl = `${ODESLI_PROXY_BASE}/odesli?url=${encodeURIComponent(directUrl)}`;
-        const res = await fetch(apiUrl);
+    const existingKeys = new Set();
+    const services = [];
 
-        if(!res.ok){
-            throw new Error(`Odesli API error: ${res.status}`);
-        }
+    if(directUrl){
+        existingKeys.add("spotify");
 
-        const data = await res.json();
-        const links = data?.linksByPlatform || {};
-        const existingKeys = new Set();
-
-        const directPriorityServices = priorityListenKeys
-            .map((key) => {
-                const label = getServiceLabelByKey(key);
-
-                if(!label || !links?.[key]?.url){
-                    return null;
-                }
-
-                existingKeys.add(key);
-
-                return {
-                    key,
-                    name:label.name,
-                    icon:label.icon,
-                    url:links[key].url
-                };
-            })
-            .filter(Boolean);
-
-        const otherOdesliServices = listenServiceLabels
-            .filter(service => !existingKeys.has(service.key))
-            .filter(service => links?.[service.key]?.url)
-            .map((service) => {
-                existingKeys.add(service.key);
-
-                return {
-                    key:service.key,
-                    name:service.name,
-                    icon:service.icon,
-                    url:links[service.key].url
-                };
-            });
-
-        const searchFallbackServices = createSearchFallbackServices(album, existingKeys);
-
-        const services = mergeUniqueServices([
-            ...directPriorityServices,
-            ...searchFallbackServices,
-            ...otherOdesliServices
-        ]);
-
-        if(data?.pageUrl){
-            services.push({
-                key:"odesliPage",
-                name:"その他のサービスで開く",
-                icon:"🔗",
-                url:data.pageUrl
-            });
-        }
-
-        if(services.length === 0){
-            services.push({
-                key:"original",
-                name:"元のリンクで開く",
-                icon:"♪",
-                url:directUrl
-            });
-        }
-
-        renderListenActions(services);
-    }catch(error){
-        console.warn("Odesliリンクの取得に失敗しました", error);
-
-        const fallbackServices = createSearchFallbackServices(album);
-        const services = mergeUniqueServices([
-            {
-                key:"original",
-                name:"元のリンクで開く",
-                icon:"♪",
-                url:directUrl
-            },
-            ...fallbackServices,
-            {
-                key:"spotifyFallback",
-                name:"Spotifyで検索",
-                icon:"▶",
-                url:fallbackSpotifySearchUrl
-            }
-        ]);
-
-        renderListenActions(services);
-        showShareToast("配信リンク取得に失敗しました");
+        services.push({
+            key:"spotify",
+            name:"Spotifyで開く",
+            icon:"▶",
+            url:directUrl
+        });
     }
+
+    const fallbackServices = createSearchFallbackServices(album, existingKeys);
+
+    services.push(...fallbackServices);
+
+    if(!directUrl && fallbackServices.length === 0){
+        services.push({
+            key:"spotifyFallback",
+            name:"Spotifyで検索",
+            icon:"▶",
+            url:fallbackSpotifySearchUrl
+        });
+    }
+
+    renderListenActions(mergeUniqueServices(services));
 }
 
 function openSpotifyTrack(albumId){
