@@ -2300,8 +2300,26 @@ function getShareText(albumId){
     return `${title}${artist}`;
 }
 
+function getSpotifyUrlFromIdOrUri(album){
+    const rawType = String(album?.spotifyType || "track").toLowerCase();
+    const type = rawType.includes("album") ? "album" : "track";
+
+    if(album?.spotifyId){
+        return `https://open.spotify.com/${type}/${encodeURIComponent(album.spotifyId)}`;
+    }
+
+    const uri = album?.spotifyUri || album?.spotifyURI || "";
+    const match = String(uri).match(/^spotify:(track|album):([^?]+)/i);
+
+    if(match){
+        return `https://open.spotify.com/${match[1].toLowerCase()}/${encodeURIComponent(match[2])}`;
+    }
+
+    return "";
+}
+
 function getDirectMusicUrlForAlbum(album){
-    return (
+    const savedUrl = (
         album?.spotifyUrl ||
         album?.spotifyURL ||
         album?.spotifyLink ||
@@ -2317,6 +2335,8 @@ function getDirectMusicUrlForAlbum(album){
         album?.musicURL ||
         ""
     );
+
+    return savedUrl || getSpotifyUrlFromIdOrUri(album);
 }
 
 function getSpotifySearchUrlForAlbum(album){
