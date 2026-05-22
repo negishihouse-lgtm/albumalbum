@@ -1822,6 +1822,135 @@ a{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   Odesli / Songlink：聴くサービス選択シート
+   - Spotify固定ではなく「聴く」ボタンから各サブスクを選択
+============================================================ */
+.listen-sheet{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    background:rgba(0,0,0,0.62);
+    z-index:22000;
+    padding:18px;
+}
+
+.listen-sheet.open{
+    display:flex;
+}
+
+.listen-panel{
+    width:min(430px,100%);
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:24px;
+    padding:16px;
+    box-shadow:0 22px 70px rgba(0,0,0,0.58);
+}
+
+.listen-panel-title{
+    font-size:17px;
+    font-weight:900;
+    letter-spacing:-0.02em;
+    margin-bottom:4px;
+}
+
+.listen-panel-subtitle{
+    color:#aab3b8;
+    font-size:12px;
+    line-height:1.45;
+    margin-bottom:14px;
+    word-break:break-word;
+}
+
+.listen-actions{
+    display:grid;
+    gap:8px;
+}
+
+.listen-action-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.045);
+    color:white;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:850;
+    text-align:left;
+    border-radius:15px;
+    padding:13px 14px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.listen-action-btn:hover{
+    border-color:rgba(159,205,217,0.42);
+    background:rgba(159,205,217,0.10);
+}
+
+.listen-action-name{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+}
+
+.listen-action-icon{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,0.08);
+    flex:0 0 28px;
+    font-size:15px;
+}
+
+.listen-action-arrow{
+    color:#aab3b8;
+    font-size:16px;
+    flex:0 0 auto;
+}
+
+.listen-close-btn{
+    margin-top:10px;
+    width:100%;
+    border:none;
+    background:transparent;
+    color:#aab3b8;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:800;
+    padding:12px;
+    cursor:pointer;
+}
+
+@media(max-width:900px){
+    .listen-sheet{
+        padding:10px;
+        padding-bottom:calc(82px + env(safe-area-inset-bottom));
+    }
+
+    .listen-panel{
+        border-radius:24px 24px 18px 18px;
+    }
+
+    .listen-action-btn{
+        min-height:52px;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -1908,6 +2037,15 @@ a{
     </div>
 </div>
 
+<div class="listen-sheet" id="listenSheet" onclick="closeListenMenu()">
+    <div class="listen-panel" onclick="event.stopPropagation();">
+        <div class="listen-panel-title">どこで聴きますか？</div>
+        <div class="listen-panel-subtitle" id="listenPanelSubtitle">利用できるサービスを取得しています</div>
+        <div class="listen-actions" id="listenActions"></div>
+        <button type="button" class="listen-close-btn" onclick="closeListenMenu()">閉じる</button>
+    </div>
+</div>
+
 <div class="share-toast" id="shareToast">コピーしました</div>
 
 <script type="module">
@@ -1963,6 +2101,9 @@ const followingTab = document.getElementById("followingTab");
 const shareSheet = document.getElementById("shareSheet");
 const sharePanelSubtitle = document.getElementById("sharePanelSubtitle");
 const shareToast = document.getElementById("shareToast");
+const listenSheet = document.getElementById("listenSheet");
+const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
+const listenActions = document.getElementById("listenActions");
 
 let currentFeedMode = "recommend";
 let allAlbums = [];
@@ -2159,23 +2300,26 @@ function getShareText(albumId){
     return `${title}${artist}`;
 }
 
-function getSpotifyUrlForAlbum(album){
-    const directUrl =
+function getDirectMusicUrlForAlbum(album){
+    return (
         album?.spotifyUrl ||
         album?.spotifyURL ||
         album?.spotifyLink ||
         album?.spotifyTrackUrl ||
         album?.spotifyTrackURL ||
-        album?.trackUrl ||
-        album?.trackURL ||
+        album?.spotifyAlbumUrl ||
+        album?.spotifyAlbumURL ||
+        album?.appleMusicUrl ||
+        album?.appleMusicURL ||
+        album?.youtubeMusicUrl ||
+        album?.youtubeMusicURL ||
         album?.musicUrl ||
         album?.musicURL ||
-        "";
+        ""
+    );
+}
 
-    if(directUrl){
-        return directUrl;
-    }
-
+function getSpotifySearchUrlForAlbum(album){
     const queryText = [album?.title, album?.artist]
         .filter(Boolean)
         .join(" ");
@@ -2187,15 +2331,188 @@ function getSpotifyUrlForAlbum(album){
     return `https://open.spotify.com/search/${encodeURIComponent(queryText)}`;
 }
 
-function openSpotifyTrack(albumId){
+function getListenTitle(album){
+    const title = album?.title || "この音楽";
+    const artist = album?.artist ? ` / ${album.artist}` : "";
+    return `${title}${artist}`;
+}
+
+const listenServiceLabels = [
+    { key:"spotify", name:"Spotify", icon:"▶" },
+    { key:"appleMusic", name:"Apple Music", icon:"🍎" },
+    { key:"youtubeMusic", name:"YouTube Music", icon:"▶" },
+    { key:"amazonMusic", name:"Amazon Music", icon:"a" },
+    { key:"lineMusic", name:"LINE MUSIC", icon:"♪" },
+    { key:"awa", name:"AWA", icon:"A" },
+    { key:"deezer", name:"Deezer", icon:"D" },
+    { key:"tidal", name:"TIDAL", icon:"T" },
+    { key:"soundcloud", name:"SoundCloud", icon:"☁" }
+];
+
+function openUrlBlank(url){
+    if(!url){
+        return;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function setListenLoading(album){
+    if(listenPanelSubtitle){
+        listenPanelSubtitle.textContent = getListenTitle(album);
+    }
+
+    if(listenActions){
+        listenActions.innerHTML = `
+            <button type="button" class="listen-action-btn" disabled>
+                <span class="listen-action-name">
+                    <span class="listen-action-icon">…</span>
+                    サービスを取得中
+                </span>
+            </button>
+        `;
+    }
+}
+
+function renderListenActions(services){
+    if(!listenActions){
+        return;
+    }
+
+    if(!services || services.length === 0){
+        listenActions.innerHTML = `
+            <button type="button" class="listen-action-btn" disabled>
+                <span class="listen-action-name">
+                    <span class="listen-action-icon">!</span>
+                    利用できるリンクが見つかりませんでした
+                </span>
+            </button>
+        `;
+        return;
+    }
+
+    listenActions.innerHTML = services.map((service, index) => `
+        <button
+            type="button"
+            class="listen-action-btn"
+            data-listen-url="${escapeHTML(service.url)}"
+            onclick="event.stopPropagation(); openListenService(${index});"
+        >
+            <span class="listen-action-name">
+                <span class="listen-action-icon">${escapeHTML(service.icon || "♪")}</span>
+                ${escapeHTML(service.name)}
+            </span>
+            <span class="listen-action-arrow">↗</span>
+        </button>
+    `).join("");
+
+    window.currentListenServices = services;
+}
+
+function closeListenMenu(){
+    if(listenSheet){
+        listenSheet.classList.remove("open");
+    }
+}
+
+function openListenService(index){
+    const services = window.currentListenServices || [];
+    const service = services[index];
+
+    if(!service?.url){
+        return;
+    }
+
+    openUrlBlank(service.url);
+    closeListenMenu();
+}
+
+async function openListenMenu(albumId){
     const item = getAlbumItemById(albumId);
 
     if(!item){
         return;
     }
 
-    const spotifyUrl = getSpotifyUrlForAlbum(item.data || {});
-    window.open(spotifyUrl, "_blank", "noopener,noreferrer");
+    const album = item.data || {};
+    const directUrl = getDirectMusicUrlForAlbum(album);
+    const fallbackSpotifySearchUrl = getSpotifySearchUrlForAlbum(album);
+
+    if(listenSheet){
+        listenSheet.classList.add("open");
+    }
+
+    setListenLoading(album);
+
+    if(!directUrl){
+        renderListenActions([
+            {
+                name:"Spotifyで検索",
+                icon:"▶",
+                url:fallbackSpotifySearchUrl
+            }
+        ]);
+        return;
+    }
+
+    try{
+        const apiUrl = `https://api.song.link/v1-alpha.1/links?url=${encodeURIComponent(directUrl)}&userCountry=JP`;
+        const res = await fetch(apiUrl);
+
+        if(!res.ok){
+            throw new Error(`Odesli API error: ${res.status}`);
+        }
+
+        const data = await res.json();
+        const links = data?.linksByPlatform || {};
+
+        const services = listenServiceLabels
+            .filter(service => links?.[service.key]?.url)
+            .map(service => ({
+                name:service.name,
+                icon:service.icon,
+                url:links[service.key].url
+            }));
+
+        if(data?.pageUrl){
+            services.push({
+                name:"その他のサービスで開く",
+                icon:"🔗",
+                url:data.pageUrl
+            });
+        }
+
+        if(services.length === 0){
+            services.push({
+                name:"元のリンクで開く",
+                icon:"♪",
+                url:directUrl
+            });
+        }
+
+        renderListenActions(services);
+    }catch(error){
+        console.warn("Odesliリンクの取得に失敗しました", error);
+
+        renderListenActions([
+            {
+                name:"元のリンクで開く",
+                icon:"♪",
+                url:directUrl
+            },
+            {
+                name:"Spotifyで検索",
+                icon:"▶",
+                url:fallbackSpotifySearchUrl
+            }
+        ]);
+
+        showShareToast("配信リンク取得に失敗しました");
+    }
+}
+
+function openSpotifyTrack(albumId){
+    openListenMenu(albumId);
 }
 
 function showShareToast(message){
@@ -2724,6 +3041,9 @@ window.closeShareMenu = closeShareMenu;
 window.copyShareLink = copyShareLink;
 window.openNativeShare = openNativeShare;
 window.generateInstagramStoryImage = generateInstagramStoryImage;
+window.openListenMenu = openListenMenu;
+window.closeListenMenu = closeListenMenu;
+window.openListenService = openListenService;
 window.openSpotifyTrack = openSpotifyTrack;
 
 
@@ -3180,9 +3500,9 @@ function albumCardHTML(item, posterProfile){
                     <button
                         class="icon-action-btn spotify-btn"
                         type="button"
-                        onclick="event.stopPropagation(); openSpotifyTrack('${escapeHTML(albumId)}')"
-                        aria-label="Spotifyで開く"
-                        title="Spotifyで開く"
+                        onclick="event.stopPropagation(); openListenMenu('${escapeHTML(albumId)}')"
+                        aria-label="聴く"
+                        title="聴く"
                     >
                         <span class="spotify-icon" aria-hidden="true"></span>
                     </button>
