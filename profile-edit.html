@@ -1084,6 +1084,15 @@ let selectedPreviewObjectUrl = "";
 ===================== */
 
 
+function escapeHTML(value){
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 function normalizeProfileList(value){
     if(Array.isArray(value)){
         return value
@@ -1218,6 +1227,7 @@ function normalizeSpotifyArtists(artists){
             spotifyUrl: artist.spotifyUrl || "",
             spotifyUri: artist.spotifyUri || "",
             image: artist.image || artist.cover || "",
+            cover: artist.cover || artist.image || "",
             genres: Array.isArray(artist.genres) ? artist.genres : [],
             popularity: Number(artist.popularity) || 0,
             followers: Number(artist.followers) || 0
@@ -1325,7 +1335,7 @@ async function searchFavoriteArtists(){
         renderArtistResults(normalizeSpotifyArtists(artists));
     }catch(error){
         console.error("アーティスト候補検索に失敗しました", error);
-        setArtistStatus("アーティスト検索に失敗しました。Cloudflare Workerの /search-artists や通信状況を確認してください。");
+        setArtistStatus("アーティスト検索に失敗しました：" + (error?.message || "原因不明のエラー"));
     }finally{
         if(artistSearchBtn){
             artistSearchBtn.disabled = false;
