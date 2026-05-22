@@ -467,6 +467,248 @@ button:disabled{
         display:none !important;
     }
 }
+
+/* =====================
+   Favorite Artist Search / Tag Candidates
+===================== */
+
+.artist-search-box,
+.favorite-tag-box{
+    background:#101010;
+    border:1px solid rgba(111,168,220,0.24);
+    border-radius:16px;
+    padding:14px;
+    margin:-6px 0 20px;
+}
+
+.artist-search-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.artist-search-row input{
+    flex:1;
+    margin-bottom:0;
+}
+
+.artist-search-row button{
+    width:112px;
+    margin:0;
+    padding:14px;
+    font-size:14px;
+    background:#1db954;
+}
+
+.artist-status,
+.tag-status{
+    color:#888;
+    font-size:12.5px;
+    line-height:1.6;
+    margin-top:10px;
+}
+
+.artist-results{
+    display:grid;
+    gap:8px;
+    margin-top:12px;
+}
+
+.artist-result-card{
+    display:grid;
+    grid-template-columns:44px minmax(0,1fr) 72px;
+    gap:10px;
+    align-items:center;
+    background:#171717;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:9px;
+}
+
+.artist-result-avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#222;
+    border:1px solid rgba(255,255,255,0.10);
+}
+
+.artist-result-name{
+    font-size:14px;
+    font-weight:800;
+    line-height:1.35;
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.artist-result-meta{
+    color:#999;
+    font-size:11.5px;
+    line-height:1.35;
+    margin-top:2px;
+}
+
+.artist-select-btn{
+    width:72px;
+    margin:0;
+    padding:9px;
+    font-size:12px;
+    border-radius:10px;
+    background:#6fa8dc;
+}
+
+.selected-chip-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+    margin-bottom:12px;
+}
+
+.selected-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 10px;
+    border-radius:999px;
+    background:rgba(111,168,220,0.16);
+    color:#dff3ff;
+    border:1px solid rgba(111,168,220,0.32);
+    font-size:13px;
+    font-weight:800;
+    max-width:100%;
+}
+
+.selected-chip span{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.selected-chip button{
+    appearance:none;
+    -webkit-appearance:none;
+    width:18px;
+    height:18px;
+    margin:0;
+    padding:0;
+    border-radius:50%;
+    background:rgba(255,255,255,0.12);
+    color:#fff;
+    font-size:12px;
+    line-height:1;
+}
+
+.tag-category-tabs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+}
+
+.tag-category-tab{
+    appearance:none;
+    -webkit-appearance:none;
+    width:auto;
+    margin:0;
+    padding:8px 12px;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:999px;
+    background:rgba(255,255,255,0.03);
+    color:#bbb;
+    font-size:13px;
+    line-height:1;
+    cursor:pointer;
+}
+
+.tag-category-tab:hover{
+    border-color:rgba(111,168,220,0.65);
+    color:white;
+}
+
+.tag-category-tab.active{
+    background:#6fa8dc;
+    border-color:#6fa8dc;
+    color:white;
+    font-weight:700;
+}
+
+.tag-category{
+    display:none;
+    margin-top:12px;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:12px;
+}
+
+.tag-category.active{
+    display:block;
+}
+
+.tag-category-title{
+    color:#9fcdd9;
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:9px;
+}
+
+.tag-candidate-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.tag-candidate{
+    appearance:none;
+    -webkit-appearance:none;
+    width:auto;
+    margin:0;
+    padding:7px 11px;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:999px;
+    background:rgba(255,255,255,0.03);
+    color:#ddd;
+    font-size:13px;
+    line-height:1;
+    cursor:pointer;
+}
+
+.tag-candidate:hover{
+    border-color:rgba(111,168,220,0.65);
+    color:white;
+}
+
+.tag-candidate.selected{
+    background:#6fa8dc;
+    border-color:#6fa8dc;
+    color:white;
+    font-weight:700;
+}
+
+@media(max-width:900px){
+    .artist-search-row{
+        display:block;
+    }
+
+    .artist-search-row button{
+        width:100%;
+        margin-top:10px;
+    }
+
+    .artist-result-card{
+        grid-template-columns:42px minmax(0,1fr);
+    }
+
+    .artist-select-btn{
+        grid-column:1 / -1;
+        width:100%;
+    }
+}
+
 </style>
 </head>
 
@@ -549,8 +791,19 @@ button:disabled{
     <div class="form-help">300文字以内。プロフィール画面に表示されます。</div>
 
     <label>好きなアーティスト</label>
-    <input id="favoriteArtistsInput" type="text" placeholder="例：クリープハイプ、My Hair is Bad、藤井風">
-    <div class="form-help">カンマ・読点・改行区切りで保存されます。おすすめ順にも使えます。</div>
+    <div class="artist-search-box">
+        <div class="artist-search-row">
+            <input id="artistSearchInput" type="text" placeholder="例：クリープハイプ">
+            <button type="button" id="artistSearchBtn">検索</button>
+        </div>
+        <div class="artist-status" id="artistStatus">
+            Spotify公式のアーティスト検索から候補を表示します。表記揺れを減らすため、候補から選択してください。
+        </div>
+        <div class="artist-results" id="artistResults"></div>
+        <div class="selected-chip-list" id="selectedArtistsPreview"></div>
+    </div>
+    <input id="favoriteArtistsInput" type="hidden">
+    <div class="form-help">選択したアーティストはおすすめ順にも使えます。手入力ではなく検索選択式にしています。</div>
 
     <div class="visibility-row">
         <div class="visibility-text">
@@ -564,8 +817,155 @@ button:disabled{
     </div>
 
     <label>好きなタグ</label>
-    <input id="favoriteTagsInput" type="text" placeholder="例：夜、青春、失恋、邦ロック、疾走感">
-    <div class="form-help">カンマ・読点・#・改行区切りで保存されます。おすすめ順にも使えます。</div>
+    <div class="favorite-tag-box">
+        <input id="favoriteTagsInput" type="text" placeholder="例：夜、青春、失恋、邦ロック、疾走感">
+        <div class="tag-status">候補をタップして追加・削除できます。自由入力もできます。</div>
+
+        <div class="selected-chip-list" id="selectedTagsPreview"></div>
+
+        <div class="tag-category-tabs" id="tagCategoryTabs">
+            <button type="button" class="tag-category-tab active" data-category="emotion">感情</button>
+            <button type="button" class="tag-category-tab" data-category="mood">雰囲気</button>
+            <button type="button" class="tag-category-tab" data-category="sound">音楽性</button>
+            <button type="button" class="tag-category-tab" data-category="scene">用途</button>
+            <button type="button" class="tag-category-tab" data-category="genre">ジャンル</button>
+            <button type="button" class="tag-category-tab" data-category="time">時間・季節</button>
+        </div>
+
+        <div id="tagSuggestions">
+            <div class="tag-category active" data-category-panel="emotion">
+                <div class="tag-category-title">感情</div>
+                <div class="tag-candidate-list">
+                    <button type="button" class="tag-candidate" data-tag="エモい">#エモい</button>
+                    <button type="button" class="tag-candidate" data-tag="切ない">#切ない</button>
+                    <button type="button" class="tag-candidate" data-tag="泣ける">#泣ける</button>
+                    <button type="button" class="tag-candidate" data-tag="楽しい">#楽しい</button>
+                    <button type="button" class="tag-candidate" data-tag="不安">#不安</button>
+                    <button type="button" class="tag-candidate" data-tag="爽やか">#爽やか</button>
+                    <button type="button" class="tag-candidate" data-tag="優しい">#優しい</button>
+                    <button type="button" class="tag-candidate" data-tag="寂しい">#寂しい</button>
+                    <button type="button" class="tag-candidate" data-tag="苦しい">#苦しい</button>
+                    <button type="button" class="tag-candidate" data-tag="懐かしい">#懐かしい</button>
+                    <button type="button" class="tag-candidate" data-tag="元気が出る">#元気が出る</button>
+                    <button type="button" class="tag-candidate" data-tag="落ち着く">#落ち着く</button>
+                    <button type="button" class="tag-candidate" data-tag="孤独">#孤独</button>
+                    <button type="button" class="tag-candidate" data-tag="多幸感">#多幸感</button>
+                    <button type="button" class="tag-candidate" data-tag="焦燥感">#焦燥感</button>
+                    <button type="button" class="tag-candidate" data-tag="祈り">#祈り</button>
+                </div>
+            </div>
+
+            <div class="tag-category" data-category-panel="mood">
+                <div class="tag-category-title">雰囲気</div>
+                <div class="tag-candidate-list">
+                    <button type="button" class="tag-candidate" data-tag="夜">#夜</button>
+                    <button type="button" class="tag-candidate" data-tag="雨">#雨</button>
+                    <button type="button" class="tag-candidate" data-tag="都会">#都会</button>
+                    <button type="button" class="tag-candidate" data-tag="青春">#青春</button>
+                    <button type="button" class="tag-candidate" data-tag="深夜">#深夜</button>
+                    <button type="button" class="tag-candidate" data-tag="海">#海</button>
+                    <button type="button" class="tag-candidate" data-tag="夕暮れ">#夕暮れ</button>
+                    <button type="button" class="tag-candidate" data-tag="朝">#朝</button>
+                    <button type="button" class="tag-candidate" data-tag="透明感">#透明感</button>
+                    <button type="button" class="tag-candidate" data-tag="浮遊感">#浮遊感</button>
+                    <button type="button" class="tag-candidate" data-tag="幻想的">#幻想的</button>
+                    <button type="button" class="tag-candidate" data-tag="退廃的">#退廃的</button>
+                    <button type="button" class="tag-candidate" data-tag="ロマンチック">#ロマンチック</button>
+                    <button type="button" class="tag-candidate" data-tag="ノスタルジック">#ノスタルジック</button>
+                    <button type="button" class="tag-candidate" data-tag="映画的">#映画的</button>
+                    <button type="button" class="tag-candidate" data-tag="生活感">#生活感</button>
+                </div>
+            </div>
+
+            <div class="tag-category" data-category-panel="sound">
+                <div class="tag-category-title">音楽性</div>
+                <div class="tag-candidate-list">
+                    <button type="button" class="tag-candidate" data-tag="疾走感">#疾走感</button>
+                    <button type="button" class="tag-candidate" data-tag="重厚">#重厚</button>
+                    <button type="button" class="tag-candidate" data-tag="静か">#静か</button>
+                    <button type="button" class="tag-candidate" data-tag="爆音">#爆音</button>
+                    <button type="button" class="tag-candidate" data-tag="実験的">#実験的</button>
+                    <button type="button" class="tag-candidate" data-tag="キャッチー">#キャッチー</button>
+                    <button type="button" class="tag-candidate" data-tag="ギター">#ギター</button>
+                    <button type="button" class="tag-candidate" data-tag="ベース">#ベース</button>
+                    <button type="button" class="tag-candidate" data-tag="ドラム">#ドラム</button>
+                    <button type="button" class="tag-candidate" data-tag="シンセ">#シンセ</button>
+                    <button type="button" class="tag-candidate" data-tag="ピアノ">#ピアノ</button>
+                    <button type="button" class="tag-candidate" data-tag="ストリングス">#ストリングス</button>
+                    <button type="button" class="tag-candidate" data-tag="低音">#低音</button>
+                    <button type="button" class="tag-candidate" data-tag="変拍子">#変拍子</button>
+                    <button type="button" class="tag-candidate" data-tag="サイケ">#サイケ</button>
+                    <button type="button" class="tag-candidate" data-tag="轟音">#轟音</button>
+                    <button type="button" class="tag-candidate" data-tag="ミニマル">#ミニマル</button>
+                    <button type="button" class="tag-candidate" data-tag="メロディアス">#メロディアス</button>
+                </div>
+            </div>
+
+            <div class="tag-category" data-category-panel="scene">
+                <div class="tag-category-title">用途</div>
+                <div class="tag-candidate-list">
+                    <button type="button" class="tag-candidate" data-tag="散歩">#散歩</button>
+                    <button type="button" class="tag-candidate" data-tag="ドライブ">#ドライブ</button>
+                    <button type="button" class="tag-candidate" data-tag="作業用">#作業用</button>
+                    <button type="button" class="tag-candidate" data-tag="帰り道">#帰り道</button>
+                    <button type="button" class="tag-candidate" data-tag="寝る前">#寝る前</button>
+                    <button type="button" class="tag-candidate" data-tag="通学">#通学</button>
+                    <button type="button" class="tag-candidate" data-tag="電車">#電車</button>
+                    <button type="button" class="tag-candidate" data-tag="ランニング">#ランニング</button>
+                    <button type="button" class="tag-candidate" data-tag="勉強">#勉強</button>
+                    <button type="button" class="tag-candidate" data-tag="一人で聴く">#一人で聴く</button>
+                    <button type="button" class="tag-candidate" data-tag="友達と聴く">#友達と聴く</button>
+                    <button type="button" class="tag-candidate" data-tag="ライブで聴きたい">#ライブで聴きたい</button>
+                    <button type="button" class="tag-candidate" data-tag="カラオケ">#カラオケ</button>
+                    <button type="button" class="tag-candidate" data-tag="失恋">#失恋</button>
+                    <button type="button" class="tag-candidate" data-tag="片思い">#片思い</button>
+                    <button type="button" class="tag-candidate" data-tag="旅">#旅</button>
+                </div>
+            </div>
+
+            <div class="tag-category" data-category-panel="genre">
+                <div class="tag-category-title">ジャンル</div>
+                <div class="tag-candidate-list">
+                    <button type="button" class="tag-candidate" data-tag="邦ロック">#邦ロック</button>
+                    <button type="button" class="tag-candidate" data-tag="J-POP">#J-POP</button>
+                    <button type="button" class="tag-candidate" data-tag="ポップ">#ポップ</button>
+                    <button type="button" class="tag-candidate" data-tag="ヒップホップ">#ヒップホップ</button>
+                    <button type="button" class="tag-candidate" data-tag="ジャズ">#ジャズ</button>
+                    <button type="button" class="tag-candidate" data-tag="ポストパンク">#ポストパンク</button>
+                    <button type="button" class="tag-candidate" data-tag="オルタナ">#オルタナ</button>
+                    <button type="button" class="tag-candidate" data-tag="インディー">#インディー</button>
+                    <button type="button" class="tag-candidate" data-tag="シューゲイザー">#シューゲイザー</button>
+                    <button type="button" class="tag-candidate" data-tag="ドリームポップ">#ドリームポップ</button>
+                    <button type="button" class="tag-candidate" data-tag="エレクトロ">#エレクトロ</button>
+                    <button type="button" class="tag-candidate" data-tag="R&B">#R&B</button>
+                    <button type="button" class="tag-candidate" data-tag="フォーク">#フォーク</button>
+                    <button type="button" class="tag-candidate" data-tag="シティポップ">#シティポップ</button>
+                    <button type="button" class="tag-candidate" data-tag="ボカロ">#ボカロ</button>
+                    <button type="button" class="tag-candidate" data-tag="アニソン">#アニソン</button>
+                </div>
+            </div>
+
+            <div class="tag-category" data-category-panel="time">
+                <div class="tag-category-title">時間・季節</div>
+                <div class="tag-candidate-list">
+                    <button type="button" class="tag-candidate" data-tag="春">#春</button>
+                    <button type="button" class="tag-candidate" data-tag="夏">#夏</button>
+                    <button type="button" class="tag-candidate" data-tag="秋">#秋</button>
+                    <button type="button" class="tag-candidate" data-tag="冬">#冬</button>
+                    <button type="button" class="tag-candidate" data-tag="朝">#朝</button>
+                    <button type="button" class="tag-candidate" data-tag="昼">#昼</button>
+                    <button type="button" class="tag-candidate" data-tag="夕方">#夕方</button>
+                    <button type="button" class="tag-candidate" data-tag="夜">#夜</button>
+                    <button type="button" class="tag-candidate" data-tag="深夜">#深夜</button>
+                    <button type="button" class="tag-candidate" data-tag="週末">#週末</button>
+                    <button type="button" class="tag-candidate" data-tag="休日">#休日</button>
+                    <button type="button" class="tag-candidate" data-tag="平成">#平成</button>
+                    <button type="button" class="tag-candidate" data-tag="令和">#令和</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-help">タグは候補から選ぶと表記が揃います。自由入力もできます。</div>
 
     <div class="visibility-row">
         <div class="visibility-text">
@@ -651,6 +1051,14 @@ const birthdateInput = document.getElementById("birthdate");
 const bioInput = document.getElementById("bioInput");
 const favoriteArtistsInput = document.getElementById("favoriteArtistsInput");
 const favoriteTagsInput = document.getElementById("favoriteTagsInput");
+const artistSearchInput = document.getElementById("artistSearchInput");
+const artistSearchBtn = document.getElementById("artistSearchBtn");
+const artistStatus = document.getElementById("artistStatus");
+const artistResults = document.getElementById("artistResults");
+const selectedArtistsPreview = document.getElementById("selectedArtistsPreview");
+const selectedTagsPreview = document.getElementById("selectedTagsPreview");
+const tagCategoryTabs = document.getElementById("tagCategoryTabs");
+const tagSuggestions = document.getElementById("tagSuggestions");
 const favoriteArtistsPublicInput = document.getElementById("favoriteArtistsPublicInput");
 const favoriteTagsPublicInput = document.getElementById("favoriteTagsPublicInput");
 const avatarPreview = document.getElementById("avatarPreview");
@@ -662,8 +1070,12 @@ const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
 const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 
+const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
+
 let currentUser = null;
 let currentIconUrl = "";
+let selectedFavoriteArtists = [];
+let selectedFavoriteArtistObjects = [];
 let selectedIconFile = null;
 let selectedPreviewObjectUrl = "";
 
@@ -687,6 +1099,366 @@ function normalizeProfileList(value){
 
 function stringifyProfileList(value){
     return normalizeProfileList(value).join("、");
+}
+
+
+function setArtistStatus(text){
+    if(artistStatus){
+        artistStatus.textContent = text;
+    }
+}
+
+function getArtistKey(name){
+    return String(name || "").trim().toLowerCase();
+}
+
+function normalizeArtistObject(value){
+    if(typeof value === "string"){
+        return {
+            name: value,
+            spotifyArtistId: "",
+            spotifyUrl: "",
+            spotifyUri: "",
+            image: ""
+        };
+    }
+
+    return {
+        name: value?.name || value?.artistName || "",
+        spotifyArtistId: value?.spotifyArtistId || value?.spotifyId || "",
+        spotifyUrl: value?.spotifyUrl || "",
+        spotifyUri: value?.spotifyUri || "",
+        image: value?.image || value?.cover || ""
+    };
+}
+
+function setFavoriteArtists(artists){
+    const seen = new Set();
+    selectedFavoriteArtists = [];
+    selectedFavoriteArtistObjects = [];
+
+    const source = Array.isArray(artists) ? artists : normalizeProfileList(artists);
+
+    source.forEach((item) => {
+        const artistObject = normalizeArtistObject(item);
+        const name = String(artistObject.name || "").trim();
+        const key = getArtistKey(name);
+
+        if(!key || seen.has(key)){
+            return;
+        }
+
+        seen.add(key);
+        selectedFavoriteArtists.push(name);
+        selectedFavoriteArtistObjects.push({
+            ...artistObject,
+            name
+        });
+    });
+
+    syncFavoriteArtistsInput();
+}
+
+function syncFavoriteArtistsInput(){
+    if(favoriteArtistsInput){
+        favoriteArtistsInput.value = selectedFavoriteArtists.join("、");
+    }
+
+    if(!selectedArtistsPreview){
+        return;
+    }
+
+    if(selectedFavoriteArtists.length === 0){
+        selectedArtistsPreview.innerHTML = `<span class="selected-chip"><span>未選択</span></span>`;
+        return;
+    }
+
+    selectedArtistsPreview.innerHTML = selectedFavoriteArtistObjects.map((artist, index) => `
+        <span class="selected-chip">
+            <span>${escapeHTML(artist.name)}</span>
+            <button type="button" onclick="removeFavoriteArtist(${index})">×</button>
+        </span>
+    `).join("");
+}
+
+function addFavoriteArtist(artist){
+    const artistObject = normalizeArtistObject(artist);
+    const artistName = String(artistObject.name || "").trim();
+
+    if(!artistName){
+        return;
+    }
+
+    const exists = selectedFavoriteArtists.some((name) => getArtistKey(name) === getArtistKey(artistName));
+
+    if(!exists){
+        selectedFavoriteArtists.push(artistName);
+        selectedFavoriteArtistObjects.push({
+            ...artistObject,
+            name: artistName
+        });
+    }
+
+    syncFavoriteArtistsInput();
+}
+
+function removeFavoriteArtist(index){
+    selectedFavoriteArtists.splice(index, 1);
+    selectedFavoriteArtistObjects.splice(index, 1);
+    syncFavoriteArtistsInput();
+}
+
+window.removeFavoriteArtist = removeFavoriteArtist;
+
+function normalizeSpotifyArtists(artists){
+    return (artists || []).map((artist) => {
+        return {
+            name: artist.name || artist.artistName || "",
+            spotifyArtistId: artist.spotifyArtistId || artist.spotifyId || "",
+            spotifyUrl: artist.spotifyUrl || "",
+            spotifyUri: artist.spotifyUri || "",
+            image: artist.image || artist.cover || "",
+            genres: Array.isArray(artist.genres) ? artist.genres : [],
+            popularity: Number(artist.popularity) || 0,
+            followers: Number(artist.followers) || 0
+        };
+    }).filter((artist) => artist.name);
+}
+
+function formatFollowers(value){
+    const count = Number(value) || 0;
+
+    if(count >= 100000000){
+        return `${Math.round(count / 100000000)}億`;
+    }
+
+    if(count >= 10000){
+        return `${Math.round(count / 10000)}万`;
+    }
+
+    if(count > 0){
+        return String(count);
+    }
+
+    return "";
+}
+
+function getArtistMetaText(artist){
+    const parts = [];
+
+    if(artist.followers){
+        parts.push(`フォロワー ${formatFollowers(artist.followers)}`);
+    }
+
+    if(artist.popularity){
+        parts.push(`人気度 ${artist.popularity}`);
+    }
+
+    if(artist.genres && artist.genres.length){
+        parts.push(artist.genres.slice(0, 2).join(" / "));
+    }
+
+    return parts.join(" ・ ") || "Spotifyアーティスト";
+}
+
+function renderArtistResults(artists){
+    if(!artistResults){
+        return;
+    }
+
+    if(!artists.length){
+        artistResults.innerHTML = "";
+        setArtistStatus("候補が見つかりませんでした。別の表記で検索してください。");
+        return;
+    }
+
+    artistResults.innerHTML = artists.map((artist) => `
+        <div class="artist-result-card">
+            <img class="artist-result-avatar" src="${escapeHTML(artist.cover || "")}" alt="">
+            <div>
+                <div class="artist-result-name">${escapeHTML(artist.name)}</div>
+                <div class="artist-result-meta">${escapeHTML(getArtistMetaText(artist))}</div>
+            </div>
+            <button
+                type="button"
+                class="artist-select-btn"
+                data-artist="${escapeHTML(artist.name)}"
+                data-spotify-artist-id="${escapeHTML(artist.spotifyArtistId || "")}"
+                data-spotify-url="${escapeHTML(artist.spotifyUrl || "")}"
+                data-spotify-uri="${escapeHTML(artist.spotifyUri || "")}"
+                data-image="${escapeHTML(artist.image || "")}"
+            >追加</button>
+        </div>
+    `).join("");
+
+    setArtistStatus(`${artists.length}件のアーティスト候補を表示しています。`);
+}
+
+async function searchFavoriteArtists(){
+    const q = artistSearchInput ? artistSearchInput.value.trim() : "";
+
+    if(!q){
+        setArtistStatus("検索キーワードを入力してください。");
+        return;
+    }
+
+    if(artistSearchBtn){
+        artistSearchBtn.disabled = true;
+    }
+
+    if(artistResults){
+        artistResults.innerHTML = "";
+    }
+
+    setArtistStatus("Spotifyから候補を取得中...");
+
+    try{
+        const url = `${SPOTIFY_API_BASE}/search-artists?q=${encodeURIComponent(q)}`;
+        const res = await fetch(url);
+
+        if(!res.ok){
+            const errorText = await res.text();
+            throw new Error(`${res.status} ${errorText}`);
+        }
+
+        const artists = await res.json();
+        renderArtistResults(normalizeSpotifyArtists(artists));
+    }catch(error){
+        console.error("アーティスト候補検索に失敗しました", error);
+        setArtistStatus("アーティスト検索に失敗しました。Cloudflare Workerの /search-artists や通信状況を確認してください。");
+    }finally{
+        if(artistSearchBtn){
+            artistSearchBtn.disabled = false;
+        }
+    }
+}
+
+function syncFavoriteTagCandidates(){
+    const current = new Set(normalizeProfileList(favoriteTagsInput?.value || ""));
+
+    if(tagSuggestions){
+        tagSuggestions.querySelectorAll(".tag-candidate").forEach((button) => {
+            const tag = button.dataset.tag || "";
+            button.classList.toggle("selected", current.has(tag));
+        });
+    }
+
+    if(selectedTagsPreview){
+        const tags = Array.from(current);
+
+        if(tags.length === 0){
+            selectedTagsPreview.innerHTML = `<span class="selected-chip"><span>未選択</span></span>`;
+        }else{
+            selectedTagsPreview.innerHTML = tags.map((tag) => `
+                <span class="selected-chip">
+                    <span>#${escapeHTML(tag)}</span>
+                    <button type="button" onclick="removeFavoriteTag('${escapeHTML(encodeURIComponent(tag))}')">×</button>
+                </span>
+            `).join("");
+        }
+    }
+}
+
+function setFavoriteTags(tags){
+    if(favoriteTagsInput){
+        favoriteTagsInput.value = normalizeProfileList(tags).join(" ");
+    }
+    syncFavoriteTagCandidates();
+}
+
+function toggleFavoriteTag(tag){
+    const current = normalizeProfileList(favoriteTagsInput?.value || "");
+    const exists = current.includes(tag);
+
+    if(exists){
+        setFavoriteTags(current.filter(item => item !== tag));
+    }else{
+        setFavoriteTags([...current, tag]);
+    }
+}
+
+function removeFavoriteTag(encodedTag){
+    const tag = decodeURIComponent(encodedTag || "");
+    const current = normalizeProfileList(favoriteTagsInput?.value || "");
+    setFavoriteTags(current.filter(item => item !== tag));
+}
+
+window.removeFavoriteTag = removeFavoriteTag;
+
+function showFavoriteTagCategory(category){
+    if(!tagCategoryTabs || !tagSuggestions){
+        return;
+    }
+
+    tagCategoryTabs.querySelectorAll(".tag-category-tab").forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.category === category);
+    });
+
+    tagSuggestions.querySelectorAll(".tag-category").forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.categoryPanel === category);
+    });
+}
+
+if(artistSearchBtn){
+    artistSearchBtn.addEventListener("click", searchFavoriteArtists);
+}
+
+if(artistSearchInput){
+    artistSearchInput.addEventListener("keydown", (event) => {
+        if(event.key === "Enter"){
+            event.preventDefault();
+            searchFavoriteArtists();
+        }
+    });
+}
+
+if(artistResults){
+    artistResults.addEventListener("click", (event) => {
+        const button = event.target.closest(".artist-select-btn");
+
+        if(!button){
+            return;
+        }
+
+        event.preventDefault();
+        addFavoriteArtist({
+            name: button.dataset.artist || "",
+            spotifyArtistId: button.dataset.spotifyArtistId || "",
+            spotifyUrl: button.dataset.spotifyUrl || "",
+            spotifyUri: button.dataset.spotifyUri || "",
+            image: button.dataset.image || ""
+        });
+    });
+}
+
+if(tagCategoryTabs){
+    tagCategoryTabs.addEventListener("click", (event) => {
+        const tab = event.target.closest(".tag-category-tab");
+
+        if(!tab){
+            return;
+        }
+
+        event.preventDefault();
+        showFavoriteTagCategory(tab.dataset.category || "emotion");
+    });
+}
+
+if(tagSuggestions){
+    tagSuggestions.addEventListener("click", (event) => {
+        const button = event.target.closest(".tag-candidate");
+
+        if(!button){
+            return;
+        }
+
+        event.preventDefault();
+        toggleFavoriteTag(button.dataset.tag || "");
+    });
+}
+
+if(favoriteTagsInput){
+    favoriteTagsInput.addEventListener("input", syncFavoriteTagCandidates);
 }
 
 function setDefaultAvatar(){
@@ -881,8 +1653,13 @@ onAuthStateChanged(auth, async (user) => {
         nicknameInput.value = data.nickname || data.userName || data.displayName || "";
         birthdateInput.value = data.birthdate || "";
         bioInput.value = data.bio || data.profileBio || data.introduction || "";
-        favoriteArtistsInput.value = stringifyProfileList(data.favoriteArtists || data.favoriteArtist || "");
-        favoriteTagsInput.value = stringifyProfileList(data.favoriteTags || data.favoriteTag || "");
+        setFavoriteArtists(
+            data.favoriteArtistObjects ||
+            data.favoriteArtists ||
+            data.favoriteArtist ||
+            []
+        );
+        setFavoriteTags(data.favoriteTags || data.favoriteTag || []);
         favoriteArtistsPublicInput.checked = data.favoriteArtistsPublic !== false;
         favoriteTagsPublicInput.checked = data.favoriteTagsPublic !== false;
 
@@ -915,6 +1692,9 @@ onAuthStateChanged(auth, async (user) => {
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp()
         }, { merge:true });
+
+        setFavoriteArtists([]);
+        setFavoriteTags([]);
     }
 });
 
@@ -928,7 +1708,7 @@ saveBtn.addEventListener("click", async () => {
     const nickname = nicknameInput.value.trim();
     const birthdate = birthdateInput.value;
     const bio = bioInput.value.trim();
-    const favoriteArtists = normalizeProfileList(favoriteArtistsInput.value);
+    const favoriteArtists = normalizeProfileList(selectedFavoriteArtists);
     const favoriteTags = normalizeProfileList(favoriteTagsInput.value);
     const favoriteArtistsPublic = favoriteArtistsPublicInput.checked;
     const favoriteTagsPublic = favoriteTagsPublicInput.checked;
@@ -972,6 +1752,7 @@ saveBtn.addEventListener("click", async () => {
             profileBio: bio,
             introduction: bio,
             favoriteArtists: favoriteArtists,
+            favoriteArtistObjects: selectedFavoriteArtistObjects,
             favoriteTags: favoriteTags,
             favoriteArtistsPublic: favoriteArtistsPublic,
             favoriteTagsPublic: favoriteTagsPublic,
@@ -1014,6 +1795,9 @@ saveBtn.addEventListener("click", async () => {
         saveBtn.disabled = false;
     }
 });
+
+syncFavoriteArtistsInput();
+syncFavoriteTagCandidates();
 
 </script>
 
