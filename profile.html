@@ -403,6 +403,29 @@ body{
     color:#aaa;
 }
 
+.listen-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.055);
+    color:#ffffff;
+    border-radius:999px;
+    height:28px;
+    padding:0 10px;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+}
+
+.listen-btn:hover{
+    border-color:rgba(159,205,217,0.42);
+    background:rgba(159,205,217,0.12);
+}
+
 .owner-actions{
     display:flex;
     gap:8px;
@@ -551,6 +574,114 @@ body{
     font-size:24px;
 }
 
+/* ===== 聴くサービス選択シート ===== */
+.listen-sheet{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    background:rgba(0,0,0,0.62);
+    z-index:22000;
+    padding:18px;
+}
+
+.listen-sheet.open{
+    display:flex;
+}
+
+.listen-panel{
+    width:min(430px,100%);
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:24px;
+    padding:16px;
+    box-shadow:0 22px 70px rgba(0,0,0,0.58);
+}
+
+.listen-panel-title{
+    font-size:17px;
+    font-weight:900;
+    letter-spacing:-0.02em;
+    margin-bottom:4px;
+}
+
+.listen-panel-subtitle{
+    color:#aab3b8;
+    font-size:12px;
+    line-height:1.45;
+    margin-bottom:14px;
+    word-break:break-word;
+}
+
+.listen-actions{
+    display:grid;
+    gap:8px;
+}
+
+.listen-action-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.045);
+    color:white;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:850;
+    text-align:left;
+    border-radius:15px;
+    padding:13px 14px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.listen-action-btn:hover{
+    border-color:rgba(159,205,217,0.42);
+    background:rgba(159,205,217,0.10);
+}
+
+.listen-action-name{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+}
+
+.listen-action-icon{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,0.08);
+    flex:0 0 28px;
+    font-size:15px;
+}
+
+.listen-action-arrow{
+    color:#aab3b8;
+    font-size:16px;
+    flex:0 0 auto;
+}
+
+.listen-close-btn{
+    margin-top:10px;
+    width:100%;
+    border:none;
+    background:transparent;
+    color:#aab3b8;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:800;
+    padding:12px;
+    cursor:pointer;
+}
+
 /* ===== タブレット以下 ===== */
 @media(max-width:1300px){
     .album-grid{
@@ -686,6 +817,12 @@ body{
         font-size:11px;
     }
 
+    .listen-btn{
+        height:24px;
+        padding:0 8px;
+        font-size:11px;
+    }
+
     .owner-actions{
         gap:6px;
         margin-top:10px;
@@ -749,6 +886,19 @@ body{
         width:58px;
         height:58px;
         font-size:32px;
+    }
+
+    .listen-sheet{
+        padding:10px;
+        padding-bottom:calc(82px + env(safe-area-inset-bottom));
+    }
+
+    .listen-panel{
+        border-radius:24px 24px 18px 18px;
+    }
+
+    .listen-action-btn{
+        min-height:52px;
     }
 }
 
@@ -908,9 +1058,6 @@ body{
 
 /* ============================================================
    FINAL: index準拠 スマホ下部タブバー
-   - 絵文字アイコンを廃止
-   - indexと同じ ⌂ / ⌕ / ＋ / ♡ / アイコン画像or◯
-   - スマホでは右下FABを非表示
 ============================================================ */
 .mobile-tabbar .label{
     line-height:1;
@@ -983,13 +1130,8 @@ body{
     }
 }
 
-
-
 /* ============================================================
    FINAL: スマホ版マイページ投稿カード index準拠
-   - profile.html の過去投稿カードを index.html のスマホカード寄せに統一
-   - 既存HTML構造は維持してCSSで整形
-   - スマホではレビュー本文をカード内に出さず、indexと同じくコンパクト表示
 ============================================================ */
 @media(max-width:900px){
     .album-grid{
@@ -1109,7 +1251,7 @@ body{
         display:flex !important;
         flex-direction:row !important;
         align-items:center !important;
-        gap:20px !important;
+        gap:12px !important;
         margin:0 !important;
         font-size:14px !important;
         color:#ddd !important;
@@ -1528,6 +1670,12 @@ body{
         color:#b6c0c4 !important;
     }
 
+    .listen-btn{
+        height:26px !important;
+        padding:0 10px !important;
+        font-size:11px !important;
+    }
+
     .owner-actions{
         margin-top:10px !important;
         gap:6px !important;
@@ -1741,6 +1889,261 @@ body{
     }
 }
 
+
+/* ============================================================
+   音楽日記カレンダー
+   - 月別縦スクロール
+   - 投稿日のジャケットを丸く表示
+============================================================ */
+.calendar-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    max-width:900px;
+}
+
+.calendar-month{
+    background:#070808;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:22px;
+    padding:18px;
+}
+
+.calendar-month-title{
+    font-size:22px;
+    font-weight:900;
+    letter-spacing:-0.03em;
+    margin-bottom:14px;
+}
+
+.calendar-weekdays,
+.calendar-grid{
+    display:grid;
+    grid-template-columns:repeat(7, minmax(0,1fr));
+    gap:8px;
+}
+
+.calendar-weekday{
+    color:#9ca6ac;
+    font-size:12px;
+    font-weight:800;
+    text-align:center;
+    padding-bottom:2px;
+}
+
+.calendar-day{
+    appearance:none;
+    -webkit-appearance:none;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.025);
+    color:white;
+    min-height:86px;
+    border-radius:16px;
+    padding:8px 6px;
+    cursor:pointer;
+    font-family:inherit;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    gap:6px;
+    overflow:hidden;
+}
+
+.calendar-day:hover{
+    border-color:rgba(159,205,217,0.45);
+    background:rgba(159,205,217,0.08);
+}
+
+.calendar-day.empty{
+    opacity:0;
+    pointer-events:none;
+}
+
+.calendar-day-number{
+    font-size:12px;
+    font-weight:900;
+    color:#dce3e6;
+    line-height:1;
+}
+
+.calendar-day-covers{
+    min-height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:3px;
+}
+
+.calendar-cover{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1.5px solid rgba(255,255,255,0.28);
+    background:#111;
+}
+
+.calendar-more{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.10);
+    color:#edf8f9;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    font-weight:900;
+    border:1px solid rgba(255,255,255,0.16);
+}
+
+.calendar-day.has-posts{
+    border-color:rgba(159,205,217,0.24);
+}
+
+.calendar-day.selected{
+    border-color:#9fcdd9;
+    box-shadow:0 0 0 1px rgba(159,205,217,0.36) inset;
+    background:rgba(159,205,217,0.10);
+}
+
+.calendar-day-panel{
+    margin-top:16px;
+    border-top:1px solid rgba(255,255,255,0.10);
+    padding-top:14px;
+}
+
+.calendar-day-panel-title{
+    font-size:15px;
+    font-weight:900;
+    color:#edf8f9;
+    margin-bottom:10px;
+}
+
+.calendar-day-posts{
+    display:grid;
+    gap:10px;
+}
+
+.calendar-day-post{
+    display:grid;
+    grid-template-columns:52px minmax(0,1fr);
+    gap:10px;
+    align-items:center;
+    padding:9px;
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:14px;
+    background:rgba(255,255,255,0.025);
+    cursor:pointer;
+}
+
+.calendar-day-post:hover{
+    border-color:rgba(159,205,217,0.38);
+    background:rgba(159,205,217,0.08);
+}
+
+.calendar-day-post img{
+    width:52px;
+    height:52px;
+    border-radius:10px;
+    object-fit:cover;
+    background:#111;
+}
+
+.calendar-day-post-title{
+    font-size:14px;
+    font-weight:900;
+    line-height:1.25;
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.calendar-day-post-artist{
+    color:#9fcdd9;
+    font-size:12px;
+    font-weight:800;
+    margin-top:3px;
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+@media(max-width:900px){
+    .calendar-wrap{
+        gap:18px;
+    }
+
+    .calendar-month{
+        border-radius:20px;
+        padding:14px;
+        background:linear-gradient(135deg,#121415 0%,#090a0b 58%,#070808 100%);
+    }
+
+    .calendar-month-title{
+        font-size:20px;
+        margin-bottom:13px;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid{
+        gap:5px;
+    }
+
+    .calendar-weekday{
+        font-size:10px;
+    }
+
+    .calendar-day{
+        min-height:64px;
+        border-radius:13px;
+        padding:6px 3px;
+        gap:4px;
+    }
+
+    .calendar-day-number{
+        font-size:10px;
+    }
+
+    .calendar-cover,
+    .calendar-more{
+        width:24px;
+        height:24px;
+        font-size:9px;
+    }
+
+    .calendar-day-covers{
+        min-height:26px;
+        gap:2px;
+    }
+}
+
+@media(max-width:390px){
+    .calendar-month{
+        padding:12px;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid{
+        gap:4px;
+    }
+
+    .calendar-day{
+        min-height:58px;
+        border-radius:11px;
+    }
+
+    .calendar-cover,
+    .calendar-more{
+        width:22px;
+        height:22px;
+    }
+}
+
 </style>
 </head>
 
@@ -1749,8 +2152,6 @@ body{
 <div class="wrapper">
 
     <!-- PC用サイドバー -->
-    
-<!-- PC用サイドバー -->
 <nav class="sidebar">
     <div class="logo">Album Collection</div>
 
@@ -1763,10 +2164,7 @@ body{
     <a href="login.html">ログイン</a>
 </nav>
 
-
-
     <!-- スマホ用下部タブバー -->
-    
 <nav class="mobile-tabbar">
     <a href="index.html">
         <span class="icon">⌂</span>
@@ -1795,9 +2193,6 @@ body{
     </a>
 </nav>
 
-
-
-    <!-- PC / スマホ両方に表示される右下投稿ボタン -->
 <a href="editor.html" class="fab">＋</a>
 
     <main class="main">
@@ -1829,11 +2224,12 @@ body{
             </div>
         </div>
 
-      
-
         <div class="profile-content-tabs" id="profileContentTabs">
             <button class="profile-content-tab active" type="button" data-tab="posts">
                 投稿
+            </button>
+            <button class="profile-content-tab" type="button" data-tab="calendar">
+                カレンダー
             </button>
             <button class="profile-content-tab" type="button" data-tab="liked">
                 いいねしたもの
@@ -1844,6 +2240,15 @@ body{
 
     </main>
 
+</div>
+
+<div class="listen-sheet" id="listenSheet" onclick="closeListenMenu()">
+    <div class="listen-panel" onclick="event.stopPropagation();">
+        <div class="listen-panel-title">どこで聴きますか？</div>
+        <div class="listen-panel-subtitle" id="listenPanelSubtitle">サービスを選んでください</div>
+        <div class="listen-actions" id="listenActions"></div>
+        <button type="button" class="listen-close-btn" onclick="closeListenMenu()">閉じる</button>
+    </div>
 </div>
 
 <script type="module">
@@ -1912,6 +2317,9 @@ const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
 const sideProfileEditBtn = document.getElementById("sideProfileEditBtn");
 const myPageLink = document.getElementById("myPageLink");
 const profileContentTabs = document.getElementById("profileContentTabs");
+const listenSheet = document.getElementById("listenSheet");
+const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
+const listenActions = document.getElementById("listenActions");
 
 let currentUser = null;
 let profileDisplayName = "匿名ユーザー";
@@ -2086,6 +2494,306 @@ function escapeHTML(value){
 function isOwner(){
     return currentUser && uid && currentUser.uid === uid;
 }
+
+function isHttpUrl(value){
+    if(!value || typeof value !== "string"){
+        return false;
+    }
+
+    try{
+        const url = new URL(value);
+        return url.protocol === "https:" || url.protocol === "http:";
+    }catch(error){
+        return false;
+    }
+}
+
+function normalizeSpotifyType(value){
+    const type = String(value || "").toLowerCase();
+
+    if(type === "album"){
+        return "album";
+    }
+
+    if(type === "playlist"){
+        return "playlist";
+    }
+
+    if(type === "artist"){
+        return "artist";
+    }
+
+    return "track";
+}
+
+function getSpotifyUrlFromId(album){
+    const id = album?.spotifyId || album?.spotifyTrackId || album?.spotifyAlbumId || "";
+
+    if(!id){
+        return "";
+    }
+
+    const type = normalizeSpotifyType(album?.spotifyType || album?.type);
+    return `https://open.spotify.com/${type}/${encodeURIComponent(id)}`;
+}
+
+function getSpotifyUrlFromUri(album){
+    const uri =
+        album?.spotifyUri ||
+        album?.spotifyURI ||
+        album?.spotifyTrackUri ||
+        album?.spotifyAlbumUri ||
+        "";
+
+    if(!uri || typeof uri !== "string"){
+        return "";
+    }
+
+    const parts = uri.split(":");
+
+    if(parts.length < 3 || parts[0] !== "spotify"){
+        return "";
+    }
+
+    const type = normalizeSpotifyType(parts[1]);
+    const id = parts[2];
+
+    if(!id){
+        return "";
+    }
+
+    return `https://open.spotify.com/${type}/${encodeURIComponent(id)}`;
+}
+
+function getDirectMusicUrlForAlbum(album){
+    const candidates = [
+        album?.spotifyUrl,
+        album?.spotifyURL,
+        album?.spotifyLink,
+        album?.spotifyTrackUrl,
+        album?.spotifyTrackURL,
+        album?.spotifyAlbumUrl,
+        album?.spotifyAlbumURL,
+        album?.appleMusicUrl,
+        album?.appleMusicURL,
+        album?.youtubeMusicUrl,
+        album?.youtubeMusicURL,
+        album?.musicUrl,
+        album?.musicURL
+    ];
+
+    const directUrl = candidates.find(isHttpUrl);
+
+    if(directUrl){
+        return directUrl;
+    }
+
+    return getSpotifyUrlFromId(album) || getSpotifyUrlFromUri(album);
+}
+
+function getListenSearchQuery(album){
+    return [album?.title, album?.artist]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+}
+
+function buildServiceSearchUrl(serviceKey, queryText){
+    const q = encodeURIComponent(queryText || "");
+
+    if(!q){
+        return "";
+    }
+
+    if(serviceKey === "appleMusic"){
+        return `https://music.apple.com/search?term=${q}`;
+    }
+
+    if(serviceKey === "lineMusic"){
+        return `https://music.line.me/webapp/search?query=${q}`;
+    }
+
+    if(serviceKey === "youtubeMusic"){
+        return `https://music.youtube.com/search?q=${q}`;
+    }
+
+    if(serviceKey === "amazonMusic"){
+        return `https://music.amazon.co.jp/search/${q}`;
+    }
+
+    if(serviceKey === "awa"){
+        return `https://s.awa.fm/search?q=${q}`;
+    }
+
+    if(serviceKey === "spotify"){
+        return `https://open.spotify.com/search/${q}`;
+    }
+
+    return "";
+}
+
+function getListenTitle(album){
+    const title = album?.title || "この音楽";
+    const artist = album?.artist ? ` / ${album.artist}` : "";
+    return `${title}${artist}`;
+}
+
+function getAlbumItemById(targetAlbumId){
+    const source = activeProfileTab === "liked" ? likedAlbums : profileAlbums;
+    return source.find(album => album.id === targetAlbumId) || null;
+}
+
+function mergeUniqueServices(services){
+    const seen = new Set();
+    const result = [];
+
+    services.forEach((service) => {
+        if(!service?.url){
+            return;
+        }
+
+        const uniqueKey = service.key || service.url;
+
+        if(seen.has(uniqueKey)){
+            return;
+        }
+
+        seen.add(uniqueKey);
+        result.push(service);
+    });
+
+    return result;
+}
+
+function closeListenMenu(){
+    if(listenSheet){
+        listenSheet.classList.remove("open");
+    }
+}
+
+function openListenService(index){
+    const services = window.currentListenServices || [];
+    const service = services[index];
+
+    if(!service?.url){
+        return;
+    }
+
+    window.open(service.url, "_blank", "noopener,noreferrer");
+    closeListenMenu();
+}
+
+function renderListenActions(services){
+    if(!listenActions){
+        return;
+    }
+
+    if(!services || services.length === 0){
+        listenActions.innerHTML = `
+            <button type="button" class="listen-action-btn" disabled>
+                <span class="listen-action-name">
+                    <span class="listen-action-icon">!</span>
+                    利用できるリンクが見つかりませんでした
+                </span>
+            </button>
+        `;
+        return;
+    }
+
+    listenActions.innerHTML = services.map((service, index) => `
+        <button
+            type="button"
+            class="listen-action-btn"
+            onclick="event.stopPropagation(); openListenService(${index});"
+        >
+            <span class="listen-action-name">
+                <span class="listen-action-icon">${escapeHTML(service.icon || "♪")}</span>
+                ${escapeHTML(service.name)}
+            </span>
+            <span class="listen-action-arrow">↗</span>
+        </button>
+    `).join("");
+
+    window.currentListenServices = services;
+}
+
+function openListenMenu(albumId){
+    const album = getAlbumItemById(albumId);
+
+    if(!album){
+        return;
+    }
+
+    const directUrl = getDirectMusicUrlForAlbum(album);
+    const queryText = getListenSearchQuery(album);
+
+    if(listenSheet){
+        listenSheet.classList.add("open");
+    }
+
+    if(listenPanelSubtitle){
+        listenPanelSubtitle.textContent = getListenTitle(album);
+    }
+
+    const services = [];
+
+    if(directUrl){
+        services.push({
+            key:"spotify",
+            name:"Spotifyで開く",
+            icon:"▶",
+            url:directUrl
+        });
+    }else if(queryText){
+        services.push({
+            key:"spotifySearch",
+            name:"Spotifyで検索",
+            icon:"▶",
+            url:buildServiceSearchUrl("spotify", queryText)
+        });
+    }
+
+    if(queryText){
+        services.push(
+            {
+                key:"appleMusic",
+                name:"Apple Musicで検索",
+                icon:"♫",
+                url:buildServiceSearchUrl("appleMusic", queryText)
+            },
+            {
+                key:"lineMusic",
+                name:"LINE MUSICで検索",
+                icon:"♪",
+                url:buildServiceSearchUrl("lineMusic", queryText)
+            },
+            {
+                key:"youtubeMusic",
+                name:"YouTube Musicで検索",
+                icon:"▶",
+                url:buildServiceSearchUrl("youtubeMusic", queryText)
+            },
+            {
+                key:"amazonMusic",
+                name:"Amazon Musicで検索",
+                icon:"a",
+                url:buildServiceSearchUrl("amazonMusic", queryText)
+            },
+            {
+                key:"awa",
+                name:"AWAで検索",
+                icon:"A",
+                url:buildServiceSearchUrl("awa", queryText)
+            }
+        );
+    }
+
+    renderListenActions(mergeUniqueServices(services));
+}
+
+window.openListenMenu = openListenMenu;
+window.closeListenMenu = closeListenMenu;
+window.openListenService = openListenService;
 
 function meter(left, right, value){
     value = Number(value) || 0;
@@ -2303,7 +3011,11 @@ function getPostTime(value){
 }
 
 function setProfileTab(tab){
-    activeProfileTab = tab === "liked" ? "liked" : "posts";
+    if(tab === "liked" || tab === "calendar"){
+        activeProfileTab = tab;
+    }else{
+        activeProfileTab = "posts";
+    }
 
     if(profileContentTabs){
         profileContentTabs.querySelectorAll(".profile-content-tab").forEach((button) => {
@@ -2405,6 +3117,13 @@ function albumCardHTML(album, options = {}){
                      data-album-id="${escapeHTML(albumId)}">
                     コメント 0件
                 </div>
+
+                <button
+                    type="button"
+                    class="listen-btn"
+                    onclick="event.stopPropagation(); openListenMenu('${escapeHTML(albumId)}')">
+                    ▶ 聴く
+                </button>
             </div>
 
             ${ownerActions}
@@ -2458,8 +3177,214 @@ document.addEventListener("click", (event) => {
     location.href = `./search.html?q=${encodeURIComponent(keyword)}`;
 }, true);
 
+
+function getPostDateObject(value){
+    if(!value){
+        return null;
+    }
+
+    let date = null;
+
+    if(typeof value.toDate === "function"){
+        date = value.toDate();
+    }else if(value instanceof Date){
+        date = value;
+    }else if(typeof value === "number"){
+        date = new Date(value);
+    }else if(typeof value === "string"){
+        const parsed = new Date(value);
+        if(!Number.isNaN(parsed.getTime())){
+            date = parsed;
+        }
+    }else if(typeof value.seconds === "number"){
+        date = new Date(value.seconds * 1000);
+    }
+
+    if(!date || Number.isNaN(date.getTime())){
+        return null;
+    }
+
+    return date;
+}
+
+function pad2(value){
+    return String(value).padStart(2, "0");
+}
+
+function getDateKeyFromDate(date){
+    return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+}
+
+function getMonthKeyFromDate(date){
+    return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}`;
+}
+
+function formatCalendarMonthTitle(monthKey){
+    const [year, month] = monthKey.split("-");
+    return `${year}年${Number(month)}月`;
+}
+
+function formatCalendarDayTitle(dateKey){
+    const [year, month, day] = dateKey.split("-");
+    return `${year}年${Number(month)}月${Number(day)}日`;
+}
+
+function getCalendarAlbums(){
+    return profileAlbums
+        .map((album) => {
+            const date = getPostDateObject(album.createdAt || album.updatedAt);
+            return date ? { ...album, __calendarDate: date } : null;
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.__calendarDate.getTime() - a.__calendarDate.getTime());
+}
+
+function getCalendarDayAlbums(dateKey){
+    return getCalendarAlbums().filter((album) => {
+        return getDateKeyFromDate(album.__calendarDate) === dateKey;
+    });
+}
+
+function openCalendarDay(dateKey){
+    const posts = getCalendarDayAlbums(dateKey);
+    const panel = document.querySelector(`[data-calendar-panel="${dateKey}"]`);
+
+    document.querySelectorAll(".calendar-day").forEach((button) => {
+        button.classList.toggle("selected", button.dataset.dateKey === dateKey);
+    });
+
+    document.querySelectorAll(".calendar-day-panel").forEach((element) => {
+        element.innerHTML = "";
+    });
+
+    if(!panel){
+        return;
+    }
+
+    panel.innerHTML = `
+        <div class="calendar-day-panel-title">
+            ${escapeHTML(formatCalendarDayTitle(dateKey))}の投稿 ${posts.length}件
+        </div>
+        <div class="calendar-day-posts">
+            ${posts.map((album) => `
+                <div class="calendar-day-post" onclick="location.href='detail.html?id=${escapeHTML(album.id)}'">
+                    <img src="${escapeHTML(album.cover || "")}" alt="">
+                    <div>
+                        <div class="calendar-day-post-title">${escapeHTML(album.title || "")}</div>
+                        <div class="calendar-day-post-artist">${escapeHTML(album.artist || "")}</div>
+                    </div>
+                </div>
+            `).join("")}
+        </div>
+    `;
+}
+
+window.openCalendarDay = openCalendarDay;
+
+function renderCalendarView(){
+    if(!isOwner()){
+        albumGrid.innerHTML = `<div class="empty">カレンダーは本人だけが確認できます。</div>`;
+        return;
+    }
+
+    const albums = getCalendarAlbums();
+
+    if(albums.length === 0){
+        albumGrid.innerHTML = `<div class="empty">まだカレンダーに表示できる投稿がありません。</div>`;
+        return;
+    }
+
+    const postsByDate = new Map();
+    const monthKeys = [];
+
+    albums.forEach((album) => {
+        const dateKey = getDateKeyFromDate(album.__calendarDate);
+        const monthKey = getMonthKeyFromDate(album.__calendarDate);
+
+        if(!postsByDate.has(dateKey)){
+            postsByDate.set(dateKey, []);
+        }
+
+        postsByDate.get(dateKey).push(album);
+
+        if(!monthKeys.includes(monthKey)){
+            monthKeys.push(monthKey);
+        }
+    });
+
+    const weekdayLabels = ["日","月","火","水","木","金","土"];
+
+    const monthHTML = monthKeys.map((monthKey) => {
+        const [yearText, monthText] = monthKey.split("-");
+        const year = Number(yearText);
+        const monthIndex = Number(monthText) - 1;
+        const firstDate = new Date(year, monthIndex, 1);
+        const lastDate = new Date(year, monthIndex + 1, 0);
+        const startBlank = firstDate.getDay();
+        const totalDays = lastDate.getDate();
+
+        let cells = "";
+
+        for(let i = 0; i < startBlank; i++){
+            cells += `<div class="calendar-day empty"></div>`;
+        }
+
+        for(let day = 1; day <= totalDays; day++){
+            const date = new Date(year, monthIndex, day);
+            const dateKey = getDateKeyFromDate(date);
+            const posts = postsByDate.get(dateKey) || [];
+            const hasPosts = posts.length > 0;
+            const covers = posts.slice(0, 3).map((album) => `
+                <img class="calendar-cover" src="${escapeHTML(album.cover || "")}" alt="">
+            `).join("");
+            const more = posts.length > 3
+                ? `<span class="calendar-more">+${posts.length - 3}</span>`
+                : "";
+
+            cells += `
+                <button
+                    type="button"
+                    class="calendar-day ${hasPosts ? "has-posts" : ""}"
+                    data-date-key="${escapeHTML(dateKey)}"
+                    ${hasPosts ? `onclick="openCalendarDay('${escapeHTML(dateKey)}')"` : "disabled"}
+                >
+                    <span class="calendar-day-number">${day}</span>
+                    <span class="calendar-day-covers">
+                        ${covers}
+                        ${more}
+                    </span>
+                </button>
+            `;
+        }
+
+        return `
+            <section class="calendar-month">
+                <div class="calendar-month-title">${escapeHTML(formatCalendarMonthTitle(monthKey))}</div>
+                <div class="calendar-weekdays">
+                    ${weekdayLabels.map(label => `<div class="calendar-weekday">${label}</div>`).join("")}
+                </div>
+                <div class="calendar-grid">
+                    ${cells}
+                </div>
+                <div class="calendar-day-panel" data-calendar-panel=""></div>
+                ${Array.from(postsByDate.keys())
+                    .filter(dateKey => dateKey.startsWith(monthKey))
+                    .map(dateKey => `<div class="calendar-day-panel" data-calendar-panel="${escapeHTML(dateKey)}"></div>`)
+                    .join("")}
+            </section>
+        `;
+    }).join("");
+
+    albumGrid.innerHTML = `<div class="calendar-wrap">${monthHTML}</div>`;
+}
+
 function renderAlbums(){
     if(!uid) return;
+
+    if(activeProfileTab === "calendar"){
+        renderCalendarView();
+        return;
+    }
 
     const owner = isOwner();
     const items = activeProfileTab === "liked" ? likedAlbums : profileAlbums;
