@@ -945,6 +945,18 @@ button:disabled{
             <div class="section-title">Song Form</div>
 
             <div class="input-group">
+                <label>Spotify URL（Odesli変換用）</label>
+                <input
+                    id="spotifyUrlInput"
+                    type="text"
+                    placeholder="https://open.spotify.com/track/... または https://open.spotify.com/album/..."
+                >
+                <div class="keyword-help">
+                    Spotify検索で曲を選ぶと自動入力されます。ここに正式なSpotify URLが入っていると、「聴く」ボタンからApple MusicやYouTube Musicなどのリンクを取得できます。
+                </div>
+            </div>
+
+            <div class="input-group">
                 <label>ジャケット画像URL</label>
                 <input id="coverInput" type="text" placeholder="https://...">
             </div>
@@ -1312,6 +1324,7 @@ const spotifySearchBtn = document.getElementById("spotifySearchBtn");
 const spotifyStatus = document.getElementById("spotifyStatus");
 const spotifySelectedBox = document.getElementById("spotifySelectedBox");
 const spotifyResults = document.getElementById("spotifyResults");
+const spotifyUrlInput = document.getElementById("spotifyUrlInput");
 
 const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
@@ -1399,6 +1412,73 @@ function escapeHTML(value){
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+}
+
+function isSpotifyUrl(value){
+    if(!value || typeof value !== "string"){
+        return false;
+    }
+
+    try{
+        const url = new URL(value.trim());
+        const host = url.hostname.toLowerCase();
+
+        return (
+            host === "open.spotify.com" ||
+            host.endsWith(".spotify.com") ||
+            host === "spotify.link" ||
+            host.endsWith(".spotify.link")
+        );
+    }catch(error){
+        return false;
+    }
+}
+
+function getSpotifyUrlFromTrack(track){
+    if(!track){
+        return "";
+    }
+
+    const candidates = [
+        track.spotifyUrl,
+        track.spotifyURL,
+        track.externalUrl,
+        track.externalURL,
+        track.external_url,
+        track.url,
+        track.href,
+        track.link,
+        track.openUrl,
+        track.openURL,
+        track.spotify?.external_urls?.spotify,
+        track.spotify?.externalUrls?.spotify,
+        track.external_urls?.spotify,
+        track.externalUrls?.spotify
+    ];
+
+    const foundUrl = candidates.find(isSpotifyUrl);
+
+    if(foundUrl){
+        return String(foundUrl).trim();
+    }
+
+    const trackId = track.spotifyId || track.id || "";
+
+    if(trackId && (track.type || "track") === "track"){
+        return `https://open.spotify.com/track/${encodeURIComponent(trackId)}`;
+    }
+
+    return "";
+}
+
+function getCurrentSpotifyUrl(){
+    const manualUrl = spotifyUrlInput ? spotifyUrlInput.value.trim() : "";
+
+    if(manualUrl){
+        return manualUrl;
+    }
+
+    return getSpotifyUrlFromTrack(selectedSpotifyTrack);
 }
 
 function showError(message){
@@ -1657,9 +1737,9 @@ function getFormData(){
         complex: Number(complexInput.value),
         hope: Number(hopeInput.value),
         world: Number(worldInput.value),
-        spotifyId: selectedSpotifyTrack?.spotifyId || "",
-        spotifyUrl: selectedSpotifyTrack?.spotifyUrl || "",
-        spotifyUri: selectedSpotifyTrack?.spotifyUri || "",
+        spotifyId: selectedSpotifyTrack?.spotifyId || selectedSpotifyTrack?.id || "",
+        spotifyUrl: getCurrentSpotifyUrl(),
+        spotifyUri: selectedSpotifyTrack?.spotifyUri || selectedSpotifyTrack?.uri || "",
         spotifyType: selectedSpotifyTrack?.type || "track",
         spotifyAlbumId: selectedSpotifyTrack?.albumId || "",
         spotifyAlbumTitle: selectedSpotifyTrack?.albumTitle || "",
@@ -1692,7 +1772,11 @@ function setFormData(album){
     hopeInput.value = album.hope || 3;
     worldInput.value = album.world || 3;
 
-    if(album.spotifyId){
+    if(spotifyUrlInput){
+        spotifyUrlInput.value = album.spotifyUrl || "";
+    }
+
+    if(album.spotifyId || album.spotifyUrl){
         selectedSpotifyTrack = {
             spotifyId: album.spotifyId || "",
             spotifyUrl: album.spotifyUrl || "",
@@ -1741,6 +1825,11 @@ function clearForm(){
     syncKeywordCandidates();
     isPublicInput.value = "true";
     selectedSpotifyTrack = null;
+
+    if(spotifyUrlInput){
+        spotifyUrlInput.value = "";
+    }
+
     updateSpotifySelectedBox();
 
     darknessInput.value = 3;
@@ -1759,16 +1848,27 @@ function setSpotifyStatus(message){
 }
 
 function updateSpotifySelectedBox(){
-    if(!selectedSpotifyTrack || !selectedSpotifyTrack.spotifyId){
+    const currentSpotifyUrl = getCurrentSpotifyUrl();
+
+    if(!selectedSpotifyTrack && !currentSpotifyUrl){
         spotifySelectedBox.style.display = "none";
         spotifySelectedBox.innerHTML = "";
         return;
     }
 
     spotifySelectedBox.style.display = "block";
+
+    if(selectedSpotifyTrack){
+        spotifySelectedBox.innerHTML = `
+            Spotify選択中：${escapeHTML(selectedSpotifyTrack.title || titleInput.value)}
+            / ${escapeHTML(selectedSpotifyTrack.artist || artistInput.value)}
+            ${currentSpotifyUrl ? `<br>保存URL：${escapeHTML(currentSpotifyUrl)}` : ""}
+        `;
+        return;
+    }
+
     spotifySelectedBox.innerHTML = `
-        Spotify選択中：${escapeHTML(selectedSpotifyTrack.title || titleInput.value)}
-        / ${escapeHTML(selectedSpotifyTrack.artist || artistInput.value)}
+        Spotify URL入力中：${escapeHTML(currentSpotifyUrl)}
     `;
 }
 
@@ -1801,14 +1901,31 @@ function renderSpotifyResults(tracks){
 
         const selectBtn = card.querySelector(".spotify-select-btn");
         selectBtn.addEventListener("click", () => {
-            selectedSpotifyTrack = track;
+            const spotifyUrl = getSpotifyUrlFromTrack(track);
+
+            selectedSpotifyTrack = {
+                ...track,
+                spotifyId: track.spotifyId || track.id || "",
+                spotifyUrl,
+                spotifyUri: track.spotifyUri || track.uri || "",
+                type: track.type || "track"
+            };
 
             coverInput.value = track.cover || "";
             titleInput.value = track.title || "";
             artistInput.value = track.artist || "";
 
+            if(spotifyUrlInput){
+                spotifyUrlInput.value = spotifyUrl;
+            }
+
             updateSpotifySelectedBox();
-            setSpotifyStatus("Spotifyの曲情報をフォームに反映しました。紹介文・キーワード・メーターを入力して保存してください。");
+
+            if(spotifyUrl){
+                setSpotifyStatus("Spotifyの正式URLを保存対象にしました。これでOdesliから各サブスクのリンクを取得できます。");
+            }else{
+                setSpotifyStatus("曲情報を反映しました。ただしSpotify URLを取得できませんでした。Spotify URL欄にリンクを手動で貼ってください。");
+            }
         });
 
         spotifyResults.appendChild(card);
@@ -1847,6 +1964,10 @@ async function searchSpotifyTracks(){
     }finally{
         spotifySearchBtn.disabled = false;
     }
+}
+
+if(spotifyUrlInput){
+    spotifyUrlInput.addEventListener("input", updateSpotifySelectedBox);
 }
 
 spotifySearchBtn.addEventListener("click", searchSpotifyTracks);
@@ -1916,6 +2037,13 @@ saveBtn.addEventListener("click", async () => {
             return;
         }
 
+        const spotifyUrlValue = spotifyUrlInput ? spotifyUrlInput.value.trim() : "";
+
+        if(spotifyUrlValue && !isSpotifyUrl(spotifyUrlValue)){
+            alert("Spotify URLは https://open.spotify.com/... または https://spotify.link/... の形式で入力してください");
+            return;
+        }
+
         const data = getFormData();
 
         if(editingId){
@@ -1965,6 +2093,11 @@ function clearNewPostFormOnly(){
     syncKeywordCandidates();
     isPublicInput.value = "true";
     selectedSpotifyTrack = null;
+
+    if(spotifyUrlInput){
+        spotifyUrlInput.value = "";
+    }
+
     updateSpotifySelectedBox();
     spotifySearchInput.value = "";
     spotifyResults.innerHTML = "";
