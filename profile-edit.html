@@ -159,6 +159,110 @@ input:focus{
     border-color:#6fa8dc;
 }
 
+textarea{
+    width:100%;
+    min-height:110px;
+    resize:vertical;
+    padding:14px;
+    margin-bottom:20px;
+    background:#111;
+    color:white;
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:10px;
+    font-size:16px;
+    font-family:inherit;
+    line-height:1.65;
+}
+
+textarea:focus{
+    outline:none;
+    border-color:#6fa8dc;
+}
+
+.form-help{
+    color:#888;
+    font-size:12.5px;
+    line-height:1.6;
+    margin:-12px 0 18px;
+}
+
+.profile-section-title{
+    color:#ffffff;
+    font-size:18px;
+    font-weight:800;
+    margin:26px 0 14px;
+    padding-top:22px;
+    border-top:1px solid rgba(255,255,255,0.10);
+}
+
+.visibility-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:13px 14px;
+    margin:-8px 0 20px;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:12px;
+}
+
+.visibility-text{
+    min-width:0;
+}
+
+.visibility-title{
+    color:#fff;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:3px;
+}
+
+.visibility-help{
+    color:#888;
+    font-size:12px;
+    line-height:1.45;
+}
+
+.toggle-label{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:#ddd;
+    font-size:13px;
+    font-weight:800;
+    margin:0;
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.toggle-label input{
+    width:18px;
+    height:18px;
+    margin:0;
+    accent-color:#6fa8dc;
+}
+
+@media(max-width:900px){
+    textarea{
+        font-size:15px;
+        padding:13px;
+        min-height:100px;
+    }
+
+    .profile-section-title{
+        font-size:17px;
+        margin-top:22px;
+    }
+
+    .visibility-row{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:10px;
+    }
+}
+
+
 .button-row{
     display:flex;
     gap:10px;
@@ -438,6 +542,42 @@ button:disabled{
     <label>生年月日</label>
     <input id="birthdate" type="date">
 
+    <div class="profile-section-title">プロフィール情報</div>
+
+    <label>自己紹介</label>
+    <textarea id="bioInput" maxlength="300" placeholder="例：邦ロックと夜に聴く音楽が好きです。"></textarea>
+    <div class="form-help">300文字以内。プロフィール画面に表示されます。</div>
+
+    <label>好きなアーティスト</label>
+    <input id="favoriteArtistsInput" type="text" placeholder="例：クリープハイプ、My Hair is Bad、藤井風">
+    <div class="form-help">カンマ・読点・改行区切りで保存されます。おすすめ順にも使えます。</div>
+
+    <div class="visibility-row">
+        <div class="visibility-text">
+            <div class="visibility-title">好きなアーティストを公開</div>
+            <div class="visibility-help">オフにすると、プロフィール画面では非表示にできます。</div>
+        </div>
+        <label class="toggle-label">
+            <input id="favoriteArtistsPublicInput" type="checkbox" checked>
+            公開
+        </label>
+    </div>
+
+    <label>好きなタグ</label>
+    <input id="favoriteTagsInput" type="text" placeholder="例：夜、青春、失恋、邦ロック、疾走感">
+    <div class="form-help">カンマ・読点・#・改行区切りで保存されます。おすすめ順にも使えます。</div>
+
+    <div class="visibility-row">
+        <div class="visibility-text">
+            <div class="visibility-title">好きなタグを公開</div>
+            <div class="visibility-help">オフにすると、プロフィール画面では非表示にできます。</div>
+        </div>
+        <label class="toggle-label">
+            <input id="favoriteTagsPublicInput" type="checkbox" checked>
+            公開
+        </label>
+    </div>
+
     <div class="button-row">
         <button id="saveBtn">保存する</button>
         <button class="sub-btn" id="backBtn">マイページへ戻る</button>
@@ -508,6 +648,11 @@ const avatarFileInput = document.getElementById("avatarFile");
 const selectedFileName = document.getElementById("selectedFileName");
 const nicknameInput = document.getElementById("nickname");
 const birthdateInput = document.getElementById("birthdate");
+const bioInput = document.getElementById("bioInput");
+const favoriteArtistsInput = document.getElementById("favoriteArtistsInput");
+const favoriteTagsInput = document.getElementById("favoriteTagsInput");
+const favoriteArtistsPublicInput = document.getElementById("favoriteArtistsPublicInput");
+const favoriteTagsPublicInput = document.getElementById("favoriteTagsPublicInput");
 const avatarPreview = document.getElementById("avatarPreview");
 const saveBtn = document.getElementById("saveBtn");
 const backBtn = document.getElementById("backBtn");
@@ -525,6 +670,24 @@ let selectedPreviewObjectUrl = "";
 /* =====================
    Utility
 ===================== */
+
+
+function normalizeProfileList(value){
+    if(Array.isArray(value)){
+        return value
+            .map(item => String(item ?? "").trim().replace(/^#+/, ""))
+            .filter(Boolean);
+    }
+
+    return String(value || "")
+        .split(/[,\n、#]+/)
+        .map(item => item.trim().replace(/^#+/, ""))
+        .filter(Boolean);
+}
+
+function stringifyProfileList(value){
+    return normalizeProfileList(value).join("、");
+}
 
 function setDefaultAvatar(){
     avatarPreview.src =
@@ -717,6 +880,11 @@ onAuthStateChanged(auth, async (user) => {
         currentIconUrl = iconUrl;
         nicknameInput.value = data.nickname || data.userName || data.displayName || "";
         birthdateInput.value = data.birthdate || "";
+        bioInput.value = data.bio || data.profileBio || data.introduction || "";
+        favoriteArtistsInput.value = stringifyProfileList(data.favoriteArtists || data.favoriteArtist || "");
+        favoriteTagsInput.value = stringifyProfileList(data.favoriteTags || data.favoriteTag || "");
+        favoriteArtistsPublicInput.checked = data.favoriteArtistsPublic !== false;
+        favoriteTagsPublicInput.checked = data.favoriteTagsPublic !== false;
 
         if(iconUrl){
             avatarPreview.src = iconUrl;
@@ -739,6 +907,11 @@ onAuthStateChanged(auth, async (user) => {
             photoURL: "",
             iconURL: "",
             birthdate: "",
+            bio: "",
+            favoriteArtists: [],
+            favoriteTags: [],
+            favoriteArtistsPublic: true,
+            favoriteTagsPublic: true,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp()
         }, { merge:true });
@@ -754,9 +927,19 @@ saveBtn.addEventListener("click", async () => {
 
     const nickname = nicknameInput.value.trim();
     const birthdate = birthdateInput.value;
+    const bio = bioInput.value.trim();
+    const favoriteArtists = normalizeProfileList(favoriteArtistsInput.value);
+    const favoriteTags = normalizeProfileList(favoriteTagsInput.value);
+    const favoriteArtistsPublic = favoriteArtistsPublicInput.checked;
+    const favoriteTagsPublic = favoriteTagsPublicInput.checked;
 
     if(!nickname){
         message.textContent = "ニックネームを入力してください。";
+        return;
+    }
+
+    if(bio.length > 300){
+        message.textContent = "自己紹介は300文字以内にしてください。";
         return;
     }
 
@@ -785,6 +968,13 @@ saveBtn.addEventListener("click", async () => {
             avatarUrl: iconUrl,
             profileImageUrl: iconUrl,
             birthdate: birthdate,
+            bio: bio,
+            profileBio: bio,
+            introduction: bio,
+            favoriteArtists: favoriteArtists,
+            favoriteTags: favoriteTags,
+            favoriteArtistsPublic: favoriteArtistsPublic,
+            favoriteTagsPublic: favoriteTagsPublic,
             updatedAt: serverTimestamp()
         }, { merge:true });
 
