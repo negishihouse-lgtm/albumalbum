@@ -2105,6 +2105,8 @@ const listenSheet = document.getElementById("listenSheet");
 const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
 const listenActions = document.getElementById("listenActions");
 
+const ODESLI_PROXY_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
+
 let currentFeedMode = "recommend";
 let allAlbums = [];
 let followingIds = new Set();
@@ -2300,43 +2302,100 @@ function getShareText(albumId){
     return `${title}${artist}`;
 }
 
-function getSpotifyUrlFromIdOrUri(album){
-    const rawType = String(album?.spotifyType || "track").toLowerCase();
-    const type = rawType.includes("album") ? "album" : "track";
-
-    if(album?.spotifyId){
-        return `https://open.spotify.com/${type}/${encodeURIComponent(album.spotifyId)}`;
+function isHttpUrl(value){
+    if(!value || typeof value !== "string"){
+        return false;
     }
 
-    const uri = album?.spotifyUri || album?.spotifyURI || "";
-    const match = String(uri).match(/^spotify:(track|album):([^?]+)/i);
+    try{
+        const url = new URL(value);
+        return url.protocol === "https:" || url.protocol === "http:";
+    }catch(error){
+        return false;
+    }
+}
 
-    if(match){
-        return `https://open.spotify.com/${match[1].toLowerCase()}/${encodeURIComponent(match[2])}`;
+function normalizeSpotifyType(value){
+    const type = String(value || "").toLowerCase();
+
+    if(type === "album"){
+        return "album";
     }
 
-    return "";
+    if(type === "playlist"){
+        return "playlist";
+    }
+
+    if(type === "artist"){
+        return "artist";
+    }
+
+    return "track";
+}
+
+function getSpotifyUrlFromId(album){
+    const id = album?.spotifyId || album?.spotifyTrackId || album?.spotifyAlbumId || "";
+
+    if(!id){
+        return "";
+    }
+
+    const type = normalizeSpotifyType(album?.spotifyType || album?.type);
+    return `https://open.spotify.com/${type}/${encodeURIComponent(id)}`;
+}
+
+function getSpotifyUrlFromUri(album){
+    const uri =
+        album?.spotifyUri ||
+        album?.spotifyURI ||
+        album?.spotifyTrackUri ||
+        album?.spotifyAlbumUri ||
+        "";
+
+    if(!uri || typeof uri !== "string"){
+        return "";
+    }
+
+    const parts = uri.split(":");
+
+    if(parts.length < 3 || parts[0] !== "spotify"){
+        return "";
+    }
+
+    const type = normalizeSpotifyType(parts[1]);
+    const id = parts[2];
+
+    if(!id){
+        return "";
+    }
+
+    return `https://open.spotify.com/${type}/${encodeURIComponent(id)}`;
 }
 
 function getDirectMusicUrlForAlbum(album){
-    const savedUrl = (
-        album?.spotifyUrl ||
-        album?.spotifyURL ||
-        album?.spotifyLink ||
-        album?.spotifyTrackUrl ||
-        album?.spotifyTrackURL ||
-        album?.spotifyAlbumUrl ||
-        album?.spotifyAlbumURL ||
-        album?.appleMusicUrl ||
-        album?.appleMusicURL ||
-        album?.youtubeMusicUrl ||
-        album?.youtubeMusicURL ||
-        album?.musicUrl ||
-        album?.musicURL ||
-        ""
-    );
+    const candidates = [
+        album?.spotifyUrl,
+        album?.spotifyURL,
+        album?.spotifyLink,
+        album?.spotifyTrackUrl,
+        album?.spotifyTrackURL,
+        album?.spotifyAlbumUrl,
+        album?.spotifyAlbumURL,
+        album?.appleMusicUrl,
+        album?.appleMusicURL,
+        album?.youtubeMusicUrl,
+        album?.youtubeMusicURL,
+        album?.musicUrl,
+        album?.musicURL
+    ];
 
-    return savedUrl || getSpotifyUrlFromIdOrUri(album);
+    const directUrl = candidates.find(isHttpUrl);
+
+    if(directUrl){
+        return directUrl;
+    }
+
+    return getSpotifyUrlFromId(album) || getSpotifyUrlFromUri(album);
 }
 
 function getSpotifySearchUrlForAlbum(album){
@@ -2476,7 +2535,7 @@ async function openListenMenu(albumId){
     }
 
     try{
-        const apiUrl = `https://api.song.link/v1-alpha.1/links?url=${encodeURIComponent(directUrl)}&userCountry=JP`;
+        const apiUrl = `${ODESLI_PROXY_BASE}/odesli?url=${encodeURIComponent(directUrl)}`;
         const res = await fetch(apiUrl);
 
         if(!res.ok){
