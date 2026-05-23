@@ -1952,6 +1952,86 @@ a{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   ホーム画面：並び替えUI
+   - おすすめ順 / 新着順 / 人気順
+   - PCはタイトル右、スマホはタイトル下に自然に配置
+============================================================ */
+.home-sortbar{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:9px;
+    flex-wrap:nowrap;
+}
+
+.sort-label{
+    color:#aab3b8;
+    font-size:12px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.sort-select{
+    appearance:none;
+    -webkit-appearance:none;
+    color:#ffffff;
+    background:
+        linear-gradient(45deg, transparent 50%, #dce3e6 50%) calc(100% - 17px) 50% / 6px 6px no-repeat,
+        linear-gradient(135deg, #dce3e6 50%, transparent 50%) calc(100% - 12px) 50% / 6px 6px no-repeat,
+        rgba(255,255,255,0.065);
+    border:1px solid rgba(255,255,255,0.16);
+    border-radius:999px;
+    padding:10px 34px 10px 14px;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:850;
+    line-height:1;
+    outline:none;
+    cursor:pointer;
+}
+
+.sort-select:hover{
+    border-color:rgba(159,205,217,0.42);
+    background-color:rgba(159,205,217,0.10);
+}
+
+.sort-select:focus{
+    border-color:rgba(159,205,217,0.65);
+    box-shadow:0 0 0 3px rgba(159,205,217,0.12);
+}
+
+.sort-select option{
+    background:#111;
+    color:#fff;
+}
+
+@media(max-width:900px){
+    .topbar{
+        display:block !important;
+    }
+
+    .home-sortbar{
+        justify-content:flex-start;
+        margin-top:14px;
+        margin-bottom:4px;
+    }
+
+    .sort-label{
+        font-size:12px;
+    }
+
+    .sort-select{
+        max-width:100%;
+        font-size:13px;
+        padding-top:9px;
+        padding-bottom:9px;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -2009,7 +2089,17 @@ a{
 
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
-    <div style="display:flex; gap:12px; flex-wrap:wrap;"></div>
+
+    <div class="home-sortbar">
+        <label class="sort-label" for="sortSelect">並び替え</label>
+        <select id="sortSelect" class="sort-select">
+            <option value="recommend">おすすめ順</option>
+            <option value="new">新着順</option>
+            <option value="popular_24h">人気順：24時間</option>
+            <option value="popular_7d">人気順：7日間</option>
+            <option value="popular_all">人気順：全期間</option>
+        </select>
+    </div>
 </div>
 
 <div class="feed-swipe" id="feedSwipe">
@@ -2105,6 +2195,7 @@ const shareToast = document.getElementById("shareToast");
 const listenSheet = document.getElementById("listenSheet");
 const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
 const listenActions = document.getElementById("listenActions");
+const sortSelect = document.getElementById("sortSelect");
 
 let currentFeedMode = "recommend";
 let allAlbums = [];
@@ -2114,13 +2205,16 @@ let touchStartX = 0;
 let touchStartY = 0;
 
 let currentUser = null;
+let currentUserProfile = null;
+let currentSortMode = "recommend";
 let allLikes = [];
 let allComments = [];
 const userProfileCache = new Map();
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     updateMobileMyPageTab(user);
     currentUser = user;
+    currentUserProfile = await getCurrentUserProfile(user);
     setupFollowingListener(user);
 
     const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
@@ -2166,6 +2260,24 @@ function getUserDisplayNameFromData(data){
         data.name ||
         ""
     );
+}
+
+async function getCurrentUserProfile(user){
+    if(!user){
+        return null;
+    }
+
+    try{
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+
+        if(userSnap.exists()){
+            return userSnap.data();
+        }
+    }catch(error){
+        console.warn("自分のプロフィール取得に失敗しました", error);
+    }
+
+    return null;
 }
 
 async function getPosterProfileForAlbum(album){
@@ -3419,7 +3531,11 @@ onSnapshot(collection(db, "likes"), (snapshot) => {
         allLikes.push(docSnap.data());
     });
 
-    updateLikeDisplays();
+    if(currentSortMode === "recommend" || currentSortMode.startsWith("popular_")){
+        renderAlbums();
+    }else{
+        updateLikeDisplays();
+    }
 });
 
 function updateLikeDisplays(){
@@ -3456,7 +3572,11 @@ onSnapshot(collection(db, "comments"), (snapshot) => {
         });
     });
 
-    updateCommentDisplays();
+    if(currentSortMode === "recommend" || currentSortMode.startsWith("popular_")){
+        renderAlbums();
+    }else{
+        updateCommentDisplays();
+    }
 });
 
 function getCommentCount(albumId){
@@ -3695,8 +3815,170 @@ function albumCardHTML(item, posterProfile){
 </div>`;
 }
 
-function getSortedAlbums(){
-    return [...allAlbums].sort((a, b) => {
+function normalizeTextForScore(value){
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replace(/[　・･\-_/／｜|]+/g, "");
+}
+
+function getFavoriteArtistNames(profile){
+    if(!profile){
+        return [];
+    }
+
+    const fromStrings = Array.isArray(profile.favoriteArtists)
+        ? profile.favoriteArtists
+        : [];
+
+    const fromObjects = Array.isArray(profile.favoriteArtistObjects)
+        ? profile.favoriteArtistObjects
+            .map(artist => artist?.name || artist?.artistName || artist?.label || "")
+        : [];
+
+    return [...fromStrings, ...fromObjects]
+        .map(name => String(name ?? "").trim())
+        .filter(Boolean);
+}
+
+function getFavoriteTags(profile){
+    if(!profile || !Array.isArray(profile.favoriteTags)){
+        return [];
+    }
+
+    return profile.favoriteTags
+        .map(tag => String(tag ?? "").trim())
+        .filter(Boolean);
+}
+
+function getPopularScore(item){
+    const albumId = item.id;
+    const likeCount = getLikeCount(albumId);
+    const commentCount = getCommentCount(albumId);
+
+    // コメントは行動コストが高いので、いいねより少し重くする
+    return likeCount + (commentCount * 2);
+}
+
+function getFreshnessScore(item){
+    const postTime = getPostTime(item.data.createdAt || item.data.updatedAt);
+
+    if(!postTime){
+        return 0;
+    }
+
+    const ageHours = Math.max(0, (Date.now() - postTime) / 3600000);
+
+    if(ageHours <= 24){
+        return 18;
+    }
+
+    if(ageHours <= 72){
+        return 10;
+    }
+
+    if(ageHours <= 168){
+        return 5;
+    }
+
+    return 0;
+}
+
+function getRecommendScore(item){
+    const album = item.data || {};
+    let score = 0;
+
+    const postArtist = normalizeTextForScore(album.artist || "");
+    const postKeywords = normalizeKeywords(album.keywords)
+        .map(keyword => normalizeTextForScore(keyword));
+
+    const favoriteArtists = getFavoriteArtistNames(currentUserProfile)
+        .map(name => normalizeTextForScore(name))
+        .filter(Boolean);
+
+    const favoriteTags = getFavoriteTags(currentUserProfile)
+        .map(tag => normalizeTextForScore(tag))
+        .filter(Boolean);
+
+    favoriteArtists.forEach((artistName) => {
+        if(postArtist && artistName && (postArtist.includes(artistName) || artistName.includes(postArtist))){
+            score += 60;
+        }
+    });
+
+    favoriteTags.forEach((tag) => {
+        if(postKeywords.includes(tag)){
+            score += 25;
+        }
+    });
+
+    score += getPopularScore(item) * 4;
+    score += getFreshnessScore(item);
+
+    return score;
+}
+
+function isWithinPopularPeriod(item, period){
+    if(period === "all"){
+        return true;
+    }
+
+    const postTime = getPostTime(item.data.createdAt || item.data.updatedAt);
+
+    if(!postTime){
+        return false;
+    }
+
+    const diff = Date.now() - postTime;
+
+    if(period === "24h"){
+        return diff <= 24 * 60 * 60 * 1000;
+    }
+
+    if(period === "7d"){
+        return diff <= 7 * 24 * 60 * 60 * 1000;
+    }
+
+    return true;
+}
+
+function getSortedAlbums(baseItems = allAlbums){
+    const items = [...baseItems];
+
+    if(currentSortMode === "new"){
+        return items.sort((a, b) => {
+            const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
+            const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
+            return bTime - aTime;
+        });
+    }
+
+    if(currentSortMode.startsWith("popular_")){
+        const period = currentSortMode.replace("popular_", "");
+
+        return items
+            .filter(item => isWithinPopularPeriod(item, period))
+            .sort((a, b) => {
+                const scoreDiff = getPopularScore(b) - getPopularScore(a);
+
+                if(scoreDiff !== 0){
+                    return scoreDiff;
+                }
+
+                const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
+                const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
+                return bTime - aTime;
+            });
+    }
+
+    return items.sort((a, b) => {
+        const scoreDiff = getRecommendScore(b) - getRecommendScore(a);
+
+        if(scoreDiff !== 0){
+            return scoreDiff;
+        }
+
         const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
         const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
         return bTime - aTime;
@@ -3704,7 +3986,7 @@ function getSortedAlbums(){
 }
 
 function getRecommendAlbums(){
-    return getSortedAlbums();
+    return getSortedAlbums(allAlbums);
 }
 
 function getFollowingAlbums(){
@@ -3712,10 +3994,12 @@ function getFollowingAlbums(){
         return [];
     }
 
-    return getSortedAlbums().filter((album) => {
+    const followingAlbums = allAlbums.filter((album) => {
         const userId = album.data.userId || "";
         return userId !== currentUser.uid && followingIds.has(userId);
     });
+
+    return getSortedAlbums(followingAlbums);
 }
 
 function getPostTime(value){
@@ -3883,6 +4167,15 @@ if(feedSwipe){
 window.addEventListener("resize", () => {
     updateFeedTabs();
 });
+
+if(sortSelect){
+    sortSelect.value = currentSortMode;
+
+    sortSelect.addEventListener("change", () => {
+        currentSortMode = sortSelect.value || "recommend";
+        renderAlbums();
+    });
+}
 
 async function renderGrid(targetGrid, items, emptyHTML){
     if(!targetGrid){ return; }
