@@ -1328,7 +1328,7 @@ button:disabled{
 
                 <div class="list-preview-box">
                     <div class="list-type-badge" id="listTypeBadge">📋 通常リスト</div>
-                    まずはリスト/Tier表のタイトルと説明だけ保存できます。次の段階で、ここに曲追加UIをつけます。
+                    リストを作成します。必要なら「Tier表として作る」をオンにできます。次の段階で、ここに曲追加UIをつけます。
                 </div>
 
                 <div class="input-group">
@@ -1338,6 +1338,17 @@ button:disabled{
                         type="text"
                         placeholder="例：深夜に聴きたい邦ロック"
                     >
+                </div>
+
+                <div class="input-group">
+                    <label>リスト形式</label>
+                    <select id="listTierInput">
+                        <option value="false">通常リスト</option>
+                        <option value="true">Tier表として作る</option>
+                    </select>
+                    <div class="keyword-help">
+                        Tier表にすると、後から曲をS/A/B/Cなどに分けて表示できるようにします。
+                    </div>
                 </div>
 
                 <div class="input-group">
@@ -1475,6 +1486,7 @@ const listTypeBadge = document.getElementById("listTypeBadge");
 const listTitleInput = document.getElementById("listTitleInput");
 const listDescInput = document.getElementById("listDescInput");
 const listPublicInput = document.getElementById("listPublicInput");
+const listTierInput = document.getElementById("listTierInput");
 
 const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
@@ -1851,7 +1863,7 @@ function setPageMode(){
         disablePostTypeSwitchForEdit(true);
     }else{
         pageTitle.textContent = "投稿作成";
-        pageSubtitle.textContent = "曲単体・リスト・Tier表を作成できます。";
+        pageSubtitle.textContent = "曲単体、またはリストを作成できます。";
         modeBadge.textContent = getModeBadgeText();
         modeBadge.classList.remove("edit");
         saveBtn.textContent = "保存";
@@ -1915,10 +1927,12 @@ function getListFormData(){
 
     const title = listTitleInput ? listTitleInput.value.trim() : "";
     const desc = listDescInput ? listDescInput.value.slice(0, 300) : "";
-    const isTier = currentPostType === "tier";
+    const hasTier = listTierInput ? listTierInput.value === "true" : false;
 
     return {
-        type: isTier ? "tier" : "list",
+        type: "list",
+        listType: hasTier ? "tier" : "normal",
+        hasTier,
         title,
         desc,
         userId: user.uid,
@@ -2012,6 +2026,10 @@ function clearForm(){
 
     if(listPublicInput){
         listPublicInput.value = "true";
+    }
+
+    if(listTierInput){
+        listTierInput.value = "false";
     }
     syncKeywordCandidates();
     isPublicInput.value = "true";
@@ -2223,7 +2241,7 @@ saveBtn.addEventListener("click", async () => {
             return;
         }
 
-        if(currentPostType === "list" || currentPostType === "tier"){
+        if(currentPostType === "list"){
             if(editingId){
                 alert("現在、編集モードでは曲投稿のみ編集できます");
                 return;
@@ -2241,7 +2259,7 @@ saveBtn.addEventListener("click", async () => {
                 createdAt: serverTimestamp()
             });
 
-            alert(currentPostType === "tier" ? "Tier表を保存しました" : "リストを保存しました");
+            alert(listData.hasTier ? "Tier付きリストを保存しました" : "リストを保存しました");
 
             clearNewPostFormOnly();
 
@@ -2331,6 +2349,10 @@ function clearNewPostFormOnly(){
     if(listPublicInput){
         listPublicInput.value = "true";
     }
+
+    if(listTierInput){
+        listTierInput.value = "false";
+    }
     syncKeywordCandidates();
     isPublicInput.value = "true";
     selectedSpotifyTrack = null;
@@ -2409,7 +2431,20 @@ function getModeBadgeText(){
 }
 
 function disablePostTypeSwitchForEdit(disabled){
-    postTypeButtons.forEach((button) => {
+    function updateListTierBadge(){
+    if(!listTypeBadge){
+        return;
+    }
+
+    const hasTier = listTierInput ? listTierInput.value === "true" : false;
+    listTypeBadge.textContent = hasTier ? "🏆 Tier付きリスト" : "📋 通常リスト";
+}
+
+if(listTierInput){
+    listTierInput.addEventListener("change", updateListTierBadge);
+}
+
+postTypeButtons.forEach((button) => {
         button.disabled = Boolean(disabled);
     });
 }
@@ -2419,7 +2454,7 @@ function switchPostType(type){
         type = "song";
     }
 
-    if(type !== "song" && type !== "list" && type !== "tier"){
+    if(type !== "song" && type !== "list"){
         type = "song";
     }
 
@@ -2437,13 +2472,7 @@ function switchPostType(type){
         listFormSection.style.display = type === "song" ? "none" : "block";
     }
 
-    if(listTypeBadge){
-        if(type === "tier"){
-            listTypeBadge.textContent = "🏆 Tier表";
-        }else{
-            listTypeBadge.textContent = "📋 通常リスト";
-        }
-    }
+    updateListTierBadge();
 
     if(!editingId){
         modeBadge.textContent = getModeBadgeText();
@@ -2451,12 +2480,9 @@ function switchPostType(type){
         if(type === "song"){
             pageSubtitle.textContent = "新しい曲のコレクションを作成します。";
             saveBtn.textContent = "保存";
-        }else if(type === "list"){
-            pageSubtitle.textContent = "複数の曲をまとめるリストを作成します。";
-            saveBtn.textContent = "リストを保存";
         }else{
-            pageSubtitle.textContent = "曲をランク分けするTier表を作成します。";
-            saveBtn.textContent = "Tier表を保存";
+            pageSubtitle.textContent = "複数の曲をまとめるリストを作成します。必要ならTier表としても作れます。";
+            saveBtn.textContent = "リストを保存";
         }
     }
 }
