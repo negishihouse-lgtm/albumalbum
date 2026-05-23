@@ -3916,6 +3916,12 @@ function getRecommendScore(item){
     score += getPopularScore(item) * 4;
     score += getFreshnessScore(item);
 
+    // おすすめ順では、自分の投稿が好み一致で上に来すぎないように少し下げる
+    // 非表示にはせず、人気や新しさがあればある程度は上がれる
+    if(currentUser && album.userId === currentUser.uid){
+        score -= 100;
+    }
+
     return score;
 }
 
