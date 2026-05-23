@@ -732,6 +732,158 @@ button:disabled{
     margin-bottom:12px;
 }
 
+
+.list-add-box{
+    background:#101010;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:22px;
+}
+
+.list-add-title{
+    font-size:16px;
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.list-add-help{
+    color:#888;
+    font-size:12px;
+    line-height:1.7;
+    margin-bottom:14px;
+}
+
+.list-search-row{
+    display:grid;
+    grid-template-columns:130px minmax(0,1fr) 90px;
+    gap:10px;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.list-search-row select,
+.list-search-row input{
+    min-width:0;
+}
+
+.list-search-row button{
+    margin-top:0;
+    padding:14px 10px;
+    font-size:14px;
+    background:#6fa8dc;
+}
+
+.list-search-results{
+    display:grid;
+    gap:10px;
+    margin-top:12px;
+}
+
+.list-search-result-card,
+.list-draft-item{
+    display:grid;
+    grid-template-columns:52px minmax(0,1fr) auto;
+    gap:11px;
+    align-items:center;
+    background:#171717;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    padding:10px;
+}
+
+.list-search-result-card img,
+.list-draft-item img{
+    width:52px;
+    height:52px;
+    object-fit:cover;
+    border-radius:10px;
+    background:#222;
+}
+
+.list-search-result-title,
+.list-draft-item-title{
+    font-size:13px;
+    font-weight:800;
+    line-height:1.35;
+    margin-bottom:4px;
+    word-break:break-word;
+}
+
+.list-search-result-meta,
+.list-draft-item-meta{
+    color:#aaa;
+    font-size:12px;
+    line-height:1.45;
+    word-break:break-word;
+}
+
+.list-mini-btn{
+    width:auto;
+    min-width:70px;
+    margin-top:0;
+    padding:9px 10px;
+    font-size:12px;
+    font-weight:800;
+    border-radius:10px;
+    background:#6fa8dc;
+}
+
+.list-mini-btn.remove{
+    background:#444;
+    color:#ddd;
+}
+
+.list-draft-items{
+    display:grid;
+    gap:10px;
+    margin-top:12px;
+}
+
+.list-empty-text{
+    color:#888;
+    font-size:13px;
+    line-height:1.7;
+    padding:12px;
+    background:#0d0d0d;
+    border:1px dashed rgba(255,255,255,0.12);
+    border-radius:12px;
+}
+
+.tier-select{
+    width:76px;
+    padding:9px 8px;
+    font-size:12px;
+}
+
+@media(max-width:900px){
+    .list-search-row{
+        grid-template-columns:1fr;
+    }
+
+    .list-search-row button{
+        width:100%;
+    }
+
+    .list-search-result-card,
+    .list-draft-item{
+        grid-template-columns:48px minmax(0,1fr);
+    }
+
+    .list-search-result-card img,
+    .list-draft-item img{
+        width:48px;
+        height:48px;
+    }
+
+    .list-search-result-card .list-mini-btn,
+    .list-draft-item .list-mini-btn,
+    .list-draft-item .tier-select{
+        grid-column:1 / -1;
+        width:100%;
+    }
+}
+
 @media(max-width:900px){
     .post-type-selector{
         display:grid;
@@ -1032,14 +1184,6 @@ button:disabled{
                     data-post-type="list"
                 >
                     📋 リスト
-                </button>
-
-                <button
-                    type="button"
-                    class="post-type-btn"
-                    data-post-type="tier"
-                >
-                    🏆 Tier表
                 </button>
             </div>
 
@@ -1368,6 +1512,50 @@ button:disabled{
                     </select>
                 </div>
 
+                <div class="list-add-box">
+                    <div class="list-add-title">既存の投稿から追加</div>
+                    <div class="list-add-help">
+                        自分の投稿だけ、または他人の公開投稿も含めて検索できます。
+                    </div>
+
+                    <div class="list-search-row">
+                        <select id="existingSearchScopeInput">
+                            <option value="mine">自分の投稿だけ</option>
+                            <option value="all">他人の投稿も含める</option>
+                        </select>
+
+                        <input
+                            id="existingPostSearchInput"
+                            type="text"
+                            placeholder="曲名・アーティスト名・キーワード"
+                        >
+
+                        <button type="button" id="existingPostSearchBtn">検索</button>
+                    </div>
+
+                    <div class="spotify-status" id="existingPostSearchStatus">
+                        既存投稿を検索してリストに追加できます。
+                    </div>
+
+                    <div class="list-search-results" id="existingPostSearchResults"></div>
+                </div>
+
+                <div class="list-add-box">
+                    <div class="list-add-title">未レビューの曲をSpotifyから追加</div>
+                    <div class="list-add-help">
+                        上のSpotify検索で曲を選ぶと、このリストに追加されます。曲単体投稿は作成されません。
+                    </div>
+                </div>
+
+                <div class="list-add-box">
+                    <div class="list-add-title">追加済みの曲</div>
+                    <div class="list-add-help">
+                        現時点では追加順で保存します。Tier付きリストの場合は、各曲にS/A/B/Cを設定できます。
+                    </div>
+
+                    <div class="list-draft-items" id="listDraftItems"></div>
+                </div>
+
             </div>
 
             <button class="save-btn" id="saveBtn">
@@ -1404,7 +1592,10 @@ import {
     addDoc,
     doc,
     getDoc,
+    getDocs,
     updateDoc,
+    query,
+    where,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -1487,6 +1678,12 @@ const listTitleInput = document.getElementById("listTitleInput");
 const listDescInput = document.getElementById("listDescInput");
 const listPublicInput = document.getElementById("listPublicInput");
 const listTierInput = document.getElementById("listTierInput");
+const existingSearchScopeInput = document.getElementById("existingSearchScopeInput");
+const existingPostSearchInput = document.getElementById("existingPostSearchInput");
+const existingPostSearchBtn = document.getElementById("existingPostSearchBtn");
+const existingPostSearchStatus = document.getElementById("existingPostSearchStatus");
+const existingPostSearchResults = document.getElementById("existingPostSearchResults");
+const listDraftItems = document.getElementById("listDraftItems");
 
 const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
@@ -1494,6 +1691,7 @@ let editingId = editingIdFromUrl;
 let currentLoadedAlbum = null;
 let selectedSpotifyTrack = null;
 let currentPostType = "song";
+let listItemsDraft = [];
 let authReady = false;
 
 
@@ -1860,6 +2058,7 @@ function setPageMode(){
         modeBadge.classList.add("edit");
         saveBtn.textContent = "更新";
         switchPostType("song");
+renderListDraftItems();
         disablePostTypeSwitchForEdit(true);
     }else{
         pageTitle.textContent = "投稿作成";
@@ -1928,6 +2127,10 @@ function getListFormData(){
     const title = listTitleInput ? listTitleInput.value.trim() : "";
     const desc = listDescInput ? listDescInput.value.slice(0, 300) : "";
     const hasTier = listTierInput ? listTierInput.value === "true" : false;
+    const coverImages = listItemsDraft
+        .map(item => item.cover || "")
+        .filter(Boolean)
+        .slice(0, 4);
 
     return {
         type: "list",
@@ -1938,8 +2141,8 @@ function getListFormData(){
         userId: user.uid,
         userEmail: user.email,
         isPublic: listPublicInput ? listPublicInput.value === "true" : true,
-        itemCount: 0,
-        coverImages: [],
+        itemCount: listItemsDraft.length,
+        coverImages,
         createdFrom: "editor",
         updatedAt: serverTimestamp()
     };
@@ -2112,6 +2315,12 @@ function renderSpotifyResults(tracks){
         selectBtn.addEventListener("click", () => {
             const spotifyUrl = getSpotifyUrlFromTrack(track);
 
+            if(currentPostType === "list"){
+                addSpotifyTrackToList(track, spotifyUrl);
+                setSpotifyStatus("Spotifyの曲をリストに追加しました。曲単体投稿は作成されません。");
+                return;
+            }
+
             selectedSpotifyTrack = {
                 ...track,
                 spotifyId: track.spotifyId || track.id || "",
@@ -2252,6 +2461,11 @@ saveBtn.addEventListener("click", async () => {
                 return;
             }
 
+            if(listItemsDraft.length === 0){
+                alert("リストに曲を1件以上追加してください");
+                return;
+            }
+
             const listData = getListFormData();
 
             const listRef = await addDoc(collection(db, "lists"), {
@@ -2259,9 +2473,28 @@ saveBtn.addEventListener("click", async () => {
                 createdAt: serverTimestamp()
             });
 
+            await Promise.all(listItemsDraft.map((item, index) => {
+                return addDoc(collection(db, "listItems"), {
+                    listId: listRef.id,
+                    order: index,
+                    source: item.source,
+                    albumId: item.albumId || "",
+                    title: item.title || "",
+                    artist: item.artist || "",
+                    cover: item.cover || "",
+                    spotifyId: item.spotifyId || "",
+                    spotifyUrl: item.spotifyUrl || "",
+                    spotifyUri: item.spotifyUri || "",
+                    spotifyType: item.spotifyType || "track",
+                    tier: listData.hasTier ? (item.tier || "A") : "",
+                    createdAt: serverTimestamp()
+                });
+            }));
+
             alert(listData.hasTier ? "Tier付きリストを保存しました" : "リストを保存しました");
 
             clearNewPostFormOnly();
+            clearListDraft();
 
             if(listTitleInput){
                 listTitleInput.value = "";
@@ -2423,21 +2656,317 @@ function getModeBadgeText(){
         return "リスト投稿モード";
     }
 
-    if(currentPostType === "tier"){
-        return "Tier表投稿モード";
-    }
-
     return "曲投稿モード";
 }
 
 function disablePostTypeSwitchForEdit(disabled){
-    function updateListTierBadge(){
+    
+function normalizeSearchText(value){
+    return String(value ?? "")
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replace(/[　・･\-_/／｜|#、,]+/g, "");
+}
+
+function normalizeListKeywords(value){
+    if(Array.isArray(value)){
+        return value.map(item => String(item ?? "").trim()).filter(Boolean);
+    }
+
+    if(typeof value === "string"){
+        return value.split(/[\s,、#]+/).map(item => item.trim()).filter(Boolean);
+    }
+
+    return [];
+}
+
+function getListDraftKey(item){
+    if(item.source === "album"){
+        return `album:${item.albumId}`;
+    }
+
+    return `spotify:${item.spotifyId || item.spotifyUrl || item.title + "-" + item.artist}`;
+}
+
+function isListItemAlreadyAdded(item){
+    const nextKey = getListDraftKey(item);
+    return listItemsDraft.some(existing => getListDraftKey(existing) === nextKey);
+}
+
+function addItemToListDraft(item){
+    if(!item || !item.title){
+        return;
+    }
+
+    if(isListItemAlreadyAdded(item)){
+        alert("この曲はすでにリストに追加されています");
+        return;
+    }
+
+    listItemsDraft.push({
+        ...item,
+        tier: item.tier || "A"
+    });
+
+    renderListDraftItems();
+}
+
+function addSpotifyTrackToList(track, spotifyUrl = ""){
+    if(!track){
+        return;
+    }
+
+    const url = spotifyUrl || getSpotifyUrlFromTrack(track);
+
+    addItemToListDraft({
+        source: "spotify",
+        albumId: "",
+        title: track.title || "",
+        artist: track.artist || "",
+        cover: track.cover || "",
+        spotifyId: track.spotifyId || track.id || "",
+        spotifyUrl: url,
+        spotifyUri: track.spotifyUri || track.uri || "",
+        spotifyType: track.type || "track",
+        tier: "A"
+    });
+}
+
+function addExistingAlbumToList(albumId, album){
+    addItemToListDraft({
+        source: "album",
+        albumId,
+        title: album.title || "",
+        artist: album.artist || "",
+        cover: album.cover || "",
+        spotifyId: album.spotifyId || "",
+        spotifyUrl: album.spotifyUrl || "",
+        spotifyUri: album.spotifyUri || "",
+        spotifyType: album.spotifyType || "track",
+        tier: "A"
+    });
+}
+
+function removeListDraftItem(index){
+    listItemsDraft.splice(index, 1);
+    renderListDraftItems();
+}
+
+function updateListDraftTier(index, tier){
+    if(!listItemsDraft[index]){
+        return;
+    }
+
+    listItemsDraft[index].tier = tier;
+    renderListDraftItems();
+}
+
+function clearListDraft(){
+    listItemsDraft = [];
+    renderListDraftItems();
+
+    if(existingPostSearchResults){
+        existingPostSearchResults.innerHTML = "";
+    }
+
+    if(existingPostSearchStatus){
+        existingPostSearchStatus.textContent = "既存投稿を検索してリストに追加できます。";
+    }
+}
+
+function renderListDraftItems(){
+    if(!listDraftItems){
+        return;
+    }
+
+    if(listItemsDraft.length === 0){
+        listDraftItems.innerHTML = `<div class="list-empty-text">まだ曲が追加されていません。</div>`;
+        return;
+    }
+
+    const hasTier = listTierInput ? listTierInput.value === "true" : false;
+
+    listDraftItems.innerHTML = listItemsDraft.map((item, index) => {
+        const tierSelect = hasTier
+            ? `
+                <select class="tier-select" onchange="window.updateListDraftTier(${index}, this.value)">
+                    ${["S","A","B","C"].map(tier => `
+                        <option value="${tier}" ${item.tier === tier ? "selected" : ""}>${tier}</option>
+                    `).join("")}
+                </select>
+            `
+            : "";
+
+        return `
+            <div class="list-draft-item">
+                <img src="${escapeHTML(item.cover || "")}" alt="">
+                <div>
+                    <div class="list-draft-item-title">${escapeHTML(item.title || "")}</div>
+                    <div class="list-draft-item-meta">
+                        ${escapeHTML(item.artist || "")}<br>
+                        ${item.source === "album" ? "既存投稿から追加" : "Spotifyから追加"}
+                    </div>
+                </div>
+                ${tierSelect}
+                <button type="button" class="list-mini-btn remove" onclick="window.removeListDraftItem(${index})">削除</button>
+            </div>
+        `;
+    }).join("");
+}
+
+async function searchExistingPostsForList(){
+    const user = auth.currentUser;
+
+    if(!user){
+        alert("ログインしてください");
+        goLoginWithRedirect();
+        return;
+    }
+
+    if(!existingPostSearchInput || !existingPostSearchResults || !existingPostSearchStatus){
+        return;
+    }
+
+    const searchText = existingPostSearchInput.value.trim();
+    const normalizedQuery = normalizeSearchText(searchText);
+    const scope = existingSearchScopeInput ? existingSearchScopeInput.value : "mine";
+
+    existingPostSearchBtn.disabled = true;
+    existingPostSearchResults.innerHTML = "";
+    existingPostSearchStatus.textContent = "既存投稿を検索中...";
+
+    try{
+        let snap;
+
+        if(scope === "mine"){
+            const qMine = query(
+                collection(db, "albums"),
+                where("userId", "==", user.uid)
+            );
+            snap = await getDocs(qMine);
+        }else{
+            const qAll = query(
+                collection(db, "albums"),
+                where("isPublic", "==", true)
+            );
+            snap = await getDocs(qAll);
+        }
+
+        let results = [];
+
+        snap.forEach((docSnap) => {
+            const album = docSnap.data();
+
+            const haystack = normalizeSearchText([
+                album.title,
+                album.artist,
+                album.desc,
+                ...normalizeListKeywords(album.keywords)
+            ].filter(Boolean).join(" "));
+
+            if(normalizedQuery && !haystack.includes(normalizedQuery)){
+                return;
+            }
+
+            results.push({
+                id: docSnap.id,
+                data: album
+            });
+        });
+
+        results = results
+            .sort((a, b) => {
+                const aTime = a.data.updatedAt?.toDate?.()?.getTime?.() || a.data.createdAt?.toDate?.()?.getTime?.() || 0;
+                const bTime = b.data.updatedAt?.toDate?.()?.getTime?.() || b.data.createdAt?.toDate?.()?.getTime?.() || 0;
+                return bTime - aTime;
+            })
+            .slice(0, 20);
+
+        renderExistingPostSearchResults(results);
+
+        existingPostSearchStatus.textContent = results.length
+            ? `${results.length}件表示しています。追加したい曲を選んでください。`
+            : "該当する投稿が見つかりませんでした。";
+
+    }catch(error){
+        console.error("既存投稿検索に失敗しました", error);
+        existingPostSearchStatus.textContent = "既存投稿検索でエラーが出ました。";
+        showError(error.message);
+    }finally{
+        existingPostSearchBtn.disabled = false;
+    }
+}
+
+function renderExistingPostSearchResults(results){
+    if(!existingPostSearchResults){
+        return;
+    }
+
+    if(!results.length){
+        existingPostSearchResults.innerHTML = "";
+        return;
+    }
+
+    existingPostSearchResults.innerHTML = results.map((item) => {
+        const album = item.data || {};
+
+        return `
+            <div class="list-search-result-card">
+                <img src="${escapeHTML(album.cover || "")}" alt="">
+                <div>
+                    <div class="list-search-result-title">${escapeHTML(album.title || "")}</div>
+                    <div class="list-search-result-meta">
+                        ${escapeHTML(album.artist || "")}<br>
+                        ${escapeHTML(album.userName || album.userEmail || "")}
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    class="list-mini-btn"
+                    onclick="window.addExistingAlbumToList('${escapeHTML(item.id)}')"
+                >追加</button>
+            </div>
+        `;
+    }).join("");
+
+    window.existingAlbumSearchCache = new Map(results.map(item => [item.id, item.data]));
+}
+
+window.addExistingAlbumToList = (albumId) => {
+    const album = window.existingAlbumSearchCache?.get(albumId);
+
+    if(!album){
+        alert("投稿データを取得できませんでした。もう一度検索してください。");
+        return;
+    }
+
+    addExistingAlbumToList(albumId, album);
+};
+
+window.removeListDraftItem = removeListDraftItem;
+window.updateListDraftTier = updateListDraftTier;
+
+if(existingPostSearchBtn){
+    existingPostSearchBtn.addEventListener("click", searchExistingPostsForList);
+}
+
+if(existingPostSearchInput){
+    existingPostSearchInput.addEventListener("keydown", (event) => {
+        if(event.key === "Enter"){
+            event.preventDefault();
+            searchExistingPostsForList();
+        }
+    });
+}
+
+function updateListTierBadge(){
     if(!listTypeBadge){
         return;
     }
 
     const hasTier = listTierInput ? listTierInput.value === "true" : false;
     listTypeBadge.textContent = hasTier ? "🏆 Tier付きリスト" : "📋 通常リスト";
+    renderListDraftItems();
 }
 
 if(listTierInput){
@@ -2480,9 +3009,12 @@ function switchPostType(type){
         if(type === "song"){
             pageSubtitle.textContent = "新しい曲のコレクションを作成します。";
             saveBtn.textContent = "保存";
+            setSpotifyStatus("曲名・アーティスト名で検索できます。選択するとフォームに自動入力されます。");
         }else{
             pageSubtitle.textContent = "複数の曲をまとめるリストを作成します。必要ならTier表としても作れます。";
             saveBtn.textContent = "リストを保存";
+            setSpotifyStatus("Spotifyで検索し、選択すると未レビュー曲としてリストに追加できます。");
+            renderListDraftItems();
         }
     }
 }
