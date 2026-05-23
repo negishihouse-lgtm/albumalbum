@@ -1071,6 +1071,17 @@ button:disabled{
     }
 }
 
+
+#listSpotifyMount .spotify-box,
+#songSpotifyMount .spotify-box{
+    margin-bottom:0;
+}
+
+#listSpotifyMount .spotify-box{
+    margin-top:12px;
+    border-color:rgba(255,255,255,0.10);
+}
+
 </style>
 </head>
 
@@ -1142,7 +1153,32 @@ button:disabled{
             <div class="error-box" id="errorBox"></div>
 
 
-            <div class="spotify-box">
+            <div class="section-title">投稿タイプ</div>
+
+            <div class="post-type-selector" id="postTypeSelector">
+                <button
+                    type="button"
+                    class="post-type-btn active"
+                    data-post-type="song"
+                >
+                    🎵 曲
+                </button>
+
+                <button
+                    type="button"
+                    class="post-type-btn"
+                    data-post-type="list"
+                >
+                    📋 リスト
+                </button>
+            </div>
+
+            <div id="songFormSection">
+
+            <div class="section-title">Song Form</div>
+
+            <div id="songSpotifyMount">
+            <div class="spotify-box" id="spotifyBox">
                 <div class="section-title">Spotify Search</div>
 
                 <div class="input-group" style="margin-bottom:0;">
@@ -1167,29 +1203,7 @@ button:disabled{
                 </div>
             </div>
 
-            <div class="section-title">投稿タイプ</div>
-
-            <div class="post-type-selector" id="postTypeSelector">
-                <button
-                    type="button"
-                    class="post-type-btn active"
-                    data-post-type="song"
-                >
-                    🎵 曲
-                </button>
-
-                <button
-                    type="button"
-                    class="post-type-btn"
-                    data-post-type="list"
-                >
-                    📋 リスト
-                </button>
             </div>
-
-            <div id="songFormSection">
-
-            <div class="section-title">Song Form</div>
 
             <div class="input-group">
                 <label>Spotify URL（Odesli変換用）</label>
@@ -1469,13 +1483,7 @@ button:disabled{
             <div id="listFormSection" style="display:none;">
 
                 <div class="section-title">List Form</div>
-
-                <div class="list-preview-box">
-                    <div class="list-type-badge" id="listTypeBadge">📋 通常リスト</div>
-                    リストを作成します。必要なら「Tier表として作る」をオンにできます。次の段階で、ここに曲追加UIをつけます。
-                </div>
-
-                <div class="input-group">
+<div class="input-group">
                     <label>リストタイトル</label>
                     <input
                         id="listTitleInput"
@@ -1483,19 +1491,7 @@ button:disabled{
                         placeholder="例：深夜に聴きたい邦ロック"
                     >
                 </div>
-
-                <div class="input-group">
-                    <label>リスト形式</label>
-                    <select id="listTierInput">
-                        <option value="false">通常リスト</option>
-                        <option value="true">Tier表として作る</option>
-                    </select>
-                    <div class="keyword-help">
-                        Tier表にすると、後から曲をS/A/B/Cなどに分けて表示できるようにします。
-                    </div>
-                </div>
-
-                <div class="input-group">
+<div class="input-group">
                     <label>説明</label>
                     <textarea
                         id="listDescInput"
@@ -1543,14 +1539,16 @@ button:disabled{
                 <div class="list-add-box">
                     <div class="list-add-title">未レビューの曲をSpotifyから追加</div>
                     <div class="list-add-help">
-                        上のSpotify検索で曲を選ぶと、このリストに追加されます。曲単体投稿は作成されません。
+                        Spotifyで曲を検索して選ぶと、このリストに追加されます。曲単体投稿は作成されません。
                     </div>
+
+                    <div id="listSpotifyMount"></div>
                 </div>
 
                 <div class="list-add-box">
                     <div class="list-add-title">追加済みの曲</div>
                     <div class="list-add-help">
-                        現時点では追加順で保存します。Tier付きリストの場合は、各曲にS/A/B/Cを設定できます。
+                        現時点では追加順で保存します。
                     </div>
 
                     <div class="list-draft-items" id="listDraftItems"></div>
@@ -1673,11 +1671,12 @@ const spotifyUrlInput = document.getElementById("spotifyUrlInput");
 const songFormSection = document.getElementById("songFormSection");
 const listFormSection = document.getElementById("listFormSection");
 const postTypeButtons = document.querySelectorAll(".post-type-btn");
-const listTypeBadge = document.getElementById("listTypeBadge");
 const listTitleInput = document.getElementById("listTitleInput");
 const listDescInput = document.getElementById("listDescInput");
 const listPublicInput = document.getElementById("listPublicInput");
-const listTierInput = document.getElementById("listTierInput");
+const songSpotifyMount = document.getElementById("songSpotifyMount");
+const listSpotifyMount = document.getElementById("listSpotifyMount");
+const spotifyBox = document.getElementById("spotifyBox");
 const existingSearchScopeInput = document.getElementById("existingSearchScopeInput");
 const existingPostSearchInput = document.getElementById("existingPostSearchInput");
 const existingPostSearchBtn = document.getElementById("existingPostSearchBtn");
@@ -2126,7 +2125,7 @@ function getListFormData(){
 
     const title = listTitleInput ? listTitleInput.value.trim() : "";
     const desc = listDescInput ? listDescInput.value.slice(0, 300) : "";
-    const hasTier = listTierInput ? listTierInput.value === "true" : false;
+    const hasTier = false;
     const coverImages = listItemsDraft
         .map(item => item.cover || "")
         .filter(Boolean)
@@ -2229,10 +2228,6 @@ function clearForm(){
 
     if(listPublicInput){
         listPublicInput.value = "true";
-    }
-
-    if(listTierInput){
-        listTierInput.value = "false";
     }
     syncKeywordCandidates();
     isPublicInput.value = "true";
@@ -2491,7 +2486,7 @@ saveBtn.addEventListener("click", async () => {
                 });
             }));
 
-            alert(listData.hasTier ? "Tier付きリストを保存しました" : "リストを保存しました");
+            alert("リストを保存しました");
 
             clearNewPostFormOnly();
             clearListDraft();
@@ -2581,10 +2576,6 @@ function clearNewPostFormOnly(){
 
     if(listPublicInput){
         listPublicInput.value = "true";
-    }
-
-    if(listTierInput){
-        listTierInput.value = "false";
     }
     syncKeywordCandidates();
     isPublicInput.value = "true";
@@ -2788,7 +2779,7 @@ function renderListDraftItems(){
         return;
     }
 
-    const hasTier = listTierInput ? listTierInput.value === "true" : false;
+    const hasTier = false;
 
     listDraftItems.innerHTML = listItemsDraft.map((item, index) => {
         const tierSelect = hasTier
@@ -2964,18 +2955,9 @@ if(existingPostSearchInput){
 }
 
 function updateListTierBadge(){
-    if(!listTypeBadge){
-        return;
-    }
-
-    const hasTier = listTierInput ? listTierInput.value === "true" : false;
-    listTypeBadge.textContent = hasTier ? "🏆 Tier付きリスト" : "📋 通常リスト";
     renderListDraftItems();
 }
 
-if(listTierInput){
-    listTierInput.addEventListener("change", updateListTierBadge);
-}
 
 function switchPostType(type){
     if(editingId){
@@ -3000,6 +2982,16 @@ function switchPostType(type){
         listFormSection.style.display = type === "song" ? "none" : "block";
     }
 
+    if(spotifyBox){
+        if(type === "song" && songSpotifyMount){
+            songSpotifyMount.appendChild(spotifyBox);
+        }
+
+        if(type === "list" && listSpotifyMount){
+            listSpotifyMount.appendChild(spotifyBox);
+        }
+    }
+
     updateListTierBadge();
 
     if(!editingId){
@@ -3010,7 +3002,7 @@ function switchPostType(type){
             saveBtn.textContent = "保存";
             setSpotifyStatus("曲名・アーティスト名で検索できます。選択するとフォームに自動入力されます。");
         }else{
-            pageSubtitle.textContent = "複数の曲をまとめるリストを作成します。必要ならTier表としても作れます。";
+            pageSubtitle.textContent = "複数の曲をまとめるリストを作成します。";
             saveBtn.textContent = "リストを保存";
             setSpotifyStatus("Spotifyで検索し、選択すると未レビュー曲としてリストに追加できます。");
             renderListDraftItems();
