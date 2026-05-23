@@ -2660,7 +2660,11 @@ function getModeBadgeText(){
 }
 
 function disablePostTypeSwitchForEdit(disabled){
-    
+    postTypeButtons.forEach((button) => {
+        button.disabled = Boolean(disabled);
+    });
+}
+
 function normalizeSearchText(value){
     return String(value ?? "")
         .toLowerCase()
@@ -2732,7 +2736,7 @@ function addSpotifyTrackToList(track, spotifyUrl = ""){
     });
 }
 
-function addExistingAlbumToList(albumId, album){
+function addExistingAlbumToListDraft(albumId, album){
     addItemToListDraft({
         source: "album",
         albumId,
@@ -2940,7 +2944,7 @@ window.addExistingAlbumToList = (albumId) => {
         return;
     }
 
-    addExistingAlbumToList(albumId, album);
+    addExistingAlbumToListDraft(albumId, album);
 };
 
 window.removeListDraftItem = removeListDraftItem;
@@ -2971,11 +2975,6 @@ function updateListTierBadge(){
 
 if(listTierInput){
     listTierInput.addEventListener("change", updateListTierBadge);
-}
-
-postTypeButtons.forEach((button) => {
-        button.disabled = Boolean(disabled);
-    });
 }
 
 function switchPostType(type){
@@ -3029,8 +3028,8 @@ setPageMode();
 updateDescCount();
 syncKeywordCandidates();
 initMeterDots();
-
 switchPostType("song");
+renderListDraftItems();
 
 </script>
 
