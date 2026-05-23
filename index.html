@@ -1956,56 +1956,105 @@ a{
 <style>
 /* ============================================================
    ホーム画面：並び替えUI
-   - おすすめ順 / 新着順 / 人気順
-   - PCはタイトル右、スマホはタイトル下に自然に配置
+   - トリガーは漏斗アイコンだけ
+   - タップで候補メニューを表示
 ============================================================ */
 .home-sortbar{
     display:flex;
     align-items:center;
     justify-content:flex-end;
-    gap:9px;
     flex-wrap:nowrap;
 }
 
-.sort-label{
-    color:#aab3b8;
-    font-size:12px;
-    font-weight:800;
-    white-space:nowrap;
+.sort-filter-wrap{
+    position:relative;
 }
 
-.sort-select{
+.sort-filter-btn{
     appearance:none;
     -webkit-appearance:none;
-    color:#ffffff;
-    background:
-        linear-gradient(45deg, transparent 50%, #dce3e6 50%) calc(100% - 17px) 50% / 6px 6px no-repeat,
-        linear-gradient(135deg, #dce3e6 50%, transparent 50%) calc(100% - 12px) 50% / 6px 6px no-repeat,
-        rgba(255,255,255,0.065);
-    border:1px solid rgba(255,255,255,0.16);
+    width:44px;
+    height:44px;
     border-radius:999px;
-    padding:10px 34px 10px 14px;
-    font-family:inherit;
-    font-size:13px;
-    font-weight:850;
-    line-height:1;
-    outline:none;
+    border:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.065);
+    color:#f3f7f8;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
     cursor:pointer;
+    transition:background .16s ease, border-color .16s ease, transform .16s ease;
 }
 
-.sort-select:hover{
+.sort-filter-btn:hover{
     border-color:rgba(159,205,217,0.42);
-    background-color:rgba(159,205,217,0.10);
+    background:rgba(159,205,217,0.10);
+    transform:translateY(-1px);
 }
 
-.sort-select:focus{
+.sort-filter-btn:focus-visible{
+    outline:none;
     border-color:rgba(159,205,217,0.65);
     box-shadow:0 0 0 3px rgba(159,205,217,0.12);
 }
 
-.sort-select option{
-    background:#111;
-    color:#fff;
+.sort-filter-btn svg{
+    width:20px;
+    height:20px;
+    display:block;
+}
+
+.sort-filter-menu{
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+    min-width:230px;
+    padding:8px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:#0b0d0e;
+    box-shadow:0 18px 46px rgba(0,0,0,0.46);
+    display:none;
+    z-index:2500;
+}
+
+.sort-filter-menu.open{
+    display:block;
+}
+
+.sort-filter-current{
+    color:#aab3b8;
+    font-size:11px;
+    font-weight:800;
+    line-height:1.4;
+    padding:6px 10px 8px;
+}
+
+.sort-option-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    border:none;
+    background:transparent;
+    color:#f3f7f8;
+    border-radius:12px;
+    padding:11px 12px;
+    text-align:left;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:800;
+    line-height:1.25;
+    cursor:pointer;
+    transition:background .16s ease, color .16s ease;
+}
+
+.sort-option-btn:hover{
+    background:rgba(255,255,255,0.06);
+}
+
+.sort-option-btn.active{
+    background:rgba(159,205,217,0.16);
+    color:#ffffff;
 }
 
 @media(max-width:900px){
@@ -2019,15 +2068,13 @@ a{
         margin-bottom:4px;
     }
 
-    .sort-label{
-        font-size:12px;
+    .sort-filter-btn{
+        width:42px;
+        height:42px;
     }
 
-    .sort-select{
-        max-width:100%;
-        font-size:13px;
-        padding-top:9px;
-        padding-bottom:9px;
+    .sort-filter-menu{
+        min-width:210px;
     }
 }
 </style>
@@ -2091,14 +2138,29 @@ a{
     <h1 class="page-title">Album Collection</h1>
 
     <div class="home-sortbar">
-        <label class="sort-label" for="sortSelect">並び替え</label>
-        <select id="sortSelect" class="sort-select">
-            <option value="recommend">おすすめ順</option>
-            <option value="new">新着順</option>
-            <option value="popular_24h">人気順：24時間</option>
-            <option value="popular_7d">人気順：7日間</option>
-            <option value="popular_all">人気順：全期間</option>
-        </select>
+        <div class="sort-filter-wrap">
+            <button
+                type="button"
+                id="sortFilterButton"
+                class="sort-filter-btn"
+                aria-label="並び替えを開く"
+                aria-expanded="false"
+                title="並び替え"
+            >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 6h16l-6.2 7.2v4.6l-3.6 1.9v-6.5L4 6Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <div class="sort-filter-menu" id="sortFilterMenu">
+                <div class="sort-filter-current" id="sortFilterCurrentLabel">現在：おすすめ順</div>
+                <button type="button" class="sort-option-btn active" data-sort-option data-sort-mode="recommend">おすすめ順</button>
+                <button type="button" class="sort-option-btn" data-sort-option data-sort-mode="new">新着順</button>
+                <button type="button" class="sort-option-btn" data-sort-option data-sort-mode="popular_24h">人気順：24時間</button>
+                <button type="button" class="sort-option-btn" data-sort-option data-sort-mode="popular_7d">人気順：7日間</button>
+                <button type="button" class="sort-option-btn" data-sort-option data-sort-mode="popular_all">人気順：全期間</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -2195,7 +2257,9 @@ const shareToast = document.getElementById("shareToast");
 const listenSheet = document.getElementById("listenSheet");
 const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
 const listenActions = document.getElementById("listenActions");
-const sortSelect = document.getElementById("sortSelect");
+const sortFilterButton = document.getElementById("sortFilterButton");
+const sortFilterMenu = document.getElementById("sortFilterMenu");
+const sortFilterCurrentLabel = document.getElementById("sortFilterCurrentLabel");
 
 let currentFeedMode = "recommend";
 let allAlbums = [];
@@ -4174,14 +4238,110 @@ window.addEventListener("resize", () => {
     updateFeedTabs();
 });
 
-if(sortSelect){
-    sortSelect.value = currentSortMode;
+const sortModeLabels = {
+    recommend: "おすすめ順",
+    new: "新着順",
+    popular_24h: "人気順：24時間",
+    popular_7d: "人気順：7日間",
+    popular_all: "人気順：全期間"
+};
 
-    sortSelect.addEventListener("change", () => {
-        currentSortMode = sortSelect.value || "recommend";
-        renderAlbums();
+function getSortModeLabel(mode){
+    return sortModeLabels[mode] || sortModeLabels.recommend;
+}
+
+function openSortMenu(){
+    if(!sortFilterMenu || !sortFilterButton){
+        return;
+    }
+
+    sortFilterMenu.classList.add("open");
+    sortFilterButton.setAttribute("aria-expanded", "true");
+}
+
+function closeSortMenu(){
+    if(!sortFilterMenu || !sortFilterButton){
+        return;
+    }
+
+    sortFilterMenu.classList.remove("open");
+    sortFilterButton.setAttribute("aria-expanded", "false");
+}
+
+function toggleSortMenu(){
+    if(!sortFilterMenu){
+        return;
+    }
+
+    if(sortFilterMenu.classList.contains("open")){
+        closeSortMenu();
+    }else{
+        openSortMenu();
+    }
+}
+
+function updateSortMenuUI(){
+    if(sortFilterCurrentLabel){
+        sortFilterCurrentLabel.textContent = `現在：${getSortModeLabel(currentSortMode)}`;
+    }
+
+    document.querySelectorAll("[data-sort-option]").forEach((button) => {
+        const isActive = (button.dataset.sortMode || "") === currentSortMode;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
 }
+
+function selectSortMode(mode){
+    const nextMode = mode || "recommend";
+
+    if(currentSortMode === nextMode){
+        updateSortMenuUI();
+        closeSortMenu();
+        return;
+    }
+
+    currentSortMode = nextMode;
+    updateSortMenuUI();
+    closeSortMenu();
+    renderAlbums();
+}
+
+if(sortFilterButton){
+    sortFilterButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        toggleSortMenu();
+    });
+}
+
+document.querySelectorAll("[data-sort-option]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        selectSortMode(button.dataset.sortMode || "recommend");
+    });
+});
+
+document.addEventListener("click", (event) => {
+    if(!sortFilterMenu || !sortFilterButton){
+        return;
+    }
+
+    const target = event.target;
+
+    if(sortFilterMenu.contains(target) || sortFilterButton.contains(target)){
+        return;
+    }
+
+    closeSortMenu();
+});
+
+document.addEventListener("keydown", (event) => {
+    if(event.key === "Escape"){
+        closeSortMenu();
+    }
+});
+
+updateSortMenuUI();
 
 async function renderGrid(targetGrid, items, emptyHTML){
     if(!targetGrid){ return; }
