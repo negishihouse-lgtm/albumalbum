@@ -672,7 +672,7 @@ a{
 @media(max-width:900px){
     .mobile-feed-tabs{
         display:grid;
-        grid-template-columns:1fr 1fr;
+        grid-template-columns:repeat(3, 1fr);
         position:sticky;
         top:0;
         z-index:900;
@@ -1208,6 +1208,7 @@ a{
         --feed-progress:0;
         --recommend-tab-opacity:1;
         --following-tab-opacity:0.58;
+        --list-tab-opacity:0.58;
     }
 
     .mobile-feed-tabs .feed-tab::after{
@@ -1217,7 +1218,7 @@ a{
     .mobile-feed-tabs::after{
         content:"";
         position:absolute;
-        left:calc(25% + (50% * var(--feed-progress, 0)));
+        left:calc(16.6667% + (33.3333% * var(--feed-progress, 0)));
         bottom:0;
         width:92px;
         height:4px;
@@ -1240,7 +1241,10 @@ a{
 
     #followingTab{
         opacity:var(--following-tab-opacity);
-        transform:scale(calc(0.96 + (0.04 * var(--feed-progress, 0))));
+    }
+
+    #listTab{
+        opacity:var(--list-tab-opacity);
     }
 
     .feed-tab.active{
@@ -1297,7 +1301,8 @@ a{
         overflow:visible;
     }
 
-    .feed-panel[data-feed-panel="following"]{
+    .feed-panel[data-feed-panel="following"],
+    .feed-panel[data-feed-panel="list"]{
         display:none;
     }
 }
@@ -2138,10 +2143,11 @@ a{
 
 <a href="editor.html" class="fab">＋</a>
 
-<!-- スマホ用：おすすめ / フォロー中 タブ -->
+<!-- スマホ用：おすすめ / フォロー中 / リスト タブ -->
 <div class="mobile-feed-tabs" id="mobileFeedTabs">
     <button type="button" class="feed-tab active" id="recommendTab">おすすめ</button>
     <button type="button" class="feed-tab" id="followingTab">フォロー中</button>
+    <button type="button" class="feed-tab" id="listTab">リスト</button>
 </div>
 
 <div class="topbar">
@@ -2180,6 +2186,9 @@ a{
     </section>
     <section class="feed-panel" data-feed-panel="following">
         <div class="album-grid" id="followingGrid"></div>
+    </section>
+    <section class="feed-panel" data-feed-panel="list">
+        <div class="album-grid" id="listGrid"></div>
     </section>
 </div>
 
@@ -2255,12 +2264,14 @@ const auth = getAuth(app);
 const feedSwipe = document.getElementById("feedSwipe");
 const recommendGrid = document.getElementById("recommendGrid");
 const followingGrid = document.getElementById("followingGrid");
+const listGrid = document.getElementById("listGrid");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
 const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 const recommendTab = document.getElementById("recommendTab");
 const followingTab = document.getElementById("followingTab");
+const listTab = document.getElementById("listTab");
 const shareSheet = document.getElementById("shareSheet");
 const sharePanelSubtitle = document.getElementById("sharePanelSubtitle");
 const shareToast = document.getElementById("shareToast");
@@ -4096,14 +4107,16 @@ function getPostTime(value){
 
 function getFeedProgress(){
     if(!feedSwipe || window.innerWidth > 900){
-        return currentFeedMode === "following" ? 1 : 0;
+        if(currentFeedMode === "list") return 2;
+        if(currentFeedMode === "following") return 1;
+        return 0;
     }
 
-    return Math.max(0, Math.min(1, feedSwipe.scrollLeft / Math.max(1, feedSwipe.clientWidth)));
+    return Math.max(0, Math.min(2, feedSwipe.scrollLeft / Math.max(1, feedSwipe.clientWidth)));
 }
 
 function updateFeedTabs(progress = null){
-    if(!recommendTab || !followingTab){
+    if(!recommendTab || !followingTab || !listTab){
         return;
     }
 
@@ -4111,45 +4124,60 @@ function updateFeedTabs(progress = null){
         progress = getFeedProgress();
     }
 
-    progress = Math.max(0, Math.min(1, progress));
+    progress = Math.max(0, Math.min(2, progress));
 
-    const nextMode = progress >= 0.5 ? "following" : "recommend";
+    let nextMode = "recommend";
+    if(progress >= 1.5){
+        nextMode = "list";
+    }else if(progress >= 0.5){
+        nextMode = "following";
+    }
+
     currentFeedMode = nextMode;
 
     recommendTab.classList.toggle("active", nextMode === "recommend");
     followingTab.classList.toggle("active", nextMode === "following");
+    listTab.classList.toggle("active", nextMode === "list");
 
     const tabs = document.getElementById("mobileFeedTabs");
 
     if(tabs){
         tabs.style.setProperty("--feed-progress", progress.toFixed(4));
-        tabs.style.setProperty("--recommend-tab-opacity", String(1 - (progress * 0.42)));
-        tabs.style.setProperty("--following-tab-opacity", String(0.58 + (progress * 0.42)));
+        tabs.style.setProperty("--recommend-tab-opacity", String(1 - (Math.min(progress, 1) * 0.42)));
+        tabs.style.setProperty("--following-tab-opacity", String(0.58 + ((1 - Math.min(1, Math.abs(progress - 1))) * 0.42)));
+        tabs.style.setProperty("--list-tab-opacity", String(0.58 + (Math.max(0, progress - 1) * 0.42)));
     }
 
     const recommendPanel = document.querySelector('[data-feed-panel="recommend"]');
     const followingPanel = document.querySelector('[data-feed-panel="following"]');
+    const listPanel = document.querySelector('[data-feed-panel="list"]');
 
     if(recommendPanel){
-        recommendPanel.classList.toggle("is-visible", progress < 0.5);
+        recommendPanel.classList.toggle("is-visible", nextMode === "recommend");
     }
 
     if(followingPanel){
-        followingPanel.classList.toggle("is-visible", progress >= 0.5);
+        followingPanel.classList.toggle("is-visible", nextMode === "following");
+    }
+
+    if(listPanel){
+        listPanel.classList.toggle("is-visible", nextMode === "list");
     }
 }
 
 function scrollFeedTo(mode){
-    if(mode !== "recommend" && mode !== "following"){
+    if(mode !== "recommend" && mode !== "following" && mode !== "list"){
         return;
     }
 
+    const panelIndex = mode === "list" ? 2 : (mode === "following" ? 1 : 0);
+
     currentFeedMode = mode;
-    updateFeedTabs(mode === "following" ? 1 : 0);
+    updateFeedTabs(panelIndex);
 
     if(feedSwipe && window.innerWidth <= 900){
         feedSwipe.scrollTo({
-            left: mode === "following" ? feedSwipe.clientWidth : 0,
+            left: feedSwipe.clientWidth * panelIndex,
             behavior:"smooth"
         });
     }
@@ -4161,6 +4189,10 @@ if(recommendTab){
 
 if(followingTab){
     followingTab.addEventListener("click", () => scrollFeedTo("following"));
+}
+
+if(listTab){
+    listTab.addEventListener("click", () => scrollFeedTo("list"));
 }
 
 let feedScrollTicking = false;
@@ -4368,6 +4400,11 @@ async function renderAlbums(){
     updateFeedTabs();
     await renderGrid(recommendGrid, getRecommendAlbums(), `<div class="empty">保存されたアルバムがありません</div>`);
     await renderGrid(followingGrid, getFollowingAlbums(), currentUser ? `<div class="empty">フォロー中の投稿がまだありません</div>` : `<div class="empty">ログインするとフォロー中TLを表示できます</div>`);
+
+    if(listGrid){
+        listGrid.innerHTML = `<div class="empty">リスト投稿はまだありません</div>`;
+    }
+
     updateLikeDisplays();
     updateCommentDisplays();
 }
@@ -4381,6 +4418,7 @@ onSnapshot(q, async (snapshot)=>{
 }, (error) => {
     if(recommendGrid){ recommendGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
     if(followingGrid){ followingGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
+    if(listGrid){ listGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
 });
 
 </script>
