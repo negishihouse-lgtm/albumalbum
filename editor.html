@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Track Editor</title>
+<title>投稿作成 - Album Collection</title>
 
 <style>
 *{
@@ -671,6 +671,79 @@ button:disabled{
     padding:10px;
 }
 
+
+/* =====================
+   Post Type / List Form
+===================== */
+
+.post-type-selector{
+    display:flex;
+    gap:10px;
+    margin-bottom:26px;
+}
+
+.post-type-btn{
+    flex:1;
+    background:#101010;
+    border:1px solid rgba(255,255,255,0.12);
+    color:#bbb;
+    padding:14px;
+    border-radius:14px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s;
+}
+
+.post-type-btn:hover{
+    border-color:#6fa8dc;
+    color:white;
+}
+
+.post-type-btn.active{
+    background:#6fa8dc;
+    color:white;
+    border-color:#6fa8dc;
+}
+
+.list-preview-box{
+    background:#101010;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    padding:14px;
+    color:#aaa;
+    font-size:13px;
+    line-height:1.7;
+    margin-bottom:22px;
+}
+
+.list-type-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    width:auto;
+    padding:7px 10px;
+    border-radius:999px;
+    background:rgba(111,168,220,0.16);
+    border:1px solid rgba(111,168,220,0.28);
+    color:#dff3ff;
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+@media(max-width:900px){
+    .post-type-selector{
+        display:grid;
+        grid-template-columns:1fr;
+        gap:8px;
+    }
+
+    .post-type-btn{
+        margin-top:0;
+    }
+}
+
 /* =====================
    Mobile
 ===================== */
@@ -941,6 +1014,36 @@ button:disabled{
                     <div class="spotify-results" id="spotifyResults"></div>
                 </div>
             </div>
+
+            <div class="section-title">投稿タイプ</div>
+
+            <div class="post-type-selector" id="postTypeSelector">
+                <button
+                    type="button"
+                    class="post-type-btn active"
+                    data-post-type="song"
+                >
+                    🎵 曲
+                </button>
+
+                <button
+                    type="button"
+                    class="post-type-btn"
+                    data-post-type="list"
+                >
+                    📋 リスト
+                </button>
+
+                <button
+                    type="button"
+                    class="post-type-btn"
+                    data-post-type="tier"
+                >
+                    🏆 Tier表
+                </button>
+            </div>
+
+            <div id="songFormSection">
 
             <div class="section-title">Song Form</div>
 
@@ -1217,6 +1320,45 @@ button:disabled{
                 </div>
             </div>
 
+            </div>
+
+            <div id="listFormSection" style="display:none;">
+
+                <div class="section-title">List Form</div>
+
+                <div class="list-preview-box">
+                    <div class="list-type-badge" id="listTypeBadge">📋 通常リスト</div>
+                    まずはリスト/Tier表のタイトルと説明だけ保存できます。次の段階で、ここに曲追加UIをつけます。
+                </div>
+
+                <div class="input-group">
+                    <label>リストタイトル</label>
+                    <input
+                        id="listTitleInput"
+                        type="text"
+                        placeholder="例：深夜に聴きたい邦ロック"
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label>説明</label>
+                    <textarea
+                        id="listDescInput"
+                        maxlength="300"
+                        placeholder="このリストについて"
+                    ></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>公開設定</label>
+                    <select id="listPublicInput">
+                        <option value="true">公開</option>
+                        <option value="false">非公開</option>
+                    </select>
+                </div>
+
+            </div>
+
             <button class="save-btn" id="saveBtn">
                 保存
             </button>
@@ -1326,11 +1468,20 @@ const spotifySelectedBox = document.getElementById("spotifySelectedBox");
 const spotifyResults = document.getElementById("spotifyResults");
 const spotifyUrlInput = document.getElementById("spotifyUrlInput");
 
+const songFormSection = document.getElementById("songFormSection");
+const listFormSection = document.getElementById("listFormSection");
+const postTypeButtons = document.querySelectorAll(".post-type-btn");
+const listTypeBadge = document.getElementById("listTypeBadge");
+const listTitleInput = document.getElementById("listTitleInput");
+const listDescInput = document.getElementById("listDescInput");
+const listPublicInput = document.getElementById("listPublicInput");
+
 const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
 let editingId = editingIdFromUrl;
 let currentLoadedAlbum = null;
 let selectedSpotifyTrack = null;
+let currentPostType = "song";
 let authReady = false;
 
 
@@ -1696,12 +1847,15 @@ function setPageMode(){
         modeBadge.textContent = "編集モード";
         modeBadge.classList.add("edit");
         saveBtn.textContent = "更新";
+        switchPostType("song");
+        disablePostTypeSwitchForEdit(true);
     }else{
         pageTitle.textContent = "投稿作成";
-        pageSubtitle.textContent = "新しい曲のコレクションを作成します。";
-        modeBadge.textContent = "新規投稿モード";
+        pageSubtitle.textContent = "曲単体・リスト・Tier表を作成できます。";
+        modeBadge.textContent = getModeBadgeText();
         modeBadge.classList.remove("edit");
         saveBtn.textContent = "保存";
+        disablePostTypeSwitchForEdit(false);
     }
 }
 
@@ -1748,6 +1902,31 @@ function getFormData(){
         spotifyDurationMs: selectedSpotifyTrack?.durationMs || 0,
         spotifyPreviewUrl: selectedSpotifyTrack?.previewUrl || "",
         source: selectedSpotifyTrack?.spotifyId ? "spotify" : "manual",
+        updatedAt: serverTimestamp()
+    };
+}
+
+function getListFormData(){
+    const user = auth.currentUser;
+
+    if(!user){
+        throw new Error("ログインしてください");
+    }
+
+    const title = listTitleInput ? listTitleInput.value.trim() : "";
+    const desc = listDescInput ? listDescInput.value.slice(0, 300) : "";
+    const isTier = currentPostType === "tier";
+
+    return {
+        type: isTier ? "tier" : "list",
+        title,
+        desc,
+        userId: user.uid,
+        userEmail: user.email,
+        isPublic: listPublicInput ? listPublicInput.value === "true" : true,
+        itemCount: 0,
+        coverImages: [],
+        createdFrom: "editor",
         updatedAt: serverTimestamp()
     };
 }
@@ -1822,6 +2001,18 @@ function clearForm(){
     artistInput.value = "";
     descInput.value = "";
     keywordsInput.value = "";
+
+    if(listTitleInput){
+        listTitleInput.value = "";
+    }
+
+    if(listDescInput){
+        listDescInput.value = "";
+    }
+
+    if(listPublicInput){
+        listPublicInput.value = "true";
+    }
     syncKeywordCandidates();
     isPublicInput.value = "true";
     selectedSpotifyTrack = null;
@@ -2032,6 +2223,44 @@ saveBtn.addEventListener("click", async () => {
             return;
         }
 
+        if(currentPostType === "list" || currentPostType === "tier"){
+            if(editingId){
+                alert("現在、編集モードでは曲投稿のみ編集できます");
+                return;
+            }
+
+            if(!listTitleInput || !listTitleInput.value.trim()){
+                alert("リストタイトルを入力してください");
+                return;
+            }
+
+            const listData = getListFormData();
+
+            const listRef = await addDoc(collection(db, "lists"), {
+                ...listData,
+                createdAt: serverTimestamp()
+            });
+
+            alert(currentPostType === "tier" ? "Tier表を保存しました" : "リストを保存しました");
+
+            clearNewPostFormOnly();
+
+            if(listTitleInput){
+                listTitleInput.value = "";
+            }
+
+            if(listDescInput){
+                listDescInput.value = "";
+            }
+
+            if(listPublicInput){
+                listPublicInput.value = "true";
+            }
+
+            location.href = `./list-detail.html?id=${encodeURIComponent(listRef.id)}`;
+            return;
+        }
+
         if(!titleInput.value.trim()){
             alert("曲名を入力してください");
             return;
@@ -2090,6 +2319,18 @@ function clearNewPostFormOnly(){
     artistInput.value = "";
     descInput.value = "";
     keywordsInput.value = "";
+
+    if(listTitleInput){
+        listTitleInput.value = "";
+    }
+
+    if(listDescInput){
+        listDescInput.value = "";
+    }
+
+    if(listPublicInput){
+        listPublicInput.value = "true";
+    }
     syncKeywordCandidates();
     isPublicInput.value = "true";
     selectedSpotifyTrack = null;
@@ -2155,10 +2396,83 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+function getModeBadgeText(){
+    if(currentPostType === "list"){
+        return "リスト投稿モード";
+    }
+
+    if(currentPostType === "tier"){
+        return "Tier表投稿モード";
+    }
+
+    return "曲投稿モード";
+}
+
+function disablePostTypeSwitchForEdit(disabled){
+    postTypeButtons.forEach((button) => {
+        button.disabled = Boolean(disabled);
+    });
+}
+
+function switchPostType(type){
+    if(editingId){
+        type = "song";
+    }
+
+    if(type !== "song" && type !== "list" && type !== "tier"){
+        type = "song";
+    }
+
+    currentPostType = type;
+
+    postTypeButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.postType === type);
+    });
+
+    if(songFormSection){
+        songFormSection.style.display = type === "song" ? "block" : "none";
+    }
+
+    if(listFormSection){
+        listFormSection.style.display = type === "song" ? "none" : "block";
+    }
+
+    if(listTypeBadge){
+        if(type === "tier"){
+            listTypeBadge.textContent = "🏆 Tier表";
+        }else{
+            listTypeBadge.textContent = "📋 通常リスト";
+        }
+    }
+
+    if(!editingId){
+        modeBadge.textContent = getModeBadgeText();
+
+        if(type === "song"){
+            pageSubtitle.textContent = "新しい曲のコレクションを作成します。";
+            saveBtn.textContent = "保存";
+        }else if(type === "list"){
+            pageSubtitle.textContent = "複数の曲をまとめるリストを作成します。";
+            saveBtn.textContent = "リストを保存";
+        }else{
+            pageSubtitle.textContent = "曲をランク分けするTier表を作成します。";
+            saveBtn.textContent = "Tier表を保存";
+        }
+    }
+}
+
+postTypeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        switchPostType(button.dataset.postType || "song");
+    });
+});
+
 setPageMode();
 updateDescCount();
 syncKeywordCandidates();
 initMeterDots();
+
+switchPostType("song");
 
 </script>
 
