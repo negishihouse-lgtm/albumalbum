@@ -2060,12 +2060,19 @@ a{
 @media(max-width:900px){
     .topbar{
         display:block !important;
+        position:relative !important;
+        padding-right:0 !important;
+        margin-bottom:72px !important;
     }
 
     .home-sortbar{
-        justify-content:flex-start;
-        margin-top:14px;
-        margin-bottom:4px;
+        position:absolute !important;
+        right:0 !important;
+        bottom:-54px !important;
+        justify-content:flex-end !important;
+        margin-top:0 !important;
+        margin-bottom:0 !important;
+        z-index:1200 !important;
     }
 
     .sort-filter-btn{
@@ -2074,6 +2081,8 @@ a{
     }
 
     .sort-filter-menu{
+        right:0 !important;
+        left:auto !important;
         min-width:210px;
     }
 }
@@ -3983,7 +3992,7 @@ function getRecommendScore(item){
     // おすすめ順では、自分の投稿が好み一致で上に来すぎないように少し下げる
     // 非表示にはせず、人気や新しさがあればある程度は上がれる
     if(currentUser && album.userId === currentUser.uid){
-        score -= 100;
+        score -= 180;
     }
 
     return score;
