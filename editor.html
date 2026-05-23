@@ -1129,6 +1129,184 @@ button:disabled{
     }
 }
 
+
+/* =====================
+   Visual Tier Builder
+===================== */
+
+.tier-builder{
+    display:grid;
+    gap:10px;
+    margin-top:14px;
+}
+
+.tier-row{
+    display:grid;
+    grid-template-columns:54px minmax(0,1fr);
+    min-height:78px;
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:16px;
+    overflow:hidden;
+    background:#101010;
+}
+
+.tier-label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:23px;
+    font-weight:900;
+    border-right:1px solid rgba(255,255,255,0.10);
+}
+
+.tier-label.s{ color:#ff8fa3; background:rgba(255,80,120,0.10); }
+.tier-label.a{ color:#ffd080; background:rgba(255,190,80,0.10); }
+.tier-label.b{ color:#87b8ff; background:rgba(90,150,255,0.10); }
+.tier-label.c{ color:#8ee3ad; background:rgba(90,220,140,0.10); }
+
+.tier-drop-zone{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:10px;
+    overflow-x:auto;
+    min-width:0;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+}
+
+.tier-drop-zone::-webkit-scrollbar{
+    display:none;
+}
+
+.tier-mini-card{
+    width:58px;
+    flex:0 0 58px;
+    cursor:pointer;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+.tier-mini-card img{
+    width:58px;
+    height:58px;
+    display:block;
+    object-fit:cover;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.15);
+    background:#222;
+}
+
+.tier-mini-title{
+    margin-top:5px;
+    color:#ddd;
+    font-size:10px;
+    line-height:1.25;
+    word-break:break-word;
+
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.tier-builder-help{
+    color:#888;
+    font-size:12px;
+    line-height:1.7;
+    margin-top:10px;
+    margin-bottom:8px;
+}
+
+.tier-move-sheet{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    background:rgba(0,0,0,0.62);
+    z-index:30000;
+    padding:12px;
+    padding-bottom:calc(84px + env(safe-area-inset-bottom));
+}
+
+.tier-move-sheet.open{
+    display:flex;
+}
+
+.tier-move-panel{
+    width:min(430px,100%);
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:24px;
+    padding:16px;
+    box-shadow:0 22px 70px rgba(0,0,0,0.58);
+}
+
+.tier-move-title{
+    font-size:16px;
+    font-weight:900;
+    margin-bottom:5px;
+}
+
+.tier-move-subtitle{
+    color:#aaa;
+    font-size:12px;
+    line-height:1.6;
+    margin-bottom:12px;
+}
+
+.tier-move-actions{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+}
+
+.tier-move-btn{
+    margin-top:0;
+    padding:14px 0;
+    border-radius:14px;
+    background:#171717;
+    border:1px solid rgba(255,255,255,0.12);
+    color:white;
+    font-size:18px;
+    font-weight:900;
+}
+
+.tier-move-btn.s{ color:#ff8fa3; }
+.tier-move-btn.a{ color:#ffd080; }
+.tier-move-btn.b{ color:#87b8ff; }
+.tier-move-btn.c{ color:#8ee3ad; }
+
+.tier-move-close{
+    margin-top:10px;
+    background:#333;
+    color:#ddd;
+    font-size:13px;
+    font-weight:800;
+}
+
+@media(max-width:900px){
+    .tier-row{
+        grid-template-columns:48px minmax(0,1fr);
+        min-height:74px;
+    }
+
+    .tier-label{
+        font-size:21px;
+    }
+
+    .tier-mini-card{
+        width:54px;
+        flex-basis:54px;
+    }
+
+    .tier-mini-card img{
+        width:54px;
+        height:54px;
+    }
+}
+
 </style>
 </head>
 
@@ -1597,7 +1775,7 @@ button:disabled{
                         <div>
                             <div class="list-add-title">追加済みの曲</div>
                             <div class="list-add-help">
-                                現時点では追加順で保存します。
+                                通常リストでは追加順で保存します。Tier表にすると、曲をS/A/B/Cに分けて配置できます。
                             </div>
                         </div>
 
@@ -1635,6 +1813,23 @@ button:disabled{
 
     </main>
 
+</div>
+
+
+<div class="tier-move-sheet" id="tierMoveSheet" onclick="closeTierMoveSheet()">
+    <div class="tier-move-panel" onclick="event.stopPropagation();">
+        <div class="tier-move-title" id="tierMoveTitle">Tierを選択</div>
+        <div class="tier-move-subtitle">この曲をどのランクに置くか選んでください。</div>
+
+        <div class="tier-move-actions">
+            <button type="button" class="tier-move-btn s" onclick="moveSelectedItemToTier('S')">S</button>
+            <button type="button" class="tier-move-btn a" onclick="moveSelectedItemToTier('A')">A</button>
+            <button type="button" class="tier-move-btn b" onclick="moveSelectedItemToTier('B')">B</button>
+            <button type="button" class="tier-move-btn c" onclick="moveSelectedItemToTier('C')">C</button>
+        </div>
+
+        <button type="button" class="tier-move-close" onclick="closeTierMoveSheet()">閉じる</button>
+    </div>
 </div>
 
 <script type="module">
@@ -1743,6 +1938,8 @@ const existingPostSearchStatus = document.getElementById("existingPostSearchStat
 const existingPostSearchResults = document.getElementById("existingPostSearchResults");
 const listDraftItems = document.getElementById("listDraftItems");
 const tierToggleBtn = document.getElementById("tierToggleBtn");
+const tierMoveSheet = document.getElementById("tierMoveSheet");
+const tierMoveTitle = document.getElementById("tierMoveTitle");
 
 const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
@@ -1752,6 +1949,7 @@ let selectedSpotifyTrack = null;
 let currentPostType = "song";
 let listItemsDraft = [];
 let listHasTier = false;
+let selectedTierMoveIndex = -1;
 let authReady = false;
 
 
@@ -2843,19 +3041,12 @@ function renderListDraftItems(){
         return;
     }
 
-    const hasTier = Boolean(listHasTier);
+    if(listHasTier){
+        renderVisualTierBuilder();
+        return;
+    }
 
     listDraftItems.innerHTML = listItemsDraft.map((item, index) => {
-        const tierSelect = hasTier
-            ? `
-                <select class="tier-select" onchange="window.updateListDraftTier(${index}, this.value)">
-                    ${["S","A","B","C"].map(tier => `
-                        <option value="${tier}" ${item.tier === tier ? "selected" : ""}>${tier}</option>
-                    `).join("")}
-                </select>
-            `
-            : "";
-
         return `
             <div class="list-draft-item">
                 <img src="${escapeHTML(item.cover || "")}" alt="">
@@ -2866,12 +3057,89 @@ function renderListDraftItems(){
                         ${item.source === "album" ? "既存投稿から追加" : "Spotifyから追加"}
                     </div>
                 </div>
-                ${tierSelect}
                 <button type="button" class="list-mini-btn remove" onclick="window.removeListDraftItem(${index})">削除</button>
             </div>
         `;
     }).join("");
 }
+
+function renderVisualTierBuilder(){
+    const tiers = ["S", "A", "B", "C"];
+
+    const rows = tiers.map((tier) => {
+        const items = listItemsDraft
+            .map((item, index) => ({ item, index }))
+            .filter(entry => (entry.item.tier || "A") === tier);
+
+        const cards = items.length
+            ? items.map(({ item, index }) => `
+                <div class="tier-mini-card" onclick="window.openTierMoveSheet(${index})">
+                    <img src="${escapeHTML(item.cover || "")}" alt="">
+                    <div class="tier-mini-title">${escapeHTML(item.title || "")}</div>
+                </div>
+            `).join("")
+            : `<div class="list-empty-text" style="width:100%;padding:10px;">ここに曲を置く</div>`;
+
+        return `
+            <div class="tier-row">
+                <div class="tier-label ${tier.toLowerCase()}">${tier}</div>
+                <div class="tier-drop-zone">
+                    ${cards}
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    listDraftItems.innerHTML = `
+        <div class="tier-builder-help">
+            ジャケットをタップすると、S/A/B/Cのどこに置くか選べます。
+        </div>
+        <div class="tier-builder">
+            ${rows}
+        </div>
+    `;
+}
+
+function openTierMoveSheet(index){
+    selectedTierMoveIndex = index;
+
+    const item = listItemsDraft[index];
+
+    if(!item){
+        return;
+    }
+
+    if(tierMoveTitle){
+        tierMoveTitle.textContent = item.title || "Tierを選択";
+    }
+
+    if(tierMoveSheet){
+        tierMoveSheet.classList.add("open");
+    }
+}
+
+function closeTierMoveSheet(){
+    if(tierMoveSheet){
+        tierMoveSheet.classList.remove("open");
+    }
+
+    selectedTierMoveIndex = -1;
+}
+
+function moveSelectedItemToTier(tier){
+    if(selectedTierMoveIndex < 0 || !listItemsDraft[selectedTierMoveIndex]){
+        return;
+    }
+
+    listItemsDraft[selectedTierMoveIndex].tier = tier;
+    closeTierMoveSheet();
+    renderListDraftItems();
+}
+
+window.openTierMoveSheet = openTierMoveSheet;
+window.closeTierMoveSheet = closeTierMoveSheet;
+window.moveSelectedItemToTier = moveSelectedItemToTier;
+
 
 async function searchExistingPostsForList(){
     const user = auth.currentUser;
