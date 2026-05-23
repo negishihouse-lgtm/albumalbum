@@ -1307,6 +1307,27 @@ button:disabled{
     }
 }
 
+
+.tier-mini-card.selected{
+    transform:translateY(-1px);
+}
+
+.tier-mini-card.selected img{
+    border-color:#edf8f9;
+    box-shadow:0 0 0 3px rgba(111,168,220,0.35), 0 0 18px rgba(111,168,220,0.35);
+}
+
+.tier-drop-zone.tier-target-active{
+    background:rgba(111,168,220,0.08);
+    outline:1px solid rgba(111,168,220,0.28);
+    outline-offset:-4px;
+    cursor:pointer;
+}
+
+.tier-builder-help strong{
+    color:#dff3ff;
+}
+
 </style>
 </head>
 
@@ -1816,22 +1837,6 @@ button:disabled{
 </div>
 
 
-<div class="tier-move-sheet" id="tierMoveSheet" onclick="closeTierMoveSheet()">
-    <div class="tier-move-panel" onclick="event.stopPropagation();">
-        <div class="tier-move-title" id="tierMoveTitle">Tierを選択</div>
-        <div class="tier-move-subtitle">この曲をどのランクに置くか選んでください。</div>
-
-        <div class="tier-move-actions">
-            <button type="button" class="tier-move-btn s" onclick="moveSelectedItemToTier('S')">S</button>
-            <button type="button" class="tier-move-btn a" onclick="moveSelectedItemToTier('A')">A</button>
-            <button type="button" class="tier-move-btn b" onclick="moveSelectedItemToTier('B')">B</button>
-            <button type="button" class="tier-move-btn c" onclick="moveSelectedItemToTier('C')">C</button>
-        </div>
-
-        <button type="button" class="tier-move-close" onclick="closeTierMoveSheet()">閉じる</button>
-    </div>
-</div>
-
 <script type="module">
 
 import {
@@ -1938,8 +1943,6 @@ const existingPostSearchStatus = document.getElementById("existingPostSearchStat
 const existingPostSearchResults = document.getElementById("existingPostSearchResults");
 const listDraftItems = document.getElementById("listDraftItems");
 const tierToggleBtn = document.getElementById("tierToggleBtn");
-const tierMoveSheet = document.getElementById("tierMoveSheet");
-const tierMoveTitle = document.getElementById("tierMoveTitle");
 
 const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
@@ -1949,7 +1952,7 @@ let selectedSpotifyTrack = null;
 let currentPostType = "song";
 let listItemsDraft = [];
 let listHasTier = false;
-let selectedTierMoveIndex = -1;
+let selectedTierItemIndex = -1;
 let authReady = false;
 
 
@@ -3019,6 +3022,7 @@ function updateListDraftTier(index, tier){
 function clearListDraft(){
     listItemsDraft = [];
     listHasTier = false;
+    selectedTierItemIndex = -1;
     updateTierToggleButton();
     renderListDraftItems();
 
@@ -3072,27 +3076,38 @@ function renderVisualTierBuilder(){
             .filter(entry => (entry.item.tier || "A") === tier);
 
         const cards = items.length
-            ? items.map(({ item, index }) => `
-                <div class="tier-mini-card" onclick="window.openTierMoveSheet(${index})">
-                    <img src="${escapeHTML(item.cover || "")}" alt="">
-                    <div class="tier-mini-title">${escapeHTML(item.title || "")}</div>
-                </div>
-            `).join("")
+            ? items.map(({ item, index }) => {
+                const selectedClass = selectedTierItemIndex === index ? " selected" : "";
+
+                return `
+                    <div class="tier-mini-card${selectedClass}" onclick="event.stopPropagation(); window.selectTierItem(${index})">
+                        <img src="${escapeHTML(item.cover || "")}" alt="">
+                        <div class="tier-mini-title">${escapeHTML(item.title || "")}</div>
+                    </div>
+                `;
+            }).join("")
             : `<div class="list-empty-text" style="width:100%;padding:10px;">ここに曲を置く</div>`;
+
+        const targetClass = selectedTierItemIndex >= 0 ? " tier-target-active" : "";
 
         return `
             <div class="tier-row">
-                <div class="tier-label ${tier.toLowerCase()}">${tier}</div>
-                <div class="tier-drop-zone">
+                <div class="tier-label ${tier.toLowerCase()}" onclick="window.moveSelectedItemToTier('${tier}')">${tier}</div>
+                <div class="tier-drop-zone${targetClass}" onclick="window.moveSelectedItemToTier('${tier}')">
                     ${cards}
                 </div>
             </div>
         `;
     }).join("");
 
+    const selectedItem = selectedTierItemIndex >= 0 ? listItemsDraft[selectedTierItemIndex] : null;
+    const helpText = selectedItem
+        ? `<strong>${escapeHTML(selectedItem.title || "選択中の曲")}</strong> を選択中。移動先のS/A/B/Cの段をタップしてください。`
+        : "移動したいジャケットをタップしてから、S/A/B/Cの段をタップすると移動できます。";
+
     listDraftItems.innerHTML = `
         <div class="tier-builder-help">
-            ジャケットをタップすると、S/A/B/Cのどこに置くか選べます。
+            ${helpText}
         </div>
         <div class="tier-builder">
             ${rows}
@@ -3100,44 +3115,31 @@ function renderVisualTierBuilder(){
     `;
 }
 
-function openTierMoveSheet(index){
-    selectedTierMoveIndex = index;
-
-    const item = listItemsDraft[index];
-
-    if(!item){
+function selectTierItem(index){
+    if(!listItemsDraft[index]){
         return;
     }
 
-    if(tierMoveTitle){
-        tierMoveTitle.textContent = item.title || "Tierを選択";
+    if(selectedTierItemIndex === index){
+        selectedTierItemIndex = -1;
+    }else{
+        selectedTierItemIndex = index;
     }
 
-    if(tierMoveSheet){
-        tierMoveSheet.classList.add("open");
-    }
-}
-
-function closeTierMoveSheet(){
-    if(tierMoveSheet){
-        tierMoveSheet.classList.remove("open");
-    }
-
-    selectedTierMoveIndex = -1;
-}
-
-function moveSelectedItemToTier(tier){
-    if(selectedTierMoveIndex < 0 || !listItemsDraft[selectedTierMoveIndex]){
-        return;
-    }
-
-    listItemsDraft[selectedTierMoveIndex].tier = tier;
-    closeTierMoveSheet();
     renderListDraftItems();
 }
 
-window.openTierMoveSheet = openTierMoveSheet;
-window.closeTierMoveSheet = closeTierMoveSheet;
+function moveSelectedItemToTier(tier){
+    if(selectedTierItemIndex < 0 || !listItemsDraft[selectedTierItemIndex]){
+        return;
+    }
+
+    listItemsDraft[selectedTierItemIndex].tier = tier;
+    selectedTierItemIndex = -1;
+    renderListDraftItems();
+}
+
+window.selectTierItem = selectTierItem;
 window.moveSelectedItemToTier = moveSelectedItemToTier;
 
 
@@ -3303,6 +3305,7 @@ function updateListTierBadge(){
 if(tierToggleBtn){
     tierToggleBtn.addEventListener("click", () => {
         listHasTier = !listHasTier;
+        selectedTierItemIndex = -1;
         updateListTierBadge();
     });
 }
