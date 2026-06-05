@@ -330,6 +330,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+auth.languageCode = "ja";
 
 const db = initializeFirestore(app, {
     experimentalAutoDetectLongPolling: true
@@ -402,7 +403,7 @@ onAuthStateChanged(auth, async (user) => {
         return;
     }
 
-    setMessage("メールを確認してください。迷惑メールフォルダも確認してください。");
+    setMessage("メールを確認してください。届かない場合は、メールアプリ側の分類も確認してください。");
 });
 
 checkedBtn.addEventListener("click", async () => {
