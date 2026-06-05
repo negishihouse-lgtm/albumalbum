@@ -181,12 +181,37 @@ a{
 }
 
 .mobile-tabbar a.active{
-    color:#6fa8dc;
+    color:white;
+    font-weight:700;
 }
 
 .mobile-tabbar .icon{
     font-size:22px;
     line-height:1;
+}
+
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 /* ===== 共通右下投稿ボタン ===== */
@@ -274,28 +299,29 @@ a{
 <!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
     <a href="index.html">
-        <div class="icon">🏠</div>
-        <div>ホーム</div>
+        <span class="icon">⌂</span>
+        <span class="label">ホーム</span>
     </a>
 
     <a href="search.html">
-        <div class="icon">🔍</div>
-        <div>検索</div>
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
     </a>
 
     <a href="editor.html">
-        <div class="icon">➕</div>
-        <div>投稿</div>
+        <span class="icon">＋</span>
+        <span class="label">投稿</span>
     </a>
 
     <a href="notifications.html">
-        <div class="icon">🔔</div>
-        <div>通知</div>
+        <span class="icon">♡</span>
+        <span class="label">通知</span>
     </a>
 
     <a id="mobileMyPageLink" href="login.html">
-        <div class="icon">👤</div>
-        <div>マイページ</div>
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">マイページ</span>
     </a>
 </nav>
 
@@ -310,9 +336,10 @@ a{
     </div>
 
     <div class="spam-warning">
-        ⚠️ 確認メールが迷惑メールに入っている可能性があります
+        ⚠️ 確認メールはほぼ確実に迷惑メールに入っています
         <span class="small">
-            届かない場合は、Gmailの「迷惑メール」「プロモーション」「すべてのメール」も確認してください。
+            Gmailの「迷惑メール」「プロモーション」「すべてのメール」を確認してください。<br>
+            メール内のURLがリンク化されていない場合は、URLをコピーしてブラウザに貼り付けて開いてください。
         </span>
     </div>
 
@@ -342,6 +369,7 @@ import {
     initializeFirestore,
     doc,
     setDoc,
+    getDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -369,6 +397,8 @@ const resendBtn = document.getElementById("resendBtn");
 const message = document.getElementById("message");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 
 const params = new URLSearchParams(location.search);
 const redirect = params.get("redirect") || "profile-edit.html";
@@ -384,11 +414,74 @@ function setMessage(text, type = ""){
     }
 }
 
+
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
+
+async function updateMobileMyPageTab(user){
+    if(!mobileMyPageLink){
+        return;
+    }
+
+    if(!user){
+        mobileMyPageLink.href = "login.html";
+
+        if(mobileMyPageAvatar){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+            mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+    }
+
+    mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+
+    try{
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
+
+        if(!userSnap.exists()){
+            return;
+        }
+
+        const iconUrl = getUserIconUrl(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.src = iconUrl;
+            mobileMyPageAvatar.style.display = "block";
+            mobileMyPageFallback.style.display = "none";
+
+            mobileMyPageAvatar.onerror = () => {
+                mobileMyPageAvatar.style.display = "none";
+                mobileMyPageFallback.style.display = "flex";
+            };
+        }
+    }catch(error){
+        console.warn("マイページアイコンの取得に失敗しました", error);
+    }
+}
+
 function updateCommonMyPageLinks(user){
     const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
 
     myPageLink.href = url;
     mobileMyPageLink.href = url;
+    updateMobileMyPageTab(user);
 }
 
 async function updateEmailVerifiedFlag(user){
@@ -430,7 +523,7 @@ onAuthStateChanged(auth, async (user) => {
         return;
     }
 
-    setMessage("メールを確認してください。届かない場合は、迷惑メール・プロモーション・すべてのメールも確認してください。");
+    setMessage("メールを確認してください。確認メールはほぼ確実に迷惑メールに入っています。URLがリンク化されていない場合は、コピーしてブラウザに貼り付けて開いてください。");
 });
 
 checkedBtn.addEventListener("click", async () => {
