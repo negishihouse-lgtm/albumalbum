@@ -2899,7 +2899,7 @@ async function updateMobileMyPageTab(user){
     mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
 
     try{
-        const userSnap = await getDoc(doc(db, "users", user.uid));
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
 
         if(!userSnap.exists()){
             return;
@@ -2931,7 +2931,7 @@ async function getCurrentUserName(db, currentUser){
     }
 
     try{
-        const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+        const meSnap = await getDoc(doc(db, "publicUsers", currentUser.uid));
         if(meSnap.exists()){
             return getUserDisplayNameFromData(meSnap.data()) || "匿名ユーザー";
         }
@@ -4099,7 +4099,7 @@ function renderAlbums(){
 
 async function loadProfile() {
     try {
-        const userDoc = await getDoc(doc(db, "users", uid));
+        const userDoc = await getDoc(doc(db, "publicUsers", uid));
 
         if (userDoc.exists()) {
             const user = userDoc.data();
