@@ -2004,7 +2004,7 @@ async function updateMobileMyPageTab(user){
     }
 
     try{
-        const userSnap = await getDoc(doc(db, "users", user.uid));
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
 
         if(!userSnap.exists()){
             return;
@@ -2352,7 +2352,6 @@ function getFormData(){
 
     return {
         userId: user.uid,
-        userEmail: user.email,
         cover: coverInput.value.trim(),
         title: titleInput.value.trim(),
         artist: artistInput.value.trim(),
@@ -2401,7 +2400,6 @@ function getListFormData(){
         title,
         desc,
         userId: user.uid,
-        userEmail: user.email,
         isPublic: listPublicInput ? listPublicInput.value === "true" : true,
         itemCount: listItemsDraft.length,
         coverImages,
@@ -3245,7 +3243,7 @@ function renderExistingPostSearchResults(results){
                     <div class="list-search-result-title">${escapeHTML(album.title || "")}</div>
                     <div class="list-search-result-meta">
                         ${escapeHTML(album.artist || "")}<br>
-                        ${escapeHTML(album.userName || album.userEmail || "")}
+                        ${escapeHTML(album.userName || album.displayName || album.nickname || "")}
                     </div>
                 </div>
                 <button
