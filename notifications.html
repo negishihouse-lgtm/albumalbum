@@ -429,7 +429,7 @@ async function updateMobileMyPageTab(user){
     mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
 
     try{
-        const userSnap = await getDoc(doc(db, "users", user.uid));
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
         if(!userSnap.exists()) return;
 
         const iconUrl = getUserIconUrl(userSnap.data());
