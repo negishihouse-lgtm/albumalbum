@@ -2353,7 +2353,7 @@ async function getCurrentUserProfile(user){
     }
 
     try{
-        const userSnap = await getDoc(doc(db, "users", user.uid));
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
 
         if(userSnap.exists()){
             return userSnap.data();
@@ -2379,7 +2379,7 @@ async function getPosterProfileForAlbum(album){
 
     if(uid){
         try{
-            const userSnap = await getDoc(doc(db, "users", uid));
+            const userSnap = await getDoc(doc(db, "publicUsers", uid));
 
             if(userSnap.exists()){
                 const userData = userSnap.data();
@@ -2447,7 +2447,7 @@ async function updateMobileMyPageTab(user){
     mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
 
     try{
-        const userSnap = await getDoc(doc(db, "users", user.uid));
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
 
         if(!userSnap.exists()){
             return;
@@ -3396,7 +3396,7 @@ async function getCurrentUserName(db, currentUser){
     }
 
     try{
-        const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+        const meSnap = await getDoc(doc(db, "publicUsers", currentUser.uid));
         if(meSnap.exists()){
             return getUserDisplayNameFromData(meSnap.data()) || "匿名ユーザー";
         }
