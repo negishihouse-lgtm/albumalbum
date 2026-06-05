@@ -1652,17 +1652,35 @@ onAuthStateChanged(auth, async (user) => {
 
     backBtn.onclick = goMyPage;
 
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
+    const publicUserRef = doc(db, "publicUsers", user.uid);
+    const privateUserRef = doc(db, "users", user.uid);
 
-    if(userSnap.exists()){
-        const data = userSnap.data();
+    const [publicUserSnap, privateUserSnap] = await Promise.all([
+        getDoc(publicUserRef),
+        getDoc(privateUserRef).catch((error) => {
+            console.warn("非公開ユーザー情報の取得に失敗しました", error);
+            return null;
+        })
+    ]);
+
+    const publicData = publicUserSnap.exists() ? publicUserSnap.data() : {};
+    const privateData = privateUserSnap?.exists?.() ? privateUserSnap.data() : {};
+
+    // 移行前に users に入っていたプロフィール情報も一度だけ fallback として使う
+    const data = {
+        ...privateData,
+        ...publicData
+    };
+
+    if(publicUserSnap.exists() || privateUserSnap?.exists?.()){
         const iconUrl = getUserIconUrl(data);
+        const displayName = data.nickname || data.userName || data.displayName || "";
+        const bio = data.bio || data.profileBio || data.introduction || "";
 
         currentIconUrl = iconUrl;
-        nicknameInput.value = data.nickname || data.userName || data.displayName || "";
-        birthdateInput.value = data.birthdate || "";
-        bioInput.value = data.bio || data.profileBio || data.introduction || "";
+        nicknameInput.value = displayName;
+        birthdateInput.value = privateData.birthdate || "";
+        bioInput.value = bio;
         setFavoriteArtists(
             data.favoriteArtistObjects ||
             data.favoriteArtists ||
@@ -1680,32 +1698,66 @@ onAuthStateChanged(auth, async (user) => {
         }
 
         updateMobileMyPageIcon(iconUrl);
+
+        // publicUsers が未作成の場合だけ、公開してよい情報だけをコピーして作る
+        if(!publicUserSnap.exists()){
+            await setDoc(publicUserRef, {
+                uid: user.uid,
+                nickname: displayName,
+                userName: displayName,
+                displayName: displayName,
+                photoURL: iconUrl,
+                iconURL: iconUrl,
+                avatarUrl: iconUrl,
+                profileImageUrl: iconUrl,
+                bio: bio,
+                profileBio: bio,
+                introduction: bio,
+                favoriteArtists: data.favoriteArtists || [],
+                favoriteArtistObjects: data.favoriteArtistObjects || [],
+                favoriteTags: data.favoriteTags || [],
+                favoriteArtistsPublic: data.favoriteArtistsPublic !== false,
+                favoriteTagsPublic: data.favoriteTagsPublic !== false,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp()
+            }, { merge:true });
+        }
     } else {
         currentIconUrl = "";
         setDefaultAvatar();
         updateMobileMyPageIcon("");
+        setFavoriteArtists([]);
+        setFavoriteTags([]);
 
-        await setDoc(userRef, {
+        await setDoc(publicUserRef, {
             uid: user.uid,
-            email: user.email || "",
             nickname: "",
             userName: "",
             displayName: "",
             photoURL: "",
             iconURL: "",
-            birthdate: "",
+            avatarUrl: "",
+            profileImageUrl: "",
             bio: "",
+            profileBio: "",
+            introduction: "",
             favoriteArtists: [],
+            favoriteArtistObjects: [],
             favoriteTags: [],
             favoriteArtistsPublic: true,
             favoriteTagsPublic: true,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp()
         }, { merge:true });
-
-        setFavoriteArtists([]);
-        setFavoriteTags([]);
     }
+
+    // users は非公開情報用。メールアドレスや生年月日はここだけに保存する。
+    await setDoc(privateUserRef, {
+        uid: user.uid,
+        email: user.email || "",
+        birthdate: privateData.birthdate || "",
+        updatedAt: serverTimestamp()
+    }, { merge:true });
 });
 
 /* =====================
@@ -1745,11 +1797,12 @@ saveBtn.addEventListener("click", async () => {
 
         message.textContent = "プロフィールを保存中...";
 
-        const userRef = doc(db, "users", currentUser.uid);
+        const publicUserRef = doc(db, "publicUsers", currentUser.uid);
+        const privateUserRef = doc(db, "users", currentUser.uid);
 
-        await setDoc(userRef, {
+        // 公開プロフィール。誰でも読めるので、email や birthdate は入れない。
+        await setDoc(publicUserRef, {
             uid: currentUser.uid,
-            email: currentUser.email || "",
             nickname: nickname,
             userName: nickname,
             displayName: nickname,
@@ -1757,7 +1810,6 @@ saveBtn.addEventListener("click", async () => {
             iconURL: iconUrl,
             avatarUrl: iconUrl,
             profileImageUrl: iconUrl,
-            birthdate: birthdate,
             bio: bio,
             profileBio: bio,
             introduction: bio,
@@ -1766,6 +1818,14 @@ saveBtn.addEventListener("click", async () => {
             favoriteTags: favoriteTags,
             favoriteArtistsPublic: favoriteArtistsPublic,
             favoriteTagsPublic: favoriteTagsPublic,
+            updatedAt: serverTimestamp()
+        }, { merge:true });
+
+        // 非公開ユーザー情報。本人だけ読める users に保存する。
+        await setDoc(privateUserRef, {
+            uid: currentUser.uid,
+            email: currentUser.email || "",
+            birthdate: birthdate,
             updatedAt: serverTimestamp()
         }, { merge:true });
 
