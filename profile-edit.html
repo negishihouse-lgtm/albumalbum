@@ -709,6 +709,171 @@ button:disabled{
     }
 }
 
+/* =====================
+   Settings Split Pages
+===================== */
+
+.settings-tabs{
+    max-width:620px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:18px;
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:16px;
+    padding:8px;
+}
+
+.settings-tab{
+    width:100%;
+    margin:0;
+    padding:13px 14px;
+    border-radius:12px;
+    background:transparent;
+    color:#aaa;
+    border:none;
+    font-size:15px;
+    font-weight:800;
+}
+
+.settings-tab.active{
+    background:#6fa8dc;
+    color:white;
+}
+
+.settings-page{
+    display:none;
+}
+
+.settings-page.active{
+    display:block;
+}
+
+.account-section-title{
+    color:#ffffff;
+    font-size:18px;
+    font-weight:800;
+    margin:0 0 14px;
+}
+
+.account-card{
+    background:#101010;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:18px;
+}
+
+.account-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:12px 0;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.account-row:last-child{
+    border-bottom:none;
+}
+
+.account-label{
+    color:#aaa;
+    font-size:13px;
+    line-height:1.5;
+}
+
+.account-value{
+    color:white;
+    font-size:14px;
+    font-weight:800;
+    line-height:1.5;
+    text-align:right;
+    word-break:break-all;
+}
+
+.status-pill{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:800;
+    background:rgba(255,255,255,0.08);
+    color:#ddd;
+}
+
+.status-pill.ok{
+    background:rgba(158,217,158,0.18);
+    color:#9ed99e;
+    border:1px solid rgba(158,217,158,0.28);
+}
+
+.status-pill.warn{
+    background:rgba(255,193,111,0.16);
+    color:#ffc16f;
+    border:1px solid rgba(255,193,111,0.25);
+}
+
+.account-help{
+    color:#888;
+    font-size:13px;
+    line-height:1.7;
+    margin-bottom:16px;
+}
+
+.danger-btn{
+    background:#3a1c1c;
+    border:1px solid rgba(255,138,138,0.28);
+    color:#ffb3b3;
+}
+
+.account-message{
+    margin-top:14px;
+    color:#aaa;
+    font-size:14px;
+    line-height:1.7;
+    white-space:pre-wrap;
+}
+
+.account-message.error{
+    color:#ff8a8a;
+}
+
+.account-message.success{
+    color:#9ed99e;
+}
+
+@media(max-width:900px){
+    .settings-tabs{
+        max-width:100%;
+        position:sticky;
+        top:0;
+        z-index:20;
+        margin-bottom:14px;
+        background:rgba(8,8,8,0.96);
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+    }
+
+    .settings-tab{
+        font-size:14px;
+        padding:12px 10px;
+    }
+
+    .account-row{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:7px;
+    }
+
+    .account-value{
+        text-align:left;
+    }
+}
+
 </style>
 </head>
 
@@ -760,9 +925,16 @@ button:disabled{
 <!-- PC用右下投稿ボタン。スマホでは非表示 -->
 <a href="editor.html" class="fab">＋</a>
 
-<h1 class="page-title">プロフィール編集</h1>
+<h1 class="page-title">設定</h1>
+
+<div class="settings-tabs" aria-label="設定切り替え">
+    <button type="button" class="settings-tab active" data-settings-tab="profile">プロフィール設定</button>
+    <button type="button" class="settings-tab" data-settings-tab="account">アカウント設定</button>
+</div>
 
 <div class="edit-box">
+
+    <section class="settings-page active" id="profileSettingsPage" data-settings-page="profile">
 
     <div class="avatar-section">
         <img id="avatarPreview" class="avatar-preview" src="" alt="アイコン">
@@ -985,6 +1157,53 @@ button:disabled{
 
     <div id="message" class="message"></div>
 
+    </section>
+
+    <section class="settings-page" id="accountSettingsPage" data-settings-page="account">
+
+        <div class="account-section-title">アカウント設定</div>
+
+        <div class="account-card">
+            <div class="account-row">
+                <div class="account-label">現在のメールアドレス</div>
+                <div class="account-value" id="currentEmailText">確認中...</div>
+            </div>
+
+            <div class="account-row">
+                <div class="account-label">メール確認状態</div>
+                <div class="account-value">
+                    <span class="status-pill warn" id="emailVerifiedBadge">確認中</span>
+                </div>
+            </div>
+
+            <button type="button" id="resendVerificationBtn" class="sub-btn">確認メールを再送する</button>
+        </div>
+
+        <div class="account-card">
+            <div class="account-section-title">ログイン用メールアドレスを変更する</div>
+            <div class="account-help">
+                プライバシー保護のため、学校・本名・個人SNSと結びつきにくいメールアドレスへの変更をおすすめします。<br>
+                新しいメールアドレス宛に確認メールを送り、確認後に変更されます。
+            </div>
+
+            <label>新しいメールアドレス</label>
+            <input id="newEmailInput" type="email" placeholder="新しいメールアドレス" autocomplete="email">
+
+            <label>現在のパスワード</label>
+            <input id="currentPasswordInput" type="password" placeholder="本人確認のため現在のパスワード" autocomplete="current-password">
+
+            <button type="button" id="changeEmailBtn">変更用メールを送信</button>
+        </div>
+
+        <div class="account-card">
+            <div class="account-section-title">その他</div>
+            <button type="button" id="logoutBtn" class="danger-btn">ログアウト</button>
+        </div>
+
+        <div id="accountMessage" class="account-message"></div>
+
+    </section>
+
 </div>
 
 <script type="module">
@@ -1006,7 +1225,12 @@ import {
 
 import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    sendEmailVerification,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    verifyBeforeUpdateEmail,
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 /* =====================
@@ -1069,6 +1293,16 @@ const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
 const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
+const settingsTabs = document.querySelectorAll(".settings-tab");
+const settingsPages = document.querySelectorAll(".settings-page");
+const currentEmailText = document.getElementById("currentEmailText");
+const emailVerifiedBadge = document.getElementById("emailVerifiedBadge");
+const resendVerificationBtn = document.getElementById("resendVerificationBtn");
+const newEmailInput = document.getElementById("newEmailInput");
+const currentPasswordInput = document.getElementById("currentPasswordInput");
+const changeEmailBtn = document.getElementById("changeEmailBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const accountMessage = document.getElementById("accountMessage");
 
 const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
@@ -1091,6 +1325,59 @@ function escapeHTML(value){
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
+}
+
+function showSettingsPage(page){
+    settingsTabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.settingsTab === page);
+    });
+
+    settingsPages.forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.settingsPage === page);
+    });
+}
+
+settingsTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+        showSettingsPage(tab.dataset.settingsTab || "profile");
+    });
+});
+
+function setAccountMessage(text, type = ""){
+    if(!accountMessage){
+        return;
+    }
+
+    accountMessage.textContent = text;
+    accountMessage.className = "account-message";
+
+    if(type){
+        accountMessage.classList.add(type);
+    }
+}
+
+function updateAccountStatus(user){
+    if(!user){
+        return;
+    }
+
+    if(currentEmailText){
+        currentEmailText.textContent = user.email || "未設定";
+    }
+
+    if(emailVerifiedBadge){
+        if(user.emailVerified){
+            emailVerifiedBadge.textContent = "確認済み";
+            emailVerifiedBadge.className = "status-pill ok";
+        }else{
+            emailVerifiedBadge.textContent = "未確認";
+            emailVerifiedBadge.className = "status-pill warn";
+        }
+    }
+
+    if(resendVerificationBtn){
+        resendVerificationBtn.disabled = !!user.emailVerified;
+    }
 }
 
 function normalizeProfileList(value){
@@ -1646,6 +1933,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     currentUser = user;
+    updateAccountStatus(user);
 
     myPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
     mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
@@ -1755,6 +2043,7 @@ onAuthStateChanged(auth, async (user) => {
     await setDoc(privateUserRef, {
         uid: user.uid,
         email: user.email || "",
+        emailVerified: user.emailVerified,
         birthdate: privateData.birthdate || "",
         updatedAt: serverTimestamp()
     }, { merge:true });
@@ -1825,6 +2114,7 @@ saveBtn.addEventListener("click", async () => {
         await setDoc(privateUserRef, {
             uid: currentUser.uid,
             email: currentUser.email || "",
+            emailVerified: currentUser.emailVerified,
             birthdate: birthdate,
             updatedAt: serverTimestamp()
         }, { merge:true });
@@ -1865,6 +2155,124 @@ saveBtn.addEventListener("click", async () => {
         saveBtn.disabled = false;
     }
 });
+
+
+/* =====================
+   Account Settings
+===================== */
+
+if(resendVerificationBtn){
+    resendVerificationBtn.addEventListener("click", async () => {
+        if(!currentUser){
+            setAccountMessage("ログインしていません。", "error");
+            return;
+        }
+
+        resendVerificationBtn.disabled = true;
+        setAccountMessage("確認メールを送信しています...");
+
+        try{
+            await sendEmailVerification(currentUser);
+            setAccountMessage("確認メールを再送しました。\nメール内のリンクを開いて確認を完了してください。", "success");
+        }catch(error){
+            console.error("確認メール再送失敗:", error);
+
+            let text = "確認メールの再送に失敗しました：" + error.message;
+
+            if(error.code === "auth/too-many-requests"){
+                text = "短時間に何度も送信されています。少し時間を置いてから再送してください。";
+            }
+
+            setAccountMessage(text, "error");
+        }finally{
+            setTimeout(() => {
+                if(currentUser && !currentUser.emailVerified){
+                    resendVerificationBtn.disabled = false;
+                }
+            }, 5000);
+        }
+    });
+}
+
+if(changeEmailBtn){
+    changeEmailBtn.addEventListener("click", async () => {
+        if(!currentUser){
+            setAccountMessage("ログインしていません。", "error");
+            return;
+        }
+
+        const newEmail = newEmailInput.value.trim();
+        const currentPassword = currentPasswordInput.value;
+
+        if(!newEmail || !currentPassword){
+            setAccountMessage("新しいメールアドレスと現在のパスワードを入力してください。", "error");
+            return;
+        }
+
+        if(newEmail === currentUser.email){
+            setAccountMessage("現在のメールアドレスと同じです。", "error");
+            return;
+        }
+
+        changeEmailBtn.disabled = true;
+        setAccountMessage("本人確認中...");
+
+        try{
+            const credential = EmailAuthProvider.credential(
+                currentUser.email,
+                currentPassword
+            );
+
+            await reauthenticateWithCredential(currentUser, credential);
+
+            setAccountMessage("変更用メールを送信しています...");
+
+            await verifyBeforeUpdateEmail(currentUser, newEmail);
+
+            setAccountMessage(
+                "新しいメールアドレス宛に確認メールを送信しました。\nメール内のリンクを開くと、ログイン用メールアドレスが変更されます。",
+                "success"
+            );
+
+            newEmailInput.value = "";
+            currentPasswordInput.value = "";
+
+        }catch(error){
+            console.error("メールアドレス変更失敗:", error);
+
+            let text = "メールアドレス変更に失敗しました：" + error.message;
+
+            if(error.code === "auth/wrong-password" || error.code === "auth/invalid-credential"){
+                text = "現在のパスワードが正しくありません。";
+            }else if(error.code === "auth/invalid-email"){
+                text = "新しいメールアドレスの形式が正しくありません。";
+            }else if(error.code === "auth/email-already-in-use"){
+                text = "このメールアドレスはすでに使われています。";
+            }else if(error.code === "auth/requires-recent-login"){
+                text = "安全のため、もう一度ログインしてから変更してください。";
+            }else if(error.code === "auth/too-many-requests"){
+                text = "短時間に何度も操作されています。少し時間を置いてから試してください。";
+            }
+
+            setAccountMessage(text, "error");
+        }finally{
+            changeEmailBtn.disabled = false;
+        }
+    });
+}
+
+if(logoutBtn){
+    logoutBtn.addEventListener("click", async () => {
+        try{
+            await signOut(auth);
+            location.href = "login.html";
+        }catch(error){
+            console.error("ログアウト失敗:", error);
+            setAccountMessage("ログアウトに失敗しました：" + error.message, "error");
+        }
+    });
+}
+
 
 syncFavoriteArtistsInput();
 syncFavoriteTagCandidates();
