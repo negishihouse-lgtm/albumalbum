@@ -319,6 +319,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/fireba
 import {
     getAuth,
     createUserWithEmailAndPassword,
+    sendEmailVerification,
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
@@ -355,8 +356,6 @@ const signupBtn = document.getElementById("signupBtn");
 const message = document.getElementById("message");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
-
-const WORKER_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
 const params = new URLSearchParams(location.search);
 const redirect = params.get("redirect") || "verify-email.html";
@@ -436,33 +435,6 @@ async function createUserDocuments(user, userName){
     }, { merge: true });
 }
 
-async function sendCustomVerificationEmail(user){
-    /*
-      Firebase標準の sendEmailVerification(user) は使わない。
-      Cloudflare Worker → Resend で日本語確認メールを送る。
-    */
-
-    const idToken = await user.getIdToken(true);
-
-    const response = await fetch(`${WORKER_API_BASE}/send-verification-email`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            idToken: idToken
-        })
-    });
-
-    const result = await response.json().catch(() => null);
-
-    if(!response.ok || !result?.ok){
-        throw new Error(result?.message || result?.error || "確認メールの送信に失敗しました。");
-    }
-
-    return result;
-}
-
 signupBtn.addEventListener("click", async () => {
     const userName = cleanUserName(userNameInput.value);
     const email = emailInput.value.trim();
@@ -486,7 +458,7 @@ signupBtn.addEventListener("click", async () => {
         await createUserDocuments(user, userName);
 
         try{
-            await sendCustomVerificationEmail(user);
+            await sendEmailVerification(user);
             setMessage("新規登録しました。\n確認メールを送信しました。\nメール確認画面へ移動します。", "success");
         }catch(mailError){
             console.warn(mailError);
