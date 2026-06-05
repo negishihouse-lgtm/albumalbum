@@ -67,49 +67,7 @@ body{
     margin-top:20px;
 }
 
-@media(max-width:900px){
-    body{
-        padding:16px;
-        padding-left:16px;
-        padding-bottom:110px;
-    }
-
-
-    .sidebar{
-        display:none;
-    }
-
-    .mobile-tabbar{
-        display:flex;
-        position:fixed;
-        left:0;
-        right:0;
-        bottom:0;
-        height:72px;
-        background:#0b0b0b;
-        border-top:1px solid rgba(255,255,255,0.1);
-        z-index:999;
-        padding-bottom:env(safe-area-inset-bottom);
-    }
-
-    .fab{
-        right:16px;
-        bottom:88px;
-        width:58px;
-        height:58px;
-        font-size:32px;
-    }
-
-    body{
-        padding:22px;
-    }
-
-    .page-title{
-        font-size:34px;
-    }
-}
-
-/* ===== detail仕様：PCサイドバー ===== */
+/* ===== PCサイドバー ===== */
 .sidebar{
     position:fixed;
     top:0;
@@ -148,7 +106,7 @@ body{
     color:#6fa8dc;
 }
 
-/* ===== detail仕様：スマホ下部タブバー ===== */
+/* ===== スマホ下部タブバー ===== */
 .mobile-tabbar{
     display:none;
 }
@@ -174,7 +132,26 @@ body{
     line-height:1;
 }
 
-/* ===== detail仕様：右下投稿ボタン ===== */
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* ===== 右下投稿ボタン ===== */
 .fab{
     position:fixed;
     right:24px;
@@ -197,15 +174,65 @@ body{
     background:#84b7e4;
 }
 
-
+/* ===== Mobile ===== */
 @media(max-width:900px){
     body{
-        padding:16px;
-        padding-left:16px;
-        padding-bottom:110px;
+        padding:16px !important;
+        padding-left:16px !important;
+        padding-bottom:110px !important;
+    }
+
+    .sidebar{
+        display:none !important;
+    }
+
+    .page-title{
+        font-size:34px;
+        margin-top:8px;
+        margin-bottom:22px;
+    }
+
+    .mobile-tabbar{
+        display:grid !important;
+        position:fixed !important;
+        left:0 !important;
+        right:0 !important;
+        bottom:0 !important;
+        height:72px !important;
+        background:rgba(8,8,8,0.96) !important;
+        border-top:1px solid rgba(255,255,255,0.12) !important;
+        grid-template-columns:repeat(5,1fr) !important;
+        z-index:9999 !important;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .mobile-tabbar a{
+        height:72px;
+        min-width:0;
+    }
+
+    .fab,
+    .floating-post-btn,
+    .post-fab{
+        display:none !important;
+    }
+
+    .user-card{
+        padding:14px;
+        border-radius:14px;
+    }
+
+    .user-avatar{
+        width:52px;
+        height:52px;
+    }
+
+    .user-name{
+        font-size:16px;
     }
 }
-
 </style>
 </head>
 
@@ -247,13 +274,13 @@ body{
     </a>
 
     <a id="mobileMyPageLink" href="login.html">
-        <div class="icon">👤</div>
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">👤</span>
         <div>マイページ</div>
     </a>
 </nav>
 
 <a href="editor.html" class="fab">＋</a>
-
 
 <h1 id="pageTitle" class="page-title">読み込み中...</h1>
 
@@ -300,6 +327,8 @@ const pageTitle = document.getElementById("pageTitle");
 const userList = document.getElementById("userList");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
 
 const params = new URLSearchParams(location.search);
 const uid = params.get("uid");
@@ -316,9 +345,10 @@ function escapeHTML(value){
 
 function getDisplayName(user){
     return (
+        user.displayName ||
         user.nickname ||
         user.userName ||
-        user.displayName ||
+        user.name ||
         "匿名ユーザー"
     );
 }
@@ -327,11 +357,21 @@ function getPhotoURL(user){
     return (
         user.photoURL ||
         user.iconURL ||
+        user.iconUrl ||
+        user.avatar ||
+        user.avatarUrl ||
+        user.profileImage ||
+        user.profileImageUrl ||
+        user.imageUrl ||
         "https://placehold.co/200x200/111111/ffffff?text=User"
     );
 }
 
-onAuthStateChanged(auth, (user) => {
+async function updateMobileMyPageIcon(user){
+    if(!mobileMyPageLink){
+        return;
+    }
+
     const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
 
     if(myPageLink){
@@ -341,6 +381,46 @@ onAuthStateChanged(auth, (user) => {
     if(mobileMyPageLink){
         mobileMyPageLink.href = url;
     }
+
+    if(!user){
+        if(mobileMyPageAvatar){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+            mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+    }
+
+    try{
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
+
+        if(!userSnap.exists()){
+            return;
+        }
+
+        const iconUrl = getPhotoURL(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.src = iconUrl;
+            mobileMyPageAvatar.style.display = "block";
+            mobileMyPageFallback.style.display = "none";
+
+            mobileMyPageAvatar.onerror = () => {
+                mobileMyPageAvatar.style.display = "none";
+                mobileMyPageFallback.style.display = "flex";
+            };
+        }
+    }catch(error){
+        console.warn("マイページアイコンの取得に失敗しました", error);
+    }
+}
+
+onAuthStateChanged(auth, (user) => {
+    updateMobileMyPageIcon(user);
 });
 
 async function loadUsers(){
@@ -368,51 +448,66 @@ async function loadUsers(){
         );
     }
 
-    const followSnap = await getDocs(q);
+    try{
+        const followSnap = await getDocs(q);
 
-    if(followSnap.empty){
-        userList.innerHTML =
-            `<div class="empty">ユーザーがいません。</div>`;
-        return;
-    }
-
-    const userIds = [];
-
-    followSnap.forEach((docSnap) => {
-        const data = docSnap.data();
-
-        if(type === "following"){
-            userIds.push(data.followingId);
-        }else{
-            userIds.push(data.followerId);
+        if(followSnap.empty){
+            userList.innerHTML =
+                `<div class="empty">ユーザーがいません。</div>`;
+            return;
         }
-    });
 
-    for(const userId of userIds){
+        const userIds = [];
 
-        const userRef = doc(db, "users", userId);
-        const userSnap = await getDoc(userRef);
+        followSnap.forEach((docSnap) => {
+            const data = docSnap.data();
 
-        if(!userSnap.exists()) continue;
+            if(type === "following" && data.followingId){
+                userIds.push(data.followingId);
+            }else if(type !== "following" && data.followerId){
+                userIds.push(data.followerId);
+            }
+        });
 
-        const user = userSnap.data();
+        userList.innerHTML = "";
 
-        userList.innerHTML += `
-            <div class="user-card"
-                 onclick="location.href='profile.html?uid=${escapeHTML(userId)}'">
+        for(const userId of userIds){
+            const userRef = doc(db, "publicUsers", userId);
+            const userSnap = await getDoc(userRef);
 
-                <img class="user-avatar"
-                     src="${escapeHTML(getPhotoURL(user))}"
-                     alt="">
+            if(!userSnap.exists()){
+                continue;
+            }
 
-                <div>
-                    <div class="user-name">
-                        ${escapeHTML(getDisplayName(user))}
+            const publicUser = userSnap.data();
+
+            userList.innerHTML += `
+                <div class="user-card"
+                     onclick="location.href='profile.html?uid=${escapeHTML(userId)}'">
+
+                    <img class="user-avatar"
+                         src="${escapeHTML(getPhotoURL(publicUser))}"
+                         alt=""
+                         onerror="this.src='https://placehold.co/200x200/111111/ffffff?text=User';">
+
+                    <div>
+                        <div class="user-name">
+                            ${escapeHTML(getDisplayName(publicUser))}
+                        </div>
                     </div>
-
                 </div>
-            </div>
-        `;
+            `;
+        }
+
+        if(!userList.innerHTML.trim()){
+            userList.innerHTML =
+                `<div class="empty">表示できるユーザーがいません。</div>`;
+        }
+
+    }catch(error){
+        console.error("フォロー一覧の取得に失敗しました", error);
+        pageTitle.textContent = "エラー";
+        userList.innerHTML = `<div class="empty">フォロー一覧を読み込めませんでした。</div>`;
     }
 }
 
