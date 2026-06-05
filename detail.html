@@ -1993,7 +1993,7 @@ let selectedShareAlbumId = "";
 
 /*
     アイコン反映用キャッシュ。
-    users コレクション側のフィールド名が多少違っても拾えるようにしている。
+    publicUsers コレクション側のフィールド名が多少違っても拾えるようにしている。
     対応フィールド例:
     icon, iconUrl, avatar, avatarUrl, photoURL, photoUrl,
     profileImage, profileImageUrl, imageUrl
@@ -2076,7 +2076,7 @@ async function updateMobileMyPageTab(user){
     mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
 
     try{
-        const userSnap = await getDoc(doc(db, "users", user.uid));
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
 
         if(!userSnap.exists()){
             return;
@@ -3018,7 +3018,7 @@ async function getCurrentUserName(db, currentUser){
     }
 
     try{
-        const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+        const meSnap = await getDoc(doc(db, "publicUsers", currentUser.uid));
         if(meSnap.exists()){
             return getUserDisplayNameFromData(meSnap.data()) || "匿名ユーザー";
         }
@@ -3172,7 +3172,7 @@ async function ensureUserLoaded(uid){
     loadingUsers.add(uid);
 
     try{
-        const userSnap = await getDoc(doc(db, "users", uid));
+        const userSnap = await getDoc(doc(db, "publicUsers", uid));
 
         if(userSnap.exists()){
             userCache[uid] = normalizeUser(userSnap.data(), uid);
