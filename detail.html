@@ -3541,7 +3541,7 @@ function renderDetail(){
     );
 
     const myName = currentUser
-        ? getUserName(currentUser.uid, currentUser.email || "自分")
+        ? getUserName(currentUser.uid, "自分")
         : "自分";
 
     const metaText = [albumData.year, albumData.country, albumData.genre]
@@ -3796,7 +3796,7 @@ loadAlbum();
     letter-spacing:-0.01em;
 }
 
-(max-width:900px){
+@media(max-width:900px){
     .share-pill-btn{
         height:26px !important;
         min-height:26px !important;
@@ -3816,7 +3816,7 @@ loadAlbum();
     }
 }
 
-(max-width:430px){
+@media(max-width:430px){
     .share-pill-btn{
         padding:0 8px !important;
         gap:5px !important;
@@ -3829,7 +3829,6 @@ loadAlbum();
 </style>
 
 
-</html>
 <style>
 /* ============================================================
    FINAL: Spotifyボタンを再生アイコン風に変更
@@ -3904,3 +3903,4 @@ loadAlbum();
 }
 </style>
 </body>
+</html>
