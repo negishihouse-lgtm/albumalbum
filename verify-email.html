@@ -540,6 +540,9 @@ checkedBtn.addEventListener("click", async () => {
 
         currentUser = auth.currentUser;
 
+        // Firestore Rules 側の request.auth.token.email_verified を最新化する
+        await currentUser.getIdToken(true);
+
         if(currentUser.emailVerified){
             await updateEmailVerifiedFlag(currentUser);
 
