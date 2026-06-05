@@ -58,14 +58,46 @@ button{
     cursor:pointer;
 }
 
+button:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+}
+
 .sub-btn{
     background:#222;
+}
+
+.signup-link-btn{
+    display:block;
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    background:#222;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    text-align:center;
+    text-decoration:none;
+}
+
+.signup-link-btn:hover{
+    background:#2a2a2a;
 }
 
 .message{
     margin-top:16px;
     color:#aaa;
     line-height:1.7;
+    white-space:pre-wrap;
+}
+
+.error{
+    color:#ff8a8a;
+}
+
+.success{
+    color:#9ed99e;
 }
 
 a{
@@ -192,9 +224,7 @@ a{
         height:58px;
         font-size:32px;
     }
-}
 
-@media(max-width:900px){
     .login-box{
         margin:32px auto;
         padding:26px;
@@ -252,16 +282,15 @@ a{
 
 <a href="editor.html" class="fab">＋</a>
 
-
 <div class="login-box">
     <h1>Login</h1>
 
-    <input type="email" id="email" placeholder="メールアドレス">
-    <input type="password" id="password" placeholder="パスワード">
+    <input type="email" id="email" placeholder="メールアドレス" autocomplete="email">
+    <input type="password" id="password" placeholder="パスワード" autocomplete="current-password">
 
     <button id="loginBtn">ログイン</button>
-    <button class="sub-btn" id="signupBtn">新規登録</button>
     <button class="sub-btn" id="logoutBtn">ログアウト</button>
+    <a class="signup-link-btn" href="signup.html">新規登録はこちら</a>
 
     <div class="message" id="message"></div>
 </div>
@@ -271,7 +300,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/fireba
 
 import {
     getAuth,
-    createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged
@@ -295,7 +323,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
 const auth = getAuth(app);
 
 const db = initializeFirestore(app, {
@@ -304,12 +331,23 @@ const db = initializeFirestore(app, {
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 const message = document.getElementById("message");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 
 const params = new URLSearchParams(location.search);
 const redirect = params.get("redirect") || "index.html";
+
+function setMessage(text, type = ""){
+    message.textContent = text;
+    message.className = "message";
+
+    if(type){
+        message.classList.add(type);
+    }
+}
 
 function updateCommonMyPageLinks(user){
     const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
@@ -322,70 +360,90 @@ function goRedirect(){
     location.href = redirect;
 }
 
-async function saveUser(user, isNewUser = false){
+async function updatePrivateUserData(user){
+    /*
+      users/{uid}
+      → 本人用データ。
+      → Firestore Rules側で本人だけ読めるようにする前提。
+      → 公開プロフィールには使わない。
+    */
+
     await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
-        userName: user.email.split("@")[0],
-        updatedAt: serverTimestamp(),
-        ...(isNewUser ? { createdAt: serverTimestamp() } : {})
+        emailVerified: user.emailVerified,
+        lastLoginAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
     }, { merge: true });
 }
 
-document.getElementById("signupBtn").addEventListener("click", async () => {
+loginBtn.addEventListener("click", async () => {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
     if(!email || !password){
-        message.textContent = "メールアドレスとパスワードを入力してください。";
+        setMessage("メールアドレスとパスワードを入力してください。", "error");
         return;
     }
 
-    try{
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await saveUser(userCredential.user, true);
-
-        message.textContent = "新規登録しました。移動します。";
-        goRedirect();
-
-    }catch(error){
-        message.textContent = "新規登録エラー：" + error.message;
-    }
-});
-
-document.getElementById("loginBtn").addEventListener("click", async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-
-    if(!email || !password){
-        message.textContent = "メールアドレスとパスワードを入力してください。";
-        return;
-    }
+    loginBtn.disabled = true;
+    setMessage("ログイン中です…");
 
     try{
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        await saveUser(userCredential.user, false);
 
-        message.textContent = "ログインしました。移動します。";
-        goRedirect();
+        await updatePrivateUserData(userCredential.user);
+
+        setMessage("ログインしました。移動します。", "success");
+
+        setTimeout(() => {
+            goRedirect();
+        }, 500);
 
     }catch(error){
-        message.textContent = "ログインエラー：" + error.message;
+        console.error(error);
+
+        let text = "ログインエラー：" + error.message;
+
+        if(error.code === "auth/invalid-email"){
+            text = "メールアドレスの形式が正しくありません。";
+        }else if(error.code === "auth/user-not-found"){
+            text = "このメールアドレスのアカウントは見つかりません。";
+        }else if(error.code === "auth/wrong-password"){
+            text = "パスワードが違います。";
+        }else if(error.code === "auth/invalid-credential"){
+            text = "メールアドレスまたはパスワードが違います。";
+        }else if(error.code === "permission-denied"){
+            text = "Firestoreの権限エラーです。users の更新ルールを確認してください。";
+        }
+
+        setMessage(text, "error");
+        loginBtn.disabled = false;
     }
 });
 
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await signOut(auth);
-    message.textContent = "ログアウトしました。";
+logoutBtn.addEventListener("click", async () => {
+    logoutBtn.disabled = true;
+    setMessage("ログアウト中です…");
+
+    try{
+        await signOut(auth);
+        setMessage("ログアウトしました。", "success");
+    }catch(error){
+        console.error(error);
+        setMessage("ログアウトエラー：" + error.message, "error");
+    }finally{
+        logoutBtn.disabled = false;
+    }
 });
 
 onAuthStateChanged(auth, (user) => {
     updateCommonMyPageLinks(user);
 
     if(user){
-        message.textContent = `ログイン中：${user.email}`;
+        setMessage(`ログイン中：${user.email}`);
     }else{
-        message.textContent = "ログインしていません。";
+        setMessage("ログインしていません。");
     }
 });
 </script>
