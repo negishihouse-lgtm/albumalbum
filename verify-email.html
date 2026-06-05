@@ -42,6 +42,26 @@ h1{
     font-size:14px;
 }
 
+.spam-warning{
+    background:rgba(255,184,77,0.12);
+    border:1px solid rgba(255,184,77,0.65);
+    color:#ffd28a;
+    border-radius:14px;
+    padding:14px 16px;
+    margin:0 0 20px;
+    line-height:1.7;
+    font-size:14px;
+    font-weight:700;
+}
+
+.spam-warning .small{
+    display:block;
+    margin-top:6px;
+    color:#e8c98f;
+    font-size:13px;
+    font-weight:500;
+}
+
 .email-box{
     background:#111;
     border:1px solid rgba(255,255,255,0.12);
@@ -289,6 +309,13 @@ a{
         メール内のリンクを開いたあと、この画面に戻って「確認しました」を押してください。
     </div>
 
+    <div class="spam-warning">
+        ⚠️ 確認メールが迷惑メールに入っている可能性があります
+        <span class="small">
+            届かない場合は、Gmailの「迷惑メール」「プロモーション」「すべてのメール」も確認してください。
+        </span>
+    </div>
+
     <div class="email-box" id="emailBox">
         ログイン情報を確認中…
     </div>
@@ -403,7 +430,7 @@ onAuthStateChanged(auth, async (user) => {
         return;
     }
 
-    setMessage("メールを確認してください。届かない場合は、メールアプリ側の分類も確認してください。");
+    setMessage("メールを確認してください。届かない場合は、迷惑メール・プロモーション・すべてのメールも確認してください。");
 });
 
 checkedBtn.addEventListener("click", async () => {
