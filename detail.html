@@ -3101,7 +3101,7 @@ function escapeHTML(value){
 
 async function getPosterProfileForAlbum(album){
     const uid = album?.userId || "";
-    const fallbackName = album?.userName || album?.displayName || album?.nickname || album?.userEmail || "匿名ユーザー";
+    const fallbackName = album?.userName || album?.displayName || album?.nickname || "匿名ユーザー";
 
     if(uid){
         await ensureUserLoaded(uid);
@@ -3141,7 +3141,6 @@ function normalizeUser(raw, uid){
         raw.name ||
         raw.nickname ||
         raw.userName ||
-        raw.email ||
         "匿名ユーザー";
 
     const iconUrl =
@@ -3159,7 +3158,6 @@ function normalizeUser(raw, uid){
     return {
         uid,
         displayName,
-        email: raw.email || "",
         iconUrl
     };
 }
@@ -3437,7 +3435,6 @@ async function addComment(){
     await addDoc(collection(db, "comments"), {
         albumId: albumId,
         userId: currentUser.uid,
-        userEmail: currentUser.email,
         text: text,
         createdAt: serverTimestamp()
     });
@@ -3485,7 +3482,7 @@ function renderComments(){
 
         const commentName = getUserName(
             comment.userId,
-            comment.userName || comment.userEmail || "匿名ユーザー"
+            comment.userName || "匿名ユーザー"
         );
 
         return `
@@ -3540,7 +3537,7 @@ function renderDetail(){
 
     const creatorName = getUserName(
         albumData.userId,
-        albumData.userName || albumData.userEmail || "匿名ユーザー"
+        albumData.userName || "匿名ユーザー"
     );
 
     const myName = currentUser
