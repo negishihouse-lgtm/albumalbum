@@ -286,7 +286,7 @@ a{
 
     <div class="description">
         登録したメールアドレス宛に確認メールを送信しました。<br>
-        メール内のリンクを開いたあと、この画面に戻って「確認しました」を押してください。
+        メール内のリンクを開いたあと、この画面で確認処理を完了します。
     </div>
 
     <div class="email-box" id="emailBox">
@@ -306,15 +306,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/fireba
 
 import {
     getAuth,
-    onAuthStateChanged,
-    sendEmailVerification,
-    signOut
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 import {
     initializeFirestore,
     doc,
     setDoc,
+    getDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -327,6 +326,8 @@ const firebaseConfig = {
     appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
     measurementId: "G-3QFX3GDEXN"
 };
+
+const WORKER_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -345,8 +346,10 @@ const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 
 const params = new URLSearchParams(location.search);
 const redirect = params.get("redirect") || "profile-edit.html";
+const verificationToken = params.get("token") || "";
 
 let currentUser = null;
+let isCompleting = false;
 
 function setMessage(text, type = ""){
     message.textContent = text;
@@ -364,12 +367,105 @@ function updateCommonMyPageLinks(user){
     mobileMyPageLink.href = url;
 }
 
-async function updateEmailVerifiedFlag(user){
+async function updateLocalEmailVerifiedCustom(user){
     await setDoc(doc(db, "users", user.uid), {
         email: user.email,
-        emailVerified: user.emailVerified,
+        emailVerifiedCustom: true,
+        emailVerifiedCustomAt: serverTimestamp(),
         updatedAt: serverTimestamp()
     }, { merge: true });
+}
+
+async function getCustomVerified(user){
+    const snap = await getDoc(doc(db, "users", user.uid));
+    return Boolean(snap.exists() && snap.data()?.emailVerifiedCustom === true);
+}
+
+async function sendCustomVerificationEmail(user){
+    const idToken = await user.getIdToken(true);
+
+    const response = await fetch(`${WORKER_API_BASE}/send-verification-email`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            idToken: idToken
+        })
+    });
+
+    const result = await response.json().catch(() => null);
+
+    if(!response.ok || !result?.ok){
+        throw new Error(result?.message || result?.error || "確認メールの送信に失敗しました。");
+    }
+
+    return result;
+}
+
+async function confirmVerificationWithWorker(user, token){
+    const idToken = await user.getIdToken(true);
+
+    const response = await fetch(`${WORKER_API_BASE}/confirm-verification`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            idToken: idToken,
+            token: token
+        })
+    });
+
+    const result = await response.json().catch(() => null);
+
+    if(!response.ok || !result?.ok){
+        throw new Error(result?.message || result?.error || "メール確認処理に失敗しました。");
+    }
+
+    return result;
+}
+
+async function completeVerificationFromToken(user){
+    if(!verificationToken){
+        return false;
+    }
+
+    if(isCompleting){
+        return true;
+    }
+
+    isCompleting = true;
+    checkedBtn.disabled = true;
+    resendBtn.disabled = true;
+    setMessage("メール確認を完了しています…");
+
+    try{
+        await confirmVerificationWithWorker(user, verificationToken);
+
+        try{
+            await updateLocalEmailVerifiedCustom(user);
+        }catch(localError){
+            console.warn(localError);
+        }
+
+        setMessage("メール確認が完了しました。プロフィール編集へ移動します。", "success");
+
+        setTimeout(() => {
+            location.href = redirect;
+        }, 900);
+
+        return true;
+
+    }catch(error){
+        console.error(error);
+        setMessage("確認リンクの処理に失敗しました。\nリンクの有効期限が切れているか、ログイン中のアカウントが違う可能性があります。", "error");
+        checkedBtn.disabled = false;
+        resendBtn.disabled = false;
+        return false;
+    }finally{
+        isCompleting = false;
+    }
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -380,27 +476,38 @@ onAuthStateChanged(auth, async (user) => {
         emailBox.textContent = "ログインしていません。ログイン画面からログインしてください。";
         checkedBtn.disabled = true;
         resendBtn.disabled = true;
-        setMessage("メール確認にはログインが必要です。", "error");
+
+        if(verificationToken){
+            setMessage("確認リンクを開きましたが、ログインしていません。\n先にログインしてから、もう一度メール内のリンクを開いてください。", "error");
+        }else{
+            setMessage("メール確認にはログインが必要です。", "error");
+        }
+
         return;
     }
 
     currentUser = user;
     emailBox.textContent = `確認対象：${user.email}`;
 
-    if(user.emailVerified){
-        try{
-            await updateEmailVerifiedFlag(user);
-        }catch(error){
-            console.warn(error);
-        }
-
-        setMessage("メール確認はすでに完了しています。移動します。", "success");
-
-        setTimeout(() => {
-            location.href = redirect;
-        }, 900);
-
+    if(verificationToken){
+        await completeVerificationFromToken(user);
         return;
+    }
+
+    try{
+        const verified = await getCustomVerified(user);
+
+        if(verified){
+            setMessage("メール確認はすでに完了しています。移動します。", "success");
+
+            setTimeout(() => {
+                location.href = redirect;
+            }, 900);
+
+            return;
+        }
+    }catch(error){
+        console.warn(error);
     }
 
     setMessage("メールを確認してください。届かない場合は、メールアプリ側の分類も確認してください。");
@@ -412,32 +519,12 @@ checkedBtn.addEventListener("click", async () => {
         return;
     }
 
-    checkedBtn.disabled = true;
-    setMessage("確認状態をチェックしています…");
-
-    try{
-        await currentUser.reload();
-
-        currentUser = auth.currentUser;
-
-        if(currentUser.emailVerified){
-            await updateEmailVerifiedFlag(currentUser);
-
-            setMessage("メール確認が完了しました。プロフィール編集へ移動します。", "success");
-
-            setTimeout(() => {
-                location.href = redirect;
-            }, 900);
-        }else{
-            setMessage("まだメール確認が完了していません。\nメール内のリンクを開いてから、もう一度押してください。", "error");
-            checkedBtn.disabled = false;
-        }
-
-    }catch(error){
-        console.error(error);
-        setMessage("確認状態の取得に失敗しました：" + error.message, "error");
-        checkedBtn.disabled = false;
+    if(!verificationToken){
+        setMessage("この画面には確認用トークンがありません。\nメール内の確認リンクを開いてから、この処理を完了してください。", "error");
+        return;
     }
+
+    await completeVerificationFromToken(currentUser);
 });
 
 resendBtn.addEventListener("click", async () => {
@@ -450,14 +537,14 @@ resendBtn.addEventListener("click", async () => {
     setMessage("確認メールを再送しています…");
 
     try{
-        await sendEmailVerification(currentUser);
-        setMessage("確認メールを再送しました。\nメール内のリンクを開いてから「確認しました」を押してください。", "success");
+        await sendCustomVerificationEmail(currentUser);
+        setMessage("確認メールを再送しました。\nメール内のリンクを開いてください。", "success");
     }catch(error){
         console.error(error);
 
         let text = "確認メールの再送に失敗しました：" + error.message;
 
-        if(error.code === "auth/too-many-requests"){
+        if(String(error.message || "").includes("too-many")){
             text = "短時間に何度も送信されています。少し時間を置いてから再送してください。";
         }
 
