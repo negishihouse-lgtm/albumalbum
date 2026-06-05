@@ -731,7 +731,7 @@
 
       if(uid){
         try{
-          const userSnap = await getDoc(doc(db, "users", uid));
+          const userSnap = await getDoc(doc(db, "publicUsers", uid));
 
           if(userSnap.exists()){
             const displayName = getUserDisplayNameFromData(userSnap.data());
@@ -809,7 +809,7 @@
       mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
 
       try{
-        const userSnap = await getDoc(doc(db, "users", user.uid));
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
 
         if(!userSnap.exists()){
           return;
@@ -1053,15 +1053,7 @@
       const normalizedKeyword = normalizeText(rawKeyword);
 
       if(!normalizedKeyword){
-        if(initialQuery){
-          filterAlbums();
-        }else{
-          if(initialQuery){
-          filterAlbums();
-        }else{
-          renderAlbums(publicAlbums, "");
-        }
-        }
+        renderAlbums(publicAlbums, "");
         return;
       }
 
