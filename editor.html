@@ -3344,6 +3344,8 @@ saveBtn.addEventListener("click", async () => {
         }else{
             await addDoc(collection(db, "albums"), {
                 ...data,
+                likeCount: 0,
+                commentCount: 0,
                 createdAt: serverTimestamp()
             });
 
