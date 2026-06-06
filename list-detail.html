@@ -987,7 +987,7 @@ button{
 <a href="editor.html" class="fab">＋</a>
 
 <main class="main">
-    <a href="index.html" class="back-link">← ホームへ戻る</a>
+    <a id="smartBackLink" href="index.html" class="back-link">← ホームへ戻る</a>
 
     <div id="loadingBox" class="loading-box">リストを読み込み中...</div>
     <div id="errorBox" class="error-box" style="display:none;"></div>
@@ -1119,6 +1119,76 @@ const auth = getAuth(app);
 
 const params = new URLSearchParams(location.search);
 const listId = params.get("id") || "";
+
+function normalizeLocalBackUrl(value){
+    if(!value){
+        return null;
+    }
+
+    try{
+        const url = new URL(value, location.href);
+
+        if(url.origin !== location.origin){
+            return null;
+        }
+
+        const currentPath = location.pathname.split("/").pop() || "list-detail.html";
+        const targetPath = url.pathname.split("/").pop() || "index.html";
+
+        if(targetPath === currentPath){
+            return null;
+        }
+
+        return `${targetPath}${url.search}${url.hash}`;
+    }catch(error){
+        return null;
+    }
+}
+
+function getBackLabel(backUrl){
+    const path = String(backUrl || "").split("?")[0].split("#")[0];
+
+    if(path === "profile.html"){
+        return "プロフィールへ戻る";
+    }
+
+    if(path === "detail.html"){
+        return "投稿へ戻る";
+    }
+
+    if(path === "search.html"){
+        return "検索へ戻る";
+    }
+
+    return "ホームへ戻る";
+}
+
+function getSmartBackInfo(){
+    const explicitBack =
+        normalizeLocalBackUrl(params.get("from")) ||
+        normalizeLocalBackUrl(params.get("back")) ||
+        normalizeLocalBackUrl(params.get("returnTo"));
+
+    const referrerBack = normalizeLocalBackUrl(document.referrer);
+    const href = explicitBack || referrerBack || "index.html";
+
+    return {
+        href,
+        label:getBackLabel(href)
+    };
+}
+
+function setupSmartBackLink(){
+    const smartBackLink = document.getElementById("smartBackLink");
+
+    if(!smartBackLink){
+        return;
+    }
+
+    const backInfo = getSmartBackInfo();
+    smartBackLink.href = backInfo.href;
+    smartBackLink.textContent = `← ${backInfo.label}`;
+}
 
 const loadingBox = document.getElementById("loadingBox");
 const errorBox = document.getElementById("errorBox");
@@ -1560,7 +1630,10 @@ function renderCoverCollage(list, items){
 
 function getItemDetailUrl(item){
     if(item?.source === "album" && item?.albumId){
-        return `detail.html?id=${encodeURIComponent(item.albumId)}`;
+        const url = new URL("detail.html", location.href);
+        url.searchParams.set("id", item.albumId);
+        url.searchParams.set("from", `list-detail.html?id=${encodeURIComponent(listId)}`);
+        return `${url.pathname.split("/").pop()}${url.search}`;
     }
 
     return "";
@@ -1900,7 +1973,29 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+setupSmartBackLink();
 renderListPage();
 </script>
+
+<style>
+/* ============================================================
+   FINAL: 流入元に戻るリンク
+   - indexから来たらホームへ
+   - profileから来たらそのプロフィールへ
+   - detailから来たら投稿へ
+============================================================ */
+#smartBackLink{
+    white-space:nowrap;
+}
+
+@media(max-width:900px){
+    #smartBackLink{
+        display:inline-flex;
+        margin-top:10px;
+        margin-bottom:18px;
+    }
+}
+</style>
+
 </body>
 </html>
