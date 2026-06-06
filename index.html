@@ -2280,6 +2280,30 @@ a{
 
 <body>
 
+<!-- メンテナンス用パスワード制限 -->
+<script>
+(function(){
+    const MAINTENANCE_MODE = true;
+    const MAINTENANCE_PASS_KEY = "album_collection_maintenance_pass_ok";
+
+    if(!MAINTENANCE_MODE){
+        return;
+    }
+
+    if(sessionStorage.getItem(MAINTENANCE_PASS_KEY) === "true"){
+        return;
+    }
+
+    const currentPath = location.pathname.split("/").pop() || "index.html";
+
+    if(currentPath !== "maintenance.html"){
+        const nextUrl = "maintenance.html?redirect=" + encodeURIComponent(location.href);
+        location.replace(nextUrl);
+    }
+})();
+</script>
+
+
 <!-- PC用サイドバー -->
 <nav class="sidebar">
     <div class="logo">Album<br>Collection</div>
