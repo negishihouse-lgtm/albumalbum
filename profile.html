@@ -718,6 +718,169 @@ body{
     font-size:24px;
 }
 
+
+/* ===== リストカード ===== */
+.list-card{
+    background:#0b0b0b;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:18px;
+    padding:18px;
+    cursor:pointer;
+    overflow:hidden;
+}
+
+.list-card:hover{
+    border-color:rgba(159,205,217,0.42);
+}
+
+.list-card-inner{
+    display:grid;
+    grid-template-columns:120px minmax(0,1fr);
+    gap:16px;
+    align-items:start;
+}
+
+.list-cover-collage{
+    width:120px;
+    height:120px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    grid-template-rows:repeat(2,1fr);
+    gap:3px;
+    border-radius:12px;
+    overflow:hidden;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.18);
+}
+
+.list-cover-collage img,
+.list-cover-placeholder{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    background:#171717;
+}
+
+.list-cover-placeholder{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#777;
+    font-size:22px;
+    font-weight:900;
+}
+
+.list-title-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:6px;
+}
+
+.list-title{
+    font-size:24px;
+    font-weight:900;
+    line-height:1.18;
+    word-break:break-word;
+}
+
+.list-meta{
+    color:#9fcdd9;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.list-desc{
+    color:#ddd;
+    font-size:13px;
+    line-height:1.65;
+    word-break:break-word;
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.list-owner-actions{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+    flex-wrap:wrap;
+}
+
+.list-owner-actions button{
+    border:none;
+    border-radius:999px;
+    padding:8px 12px;
+    color:white;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:800;
+}
+
+.list-delete-btn{
+    background:#733;
+}
+
+.list-delete-btn:hover{
+    background:#944;
+}
+
+@media(min-width:901px){
+    .list-card{
+        background:#070808 !important;
+        border:1px solid rgba(255,255,255,0.15) !important;
+        border-radius:18px !important;
+        padding:18px !important;
+    }
+
+    .list-card:hover{
+        transform:translateY(-1px);
+        transition:0.18s ease;
+    }
+}
+
+@media(max-width:900px){
+    .list-card{
+        border-radius:18px !important;
+        padding:14px !important;
+        background:linear-gradient(135deg,#121415 0%,#090a0b 58%,#070808 100%) !important;
+    }
+
+    .list-card-inner{
+        grid-template-columns:112px minmax(0,1fr);
+        gap:12px;
+    }
+
+    .list-cover-collage{
+        width:112px;
+        height:112px;
+        border-radius:10px;
+    }
+
+    .list-title{
+        font-size:18px;
+        line-height:1.14;
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
+        overflow:hidden;
+    }
+
+    .list-meta{
+        font-size:12px;
+        margin-bottom:6px;
+    }
+
+    .list-desc{
+        font-size:12px;
+        line-height:1.5;
+        -webkit-line-clamp:3;
+    }
+}
+
 /* ===== 聴くサービス選択シート ===== */
 .listen-sheet{
     position:fixed;
@@ -2704,7 +2867,10 @@ body{
         </div>
 
         <div class="profile-content-tabs" id="profileContentTabs">
-            <button class="profile-content-tab active" type="button" data-tab="posts">
+            <button class="profile-content-tab active" type="button" data-tab="lists">
+                リスト
+            </button>
+            <button class="profile-content-tab" type="button" data-tab="posts">
                 投稿
             </button>
             <button class="profile-content-tab" type="button" data-tab="calendar">
@@ -2824,12 +2990,14 @@ let followDocId = null;
 let isFollowing = false;
 
 let profileAlbums = [];
+let profileLists = [];
 let likedAlbums = [];
 let allLikes = [];
 let allComments = [];
-let activeProfileTab = "posts";
+let activeProfileTab = "lists";
 
 let unsubscribeAlbums = null;
+let unsubscribeLists = null;
 let unsubscribeLikes = null;
 let unsubscribeComments = null;
 
@@ -3640,10 +3808,10 @@ function getPostTime(value){
 }
 
 function setProfileTab(tab){
-    if(tab === "liked" || tab === "calendar"){
+    if(tab === "lists" || tab === "posts" || tab === "liked" || tab === "calendar"){
         activeProfileTab = tab;
     }else{
-        activeProfileTab = "posts";
+        activeProfileTab = "lists";
     }
 
     if(profileContentTabs){
@@ -3667,6 +3835,137 @@ if(profileContentTabs){
         setProfileTab(button.dataset.tab);
     });
 }
+
+function getListTime(value){
+    return getPostTime(value);
+}
+
+function getListCoverImages(list){
+    const images = Array.isArray(list.coverImages)
+        ? list.coverImages
+        : [];
+
+    return images
+        .map(image => String(image || "").trim())
+        .filter(Boolean)
+        .slice(0, 4);
+}
+
+function listCoverCollageHTML(list){
+    const images = getListCoverImages(list);
+    const cells = [];
+
+    for(let i = 0; i < 4; i++){
+        const image = images[i] || "";
+
+        if(image){
+            cells.push(`<img src="${escapeHTML(image)}" alt="">`);
+        }else{
+            cells.push(`<div class="list-cover-placeholder">♪</div>`);
+        }
+    }
+
+    return `<div class="list-cover-collage">${cells.join("")}</div>`;
+}
+
+async function deleteList(listId){
+    if(!currentUser){
+        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
+        return;
+    }
+
+    const target = profileLists.find(list => list.id === listId);
+
+    if(!target){
+        alert("削除対象のリストが見つかりません");
+        return;
+    }
+
+    if(target.userId !== currentUser.uid){
+        alert("自分のリスト以外は削除できません");
+        return;
+    }
+
+    const ok = confirm("このリストを削除しますか？\nリスト内の曲情報も削除されます。");
+
+    if(!ok){
+        return;
+    }
+
+    try{
+        const itemsQuery = query(
+            collection(db, "listItems"),
+            where("listId", "==", listId)
+        );
+        const itemsSnap = await getDocs(itemsQuery);
+
+        await Promise.all(itemsSnap.docs.map((itemDoc) => {
+            return deleteDoc(doc(db, "listItems", itemDoc.id));
+        }));
+
+        await deleteDoc(doc(db, "lists", listId));
+        alert("リストを削除しました");
+    }catch(error){
+        console.error("リスト削除失敗:", error);
+        alert("リストの削除に失敗しました: " + error.message);
+    }
+}
+
+function listCardHTML(list, options = {}){
+    const listId = list.id;
+    const owner = Boolean(options.owner);
+    const showOwnerActions = owner && list.userId === currentUser?.uid;
+
+    const privateBadge = list.isPublic === false
+        ? `<span class="private-badge">非公開</span>`
+        : "";
+
+    const listTypeLabel = list.hasTier || list.listType === "tier"
+        ? "Tier表"
+        : "リスト";
+
+    const itemCount = Number(list.itemCount || 0);
+
+    const ownerActions = showOwnerActions
+        ? `
+            <div class="list-owner-actions">
+                <button
+                    class="list-delete-btn"
+                    type="button"
+                    onclick="event.stopPropagation(); deleteList('${escapeHTML(listId)}')">
+                    削除
+                </button>
+            </div>
+        `
+        : "";
+
+    return `
+<div class="list-card" onclick="location.href='list-detail.html?id=${escapeHTML(listId)}'">
+    <div class="list-card-inner">
+        ${listCoverCollageHTML(list)}
+
+        <div class="list-info">
+            <div class="list-title-row">
+                <div class="list-title">${escapeHTML(list.title || "無題のリスト")}</div>
+                ${privateBadge}
+            </div>
+
+            <div class="list-meta">
+                ${escapeHTML(listTypeLabel)} ・ ${itemCount}曲
+            </div>
+
+            <div class="list-desc">
+                ${escapeHTML(list.desc || "")}
+            </div>
+
+            ${ownerActions}
+        </div>
+    </div>
+</div>
+    `;
+}
+
+window.deleteList = deleteList;
 
 function albumCardHTML(album, options = {}){
     const albumId = album.id;
@@ -4075,12 +4374,25 @@ function renderAlbums(){
     }
 
     const owner = isOwner();
-    const items = activeProfileTab === "liked" ? likedAlbums : profileAlbums;
 
     if(activeProfileTab === "liked" && !owner){
         albumGrid.innerHTML = `<div class="empty">いいねしたものは本人だけが確認できます。</div>`;
         return;
     }
+
+    if(activeProfileTab === "lists"){
+        if(profileLists.length === 0){
+            albumGrid.innerHTML = `<div class="empty">まだリストがありません。</div>`;
+            return;
+        }
+
+        albumGrid.innerHTML = profileLists
+            .map((list) => listCardHTML(list, { owner }))
+            .join("");
+        return;
+    }
+
+    const items = activeProfileTab === "liked" ? likedAlbums : profileAlbums;
 
     if(items.length === 0){
         albumGrid.innerHTML = activeProfileTab === "liked"
@@ -4168,6 +4480,51 @@ function listenAlbums(){
     }, (error) => {
         console.error("投稿取得失敗:", error);
         albumGrid.innerHTML = `<div class="empty">投稿の読み込みに失敗しました。</div>`;
+    });
+}
+
+
+function listenLists(){
+    if(unsubscribeLists){
+        unsubscribeLists();
+        unsubscribeLists = null;
+    }
+
+    let listsQuery;
+
+    if(isOwner()){
+        listsQuery = query(
+            collection(db, "lists"),
+            where("userId", "==", uid)
+        );
+    }else{
+        listsQuery = query(
+            collection(db, "lists"),
+            where("userId", "==", uid),
+            where("isPublic", "==", true)
+        );
+    }
+
+    unsubscribeLists = onSnapshot(listsQuery, (snapshot) => {
+        profileLists = [];
+
+        snapshot.forEach((docSnap) => {
+            profileLists.push({
+                id: docSnap.id,
+                ...docSnap.data()
+            });
+        });
+
+        profileLists.sort((a, b) => {
+            return getListTime(b.createdAt || b.updatedAt) - getListTime(a.createdAt || a.updatedAt);
+        });
+
+        renderAlbums();
+    }, (error) => {
+        console.error("リスト取得失敗:", error);
+        if(activeProfileTab === "lists"){
+            albumGrid.innerHTML = `<div class="empty">リストの読み込みに失敗しました。</div>`;
+        }
     });
 }
 
@@ -4473,6 +4830,7 @@ onAuthStateChanged(auth, async (user) => {
     await loadFollowCounts();
 
     listenAlbums();
+    listenLists();
     listenLikes();
     listenComments();
 
