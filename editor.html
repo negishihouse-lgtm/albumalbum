@@ -2125,6 +2125,7 @@ import {
     getDoc,
     getDocs,
     updateDoc,
+    deleteDoc,
     query,
     where,
     serverTimestamp
@@ -2154,6 +2155,7 @@ const auth = getAuth(app);
 
 const params = new URLSearchParams(location.search);
 const editingIdFromUrl = params.get("id");
+const editingListIdFromUrl = params.get("listId");
 
 const pageTitle = document.getElementById("pageTitle");
 const pageSubtitle = document.getElementById("pageSubtitle");
@@ -2227,7 +2229,9 @@ const toastBox = document.getElementById("toastBox");
 const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
 let editingId = editingIdFromUrl;
+let editingListId = editingListIdFromUrl;
 let currentLoadedAlbum = null;
+let currentLoadedList = null;
 let selectedSpotifyTrack = null;
 let currentPostType = "song";
 let listItemsDraft = [];
@@ -2649,6 +2653,19 @@ function updateDescCount(){
 descInput.addEventListener("input", updateDescCount);
 
 function setPageMode(){
+    if(editingListId){
+        pageTitle.textContent = "リストを編集";
+        pageSubtitle.textContent = "作成済みリストの内容を編集します。";
+        modeBadge.textContent = "リスト編集モード";
+        modeBadge.classList.add("edit");
+        saveBtn.textContent = "リストを更新";
+        switchPostType("list");
+        updateTierToggleButton();
+        renderListDraftItems();
+        disablePostTypeSwitchForEdit(true);
+        return;
+    }
+
     if(editingId){
         pageTitle.textContent = "投稿を編集";
         pageSubtitle.textContent = "マイページから選択した投稿を編集します。";
@@ -2656,8 +2673,8 @@ function setPageMode(){
         modeBadge.classList.add("edit");
         saveBtn.textContent = "更新";
         switchPostType("song");
-updateTierToggleButton();
-renderListDraftItems();
+        updateTierToggleButton();
+        renderListDraftItems();
         disablePostTypeSwitchForEdit(true);
     }else{
         pageTitle.textContent = "投稿作成";
@@ -2796,7 +2813,126 @@ function setFormData(album){
     updateDescCount();
 }
 
+function setListFormData(list, items){
+    if(listTitleInput){
+        listTitleInput.value = list.title || "";
+    }
+
+    if(listDescInput){
+        listDescInput.value = list.desc || "";
+    }
+
+    if(listPublicInput){
+        listPublicInput.value = list.isPublic === false ? "false" : "true";
+    }
+
+    listHasTier = Boolean(list.hasTier || list.listType === "tier");
+    listItemsDraft = Array.isArray(items)
+        ? items.map((item) => ({
+            source: item.source || "spotify",
+            albumId: item.albumId || "",
+            title: item.title || "",
+            artist: item.artist || "",
+            cover: item.cover || "",
+            spotifyId: item.spotifyId || "",
+            spotifyUrl: item.spotifyUrl || "",
+            spotifyUri: item.spotifyUri || "",
+            spotifyType: item.spotifyType || "track",
+            tier: item.tier || "A"
+        }))
+        : [];
+
+    selectedTierItemIndex = -1;
+    updateTierToggleButton();
+    renderListDraftItems();
+    updateListStickySummary();
+    showListTab("info");
+}
+
+function sortListItems(items){
+    return [...items].sort((a, b) => {
+        const aOrder = Number(a.order ?? 0);
+        const bOrder = Number(b.order ?? 0);
+
+        if(aOrder !== bOrder){
+            return aOrder - bOrder;
+        }
+
+        return String(a.title || "").localeCompare(String(b.title || ""), "ja");
+    });
+}
+
+async function loadListItemsForEditor(listId){
+    const itemsQuery = query(
+        collection(db, "listItems"),
+        where("listId", "==", listId)
+    );
+
+    const snap = await getDocs(itemsQuery);
+    const items = [];
+
+    snap.forEach((docSnap) => {
+        items.push({
+            id: docSnap.id,
+            ...docSnap.data()
+        });
+    });
+
+    return sortListItems(items);
+}
+
+async function loadEditList(user){
+    if(!editingListId){
+        return;
+    }
+
+    clearError();
+    setLoading(true);
+
+    try{
+        const ref = doc(db, "lists", editingListId);
+        const snap = await getDoc(ref);
+
+        if(!snap.exists()){
+            showError("編集対象のリストが見つかりません。削除された可能性があります。");
+            saveBtn.disabled = true;
+            return;
+        }
+
+        const list = snap.data();
+
+        if(list.userId !== user.uid){
+            showError("このリストはあなたのリストではないため、編集できません。");
+            saveBtn.disabled = true;
+            return;
+        }
+
+        const items = await loadListItemsForEditor(editingListId);
+        currentLoadedList = { list, items };
+        setListFormData(list, items);
+        saveBtn.disabled = false;
+    }catch(error){
+        showError(`リスト読み込みエラー：${error.message}`);
+        saveBtn.disabled = true;
+    }finally{
+        setLoading(false);
+    }
+}
+
 function clearForm(){
+    if(editingListId){
+        const ok = confirm("編集中のリスト内容を初期状態に戻しますか？");
+        if(!ok){
+            return;
+        }
+
+        if(currentLoadedList){
+            setListFormData(currentLoadedList.list, currentLoadedList.items);
+        }
+
+        return;
+    }
+
     if(editingId){
         const ok = confirm("編集中の内容を初期状態に戻しますか？");
         if(!ok){
@@ -3072,10 +3208,7 @@ saveBtn.addEventListener("click", async () => {
         }
 
         if(currentPostType === "list"){
-            if(editingId){
-                alert("現在、編集モードでは曲投稿のみ編集できます");
-                return;
-            }
+            // listId付きで開いた場合はリスト編集モードとして保存する
 
             if(!listTitleInput || !listTitleInput.value.trim()){
                 alert("リストタイトルを入力してください");
@@ -3089,14 +3222,44 @@ saveBtn.addEventListener("click", async () => {
 
             const listData = getListFormData();
 
-            const listRef = await addDoc(collection(db, "lists"), {
-                ...listData,
-                createdAt: serverTimestamp()
-            });
+            let targetListId = editingListId || "";
+
+            if(editingListId){
+                const latestSnap = await getDoc(doc(db, "lists", editingListId));
+
+                if(!latestSnap.exists()){
+                    alert("編集対象のリストが見つかりません");
+                    return;
+                }
+
+                const latestList = latestSnap.data();
+
+                if(latestList.userId !== user.uid){
+                    alert("このリストはあなたのリストではないため、更新できません");
+                    return;
+                }
+
+                await updateDoc(doc(db, "lists", editingListId), {
+                    ...listData,
+                    updatedAt: serverTimestamp()
+                });
+
+                const oldItems = await loadListItemsForEditor(editingListId);
+                await Promise.all(oldItems.map((oldItem) => {
+                    return deleteDoc(doc(db, "listItems", oldItem.id));
+                }));
+            }else{
+                const listRef = await addDoc(collection(db, "lists"), {
+                    ...listData,
+                    createdAt: serverTimestamp()
+                });
+
+                targetListId = listRef.id;
+            }
 
             await Promise.all(listItemsDraft.map((item, index) => {
                 return addDoc(collection(db, "listItems"), {
-                    listId: listRef.id,
+                    listId: targetListId,
                     userId: user.uid,
                     order: index,
                     source: item.source,
@@ -3109,11 +3272,20 @@ saveBtn.addEventListener("click", async () => {
                     spotifyUri: item.spotifyUri || "",
                     spotifyType: item.spotifyType || "track",
                     tier: listData.hasTier ? (item.tier || "A") : "",
-                    createdAt: serverTimestamp()
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
                 });
             }));
 
-            alert(listData.hasTier ? "Tier付きリストを保存しました" : "リストを保存しました");
+            alert(editingListId
+                ? "リストを更新しました"
+                : (listData.hasTier ? "Tier付きリストを保存しました" : "リストを保存しました")
+            );
+
+            if(editingListId){
+                location.href = `./list-detail.html?id=${encodeURIComponent(editingListId)}`;
+                return;
+            }
 
             clearNewPostFormOnly();
             clearListDraft();
@@ -3251,7 +3423,9 @@ onAuthStateChanged(auth, async (user) => {
         saveBtn.disabled = false;
         clearBtn.disabled = false;
 
-        if(editingId){
+        if(editingListId){
+            await loadEditList(user);
+        }else if(editingId){
             await loadEditAlbum(user);
         }
 
@@ -3262,7 +3436,7 @@ onAuthStateChanged(auth, async (user) => {
         saveBtn.disabled = false;
         clearBtn.disabled = false;
 
-        if(editingId){
+        if(editingId || editingListId){
             showError("編集するにはログインが必要です。ログイン後、このページに戻ります。");
         }
     }
@@ -4103,6 +4277,10 @@ function switchPostType(type){
         type = "song";
     }
 
+    if(editingListId){
+        type = "list";
+    }
+
     if(type !== "song" && type !== "list"){
         type = "song";
     }
@@ -4164,7 +4342,9 @@ setPageMode();
 updateDescCount();
 syncKeywordCandidates();
 initMeterDots();
-switchPostType("song");
+if(!editingId && !editingListId){
+    switchPostType("song");
+}
 updateTierToggleButton();
 renderListDraftItems();
 updateListStickySummary();
