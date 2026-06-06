@@ -1045,7 +1045,8 @@ button:disabled{
 }
 
 .tier-mini-card{
-    touch-action:none;
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
 }
 
 .tier-mini-card.dragging{
@@ -1387,6 +1388,43 @@ button:disabled{
     cursor:pointer;
     user-select:none;
     -webkit-user-select:none;
+    touch-action:manipulation;
+}
+
+.tier-mini-card.dragging{
+    opacity:0.42;
+}
+
+.tier-drag-ghost{
+    position:fixed;
+    left:0;
+    top:0;
+    width:62px;
+    pointer-events:none;
+    z-index:40000;
+    transform:translate(-50%, -50%) scale(1.04);
+    opacity:0.96;
+}
+
+.tier-drag-ghost img{
+    width:62px;
+    height:62px;
+    display:block;
+    object-fit:cover;
+    border-radius:12px;
+    border:2px solid rgba(237,248,249,0.9);
+    box-shadow:0 10px 34px rgba(0,0,0,0.45), 0 0 0 4px rgba(111,168,220,0.22);
+    background:#222;
+}
+
+.tier-drag-ghost .tier-mini-title{
+    display:none;
+}
+
+.tier-drop-zone.drag-over{
+    background:rgba(111,168,220,0.13);
+    outline:2px solid rgba(111,168,220,0.42);
+    outline-offset:-4px;
 }
 
 .tier-mini-card img{
@@ -2192,6 +2230,10 @@ let selectedTierItemIndex = -1;
 let authReady = false;
 let toastTimer = null;
 let draggedTierItemIndex = -1;
+const TIER_DRAG_DELAY = 140;
+const TIER_MOVE_THRESHOLD = 6;
+let tierPointerState = null;
+let suppressNextTierTap = false;
 
 
 function showToast(message){
@@ -3393,8 +3435,17 @@ function renderListDraftItems(){
     }).join("");
 }
 
+function shouldUseTouchTierPicker(){
+    return (
+        window.matchMedia?.("(max-width: 900px)")?.matches ||
+        navigator.maxTouchPoints > 0 ||
+        "ontouchstart" in window
+    );
+}
+
 function renderVisualTierBuilder(){
     const tiers = ["S", "A", "B", "C"];
+    const touchTierPicker = shouldUseTouchTierPicker();
 
     const rows = tiers.map((tier) => {
         const items = listItemsDraft
@@ -3412,7 +3463,11 @@ function renderVisualTierBuilder(){
                         data-tier-index="${index}"
                         ondragstart="window.onTierDragStart(event, ${index})"
                         ondragend="window.onTierDragEnd(event)"
-                        onclick="event.stopPropagation(); window.selectTierItem(${index})"
+                        onpointerdown="window.onTierPointerDown(event, ${index})"
+                        onpointermove="window.onTierPointerMove(event, ${index})"
+                        onpointerup="window.onTierPointerUp(event, ${index})"
+                        onpointercancel="window.onTierPointerCancel(event, ${index})"
+                        onclick="event.stopPropagation(); window.handleTierCardTap(${index})"
                     >
                         <img src="${escapeHTML(item.cover || "")}" alt="">
                         <div class="tier-mini-title">${escapeHTML(item.title || "")}</div>
@@ -3442,8 +3497,27 @@ function renderVisualTierBuilder(){
 
     const selectedItem = selectedTierItemIndex >= 0 ? listItemsDraft[selectedTierItemIndex] : null;
     const helpText = selectedItem
-        ? `<strong>${escapeHTML(selectedItem.title || "選択中の曲")}</strong> を選択中。移動先のS/A/B/Cの段をタップしてください。`
-        : "移動したいジャケットをタップしてから、S/A/B/Cの段をタップすると移動できます。";
+        ? `<strong>${escapeHTML(selectedItem.title || "選択中の曲")}</strong> を選択中。移動先を選んでください。`
+        : (touchTierPicker
+            ? "ジャケットを1回タップすると、S/A/B/Cの移動先を選べます。長押しは不要です。"
+            : "ジャケットをドラッグしてS/A/B/Cに移動できます。クリック選択→段クリックでも移動できます。"
+        );
+
+    const tierMoveSheet = touchTierPicker && selectedItem ? `
+        <div class="tier-move-sheet open" onclick="if(event.target === this) window.closeTierMoveSheet()">
+            <div class="tier-move-panel">
+                <div class="tier-move-title">移動先を選択</div>
+                <div class="tier-move-subtitle">${escapeHTML(selectedItem.title || "選択中の曲")}</div>
+                <div class="tier-move-actions">
+                    <button type="button" class="tier-move-btn s" onclick="window.moveSelectedItemToTier('S')">S</button>
+                    <button type="button" class="tier-move-btn a" onclick="window.moveSelectedItemToTier('A')">A</button>
+                    <button type="button" class="tier-move-btn b" onclick="window.moveSelectedItemToTier('B')">B</button>
+                    <button type="button" class="tier-move-btn c" onclick="window.moveSelectedItemToTier('C')">C</button>
+                </div>
+                <button type="button" class="tier-move-close" onclick="window.closeTierMoveSheet()">キャンセル</button>
+            </div>
+        </div>
+    ` : "";
 
     listDraftItems.innerHTML = `
         <div class="tier-builder-help">
@@ -3452,7 +3526,220 @@ function renderVisualTierBuilder(){
         <div class="tier-builder">
             ${rows}
         </div>
+        ${tierMoveSheet}
     `;
+}
+
+function isFastTierPointerDragTarget(event){
+    return shouldUseTouchTierPicker() && event.pointerType !== "mouse";
+}
+
+function getTierDropZoneFromPoint(x, y){
+    const element = document.elementFromPoint(x, y);
+    return element ? element.closest(".tier-drop-zone") : null;
+}
+
+function clearTierDragOverZones(){
+    document.querySelectorAll(".tier-drop-zone.drag-over").forEach((zone) => {
+        zone.classList.remove("drag-over");
+    });
+}
+
+function createTierDragGhost(card){
+    removeTierDragGhost();
+
+    const ghost = card.cloneNode(true);
+    ghost.classList.add("tier-drag-ghost");
+    ghost.classList.remove("selected", "dragging");
+    ghost.removeAttribute("onclick");
+    ghost.removeAttribute("onpointerdown");
+    ghost.removeAttribute("onpointermove");
+    ghost.removeAttribute("onpointerup");
+    ghost.removeAttribute("onpointercancel");
+    ghost.removeAttribute("ondragstart");
+    ghost.removeAttribute("ondragend");
+    document.body.appendChild(ghost);
+    return ghost;
+}
+
+function removeTierDragGhost(){
+    document.querySelectorAll(".tier-drag-ghost").forEach((ghost) => {
+        ghost.remove();
+    });
+}
+
+function moveTierDragGhost(x, y){
+    if(!tierPointerState?.ghost){
+        return;
+    }
+
+    tierPointerState.ghost.style.left = `${x}px`;
+    tierPointerState.ghost.style.top = `${y}px`;
+}
+
+function startTierPointerDrag(event){
+    if(!tierPointerState || tierPointerState.dragging){
+        return;
+    }
+
+    const card = tierPointerState.card;
+
+    tierPointerState.dragging = true;
+    draggedTierItemIndex = tierPointerState.index;
+    selectedTierItemIndex = tierPointerState.index;
+    tierPointerState.ghost = createTierDragGhost(card);
+    card.classList.add("dragging");
+    moveTierDragGhost(event.clientX, event.clientY);
+
+    try{
+        card.setPointerCapture?.(event.pointerId);
+    }catch(error){
+        // Safariなどで失敗しても操作自体は続ける
+    }
+
+    if(navigator.vibrate){
+        navigator.vibrate(8);
+    }
+}
+
+function resetTierPointerState(){
+    if(tierPointerState?.timer){
+        clearTimeout(tierPointerState.timer);
+    }
+
+    if(tierPointerState?.card){
+        tierPointerState.card.classList.remove("dragging");
+    }
+
+    removeTierDragGhost();
+    clearTierDragOverZones();
+    tierPointerState = null;
+}
+
+function onTierPointerDown(event, index){
+    if(!isFastTierPointerDragTarget(event) || !listItemsDraft[index]){
+        return;
+    }
+
+    event.stopPropagation();
+
+    const card = event.currentTarget;
+
+    tierPointerState = {
+        index,
+        card,
+        startX:event.clientX,
+        startY:event.clientY,
+        lastX:event.clientX,
+        lastY:event.clientY,
+        dragging:false,
+        ghost:null,
+        timer:setTimeout(() => {
+            startTierPointerDrag(event);
+        }, TIER_DRAG_DELAY)
+    };
+}
+
+function onTierPointerMove(event, index){
+    if(!tierPointerState || tierPointerState.index !== index){
+        return;
+    }
+
+    tierPointerState.lastX = event.clientX;
+    tierPointerState.lastY = event.clientY;
+
+    const dx = Math.abs(event.clientX - tierPointerState.startX);
+    const dy = Math.abs(event.clientY - tierPointerState.startY);
+
+    if(!tierPointerState.dragging && (dx > TIER_MOVE_THRESHOLD || dy > TIER_MOVE_THRESHOLD)){
+        if(tierPointerState.timer){
+            clearTimeout(tierPointerState.timer);
+            tierPointerState.timer = null;
+        }
+        startTierPointerDrag(event);
+    }
+
+    if(!tierPointerState.dragging){
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    moveTierDragGhost(event.clientX, event.clientY);
+
+    clearTierDragOverZones();
+    const zone = getTierDropZoneFromPoint(event.clientX, event.clientY);
+
+    if(zone){
+        zone.classList.add("drag-over");
+    }
+}
+
+function onTierPointerUp(event, index){
+    if(!tierPointerState || tierPointerState.index !== index){
+        return;
+    }
+
+    const wasDragging = tierPointerState.dragging;
+    const itemIndex = tierPointerState.index;
+
+    if(tierPointerState.timer){
+        clearTimeout(tierPointerState.timer);
+        tierPointerState.timer = null;
+    }
+
+    if(wasDragging){
+        event.preventDefault();
+        event.stopPropagation();
+
+        const zone = getTierDropZoneFromPoint(event.clientX, event.clientY);
+        const tier = zone?.dataset?.tier || "";
+
+        if(tier && listItemsDraft[itemIndex]){
+            listItemsDraft[itemIndex].tier = tier;
+            selectedTierItemIndex = -1;
+            draggedTierItemIndex = -1;
+            suppressNextTierTap = true;
+            resetTierPointerState();
+            renderListDraftItems();
+            showToast(`${tier}に移動しました`);
+            return;
+        }
+    }
+
+    if(wasDragging){
+        suppressNextTierTap = true;
+    }
+
+    resetTierPointerState();
+}
+
+function onTierPointerCancel(event, index){
+    if(!tierPointerState || tierPointerState.index !== index){
+        return;
+    }
+
+    resetTierPointerState();
+}
+
+function handleTierCardTap(index){
+    if(suppressNextTierTap){
+        suppressNextTierTap = false;
+        return;
+    }
+
+    if(!listItemsDraft[index]){
+        return;
+    }
+
+    if(shouldUseTouchTierPicker()){
+        selectedTierItemIndex = index;
+        renderListDraftItems();
+        return;
+    }
+
+    selectTierItem(index);
 }
 
 function selectTierItem(index){
@@ -3466,6 +3753,11 @@ function selectTierItem(index){
         selectedTierItemIndex = index;
     }
 
+    renderListDraftItems();
+}
+
+function closeTierMoveSheet(){
+    selectedTierItemIndex = -1;
     renderListDraftItems();
 }
 
@@ -3534,7 +3826,13 @@ function onTierDrop(event, tier){
     showToast(`${tier}に移動しました`);
 }
 
+window.handleTierCardTap = handleTierCardTap;
+window.onTierPointerDown = onTierPointerDown;
+window.onTierPointerMove = onTierPointerMove;
+window.onTierPointerUp = onTierPointerUp;
+window.onTierPointerCancel = onTierPointerCancel;
 window.selectTierItem = selectTierItem;
+window.closeTierMoveSheet = closeTierMoveSheet;
 window.moveSelectedItemToTier = moveSelectedItemToTier;
 window.onTierDragStart = onTierDragStart;
 window.onTierDragEnd = onTierDragEnd;
