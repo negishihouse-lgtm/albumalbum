@@ -1045,7 +1045,7 @@ button:disabled{
 }
 
 .tier-mini-card{
-    touch-action:manipulation;
+    touch-action:none;
     -webkit-tap-highlight-color:transparent;
 }
 
@@ -1057,6 +1057,12 @@ button:disabled{
     background:rgba(111,168,220,0.16);
     outline:2px solid rgba(111,168,220,0.48);
     outline-offset:-5px;
+}
+
+body.tier-drag-lock{
+    overflow:hidden;
+    overscroll-behavior:none;
+    touch-action:none;
 }
 
 @media(min-width:901px){
@@ -1388,7 +1394,7 @@ button:disabled{
     cursor:pointer;
     user-select:none;
     -webkit-user-select:none;
-    touch-action:manipulation;
+    touch-action:none;
 }
 
 .tier-mini-card.dragging{
@@ -3582,6 +3588,10 @@ function startTierPointerDrag(event){
         return;
     }
 
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    document.body.classList.add("tier-drag-lock");
+
     const card = tierPointerState.card;
 
     tierPointerState.dragging = true;
@@ -3603,6 +3613,8 @@ function startTierPointerDrag(event){
 }
 
 function resetTierPointerState(){
+    document.body.classList.remove("tier-drag-lock");
+
     if(tierPointerState?.timer){
         clearTimeout(tierPointerState.timer);
     }
@@ -3621,6 +3633,7 @@ function onTierPointerDown(event, index){
         return;
     }
 
+    event.preventDefault();
     event.stopPropagation();
 
     const card = event.currentTarget;
@@ -3644,6 +3657,9 @@ function onTierPointerMove(event, index){
     if(!tierPointerState || tierPointerState.index !== index){
         return;
     }
+
+    event.preventDefault();
+    event.stopPropagation();
 
     tierPointerState.lastX = event.clientX;
     tierPointerState.lastY = event.clientY;
@@ -3681,6 +3697,9 @@ function onTierPointerUp(event, index){
         return;
     }
 
+    event.preventDefault();
+    event.stopPropagation();
+
     const wasDragging = tierPointerState.dragging;
     const itemIndex = tierPointerState.index;
 
@@ -3710,9 +3729,15 @@ function onTierPointerUp(event, index){
 
     if(wasDragging){
         suppressNextTierTap = true;
+        resetTierPointerState();
+        return;
     }
 
+    // preventDefaultでclickが発火しない環境があるため、タップ処理もpointerup側で実行する
+    suppressNextTierTap = true;
+    selectedTierItemIndex = itemIndex;
     resetTierPointerState();
+    renderListDraftItems();
 }
 
 function onTierPointerCancel(event, index){
