@@ -896,6 +896,208 @@ button:disabled{
     }
 }
 
+
+
+/* =====================
+   List Editor Compact UI
+===================== */
+
+.list-editor-tabs{
+    position:sticky;
+    top:16px;
+    z-index:30;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin:14px 0 18px;
+    padding:8px;
+    background:rgba(12,12,12,0.92);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:18px;
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+}
+
+.list-editor-tab{
+    width:100%;
+    margin-top:0;
+    padding:11px 8px;
+    border-radius:13px;
+    background:transparent;
+    color:#aaa;
+    font-size:13px;
+    font-weight:900;
+    border:1px solid transparent;
+}
+
+.list-editor-tab.active{
+    background:#6fa8dc;
+    color:white;
+    border-color:#6fa8dc;
+}
+
+.list-tab-panel{
+    display:none;
+}
+
+.list-tab-panel.active{
+    display:block;
+}
+
+.list-layout-note{
+    margin-bottom:14px;
+    padding:12px;
+    border-radius:14px;
+    background:rgba(111,168,220,0.10);
+    border:1px solid rgba(111,168,220,0.22);
+    color:#dff3ff;
+    font-size:12px;
+    line-height:1.7;
+}
+
+.list-sticky-summary{
+    position:fixed;
+    left:280px;
+    right:24px;
+    bottom:24px;
+    z-index:9998;
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    max-width:560px;
+    padding:12px;
+    background:rgba(10,10,10,0.94);
+    border:1px solid rgba(111,168,220,0.35);
+    border-radius:18px;
+    box-shadow:0 14px 50px rgba(0,0,0,0.55);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+}
+
+.list-sticky-summary.show{
+    display:flex;
+}
+
+.list-sticky-main{
+    min-width:0;
+}
+
+.list-sticky-count{
+    font-size:14px;
+    font-weight:900;
+    color:white;
+    margin-bottom:3px;
+}
+
+.list-sticky-latest{
+    color:#aaa;
+    font-size:12px;
+    line-height:1.4;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:310px;
+}
+
+.list-sticky-action{
+    width:auto;
+    min-width:88px;
+    margin-top:0;
+    padding:10px 12px;
+    border-radius:999px;
+    background:#6fa8dc;
+    color:white;
+    font-size:12px;
+    font-weight:900;
+}
+
+.list-mini-btn.added,
+.spotify-select-btn.added{
+    background:#29485f;
+    color:#dff3ff;
+}
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:104px;
+    transform:translateX(-50%) translateY(12px);
+    z-index:40000;
+    display:none;
+    max-width:min(420px, calc(100vw - 32px));
+    padding:12px 16px;
+    border-radius:999px;
+    background:rgba(20,20,20,0.96);
+    border:1px solid rgba(111,168,220,0.38);
+    color:white;
+    font-size:13px;
+    font-weight:800;
+    box-shadow:0 12px 44px rgba(0,0,0,0.45);
+    opacity:0;
+    transition:opacity .18s ease, transform .18s ease;
+}
+
+.toast.show{
+    display:block;
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+.tier-mini-card{
+    touch-action:none;
+}
+
+.tier-mini-card.dragging{
+    opacity:0.55;
+}
+
+.tier-drop-zone.drag-over{
+    background:rgba(111,168,220,0.16);
+    outline:2px solid rgba(111,168,220,0.48);
+    outline-offset:-5px;
+}
+
+@media(min-width:901px){
+    .list-tab-panel[data-list-panel="add"]{
+        max-height:calc(100vh - 210px);
+        overflow:auto;
+        padding-right:4px;
+    }
+}
+
+@media(max-width:900px){
+    .list-editor-tabs{
+        top:8px;
+        grid-template-columns:repeat(3,1fr);
+        gap:6px;
+        margin-top:10px;
+        border-radius:16px;
+    }
+
+    .list-editor-tab{
+        padding:10px 4px;
+        font-size:12px;
+    }
+
+    .list-sticky-summary{
+        left:12px;
+        right:12px;
+        bottom:84px;
+        max-width:none;
+        border-radius:18px;
+    }
+
+    .list-sticky-latest{
+        max-width:calc(100vw - 160px);
+    }
+
+    .toast{
+        bottom:164px;
+    }
+}
+
+
 /* =====================
    Mobile
 ===================== */
@@ -1729,90 +1931,118 @@ button:disabled{
             <div id="listFormSection" style="display:none;">
 
                 <div class="section-title">List Form</div>
-<div class="input-group">
-                    <label>リストタイトル</label>
-                    <input
-                        id="listTitleInput"
-                        type="text"
-                        placeholder="例：深夜に聴きたい邦ロック"
-                    >
-                </div>
-<div class="input-group">
-                    <label>説明</label>
-                    <textarea
-                        id="listDescInput"
-                        maxlength="300"
-                        placeholder="このリストについて"
-                    ></textarea>
+
+                <div class="list-layout-note">
+                    リスト作成は「基本情報」「曲を追加」「追加済み」に分けています。追加した曲数は画面下にも固定表示されます。
                 </div>
 
-                <div class="input-group">
-                    <label>公開設定</label>
-                    <select id="listPublicInput">
-                        <option value="true">公開</option>
-                        <option value="false">非公開</option>
-                    </select>
+                <div class="list-editor-tabs" id="listEditorTabs">
+                    <button type="button" class="list-editor-tab active" data-list-tab="info">基本情報</button>
+                    <button type="button" class="list-editor-tab" data-list-tab="add">曲を追加</button>
+                    <button type="button" class="list-editor-tab" data-list-tab="added">追加済み</button>
                 </div>
 
-                <div class="list-add-box">
-                    <div class="list-add-title">既存の投稿から追加</div>
-                    <div class="list-add-help">
-                        自分の投稿だけ、または他人の公開投稿も含めて検索できます。
-                    </div>
-
-                    <div class="list-search-row">
-                        <select id="existingSearchScopeInput">
-                            <option value="mine">自分の投稿だけ</option>
-                            <option value="all">他人の投稿も含める</option>
-                        </select>
-
+                <div class="list-tab-panel active" data-list-panel="info">
+                    <div class="input-group">
+                        <label>リストタイトル</label>
                         <input
-                            id="existingPostSearchInput"
+                            id="listTitleInput"
                             type="text"
-                            placeholder="曲名・アーティスト名・キーワード"
+                            placeholder="例：深夜に聴きたい邦ロック"
                         >
-
-                        <button type="button" id="existingPostSearchBtn">検索</button>
                     </div>
 
-                    <div class="spotify-status" id="existingPostSearchStatus">
-                        既存投稿を検索してリストに追加できます。
+                    <div class="input-group">
+                        <label>説明</label>
+                        <textarea
+                            id="listDescInput"
+                            maxlength="300"
+                            placeholder="このリストについて"
+                        ></textarea>
                     </div>
 
-                    <div class="list-search-results" id="existingPostSearchResults"></div>
+                    <div class="input-group">
+                        <label>公開設定</label>
+                        <select id="listPublicInput">
+                            <option value="true">公開</option>
+                            <option value="false">非公開</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="list-add-box">
-                    <div class="list-add-title">未レビューの曲をSpotifyから追加</div>
-                    <div class="list-add-help">
-                        Spotifyで曲を検索して選ぶと、このリストに追加されます。曲単体投稿は作成されません。
-                    </div>
-
-                    <div id="listSpotifyMount"></div>
-                </div>
-
-                <div class="list-add-box">
-                    <div class="list-added-header">
-                        <div>
-                            <div class="list-add-title">追加済みの曲</div>
-                            <div class="list-add-help">
-                                通常リストでは追加順で保存します。Tier表にすると、曲をS/A/B/Cに分けて配置できます。
-                            </div>
+                <div class="list-tab-panel" data-list-panel="add">
+                    <div class="list-add-box">
+                        <div class="list-add-title">既存の投稿から追加</div>
+                        <div class="list-add-help">
+                            自分の投稿だけ、または他人の公開投稿も含めて検索できます。
                         </div>
 
-                        <button
-                            type="button"
-                            class="tier-toggle-btn"
-                            id="tierToggleBtn"
-                        >
-                            Tier表にする
-                        </button>
+                        <div class="list-search-row">
+                            <select id="existingSearchScopeInput">
+                                <option value="mine">自分の投稿だけ</option>
+                                <option value="all">他人の投稿も含める</option>
+                            </select>
+
+                            <input
+                                id="existingPostSearchInput"
+                                type="text"
+                                placeholder="曲名・アーティスト名・キーワード"
+                            >
+
+                            <button type="button" id="existingPostSearchBtn">検索</button>
+                        </div>
+
+                        <div class="spotify-status" id="existingPostSearchStatus">
+                            既存投稿を検索してリストに追加できます。
+                        </div>
+
+                        <div class="list-search-results" id="existingPostSearchResults"></div>
                     </div>
 
-                    <div class="list-draft-items" id="listDraftItems"></div>
+                    <div class="list-add-box">
+                        <div class="list-add-title">未レビューの曲をSpotifyから追加</div>
+                        <div class="list-add-help">
+                            Spotifyで曲を検索して選ぶと、このリストに追加されます。曲単体投稿は作成されません。
+                        </div>
+
+                        <div id="listSpotifyMount"></div>
+                    </div>
+                </div>
+
+                <div class="list-tab-panel" data-list-panel="added">
+                    <div class="list-add-box">
+                        <div class="list-added-header">
+                            <div>
+                                <div class="list-add-title">追加済みの曲</div>
+                                <div class="list-add-help">
+                                    通常リストでは追加順で保存します。Tier表にすると、ジャケット画像をドラッグ、またはタップでS/A/B/Cに配置できます。
+                                </div>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="tier-toggle-btn"
+                                id="tierToggleBtn"
+                            >
+                                Tier表にする
+                            </button>
+                        </div>
+
+                        <div class="list-draft-items" id="listDraftItems"></div>
+                    </div>
                 </div>
 
             </div>
+
+            <div class="list-sticky-summary" id="listStickySummary">
+                <div class="list-sticky-main">
+                    <div class="list-sticky-count" id="listStickyCount">追加済み 0曲</div>
+                    <div class="list-sticky-latest" id="listStickyLatest">まだ曲が追加されていません</div>
+                </div>
+                <button type="button" class="list-sticky-action" id="openAddedListBtn">見る</button>
+            </div>
+
+            <div class="toast" id="toastBox"></div>
 
             <button class="save-btn" id="saveBtn">
                 保存
@@ -1943,6 +2173,12 @@ const existingPostSearchStatus = document.getElementById("existingPostSearchStat
 const existingPostSearchResults = document.getElementById("existingPostSearchResults");
 const listDraftItems = document.getElementById("listDraftItems");
 const tierToggleBtn = document.getElementById("tierToggleBtn");
+const listEditorTabs = document.getElementById("listEditorTabs");
+const listStickySummary = document.getElementById("listStickySummary");
+const listStickyCount = document.getElementById("listStickyCount");
+const listStickyLatest = document.getElementById("listStickyLatest");
+const openAddedListBtn = document.getElementById("openAddedListBtn");
+const toastBox = document.getElementById("toastBox");
 
 const SPOTIFY_API_BASE = "https://album-spotify-api.minanegi3710.workers.dev";
 
@@ -1954,9 +2190,62 @@ let listItemsDraft = [];
 let listHasTier = false;
 let selectedTierItemIndex = -1;
 let authReady = false;
+let toastTimer = null;
+let draggedTierItemIndex = -1;
 
 
-function getUserIconUrl(data){
+function showToast(message){
+    if(!toastBox){
+        return;
+    }
+
+    toastBox.textContent = message;
+    toastBox.classList.add("show");
+
+    if(toastTimer){
+        clearTimeout(toastTimer);
+    }
+
+    toastTimer = setTimeout(() => {
+        toastBox.classList.remove("show");
+    }, 1700);
+}
+
+function showListTab(tabName){
+    if(!listEditorTabs){
+        return;
+    }
+
+    const name = tabName || "info";
+
+    listEditorTabs.querySelectorAll(".list-editor-tab").forEach((button) => {
+        button.classList.toggle("active", button.dataset.listTab === name);
+    });
+
+    document.querySelectorAll(".list-tab-panel").forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.listPanel === name);
+    });
+}
+
+function updateListStickySummary(){
+    if(!listStickySummary || !listStickyCount || !listStickyLatest){
+        return;
+    }
+
+    const shouldShow = currentPostType === "list";
+
+    listStickySummary.classList.toggle("show", shouldShow);
+
+    const count = listItemsDraft.length;
+    const latest = count > 0 ? listItemsDraft[count - 1] : null;
+
+    listStickyCount.textContent = `追加済み ${count}曲`;
+    listStickyLatest.textContent = latest
+        ? `最後に追加：${latest.title || "曲名未設定"} / ${latest.artist || "アーティスト未設定"}`
+        : "まだ曲が追加されていません";
+}
+
+(data){
     return (
         data?.photoURL ||
         data?.iconURL ||
@@ -2541,6 +2830,7 @@ function updateSpotifySelectedBox(){
 }
 
 function renderSpotifyResults(tracks){
+    window.lastSpotifySearchTracks = Array.isArray(tracks) ? tracks : [];
     spotifyResults.innerHTML = "";
 
     if(!tracks.length){
@@ -2568,12 +2858,39 @@ function renderSpotifyResults(tracks){
         `;
 
         const selectBtn = card.querySelector(".spotify-select-btn");
+        const spotifyUrlForButton = getSpotifyUrlFromTrack(track);
+        const draftItemForButton = {
+            source: "spotify",
+            albumId: "",
+            title: track.title || "",
+            artist: track.artist || "",
+            cover: track.cover || "",
+            spotifyId: track.spotifyId || track.id || "",
+            spotifyUrl: spotifyUrlForButton,
+            spotifyUri: track.spotifyUri || track.uri || "",
+            spotifyType: track.type || "track",
+            tier: "A"
+        };
+
+        if(currentPostType === "list" && isListItemAlreadyAdded(draftItemForButton)){
+            selectBtn.textContent = "追加済み";
+            selectBtn.disabled = true;
+            selectBtn.classList.add("added");
+        }
+
         selectBtn.addEventListener("click", () => {
             const spotifyUrl = getSpotifyUrlFromTrack(track);
 
             if(currentPostType === "list"){
-                addSpotifyTrackToList(track, spotifyUrl);
-                setSpotifyStatus("Spotifyの曲をリストに追加しました。曲単体投稿は作成されません。");
+                const added = addSpotifyTrackToList(track, spotifyUrl);
+
+                if(added){
+                    selectBtn.textContent = "追加済み";
+                    selectBtn.disabled = true;
+                    selectBtn.classList.add("added");
+                    setSpotifyStatus("Spotifyの曲をリストに追加しました。下の固定バーから追加済み曲を確認できます。");
+                }
+
                 return;
             }
 
@@ -2950,12 +3267,12 @@ function isListItemAlreadyAdded(item){
 
 function addItemToListDraft(item){
     if(!item || !item.title){
-        return;
+        return false;
     }
 
     if(isListItemAlreadyAdded(item)){
-        alert("この曲はすでにリストに追加されています");
-        return;
+        showToast("この曲はすでに追加済みです");
+        return false;
     }
 
     listItemsDraft.push({
@@ -2964,16 +3281,21 @@ function addItemToListDraft(item){
     });
 
     renderListDraftItems();
+    updateListStickySummary();
+    refreshListAddButtonStates();
+    showToast("リストに追加しました");
+
+    return true;
 }
 
 function addSpotifyTrackToList(track, spotifyUrl = ""){
     if(!track){
-        return;
+        return false;
     }
 
     const url = spotifyUrl || getSpotifyUrlFromTrack(track);
 
-    addItemToListDraft({
+    return addItemToListDraft({
         source: "spotify",
         albumId: "",
         title: track.title || "",
@@ -2988,7 +3310,7 @@ function addSpotifyTrackToList(track, spotifyUrl = ""){
 }
 
 function addExistingAlbumToListDraft(albumId, album){
-    addItemToListDraft({
+    return addItemToListDraft({
         source: "album",
         albumId,
         title: album.title || "",
@@ -3005,6 +3327,9 @@ function addExistingAlbumToListDraft(albumId, album){
 function removeListDraftItem(index){
     listItemsDraft.splice(index, 1);
     renderListDraftItems();
+    updateListStickySummary();
+    refreshListAddButtonStates();
+    showToast("リストから削除しました");
 }
 
 function updateListDraftTier(index, tier){
@@ -3022,6 +3347,8 @@ function clearListDraft(){
     selectedTierItemIndex = -1;
     updateTierToggleButton();
     renderListDraftItems();
+    updateListStickySummary();
+    refreshListAddButtonStates();
 
     if(existingPostSearchResults){
         existingPostSearchResults.innerHTML = "";
@@ -3036,6 +3363,8 @@ function renderListDraftItems(){
     if(!listDraftItems){
         return;
     }
+
+    updateListStickySummary();
 
     if(listItemsDraft.length === 0){
         listDraftItems.innerHTML = `<div class="list-empty-text">まだ曲が追加されていません。</div>`;
@@ -3077,7 +3406,14 @@ function renderVisualTierBuilder(){
                 const selectedClass = selectedTierItemIndex === index ? " selected" : "";
 
                 return `
-                    <div class="tier-mini-card${selectedClass}" onclick="event.stopPropagation(); window.selectTierItem(${index})">
+                    <div
+                        class="tier-mini-card${selectedClass}"
+                        draggable="true"
+                        data-tier-index="${index}"
+                        ondragstart="window.onTierDragStart(event, ${index})"
+                        ondragend="window.onTierDragEnd(event)"
+                        onclick="event.stopPropagation(); window.selectTierItem(${index})"
+                    >
                         <img src="${escapeHTML(item.cover || "")}" alt="">
                         <div class="tier-mini-title">${escapeHTML(item.title || "")}</div>
                     </div>
@@ -3090,7 +3426,14 @@ function renderVisualTierBuilder(){
         return `
             <div class="tier-row">
                 <div class="tier-label ${tier.toLowerCase()}" onclick="window.moveSelectedItemToTier('${tier}')">${tier}</div>
-                <div class="tier-drop-zone${targetClass}" onclick="window.moveSelectedItemToTier('${tier}')">
+                <div
+                    class="tier-drop-zone${targetClass}"
+                    data-tier="${tier}"
+                    ondragover="window.onTierDragOver(event)"
+                    ondragleave="window.onTierDragLeave(event)"
+                    ondrop="window.onTierDrop(event, '${tier}')"
+                    onclick="window.moveSelectedItemToTier('${tier}')"
+                >
                     ${cards}
                 </div>
             </div>
@@ -3136,8 +3479,68 @@ function moveSelectedItemToTier(tier){
     renderListDraftItems();
 }
 
+function onTierDragStart(event, index){
+    draggedTierItemIndex = index;
+    selectedTierItemIndex = index;
+
+    if(event.dataTransfer){
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", String(index));
+    }
+
+    event.currentTarget?.classList.add("dragging");
+}
+
+function onTierDragEnd(event){
+    draggedTierItemIndex = -1;
+    event.currentTarget?.classList.remove("dragging");
+
+    document.querySelectorAll(".tier-drop-zone.drag-over").forEach((zone) => {
+        zone.classList.remove("drag-over");
+    });
+}
+
+function onTierDragOver(event){
+    event.preventDefault();
+
+    if(event.dataTransfer){
+        event.dataTransfer.dropEffect = "move";
+    }
+
+    event.currentTarget?.classList.add("drag-over");
+}
+
+function onTierDragLeave(event){
+    event.currentTarget?.classList.remove("drag-over");
+}
+
+function onTierDrop(event, tier){
+    event.preventDefault();
+    event.currentTarget?.classList.remove("drag-over");
+
+    const indexFromTransfer = event.dataTransfer?.getData("text/plain");
+    const index = Number.isFinite(Number(indexFromTransfer)) && indexFromTransfer !== ""
+        ? Number(indexFromTransfer)
+        : draggedTierItemIndex;
+
+    if(index < 0 || !listItemsDraft[index]){
+        return;
+    }
+
+    listItemsDraft[index].tier = tier;
+    selectedTierItemIndex = -1;
+    draggedTierItemIndex = -1;
+    renderListDraftItems();
+    showToast(`${tier}に移動しました`);
+}
+
 window.selectTierItem = selectTierItem;
 window.moveSelectedItemToTier = moveSelectedItemToTier;
+window.onTierDragStart = onTierDragStart;
+window.onTierDragEnd = onTierDragEnd;
+window.onTierDragOver = onTierDragOver;
+window.onTierDragLeave = onTierDragLeave;
+window.onTierDrop = onTierDrop;
 
 
 async function searchExistingPostsForList(){
@@ -3223,6 +3626,21 @@ async function searchExistingPostsForList(){
     }
 }
 
+function refreshListAddButtonStates(){
+    document.querySelectorAll("[data-list-add-key]").forEach((button) => {
+        const key = button.dataset.listAddKey || "";
+        const alreadyAdded = listItemsDraft.some(item => getListDraftKey(item) === key);
+
+        button.textContent = alreadyAdded ? "追加済み" : "追加";
+        button.disabled = alreadyAdded;
+        button.classList.toggle("added", alreadyAdded);
+    });
+
+    if(currentPostType === "list" && Array.isArray(window.lastSpotifySearchTracks)){
+        renderSpotifyResults(window.lastSpotifySearchTracks);
+    }
+}
+
 function renderExistingPostSearchResults(results){
     if(!existingPostSearchResults){
         return;
@@ -3235,6 +3653,22 @@ function renderExistingPostSearchResults(results){
 
     existingPostSearchResults.innerHTML = results.map((item) => {
         const album = item.data || {};
+        const draftItem = {
+            source: "album",
+            albumId: item.id,
+            title: album.title || "",
+            artist: album.artist || "",
+            cover: album.cover || "",
+            spotifyId: album.spotifyId || "",
+            spotifyUrl: album.spotifyUrl || "",
+            spotifyUri: album.spotifyUri || "",
+            spotifyType: album.spotifyType || "track",
+            tier: "A"
+        };
+        const alreadyAdded = isListItemAlreadyAdded(draftItem);
+        const btnClass = alreadyAdded ? "list-mini-btn added" : "list-mini-btn";
+        const btnText = alreadyAdded ? "追加済み" : "追加";
+        const disabledAttr = alreadyAdded ? "disabled" : "";
 
         return `
             <div class="list-search-result-card">
@@ -3248,9 +3682,11 @@ function renderExistingPostSearchResults(results){
                 </div>
                 <button
                     type="button"
-                    class="list-mini-btn"
-                    onclick="window.addExistingAlbumToList('${escapeHTML(item.id)}')"
-                >追加</button>
+                    class="${btnClass}"
+                    data-list-add-key="${escapeHTML(getListDraftKey(draftItem))}"
+                    onclick="window.addExistingAlbumToList('${escapeHTML(item.id)}', this)"
+                    ${disabledAttr}
+                >${btnText}</button>
             </div>
         `;
     }).join("");
@@ -3258,7 +3694,7 @@ function renderExistingPostSearchResults(results){
     window.existingAlbumSearchCache = new Map(results.map(item => [item.id, item.data]));
 }
 
-window.addExistingAlbumToList = (albumId) => {
+window.addExistingAlbumToList = (albumId, button) => {
     const album = window.existingAlbumSearchCache?.get(albumId);
 
     if(!album){
@@ -3266,7 +3702,13 @@ window.addExistingAlbumToList = (albumId) => {
         return;
     }
 
-    addExistingAlbumToListDraft(albumId, album);
+    const added = addExistingAlbumToListDraft(albumId, album);
+
+    if(added && button){
+        button.textContent = "追加済み";
+        button.disabled = true;
+        button.classList.add("added");
+    }
 };
 
 window.removeListDraftItem = removeListDraftItem;
@@ -3308,6 +3750,30 @@ if(tierToggleBtn){
 }
 
 
+if(listEditorTabs){
+    listEditorTabs.addEventListener("click", (event) => {
+        const button = event.target.closest(".list-editor-tab");
+
+        if(!button){
+            return;
+        }
+
+        event.preventDefault();
+        showListTab(button.dataset.listTab || "info");
+    });
+}
+
+if(openAddedListBtn){
+    openAddedListBtn.addEventListener("click", () => {
+        showListTab("added");
+        listDraftItems?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    });
+}
+
+
 function switchPostType(type){
     if(editingId){
         type = "song";
@@ -3342,6 +3808,11 @@ function switchPostType(type){
     }
 
     updateListTierBadge();
+    updateListStickySummary();
+
+    if(type === "list"){
+        showListTab("info");
+    }
 
     if(!editingId){
         modeBadge.textContent = getModeBadgeText();
@@ -3372,6 +3843,7 @@ initMeterDots();
 switchPostType("song");
 updateTierToggleButton();
 renderListDraftItems();
+updateListStickySummary();
 
 </script>
 
