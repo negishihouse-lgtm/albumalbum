@@ -2000,8 +2000,8 @@ body.tier-drag-lock{
                         <label>説明</label>
                         <textarea
                             id="listDescInput"
-                            maxlength="300"
-                            placeholder="このリストについて"
+                            maxlength="200"
+                            placeholder="このリストについて（200字以内）"
                         ></textarea>
                     </div>
 
@@ -2740,7 +2740,7 @@ function getListFormData(){
     }
 
     const title = listTitleInput ? listTitleInput.value.trim() : "";
-    const desc = listDescInput ? listDescInput.value.slice(0, 300) : "";
+    const desc = listDescInput ? listDescInput.value.slice(0, 200) : "";
     const hasTier = Boolean(listHasTier);
     const coverImages = listItemsDraft
         .map(item => item.cover || "")
