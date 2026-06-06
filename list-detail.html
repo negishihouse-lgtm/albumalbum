@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>リスト詳細 - Album Collection</title>
+
+<style>
+:root{
+    --bg:#050505;
+    --panel:#080909;
+    --panel-2:#0b0d0e;
+    --border:rgba(255,255,255,0.15);
+    --border-soft:rgba(255,255,255,0.10);
+    --text:#ffffff;
+    --text-soft:#dce3e6;
+    --muted:#aab3b8;
+    --accent:#9fcdd9;
+    --accent-hover:#b7dfe7;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    min-height:100%;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Noto Sans JP",sans-serif;
+    padding:38px 30px 120px 252px;
+}
+
+a{
+    color:inherit;
+}
+
+button{
+    font-family:inherit;
+}
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:220px;
+    height:100vh;
+    background:#060708;
+    border-right:1px solid rgba(255,255,255,0.08);
+    padding:28px 20px;
+    overflow-y:auto;
+    z-index:100;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:800;
+    line-height:1.04;
+    margin-bottom:28px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border-radius:12px;
+    font-size:15px;
+}
+
+.sidebar a:hover{
+    background:#141617;
+}
+
+.sidebar a.active{
+    background:#17191a;
+    color:var(--accent);
+}
+
+.mobile-tabbar{
+    display:none;
+}
+
+.mobile-tabbar a{
+    color:#9ca6ac;
+    text-decoration:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-size:11px;
+    flex:1;
+}
+
+.mobile-tabbar a.active{
+    color:white;
+    font-weight:700;
+}
+
+.mobile-tabbar .icon{
+    font-size:22px;
+    line-height:1;
+}
+
+.mobile-tabbar .label{
+    line-height:1;
+    white-space:nowrap;
+}
+
+.mobile-tabbar .tab-avatar{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.35);
+    display:none;
+}
+
+.mobile-tabbar .mypage-icon-text{
+    font-size:22px;
+    line-height:1;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.fab{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    background:var(--accent);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+    text-decoration:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    z-index:1000;
+}
+
+.main{
+    max-width:980px;
+    margin:0 auto 0 0;
+}
+
+.back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:#c6d8de;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.back-link:hover{
+    color:white;
+}
+
+.loading-box,
+.error-box,
+.empty-box{
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:18px;
+    padding:18px;
+    color:#cdd6da;
+    line-height:1.7;
+    font-size:14px;
+}
+
+.error-box{
+    color:#ffb4b4;
+    background:#221112;
+    border-color:rgba(255,100,100,0.28);
+}
+
+.list-hero{
+    background:linear-gradient(135deg,#121617 0%,#090a0b 62%,#070808 100%);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:26px;
+    padding:24px;
+    margin-bottom:22px;
+    overflow:hidden;
+}
+
+.list-hero-main{
+    display:grid;
+    grid-template-columns:260px minmax(0,1fr);
+    gap:24px;
+    align-items:start;
+}
+
+.cover-collage{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:6px;
+    width:260px;
+    height:260px;
+    border-radius:20px;
+    overflow:hidden;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.13);
+}
+
+.cover-collage.single{
+    display:block;
+}
+
+.cover-collage img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    background:#191919;
+    display:block;
+}
+
+.cover-placeholder{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#9fcdd9;
+    font-size:52px;
+    font-weight:900;
+    background:linear-gradient(135deg,#12191b,#080909);
+}
+
+.list-badge-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+}
+
+.list-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 10px;
+    border-radius:999px;
+    background:rgba(159,205,217,0.14);
+    border:1px solid rgba(159,205,217,0.26);
+    color:#dff3ff;
+    font-size:12px;
+    font-weight:900;
+}
+
+.public-badge{
+    background:rgba(255,255,255,0.06);
+    border-color:rgba(255,255,255,0.14);
+    color:#dce3e6;
+}
+
+.list-title{
+    font-size:42px;
+    font-weight:950;
+    letter-spacing:-0.055em;
+    line-height:1.04;
+    margin-bottom:12px;
+    word-break:break-word;
+}
+
+.list-desc{
+    color:#dce3e6;
+    font-size:15px;
+    line-height:1.8;
+    margin-bottom:18px;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+
+.creator-card{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    color:#dce3e6;
+    text-decoration:none;
+    margin-bottom:18px;
+}
+
+.creator-card:hover .creator-name{
+    text-decoration:underline;
+}
+
+.creator-avatar,
+.creator-avatar-fallback{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    flex:0 0 38px;
+    background:rgba(255,255,255,0.10);
+    border:1px solid rgba(255,255,255,0.14);
+}
+
+.creator-avatar{
+    object-fit:cover;
+    display:block;
+}
+
+.creator-avatar-fallback{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#edf8f9;
+    font-size:16px;
+    font-weight:800;
+}
+
+.creator-text{
+    min-width:0;
+}
+
+.creator-prefix{
+    display:block;
+    color:#aab3b8;
+    font-size:12px;
+    line-height:1.2;
+    margin-bottom:2px;
+}
+
+.creator-name{
+    display:block;
+    color:#ffffff;
+    font-size:15px;
+    font-weight:850;
+    line-height:1.2;
+}
+
+.list-meta-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#aab3b8;
+    font-size:13px;
+    flex-wrap:wrap;
+}
+
+.hero-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.action-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.055);
+    color:#f4f7f8;
+    border-radius:999px;
+    min-height:38px;
+    padding:0 15px;
+    font-size:13px;
+    font-weight:850;
+    cursor:pointer;
+}
+
+.action-btn:hover{
+    border-color:rgba(159,205,217,0.38);
+    background:rgba(159,205,217,0.10);
+}
+
+.action-btn.delete{
+    color:#ffb4b4;
+    border-color:rgba(255,120,120,0.22);
+    background:rgba(255,80,80,0.055);
+}
+
+.section-head{
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:16px;
+    margin:30px 0 14px;
+}
+
+.section-title{
+    font-size:24px;
+    font-weight:950;
+    letter-spacing:-0.035em;
+}
+
+.section-subtitle{
+    color:#aab3b8;
+    font-size:13px;
+    margin-top:4px;
+}
+
+.track-list{
+    display:grid;
+    gap:10px;
+}
+
+.track-card{
+    display:grid;
+    grid-template-columns:54px 68px minmax(0,1fr) auto;
+    gap:14px;
+    align-items:center;
+    background:#080909;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:18px;
+    padding:12px 14px;
+}
+
+.track-order{
+    color:#8f9ba0;
+    font-size:16px;
+    font-weight:900;
+    text-align:center;
+}
+
+.track-cover{
+    width:68px;
+    height:68px;
+    object-fit:cover;
+    border-radius:12px;
+    background:#171717;
+    border:1px solid rgba(255,255,255,0.12);
+}
+
+.track-title{
+    font-size:16px;
+    font-weight:900;
+    line-height:1.25;
+    margin-bottom:4px;
+    word-break:break-word;
+}
+
+.track-artist{
+    color:#9fcdd9;
+    font-size:13px;
+    font-weight:750;
+    line-height:1.35;
+    word-break:break-word;
+}
+
+.track-source{
+    color:#8f9ba0;
+    font-size:11px;
+    line-height:1.4;
+    margin-top:4px;
+}
+
+.listen-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    border:1px solid rgba(30,215,96,0.25);
+    background:rgba(30,215,96,0.10);
+    color:white;
+    min-width:82px;
+    height:36px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.listen-btn:hover{
+    background:rgba(30,215,96,0.18);
+    border-color:rgba(30,215,96,0.45);
+}
+
+.listen-btn:disabled{
+    opacity:0.42;
+    cursor:not-allowed;
+}
+
+.tier-board{
+    display:grid;
+    gap:12px;
+}
+
+.tier-row{
+    display:grid;
+    grid-template-columns:72px minmax(0,1fr);
+    min-height:124px;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:20px;
+    overflow:hidden;
+    background:#080909;
+}
+
+.tier-label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    font-weight:950;
+    border-right:1px solid rgba(255,255,255,0.10);
+}
+
+.tier-label.s{ color:#ff8fa3; background:rgba(255,80,120,0.10); }
+.tier-label.a{ color:#ffd080; background:rgba(255,190,80,0.10); }
+.tier-label.b{ color:#87b8ff; background:rgba(90,150,255,0.10); }
+.tier-label.c{ color:#8ee3ad; background:rgba(90,220,140,0.10); }
+
+.tier-items{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(130px,1fr));
+    gap:12px;
+    padding:14px;
+    align-items:start;
+}
+
+.tier-item{
+    min-width:0;
+    background:rgba(255,255,255,0.035);
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:16px;
+    padding:10px;
+}
+
+.tier-item img{
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    border-radius:12px;
+    background:#171717;
+    border:1px solid rgba(255,255,255,0.12);
+    margin-bottom:9px;
+}
+
+.tier-item-title{
+    font-size:13px;
+    font-weight:900;
+    line-height:1.3;
+    margin-bottom:4px;
+    word-break:break-word;
+}
+
+.tier-item-artist{
+    color:#9fcdd9;
+    font-size:12px;
+    font-weight:750;
+    line-height:1.35;
+    word-break:break-word;
+}
+
+.tier-empty{
+    color:#707b80;
+    font-size:13px;
+    padding:18px;
+}
+
+.listen-sheet{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    background:rgba(0,0,0,0.62);
+    z-index:22000;
+    padding:18px;
+}
+
+.listen-sheet.open{
+    display:flex;
+}
+
+.listen-panel{
+    width:min(430px,100%);
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:24px;
+    padding:16px;
+    box-shadow:0 22px 70px rgba(0,0,0,0.58);
+}
+
+.listen-panel-title{
+    font-size:17px;
+    font-weight:900;
+    letter-spacing:-0.02em;
+    margin-bottom:4px;
+}
+
+.listen-panel-subtitle{
+    color:#aab3b8;
+    font-size:12px;
+    line-height:1.45;
+    margin-bottom:14px;
+    word-break:break-word;
+}
+
+.listen-actions{
+    display:grid;
+    gap:8px;
+}
+
+.listen-action-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.045);
+    color:white;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:850;
+    text-align:left;
+    border-radius:15px;
+    padding:13px 14px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.listen-action-btn:hover{
+    border-color:rgba(159,205,217,0.42);
+    background:rgba(159,205,217,0.10);
+}
+
+.listen-action-name{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+}
+
+.listen-action-icon{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,0.08);
+    flex:0 0 28px;
+    font-size:15px;
+}
+
+.listen-close-btn{
+    margin-top:10px;
+    width:100%;
+    border:none;
+    background:transparent;
+    color:#aab3b8;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:800;
+    padding:12px;
+    cursor:pointer;
+}
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:92px;
+    transform:translateX(-50%) translateY(10px);
+    background:#edf8f9;
+    color:#050505;
+    border-radius:999px;
+    padding:10px 15px;
+    font-size:13px;
+    font-weight:900;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
+    z-index:23000;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+@media(max-width:900px){
+    body{
+        padding:16px 16px 112px;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .mobile-tabbar{
+        display:grid;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:72px;
+        background:rgba(8,8,8,0.96);
+        border-top:1px solid rgba(255,255,255,0.12);
+        grid-template-columns:repeat(5,1fr);
+        z-index:9999;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .mobile-tabbar a{
+        height:72px;
+    }
+
+    .fab{
+        display:none !important;
+    }
+
+    .main{
+        max-width:none;
+        margin:0;
+    }
+
+    .back-link{
+        margin-top:8px;
+        margin-bottom:16px;
+    }
+
+    .list-hero{
+        border-radius:22px;
+        padding:16px;
+    }
+
+    .list-hero-main{
+        grid-template-columns:1fr;
+        gap:18px;
+    }
+
+    .cover-collage{
+        width:100%;
+        height:auto;
+        aspect-ratio:1/1;
+        border-radius:18px;
+    }
+
+    .list-title{
+        font-size:32px;
+    }
+
+    .list-desc{
+        font-size:14px;
+    }
+
+    .section-head{
+        display:block;
+        margin-top:24px;
+    }
+
+    .section-title{
+        font-size:22px;
+    }
+
+    .track-card{
+        grid-template-columns:34px 58px minmax(0,1fr);
+        gap:10px;
+        padding:10px;
+        border-radius:16px;
+    }
+
+    .track-order{
+        font-size:13px;
+    }
+
+    .track-cover{
+        width:58px;
+        height:58px;
+        border-radius:10px;
+    }
+
+    .track-title{
+        font-size:14px;
+    }
+
+    .track-artist{
+        font-size:12px;
+    }
+
+    .listen-btn{
+        grid-column:1 / -1;
+        width:100%;
+    }
+
+    .tier-row{
+        grid-template-columns:50px minmax(0,1fr);
+        min-height:100px;
+        border-radius:18px;
+    }
+
+    .tier-label{
+        font-size:24px;
+    }
+
+    .tier-items{
+        grid-template-columns:repeat(auto-fill, minmax(94px,1fr));
+        gap:9px;
+        padding:10px;
+    }
+
+    .tier-item{
+        padding:8px;
+        border-radius:14px;
+    }
+
+    .tier-item-title{
+        font-size:11px;
+    }
+
+    .tier-item-artist{
+        font-size:10px;
+    }
+
+    .listen-sheet{
+        padding:10px;
+        padding-bottom:calc(82px + env(safe-area-inset-bottom));
+    }
+
+    .listen-panel{
+        border-radius:24px 24px 18px 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+<nav class="sidebar">
+    <div class="logo">Album<br>Collection</div>
+    <a href="index.html">ホーム</a>
+    <a href="search.html">検索</a>
+    <a href="editor.html">投稿する</a>
+    <a href="notifications.html">通知</a>
+    <a id="myPageLink" href="login.html">マイページ</a>
+    <a href="profile-edit.html">プロフィール編集</a>
+    <a href="login.html">ログイン</a>
+</nav>
+
+<nav class="mobile-tabbar">
+    <a href="index.html">
+        <span class="icon">⌂</span>
+        <span class="label">ホーム</span>
+    </a>
+    <a href="search.html">
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
+    </a>
+    <a href="editor.html">
+        <span class="icon">＋</span>
+        <span class="label">投稿</span>
+    </a>
+    <a href="notifications.html">
+        <span class="icon">♡</span>
+        <span class="label">通知</span>
+    </a>
+    <a id="mobileMyPageLink" href="login.html">
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">マイページ</span>
+    </a>
+</nav>
+
+<a href="editor.html" class="fab">＋</a>
+
+<main class="main">
+    <a href="index.html" class="back-link">← ホームへ戻る</a>
+
+    <div id="loadingBox" class="loading-box">リストを読み込み中...</div>
+    <div id="errorBox" class="error-box" style="display:none;"></div>
+
+    <section id="listContent" style="display:none;">
+        <div class="list-hero">
+            <div class="list-hero-main">
+                <div id="coverCollage" class="cover-collage"></div>
+
+                <div>
+                    <div class="list-badge-row">
+                        <span class="list-badge" id="listTypeBadge">📋 リスト</span>
+                        <span class="list-badge public-badge" id="publicBadge">公開</span>
+                    </div>
+
+                    <h1 class="list-title" id="listTitle">Untitled List</h1>
+                    <div class="list-desc" id="listDesc"></div>
+
+                    <a id="creatorLink" class="creator-card" href="login.html">
+                        <span id="creatorAvatarWrap"></span>
+                        <span class="creator-text">
+                            <span class="creator-prefix">作成者</span>
+                            <span class="creator-name" id="creatorName">匿名ユーザー</span>
+                        </span>
+                    </a>
+
+                    <div class="list-meta-row">
+                        <span id="itemCountText">0曲</span>
+                        <span>・</span>
+                        <span id="createdAtText"></span>
+                    </div>
+
+                    <div class="hero-actions" id="ownerActions" style="display:none;">
+                        <button type="button" class="action-btn" id="editListBtn">編集</button>
+                        <button type="button" class="action-btn delete" id="deleteListBtn">削除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-head">
+            <div>
+                <div class="section-title" id="itemsSectionTitle">収録曲</div>
+                <div class="section-subtitle" id="itemsSectionSubtitle">このリストに追加された曲です。</div>
+            </div>
+        </div>
+
+        <div id="itemsArea"></div>
+    </section>
+</main>
+
+<div class="listen-sheet" id="listenSheet" onclick="closeListenMenu()">
+    <div class="listen-panel" onclick="event.stopPropagation();">
+        <div class="listen-panel-title">どこで聴きますか？</div>
+        <div class="listen-panel-subtitle" id="listenPanelSubtitle">利用できるサービスを取得しています</div>
+        <div class="listen-actions" id="listenActions"></div>
+        <button type="button" class="listen-close-btn" onclick="closeListenMenu()">閉じる</button>
+    </div>
+</div>
+
+<div class="toast" id="toast">完了しました</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+    initializeFirestore,
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    where,
+    deleteDoc,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+    measurementId: "G-3QFX3GDEXN"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling:true
+});
+const auth = getAuth(app);
+
+const params = new URLSearchParams(location.search);
+const listId = params.get("id") || "";
+
+const loadingBox = document.getElementById("loadingBox");
+const errorBox = document.getElementById("errorBox");
+const listContent = document.getElementById("listContent");
+const coverCollage = document.getElementById("coverCollage");
+const listTypeBadge = document.getElementById("listTypeBadge");
+const publicBadge = document.getElementById("publicBadge");
+const listTitle = document.getElementById("listTitle");
+const listDesc = document.getElementById("listDesc");
+const creatorLink = document.getElementById("creatorLink");
+const creatorAvatarWrap = document.getElementById("creatorAvatarWrap");
+const creatorName = document.getElementById("creatorName");
+const itemCountText = document.getElementById("itemCountText");
+const createdAtText = document.getElementById("createdAtText");
+const itemsArea = document.getElementById("itemsArea");
+const itemsSectionTitle = document.getElementById("itemsSectionTitle");
+const itemsSectionSubtitle = document.getElementById("itemsSectionSubtitle");
+const ownerActions = document.getElementById("ownerActions");
+const editListBtn = document.getElementById("editListBtn");
+const deleteListBtn = document.getElementById("deleteListBtn");
+const myPageLink = document.getElementById("myPageLink");
+const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
+const listenSheet = document.getElementById("listenSheet");
+const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
+const listenActions = document.getElementById("listenActions");
+const toast = document.getElementById("toast");
+
+let currentUser = null;
+let currentList = null;
+let currentItems = [];
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function showError(message){
+    loadingBox.style.display = "none";
+    listContent.style.display = "none";
+    errorBox.style.display = "block";
+    errorBox.textContent = message;
+}
+
+function showToast(message){
+    if(!toast){
+        return;
+    }
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 1800);
+}
+
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
+
+function getUserDisplayNameFromData(data){
+    if(!data){
+        return "";
+    }
+
+    return (
+        data.displayName ||
+        data.nickname ||
+        data.nickName ||
+        data.userName ||
+        data.name ||
+        ""
+    );
+}
+
+function getInitialLetter(name){
+    const text = String(name || "匿名ユーザー").trim();
+    return Array.from(text)[0] || "匿";
+}
+
+function creatorAvatarHTML(profile){
+    const iconUrl = profile?.iconUrl || "";
+    const initialLetter = getInitialLetter(profile?.name);
+
+    if(iconUrl){
+        return `<img class="creator-avatar" src="${escapeHTML(iconUrl)}" alt="${escapeHTML(initialLetter)}">`;
+    }
+
+    return `<span class="creator-avatar-fallback">${escapeHTML(initialLetter)}</span>`;
+}
+
+async function getPosterProfile(userId, fallback = {}){
+    const fallbackProfile = {
+        name:fallback.userName || fallback.displayName || fallback.nickname || "匿名ユーザー",
+        iconUrl:fallback.userIconUrl || fallback.userPhotoURL || fallback.photoURL || fallback.avatarUrl || ""
+    };
+
+    if(!userId){
+        return fallbackProfile;
+    }
+
+    try{
+        const snap = await getDoc(doc(db, "publicUsers", userId));
+
+        if(snap.exists()){
+            const data = snap.data();
+            return {
+                name:getUserDisplayNameFromData(data) || fallbackProfile.name,
+                iconUrl:getUserIconUrl(data) || fallbackProfile.iconUrl
+            };
+        }
+    }catch(error){
+        console.warn("プロフィール取得に失敗しました", error);
+    }
+
+    return fallbackProfile;
+}
+
+async function updateMobileMyPageTab(user){
+    const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
+
+    if(myPageLink){
+        myPageLink.href = url;
+    }
+
+    if(!mobileMyPageLink){
+        return;
+    }
+
+    mobileMyPageLink.href = url;
+
+    if(!user){
+        if(mobileMyPageAvatar){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+            mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+    }
+
+    try{
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
+
+        if(!userSnap.exists()){
+            return;
+        }
+
+        const iconUrl = getUserIconUrl(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.src = iconUrl;
+            mobileMyPageAvatar.style.display = "block";
+            mobileMyPageFallback.style.display = "none";
+
+            mobileMyPageAvatar.onerror = () => {
+                mobileMyPageAvatar.style.display = "none";
+                mobileMyPageFallback.style.display = "flex";
+            };
+        }
+    }catch(error){
+        console.warn("マイページアイコン取得に失敗しました", error);
+    }
+}
+
+function formatDate(value){
+    if(!value){
+        return "";
+    }
+
+    let date = null;
+
+    if(typeof value.toDate === "function"){
+        date = value.toDate();
+    }else if(value instanceof Date){
+        date = value;
+    }else if(typeof value === "number"){
+        date = new Date(value);
+    }else if(typeof value === "string"){
+        const parsed = new Date(value);
+        if(!Number.isNaN(parsed.getTime())){
+            date = parsed;
+        }
+    }
+
+    if(!date || Number.isNaN(date.getTime())){
+        return "";
+    }
+
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+}
+
+function isHttpUrl(value){
+    if(!value || typeof value !== "string"){
+        return false;
+    }
+
+    try{
+        const url = new URL(value);
+        return url.protocol === "https:" || url.protocol === "http:";
+    }catch(error){
+        return false;
+    }
+}
+
+function getDirectMusicUrl(item){
+    const candidates = [
+        item?.spotifyUrl,
+        item?.spotifyURL,
+        item?.spotifyLink,
+        item?.spotifyTrackUrl,
+        item?.spotifyTrackURL,
+        item?.appleMusicUrl,
+        item?.appleMusicURL,
+        item?.youtubeMusicUrl,
+        item?.youtubeMusicURL,
+        item?.musicUrl,
+        item?.musicURL
+    ];
+
+    const directUrl = candidates.find(isHttpUrl);
+
+    if(directUrl){
+        return directUrl;
+    }
+
+    const id = item?.spotifyId || "";
+    const type = item?.spotifyType || "track";
+
+    if(id){
+        return `https://open.spotify.com/${encodeURIComponent(type)}/${encodeURIComponent(id)}`;
+    }
+
+    return "";
+}
+
+function getListenSearchQuery(item){
+    return [item?.title, item?.artist].filter(Boolean).join(" ").trim();
+}
+
+function buildServiceSearchUrl(serviceKey, queryText){
+    const q = encodeURIComponent(queryText || "");
+
+    if(!q){
+        return "";
+    }
+
+    if(serviceKey === "appleMusic"){
+        return `https://music.apple.com/search?term=${q}`;
+    }
+
+    if(serviceKey === "lineMusic"){
+        return `https://music.line.me/webapp/search?query=${q}`;
+    }
+
+    if(serviceKey === "youtubeMusic"){
+        return `https://music.youtube.com/search?q=${q}`;
+    }
+
+    if(serviceKey === "amazonMusic"){
+        return `https://music.amazon.co.jp/search/${q}`;
+    }
+
+    if(serviceKey === "awa"){
+        return `https://s.awa.fm/search?q=${q}`;
+    }
+
+    if(serviceKey === "spotify"){
+        return `https://open.spotify.com/search/${q}`;
+    }
+
+    return "";
+}
+
+function renderListenActions(services){
+    if(!listenActions){
+        return;
+    }
+
+    if(!services || services.length === 0){
+        listenActions.innerHTML = `
+            <button type="button" class="listen-action-btn" disabled>
+                <span class="listen-action-name">
+                    <span class="listen-action-icon">!</span>
+                    利用できるリンクが見つかりませんでした
+                </span>
+            </button>
+        `;
+        return;
+    }
+
+    listenActions.innerHTML = services.map((service, index) => `
+        <button
+            type="button"
+            class="listen-action-btn"
+            onclick="event.stopPropagation(); window.openListenService(${index});"
+        >
+            <span class="listen-action-name">
+                <span class="listen-action-icon">${escapeHTML(service.icon || "♪")}</span>
+                ${escapeHTML(service.name)}
+            </span>
+            <span>↗</span>
+        </button>
+    `).join("");
+
+    window.currentListenServices = services;
+}
+
+function openUrlBlank(url){
+    if(!url){
+        return;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function closeListenMenu(){
+    if(listenSheet){
+        listenSheet.classList.remove("open");
+    }
+}
+
+function openListenService(index){
+    const services = window.currentListenServices || [];
+    const service = services[index];
+
+    if(!service?.url){
+        return;
+    }
+
+    openUrlBlank(service.url);
+    closeListenMenu();
+}
+
+function openListenMenuByIndex(index){
+    const item = currentItems[index];
+
+    if(!item){
+        return;
+    }
+
+    if(listenSheet){
+        listenSheet.classList.add("open");
+    }
+
+    if(listenPanelSubtitle){
+        const title = item.title || "この音楽";
+        const artist = item.artist ? ` / ${item.artist}` : "";
+        listenPanelSubtitle.textContent = `${title}${artist}`;
+    }
+
+    const services = [];
+    const directUrl = getDirectMusicUrl(item);
+    const queryText = getListenSearchQuery(item);
+
+    if(directUrl){
+        services.push({ key:"spotify", name:"Spotifyで開く", icon:"▶", url:directUrl });
+    }
+
+    const fallbacks = [
+        { key:"spotify", name:"Spotifyで検索", icon:"▶" },
+        { key:"appleMusic", name:"Apple Musicで検索", icon:"♫" },
+        { key:"lineMusic", name:"LINE MUSICで検索", icon:"♪" },
+        { key:"youtubeMusic", name:"YouTube Musicで検索", icon:"▶" },
+        { key:"amazonMusic", name:"Amazon Musicで検索", icon:"a" },
+        { key:"awa", name:"AWAで検索", icon:"A" }
+    ];
+
+    const alreadySpotify = Boolean(directUrl);
+
+    fallbacks.forEach((service) => {
+        if(alreadySpotify && service.key === "spotify"){
+            return;
+        }
+
+        const url = buildServiceSearchUrl(service.key, queryText);
+
+        if(url){
+            services.push({ ...service, url });
+        }
+    });
+
+    renderListenActions(services);
+}
+
+window.closeListenMenu = closeListenMenu;
+window.openListenService = openListenService;
+window.openListenMenuByIndex = openListenMenuByIndex;
+
+function renderCoverCollage(list, items){
+    const imagesFromList = Array.isArray(list.coverImages) ? list.coverImages : [];
+    const imagesFromItems = items.map(item => item.cover || "").filter(Boolean);
+    const images = [...imagesFromList, ...imagesFromItems]
+        .filter(Boolean)
+        .slice(0, 4);
+
+    if(images.length === 0){
+        coverCollage.className = "cover-collage single";
+        coverCollage.innerHTML = `<div class="cover-placeholder">♪</div>`;
+        return;
+    }
+
+    if(images.length === 1){
+        coverCollage.className = "cover-collage single";
+        coverCollage.innerHTML = `<img src="${escapeHTML(images[0])}" alt="">`;
+        return;
+    }
+
+    coverCollage.className = "cover-collage";
+    coverCollage.innerHTML = images.map(src => `<img src="${escapeHTML(src)}" alt="">`).join("");
+}
+
+function renderNormalList(items){
+    if(items.length === 0){
+        itemsArea.innerHTML = `<div class="empty-box">まだ曲が追加されていません。</div>`;
+        return;
+    }
+
+    itemsArea.innerHTML = `
+        <div class="track-list">
+            ${items.map((item, index) => {
+                const hasListenUrl = Boolean(getDirectMusicUrl(item) || getListenSearchQuery(item));
+
+                return `
+                    <div class="track-card">
+                        <div class="track-order">${index + 1}</div>
+                        <img class="track-cover" src="${escapeHTML(item.cover || "")}" alt="">
+                        <div>
+                            <div class="track-title">${escapeHTML(item.title || "Untitled")}</div>
+                            <div class="track-artist">${escapeHTML(item.artist || "Unknown Artist")}</div>
+                            <div class="track-source">${item.source === "album" ? "既存投稿から追加" : "Spotifyから追加"}</div>
+                        </div>
+                        <button
+                            type="button"
+                            class="listen-btn"
+                            ${hasListenUrl ? "" : "disabled"}
+                            onclick="event.stopPropagation(); window.openListenMenuByIndex(${index});"
+                        >聴く</button>
+                    </div>
+                `;
+            }).join("")}
+        </div>
+    `;
+}
+
+function renderTierBoard(items){
+    const tiers = ["S", "A", "B", "C"];
+
+    if(items.length === 0){
+        itemsArea.innerHTML = `<div class="empty-box">まだ曲が追加されていません。</div>`;
+        return;
+    }
+
+    itemsArea.innerHTML = `
+        <div class="tier-board">
+            ${tiers.map((tier) => {
+                const tierItems = items
+                    .map((item, index) => ({ item, index }))
+                    .filter(entry => (entry.item.tier || "A") === tier);
+
+                return `
+                    <div class="tier-row">
+                        <div class="tier-label ${tier.toLowerCase()}">${tier}</div>
+                        <div class="tier-items">
+                            ${tierItems.length ? tierItems.map(({ item, index }) => `
+                                <div class="tier-item" onclick="window.openListenMenuByIndex(${index})">
+                                    <img src="${escapeHTML(item.cover || "")}" alt="">
+                                    <div class="tier-item-title">${escapeHTML(item.title || "Untitled")}</div>
+                                    <div class="tier-item-artist">${escapeHTML(item.artist || "Unknown Artist")}</div>
+                                </div>
+                            `).join("") : `<div class="tier-empty">未配置</div>`}
+                        </div>
+                    </div>
+                `;
+            }).join("")}
+        </div>
+    `;
+}
+
+function sortListItems(items){
+    return [...items].sort((a, b) => {
+        const aOrder = Number(a.order ?? 0);
+        const bOrder = Number(b.order ?? 0);
+
+        if(aOrder !== bOrder){
+            return aOrder - bOrder;
+        }
+
+        return String(a.title || "").localeCompare(String(b.title || ""), "ja");
+    });
+}
+
+async function loadListItems(id){
+    const itemsQuery = query(
+        collection(db, "listItems"),
+        where("listId", "==", id)
+    );
+
+    const snap = await getDocs(itemsQuery);
+    const items = [];
+
+    snap.forEach((docSnap) => {
+        items.push({
+            id:docSnap.id,
+            ...docSnap.data()
+        });
+    });
+
+    return sortListItems(items);
+}
+
+function canViewList(list){
+    if(list.isPublic !== false){
+        return true;
+    }
+
+    return Boolean(currentUser && list.userId === currentUser.uid);
+}
+
+function updateOwnerActions(){
+    const canEdit = Boolean(currentUser && currentList && currentList.userId === currentUser.uid);
+
+    if(ownerActions){
+        ownerActions.style.display = canEdit ? "flex" : "none";
+    }
+}
+
+async function deleteCurrentList(){
+    if(!currentUser || !currentList || currentList.userId !== currentUser.uid){
+        alert("自分のリストだけ削除できます");
+        return;
+    }
+
+    const ok = confirm("このリストを削除しますか？\nリスト内の曲も削除されます。元には戻せません。");
+
+    if(!ok){
+        return;
+    }
+
+    try{
+        const items = await loadListItems(listId);
+
+        await Promise.all(items.map(item => deleteDoc(doc(db, "listItems", item.id))));
+        await deleteDoc(doc(db, "lists", listId));
+
+        showToast("リストを削除しました");
+        setTimeout(() => {
+            location.href = "index.html";
+        }, 500);
+    }catch(error){
+        console.error("リスト削除に失敗しました", error);
+        alert("削除に失敗しました：" + error.message);
+    }
+}
+
+async function renderListPage(){
+    if(!listId){
+        showError("リストIDが指定されていません。");
+        return;
+    }
+
+    loadingBox.style.display = "block";
+    errorBox.style.display = "none";
+    listContent.style.display = "none";
+
+    try{
+        const listSnap = await getDoc(doc(db, "lists", listId));
+
+        if(!listSnap.exists()){
+            showError("リストが見つかりません。削除された可能性があります。");
+            return;
+        }
+
+        currentList = {
+            id:listSnap.id,
+            ...listSnap.data()
+        };
+
+        if(!canViewList(currentList)){
+            showError("このリストは非公開です。");
+            return;
+        }
+
+        currentItems = await loadListItems(listId);
+        const profile = await getPosterProfile(currentList.userId || "", currentList);
+
+        document.title = `${currentList.title || "リスト詳細"} - Album Collection`;
+
+        const hasTier = Boolean(currentList.hasTier || currentList.listType === "tier");
+
+        listTypeBadge.textContent = hasTier ? "🏆 Tierリスト" : "📋 リスト";
+        publicBadge.textContent = currentList.isPublic === false ? "非公開" : "公開";
+        listTitle.textContent = currentList.title || "Untitled List";
+        listDesc.textContent = currentList.desc || "説明はありません。";
+        creatorName.textContent = profile.name || "匿名ユーザー";
+        creatorAvatarWrap.innerHTML = creatorAvatarHTML(profile);
+        creatorLink.href = currentList.userId ? `profile.html?uid=${encodeURIComponent(currentList.userId)}` : "login.html";
+        itemCountText.textContent = `${currentItems.length}曲`;
+        createdAtText.textContent = formatDate(currentList.createdAt || currentList.updatedAt) || "作成日不明";
+
+        renderCoverCollage(currentList, currentItems);
+
+        itemsSectionTitle.textContent = hasTier ? "Tier表" : "収録曲";
+        itemsSectionSubtitle.textContent = hasTier
+            ? "S/A/B/Cに分けられた曲一覧です。ジャケットを押すと聴くメニューを開けます。"
+            : "このリストに追加された曲です。";
+
+        if(hasTier){
+            renderTierBoard(currentItems);
+        }else{
+            renderNormalList(currentItems);
+        }
+
+        updateOwnerActions();
+
+        loadingBox.style.display = "none";
+        listContent.style.display = "block";
+    }catch(error){
+        console.error("リスト読み込みに失敗しました", error);
+        showError("読み込みに失敗しました：" + error.message);
+    }
+}
+
+if(editListBtn){
+    editListBtn.addEventListener("click", () => {
+        alert("リスト編集画面はまだ未実装です。先に削除・再作成で対応してください。");
+    });
+}
+
+if(deleteListBtn){
+    deleteListBtn.addEventListener("click", deleteCurrentList);
+}
+
+onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    await updateMobileMyPageTab(user);
+    updateOwnerActions();
+
+    if(currentList){
+        if(!canViewList(currentList)){
+            showError("このリストは非公開です。");
+            return;
+        }
+        updateOwnerActions();
+    }
+});
+
+renderListPage();
+</script>
+</body>
+</html>
