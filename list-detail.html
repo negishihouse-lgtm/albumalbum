@@ -1031,7 +1031,7 @@ button{
         <div class="section-head">
             <div>
                 <div class="section-title" id="itemsSectionTitle">収録曲</div>
-                <div class="section-subtitle" id="itemsSectionSubtitle">このリストに追加された曲です。</div>
+                <div class="section-subtitle" id="itemsSectionSubtitle">このリストに追加された曲です。既存投稿から追加した曲はタップで投稿詳細へ移動できます。</div>
             </div>
         </div>
 
@@ -1557,6 +1557,34 @@ function renderCoverCollage(list, items){
     coverCollage.innerHTML = images.map(src => `<img src="${escapeHTML(src)}" alt="">`).join("");
 }
 
+
+function getItemDetailUrl(item){
+    if(item?.source === "album" && item?.albumId){
+        return `detail.html?id=${encodeURIComponent(item.albumId)}`;
+    }
+
+    return "";
+}
+
+function openItemPrimaryAction(index){
+    const item = currentItems[index];
+
+    if(!item){
+        return;
+    }
+
+    const detailUrl = getItemDetailUrl(item);
+
+    if(detailUrl){
+        location.href = detailUrl;
+        return;
+    }
+
+    openListenMenuByIndex(index);
+}
+
+window.openItemPrimaryAction = openItemPrimaryAction;
+
 function renderNormalList(items){
     if(items.length === 0){
         itemsArea.innerHTML = `<div class="empty-box">まだ曲が追加されていません。</div>`;
@@ -1569,20 +1597,29 @@ function renderNormalList(items){
                 const hasListenUrl = Boolean(getDirectMusicUrl(item) || getListenSearchQuery(item));
 
                 return `
-                    <div class="track-card">
+                    <div class="track-card" onclick="window.openItemPrimaryAction(${index})">
                         <div class="track-order">${index + 1}</div>
                         <img class="track-cover" src="${escapeHTML(item.cover || "")}" alt="">
                         <div>
                             <div class="track-title">${escapeHTML(item.title || "Untitled")}</div>
                             <div class="track-artist">${escapeHTML(item.artist || "Unknown Artist")}</div>
-                            <div class="track-source">${item.source === "album" ? "既存投稿から追加" : "Spotifyから追加"}</div>
+                            <div class="track-source">${item.source === "album" ? "既存投稿から追加・タップで投稿詳細へ" : "Spotifyから追加"}</div>
                         </div>
-                        <button
-                            type="button"
-                            class="listen-btn"
-                            ${hasListenUrl ? "" : "disabled"}
-                            onclick="event.stopPropagation(); window.openListenMenuByIndex(${index});"
-                        >聴く</button>
+                        <div class="track-actions">
+                            ${getItemDetailUrl(item) ? `
+                                <button
+                                    type="button"
+                                    class="listen-btn detail"
+                                    onclick="event.stopPropagation(); location.href='${escapeHTML(getItemDetailUrl(item))}';"
+                                >詳細</button>
+                            ` : ""}
+                            <button
+                                type="button"
+                                class="listen-btn"
+                                ${hasListenUrl ? "" : "disabled"}
+                                onclick="event.stopPropagation(); window.openListenMenuByIndex(${index});"
+                            >聴く</button>
+                        </div>
                     </div>
                 `;
             }).join("")}
@@ -1610,7 +1647,7 @@ function renderTierBoard(items){
                         <div class="tier-label ${tier.toLowerCase()}">${tier}</div>
                         <div class="tier-items">
                             ${tierItems.length ? tierItems.map(({ item, index }) => `
-                                <div class="tier-item" onclick="window.openListenMenuByIndex(${index})">
+                                <div class="tier-item" onclick="window.openItemPrimaryAction(${index})">
                                     <img src="${escapeHTML(item.cover || "")}" alt="">
                                     <div class="tier-item-title">${escapeHTML(item.title || "Untitled")}</div>
                                     <div class="tier-item-artist">${escapeHTML(item.artist || "Unknown Artist")}</div>
@@ -1749,8 +1786,8 @@ async function renderListPage(){
 
         itemsSectionTitle.textContent = hasTier ? "Tier表" : "収録曲";
         itemsSectionSubtitle.textContent = hasTier
-            ? "S/A/B/Cに分けられた曲一覧です。ジャケットを押すと聴くメニューを開けます。"
-            : "このリストに追加された曲です。";
+            ? "S/A/B/Cに分けられた曲一覧です。既存投稿から追加した曲はタップで投稿詳細へ、Spotify追加曲は聴くメニューを開きます。"
+            : "このリストに追加された曲です。既存投稿から追加した曲はタップで投稿詳細へ移動できます。";
 
         if(hasTier){
             renderTierBoard(currentItems);
@@ -1768,27 +1805,13 @@ async function renderListPage(){
     }
 }
 
-function openEditListSheet(){
+function goEditListInEditor(){
     if(!currentUser || !currentList || currentList.userId !== currentUser.uid){
         alert("自分のリストだけ編集できます");
         return;
     }
 
-    if(editListTitleInput){
-        editListTitleInput.value = currentList.title || "";
-    }
-
-    if(editListDescInput){
-        editListDescInput.value = currentList.desc || "";
-    }
-
-    if(editListPublicInput){
-        editListPublicInput.value = currentList.isPublic === false ? "false" : "true";
-    }
-
-    if(editSheet){
-        editSheet.classList.add("open");
-    }
+    location.href = `editor.html?listId=${encodeURIComponent(listId)}`;
 }
 
 function closeEditListSheet(){
@@ -1852,7 +1875,7 @@ async function saveListEdits(){
 window.closeEditListSheet = closeEditListSheet;
 
 if(editListBtn){
-    editListBtn.addEventListener("click", openEditListSheet);
+    editListBtn.addEventListener("click", goEditListInEditor);
 }
 
 if(saveListEditBtn){
