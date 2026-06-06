@@ -3097,6 +3097,7 @@ saveBtn.addEventListener("click", async () => {
             await Promise.all(listItemsDraft.map((item, index) => {
                 return addDoc(collection(db, "listItems"), {
                     listId: listRef.id,
+                    userId: user.uid,
                     order: index,
                     source: item.source,
                     albumId: item.albumId || "",
