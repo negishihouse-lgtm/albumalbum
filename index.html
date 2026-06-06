@@ -2094,6 +2094,188 @@ a{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   List cards on index
+   - editor.html のリスト投稿（lists コレクション）をホームの「リスト」タブに表示
+============================================================ */
+.list-card{
+    background:#070808;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:18px;
+    cursor:pointer;
+    overflow:hidden;
+    display:grid;
+    grid-template-columns:180px minmax(0, 1fr);
+    gap:18px;
+    align-items:stretch;
+}
+
+.list-card:hover{
+    border-color:rgba(159,205,217,0.42);
+    transform:translateY(-1px);
+    transition:0.18s ease;
+}
+
+.list-card-main{
+    display:contents;
+}
+
+.list-cover-grid{
+    width:160px;
+    height:160px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr 1fr;
+    gap:4px;
+    border-radius:10px;
+    overflow:hidden;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.16);
+}
+
+.list-cover-grid img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    background:#181818;
+}
+
+.list-cover-placeholder{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#111,#182126);
+    color:#9fcdd9;
+    font-size:24px;
+    font-weight:900;
+}
+
+.list-info{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.list-type-label{
+    display:inline-flex;
+    align-items:center;
+    width:max-content;
+    max-width:100%;
+    margin-bottom:10px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:rgba(159,205,217,0.12);
+    border:1px solid rgba(159,205,217,0.24);
+    color:#dff3ff;
+    font-size:12px;
+    font-weight:900;
+    line-height:1;
+}
+
+.list-title{
+    font-size:25px;
+    font-weight:900;
+    line-height:1.08;
+    letter-spacing:-0.045em;
+    margin-bottom:7px;
+    word-break:break-word;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.list-desc{
+    color:var(--text-soft);
+    font-size:12px;
+    line-height:1.6;
+    margin-bottom:10px;
+    word-break:break-word;
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.list-meta{
+    color:#c5cbd0;
+    font-size:12px;
+    font-weight:750;
+    line-height:1.4;
+    margin-bottom:10px;
+}
+
+.list-open-hint{
+    color:#9fcdd9;
+    font-size:12px;
+    font-weight:900;
+    margin-top:8px;
+}
+
+@media(max-width:900px){
+    .list-card{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+        padding:14px !important;
+        border-radius:18px !important;
+        background:linear-gradient(135deg,#121415 0%,#090a0b 58%,#070808 100%) !important;
+        border:1px solid rgba(255,255,255,0.14) !important;
+    }
+
+    .list-card-main{
+        display:grid !important;
+        grid-template-columns:120px minmax(0,1fr) !important;
+        gap:14px !important;
+        align-items:start !important;
+    }
+
+    .list-cover-grid{
+        width:120px !important;
+        height:120px !important;
+        border-radius:10px !important;
+    }
+
+    .list-title{
+        font-size:20px !important;
+        line-height:1.12 !important;
+    }
+
+    .list-desc{
+        font-size:12px !important;
+        -webkit-line-clamp:3 !important;
+    }
+
+    .list-type-label,
+    .list-meta,
+    .list-open-hint{
+        font-size:11px !important;
+    }
+}
+
+@media(max-width:430px){
+    .list-card-main{
+        grid-template-columns:112px minmax(0,1fr) !important;
+        gap:12px !important;
+    }
+
+    .list-cover-grid{
+        width:112px !important;
+        height:112px !important;
+    }
+
+    .list-title{
+        font-size:18px !important;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -2284,6 +2466,7 @@ const sortFilterCurrentLabel = document.getElementById("sortFilterCurrentLabel")
 
 let currentFeedMode = "recommend";
 let allAlbums = [];
+let allLists = [];
 let followingIds = new Set();
 let unsubscribeFollowing = null;
 let touchStartX = 0;
@@ -3692,6 +3875,11 @@ const q = query(
     where("isPublic", "==", true)
 );
 
+const listQuery = query(
+    collection(db, "lists"),
+    where("isPublic", "==", true)
+);
+
 function setupFollowingListener(user){
     if(unsubscribeFollowing){
         unsubscribeFollowing();
@@ -3899,6 +4087,99 @@ function albumCardHTML(item, posterProfile){
     </div>
 </div>`;
 }
+
+
+function listCoverGridHTML(coverImages){
+    const covers = Array.isArray(coverImages)
+        ? coverImages.filter(Boolean).slice(0, 4)
+        : [];
+
+    const cells = [];
+
+    for(let i = 0; i < 4; i++){
+        if(covers[i]){
+            cells.push(`<img src="${escapeHTML(covers[i])}" alt="">`);
+        }else{
+            cells.push(`<div class="list-cover-placeholder">${i === 0 ? "📋" : ""}</div>`);
+        }
+    }
+
+    return `<div class="list-cover-grid">${cells.join("")}</div>`;
+}
+
+function getListTypeLabel(list){
+    if(list?.hasTier || list?.listType === "tier"){
+        return "Tierリスト";
+    }
+
+    return "リスト";
+}
+
+function getListDetailUrl(listId){
+    return `list-detail.html?id=${encodeURIComponent(listId)}`;
+}
+
+function listCardHTML(item, posterProfile){
+    const list = item.data || {};
+    const listId = item.id;
+    const itemCount = Number(list.itemCount || 0);
+
+    return `
+<div class="list-card"
+     onclick="location.href='${escapeHTML(getListDetailUrl(listId))}'">
+    <div class="list-card-main">
+        ${listCoverGridHTML(list.coverImages)}
+        <div class="list-info">
+            <div>
+                <div class="list-type-label">${escapeHTML(getListTypeLabel(list))}</div>
+                <div class="list-title">${escapeHTML(list.title || "Untitled List")}</div>
+                <div class="list-desc">${escapeHTML(list.desc || "説明はまだありません。")}</div>
+                <div class="list-meta">${escapeHTML(itemCount)}曲入り ・ ${formatPostDate(list.createdAt || list.updatedAt)}</div>
+                <div class="creator creator-highlight">
+                    <a href="profile.html?uid=${escapeHTML(list.userId || "")}" class="creator-link" onclick="event.stopPropagation();">
+                        ${creatorAvatarHTML(posterProfile)}
+                        <span class="creator-text">
+                            <span class="creator-prefix">作成者：</span><span class="creator-name">${escapeHTML(posterProfile?.name || "匿名ユーザー")}</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="list-open-hint">リストを見る →</div>
+        </div>
+    </div>
+</div>`;
+}
+
+function getSortedLists(){
+    return [...allLists].sort((a, b) => {
+        const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
+        const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
+        return bTime - aTime;
+    });
+}
+
+async function renderListGrid(){
+    if(!listGrid){
+        return;
+    }
+
+    const lists = getSortedLists();
+
+    if(lists.length === 0){
+        listGrid.innerHTML = `<div class="empty">リスト投稿はまだありません</div>`;
+        return;
+    }
+
+    const cards = [];
+
+    for(const item of lists){
+        const posterProfile = await getPosterProfileForAlbum(item.data);
+        cards.push(listCardHTML(item, posterProfile));
+    }
+
+    listGrid.innerHTML = cards.join("");
+}
+
 
 function normalizeTextForScore(value){
     return String(value ?? "")
@@ -4401,13 +4682,29 @@ async function renderAlbums(){
     await renderGrid(recommendGrid, getRecommendAlbums(), `<div class="empty">保存されたアルバムがありません</div>`);
     await renderGrid(followingGrid, getFollowingAlbums(), currentUser ? `<div class="empty">フォロー中の投稿がまだありません</div>` : `<div class="empty">ログインするとフォロー中TLを表示できます</div>`);
 
-    if(listGrid){
-        listGrid.innerHTML = `<div class="empty">リスト投稿はまだありません</div>`;
-    }
+    await renderListGrid();
 
     updateLikeDisplays();
     updateCommentDisplays();
 }
+
+
+onSnapshot(listQuery, async (snapshot) => {
+    allLists = [];
+
+    snapshot.forEach((docSnap) => {
+        allLists.push({
+            id: docSnap.id,
+            data: docSnap.data()
+        });
+    });
+
+    await renderListGrid();
+}, (error) => {
+    if(listGrid){
+        listGrid.innerHTML = `<div class="empty">リスト読み込みエラー：${escapeHTML(error.message)}</div>`;
+    }
+});
 
 onSnapshot(q, async (snapshot)=>{
     allAlbums = [];
