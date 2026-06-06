@@ -486,15 +486,15 @@ button{
 
 .tier-board{
     display:grid;
-    gap:12px;
+    gap:10px;
 }
 
 .tier-row{
     display:grid;
-    grid-template-columns:72px minmax(0,1fr);
-    min-height:124px;
+    grid-template-columns:54px minmax(0,1fr);
+    min-height:82px;
     border:1px solid rgba(255,255,255,0.12);
-    border-radius:20px;
+    border-radius:16px;
     overflow:hidden;
     background:#080909;
 }
@@ -503,7 +503,7 @@ button{
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:32px;
+    font-size:24px;
     font-weight:950;
     border-right:1px solid rgba(255,255,255,0.10);
 }
@@ -514,51 +514,160 @@ button{
 .tier-label.c{ color:#8ee3ad; background:rgba(90,220,140,0.10); }
 
 .tier-items{
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(130px,1fr));
-    gap:12px;
-    padding:14px;
-    align-items:start;
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+    padding:10px;
+    overflow-x:auto;
+    min-width:0;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+}
+
+.tier-items::-webkit-scrollbar{
+    display:none;
 }
 
 .tier-item{
+    width:74px;
+    flex:0 0 74px;
     min-width:0;
     background:rgba(255,255,255,0.035);
     border:1px solid rgba(255,255,255,0.09);
-    border-radius:16px;
-    padding:10px;
+    border-radius:12px;
+    padding:6px;
 }
 
 .tier-item img{
-    width:100%;
-    aspect-ratio:1/1;
+    width:60px;
+    height:60px;
+    display:block;
     object-fit:cover;
-    border-radius:12px;
+    border-radius:9px;
     background:#171717;
     border:1px solid rgba(255,255,255,0.12);
-    margin-bottom:9px;
+    margin-bottom:6px;
 }
 
 .tier-item-title{
-    font-size:13px;
+    font-size:10.5px;
     font-weight:900;
-    line-height:1.3;
-    margin-bottom:4px;
+    line-height:1.22;
+    margin-bottom:2px;
     word-break:break-word;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
 }
 
 .tier-item-artist{
     color:#9fcdd9;
-    font-size:12px;
+    font-size:9.5px;
     font-weight:750;
-    line-height:1.35;
+    line-height:1.25;
     word-break:break-word;
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
 }
 
 .tier-empty{
     color:#707b80;
     font-size:13px;
     padding:18px;
+}
+
+.edit-sheet{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    background:rgba(0,0,0,0.62);
+    z-index:23000;
+    padding:18px;
+}
+
+.edit-sheet.open{
+    display:flex;
+}
+
+.edit-panel{
+    width:min(460px,100%);
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:24px;
+    padding:16px;
+    box-shadow:0 22px 70px rgba(0,0,0,0.58);
+}
+
+.edit-panel-title{
+    font-size:18px;
+    font-weight:950;
+    margin-bottom:12px;
+}
+
+.edit-input-group{
+    margin-bottom:12px;
+}
+
+.edit-input-group label{
+    display:block;
+    color:#aab3b8;
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:6px;
+}
+
+.edit-input-group input,
+.edit-input-group textarea,
+.edit-input-group select{
+    width:100%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:#111;
+    color:white;
+    border-radius:12px;
+    padding:12px;
+    font:inherit;
+}
+
+.edit-input-group textarea{
+    min-height:120px;
+    resize:vertical;
+    line-height:1.6;
+}
+
+.edit-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:12px;
+}
+
+.edit-actions button{
+    margin:0;
+    width:100%;
+}
+
+.edit-save-btn{
+    background:#6fa8dc;
+}
+
+.edit-cancel-btn{
+    background:#333;
+}
+
+@media(max-width:900px){
+    .edit-sheet{
+        padding:10px;
+        padding-bottom:calc(82px + env(safe-area-inset-bottom));
+    }
+
+    .edit-panel{
+        border-radius:24px 24px 18px 18px;
+    }
 }
 
 .listen-sheet{
@@ -792,32 +901,39 @@ button{
     }
 
     .tier-row{
-        grid-template-columns:50px minmax(0,1fr);
-        min-height:100px;
-        border-radius:18px;
-    }
-
-    .tier-label{
-        font-size:24px;
-    }
-
-    .tier-items{
-        grid-template-columns:repeat(auto-fill, minmax(94px,1fr));
-        gap:9px;
-        padding:10px;
-    }
-
-    .tier-item{
-        padding:8px;
+        grid-template-columns:46px minmax(0,1fr);
+        min-height:72px;
         border-radius:14px;
     }
 
+    .tier-label{
+        font-size:20px;
+    }
+
+    .tier-items{
+        gap:7px;
+        padding:8px;
+    }
+
+    .tier-item{
+        width:62px;
+        flex-basis:62px;
+        padding:5px;
+        border-radius:11px;
+    }
+
+    .tier-item img{
+        width:50px;
+        height:50px;
+        border-radius:8px;
+    }
+
     .tier-item-title{
-        font-size:11px;
+        font-size:9.5px;
     }
 
     .tier-item-artist{
-        font-size:10px;
+        font-size:8.5px;
     }
 
     .listen-sheet{
@@ -923,6 +1039,35 @@ button{
     </section>
 </main>
 
+<div class="edit-sheet" id="editSheet" onclick="closeEditListSheet()">
+    <div class="edit-panel" onclick="event.stopPropagation();">
+        <div class="edit-panel-title">リストを編集</div>
+
+        <div class="edit-input-group">
+            <label>リストタイトル</label>
+            <input id="editListTitleInput" type="text" maxlength="80" placeholder="リストタイトル">
+        </div>
+
+        <div class="edit-input-group">
+            <label>説明</label>
+            <textarea id="editListDescInput" maxlength="300" placeholder="このリストについて"></textarea>
+        </div>
+
+        <div class="edit-input-group">
+            <label>公開設定</label>
+            <select id="editListPublicInput">
+                <option value="true">公開</option>
+                <option value="false">非公開</option>
+            </select>
+        </div>
+
+        <div class="edit-actions">
+            <button type="button" class="edit-cancel-btn" onclick="closeEditListSheet()">キャンセル</button>
+            <button type="button" class="edit-save-btn" id="saveListEditBtn">保存</button>
+        </div>
+    </div>
+</div>
+
 <div class="listen-sheet" id="listenSheet" onclick="closeListenMenu()">
     <div class="listen-panel" onclick="event.stopPropagation();">
         <div class="listen-panel-title">どこで聴きますか？</div>
@@ -946,6 +1091,8 @@ import {
     query,
     where,
     deleteDoc,
+    updateDoc,
+    serverTimestamp,
     orderBy
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -1000,6 +1147,11 @@ const listenSheet = document.getElementById("listenSheet");
 const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
 const listenActions = document.getElementById("listenActions");
 const toast = document.getElementById("toast");
+const editSheet = document.getElementById("editSheet");
+const editListTitleInput = document.getElementById("editListTitleInput");
+const editListDescInput = document.getElementById("editListDescInput");
+const editListPublicInput = document.getElementById("editListPublicInput");
+const saveListEditBtn = document.getElementById("saveListEditBtn");
 
 let currentUser = null;
 let currentList = null;
@@ -1616,10 +1768,95 @@ async function renderListPage(){
     }
 }
 
+function openEditListSheet(){
+    if(!currentUser || !currentList || currentList.userId !== currentUser.uid){
+        alert("自分のリストだけ編集できます");
+        return;
+    }
+
+    if(editListTitleInput){
+        editListTitleInput.value = currentList.title || "";
+    }
+
+    if(editListDescInput){
+        editListDescInput.value = currentList.desc || "";
+    }
+
+    if(editListPublicInput){
+        editListPublicInput.value = currentList.isPublic === false ? "false" : "true";
+    }
+
+    if(editSheet){
+        editSheet.classList.add("open");
+    }
+}
+
+function closeEditListSheet(){
+    if(editSheet){
+        editSheet.classList.remove("open");
+    }
+}
+
+async function saveListEdits(){
+    if(!currentUser || !currentList || currentList.userId !== currentUser.uid){
+        alert("自分のリストだけ編集できます");
+        return;
+    }
+
+    const nextTitle = editListTitleInput ? editListTitleInput.value.trim() : "";
+    const nextDesc = editListDescInput ? editListDescInput.value.slice(0, 300) : "";
+    const nextIsPublic = editListPublicInput ? editListPublicInput.value === "true" : true;
+
+    if(!nextTitle){
+        alert("リストタイトルを入力してください");
+        return;
+    }
+
+    try{
+        if(saveListEditBtn){
+            saveListEditBtn.disabled = true;
+            saveListEditBtn.textContent = "保存中...";
+        }
+
+        await updateDoc(doc(db, "lists", listId), {
+            title: nextTitle,
+            desc: nextDesc,
+            isPublic: nextIsPublic,
+            updatedAt: serverTimestamp()
+        });
+
+        currentList = {
+            ...currentList,
+            title: nextTitle,
+            desc: nextDesc,
+            isPublic: nextIsPublic
+        };
+
+        listTitle.textContent = currentList.title || "Untitled List";
+        listDesc.textContent = currentList.desc || "説明はありません。";
+        publicBadge.textContent = currentList.isPublic === false ? "非公開" : "公開";
+
+        closeEditListSheet();
+        showToast("リストを更新しました");
+    }catch(error){
+        console.error("リスト編集に失敗しました", error);
+        alert("編集に失敗しました：" + error.message);
+    }finally{
+        if(saveListEditBtn){
+            saveListEditBtn.disabled = false;
+            saveListEditBtn.textContent = "保存";
+        }
+    }
+}
+
+window.closeEditListSheet = closeEditListSheet;
+
 if(editListBtn){
-    editListBtn.addEventListener("click", () => {
-        alert("リスト編集画面はまだ未実装です。先に削除・再作成で対応してください。");
-    });
+    editListBtn.addEventListener("click", openEditListSheet);
+}
+
+if(saveListEditBtn){
+    saveListEditBtn.addEventListener("click", saveListEdits);
 }
 
 if(deleteListBtn){
