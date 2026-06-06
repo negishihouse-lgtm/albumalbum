@@ -1943,6 +1943,8 @@ import {
     setDoc,
     deleteDoc,
     addDoc,
+    updateDoc,
+    increment,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -2034,6 +2036,7 @@ onAuthStateChanged(auth, (user) => {
         }
     }
 
+    setupMyLikeListener();
     renderDetail();
 });
 
@@ -3376,8 +3379,22 @@ function getLikeId(userId, albumId){
     return `${userId}_${albumId}`;
 }
 
+function getLocalAlbumCount(fieldNames){
+    const album = albumData || {};
+
+    for(const fieldName of fieldNames){
+        const value = album[fieldName];
+
+        if(typeof value === "number"){
+            return Math.max(0, value);
+        }
+    }
+
+    return 0;
+}
+
 function getLikeCount(){
-    return allLikes.filter(like => like.albumId === albumId).length;
+    return getLocalAlbumCount(["likeCount", "likesCount"]);
 }
 
 function isLikedByMe(){
@@ -3397,14 +3414,22 @@ async function toggleLike(){
 
     const likeId = getLikeId(currentUser.uid, albumId);
     const likeRef = doc(db, "likes", likeId);
+    const albumRef = doc(db, "albums", albumId);
 
     if(isLikedByMe()){
         await deleteDoc(likeRef);
+        await updateDoc(albumRef, {
+            likeCount: increment(-1)
+        });
     } else {
         await setDoc(likeRef, {
             userId: currentUser.uid,
             albumId: albumId,
             createdAt: serverTimestamp()
+        });
+
+        await updateDoc(albumRef, {
+            likeCount: increment(1)
         });
 
         await notifyLike(db, currentUser, albumId);
@@ -3439,6 +3464,10 @@ async function addComment(){
         createdAt: serverTimestamp()
     });
 
+    await updateDoc(doc(db, "albums", albumId), {
+        commentCount: increment(1)
+    });
+
     await notifyComment(db, currentUser, albumId, text);
 
     input.value = "";
@@ -3454,6 +3483,10 @@ async function deleteComment(commentId){
     }
 
     await deleteDoc(doc(db, "comments", commentId));
+
+    await updateDoc(doc(db, "albums", albumId), {
+        commentCount: increment(-1)
+    });
 }
 
 window.deleteComment = deleteComment;
@@ -3699,15 +3732,52 @@ async function loadAlbum(){
     renderDetail();
 }
 
-onSnapshot(collection(db, "likes"), (snapshot) => {
-    allLikes = [];
+function setupMyLikeListener(){
+    if(!albumId){
+        return;
+    }
 
-    snapshot.forEach((docSnap) => {
-        allLikes.push(docSnap.data());
+    if(!currentUser){
+        allLikes = [];
+        renderDetail();
+        return;
+    }
+
+    const myLikeQuery = query(
+        collection(db, "likes"),
+        where("albumId", "==", albumId),
+        where("userId", "==", currentUser.uid)
+    );
+
+    onSnapshot(myLikeQuery, (snapshot) => {
+        allLikes = [];
+
+        snapshot.forEach((docSnap) => {
+            allLikes.push(docSnap.data());
+        });
+
+        renderDetail();
     });
+}
 
-    renderDetail();
-});
+const albumLiveRef = albumId ? doc(db, "albums", albumId) : null;
+
+if(albumLiveRef){
+    onSnapshot(albumLiveRef, (albumSnap) => {
+        if(!albumSnap.exists()){
+            detailWrap.innerHTML = `<div class="empty">投稿が見つかりません</div>`;
+            return;
+        }
+
+        albumData = albumSnap.data();
+
+        if(albumData.userId){
+            ensureUserLoaded(albumData.userId);
+        }
+
+        renderDetail();
+    });
+}
 
 const commentsQuery = query(
     collection(db, "comments"),
