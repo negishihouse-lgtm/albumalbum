@@ -4489,6 +4489,24 @@ if(listTab){
     listTab.addEventListener("click", () => scrollFeedTo("list"));
 }
 
+function resetFeedToRecommendOnOpen(){
+    if(!feedSwipe || window.innerWidth > 900){
+        return;
+    }
+
+    currentFeedMode = "recommend";
+    feedSwipe.scrollLeft = 0;
+    updateFeedTabs(0);
+}
+
+window.addEventListener("pageshow", () => {
+    requestAnimationFrame(resetFeedToRecommendOnOpen);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    requestAnimationFrame(resetFeedToRecommendOnOpen);
+});
+
 let feedScrollTicking = false;
 let feedTouchStartX = 0;
 let feedTouchStartY = 0;
@@ -4726,9 +4744,9 @@ onSnapshot(q, async (snapshot)=>{
     });
     await renderAlbums();
 }, (error) => {
-    if(recommendGrid){ recommendGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
-    if(followingGrid){ followingGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
-    if(listGrid){ listGrid.innerHTML = `<div class="empty">読み込みエラー：${escapeHTML(error.message)}</div>`; }
+    console.error("albumsの読み込みに失敗しました", error);
+    if(recommendGrid){ recommendGrid.innerHTML = `<div class="empty">投稿読み込みエラー：${escapeHTML(error.message)}</div>`; }
+    if(followingGrid){ followingGrid.innerHTML = `<div class="empty">投稿読み込みエラー：${escapeHTML(error.message)}</div>`; }
 });
 
 </script>
