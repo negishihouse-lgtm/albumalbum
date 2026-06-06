@@ -2441,6 +2441,9 @@ import {
     addDoc,
     setDoc,
     deleteDoc,
+    updateDoc,
+    limit,
+    increment,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -2501,6 +2504,7 @@ let currentUserProfile = null;
 let currentSortMode = "recommend";
 let allLikes = [];
 let allComments = [];
+let unsubscribeMyLikes = null;
 const userProfileCache = new Map();
 
 onAuthStateChanged(auth, async (user) => {
@@ -2508,6 +2512,7 @@ onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     currentUserProfile = await getCurrentUserProfile(user);
     setupFollowingListener(user);
+    setupMyLikesListener(user);
 
     const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
 
@@ -3736,8 +3741,23 @@ function getLikeId(userId, albumId){
     return `${userId}_${albumId}`;
 }
 
+function getAlbumCountValue(albumId, fieldNames){
+    const item = getAlbumItemById(albumId);
+    const album = item?.data || {};
+
+    for(const fieldName of fieldNames){
+        const value = album[fieldName];
+
+        if(typeof value === "number"){
+            return Math.max(0, value);
+        }
+    }
+
+    return 0;
+}
+
 function getLikeCount(albumId){
-    return allLikes.filter(like => like.albumId === albumId).length;
+    return getAlbumCountValue(albumId, ["likeCount", "likesCount"]);
 }
 
 function isLikedByMe(albumId){
@@ -3749,6 +3769,39 @@ function isLikedByMe(albumId){
     );
 }
 
+function setupMyLikesListener(user){
+    if(unsubscribeMyLikes){
+        unsubscribeMyLikes();
+        unsubscribeMyLikes = null;
+    }
+
+    allLikes = [];
+
+    if(!user){
+        updateLikeDisplays();
+        return;
+    }
+
+    const myLikesQuery = query(
+        collection(db, "likes"),
+        where("userId", "==", user.uid)
+    );
+
+    unsubscribeMyLikes = onSnapshot(myLikesQuery, (snapshot) => {
+        allLikes = [];
+
+        snapshot.forEach((docSnap) => {
+            allLikes.push(docSnap.data());
+        });
+
+        updateLikeDisplays();
+    }, (error) => {
+        console.warn("自分のいいね情報の取得に失敗しました", error);
+        allLikes = [];
+        updateLikeDisplays();
+    });
+}
+
 async function toggleLike(albumId){
     if(!currentUser){
         location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
@@ -3757,9 +3810,13 @@ async function toggleLike(albumId){
 
     const likeId = getLikeId(currentUser.uid, albumId);
     const likeRef = doc(db, "likes", likeId);
+    const albumRef = doc(db, "albums", albumId);
 
     if(isLikedByMe(albumId)){
         await deleteDoc(likeRef);
+        await updateDoc(albumRef, {
+            likeCount: increment(-1)
+        });
     } else {
         await setDoc(likeRef, {
             userId: currentUser.uid,
@@ -3767,68 +3824,15 @@ async function toggleLike(albumId){
             createdAt: serverTimestamp()
         });
 
+        await updateDoc(albumRef, {
+            likeCount: increment(1)
+        });
+
         await notifyLike(db, currentUser, albumId);
     }
 }
 
-
-function canManageAlbum(album){
-    return Boolean(currentUser && album && album.userId === currentUser.uid);
-}
-
-function editAlbum(albumId){
-    if(!albumId){
-        return;
-    }
-
-    location.href = `editor.html?id=${encodeURIComponent(albumId)}`;
-}
-
-async function deleteAlbumPost(albumId){
-    if(!currentUser || !albumId){
-        return;
-    }
-
-    const item = getAlbumItemById(albumId);
-
-    if(!item || item.data?.userId !== currentUser.uid){
-        alert("自分の投稿だけ削除できます");
-        return;
-    }
-
-    const ok = confirm("この投稿を削除しますか？\n削除すると元に戻せません。");
-
-    if(!ok){
-        return;
-    }
-
-    try{
-        await deleteDoc(doc(db, "albums", albumId));
-        showShareToast("投稿を削除しました");
-    }catch(error){
-        console.error("投稿削除に失敗しました", error);
-        alert("投稿の削除に失敗しました：" + error.message);
-    }
-}
-
-window.editAlbum = editAlbum;
-window.deleteAlbumPost = deleteAlbumPost;
-
 window.toggleLike = toggleLike;
-
-onSnapshot(collection(db, "likes"), (snapshot) => {
-    allLikes = [];
-
-    snapshot.forEach((docSnap) => {
-        allLikes.push(docSnap.data());
-    });
-
-    if(currentSortMode === "recommend" || currentSortMode.startsWith("popular_")){
-        renderAlbums();
-    }else{
-        updateLikeDisplays();
-    }
-});
 
 function updateLikeDisplays(){
     const likeAreas = document.querySelectorAll("[data-like-area]");
@@ -3854,25 +3858,8 @@ function updateLikeDisplays(){
     });
 }
 
-onSnapshot(collection(db, "comments"), (snapshot) => {
-    allComments = [];
-
-    snapshot.forEach((docSnap) => {
-        allComments.push({
-            id: docSnap.id,
-            ...docSnap.data()
-        });
-    });
-
-    if(currentSortMode === "recommend" || currentSortMode.startsWith("popular_")){
-        renderAlbums();
-    }else{
-        updateCommentDisplays();
-    }
-});
-
 function getCommentCount(albumId){
-    return allComments.filter(comment => comment.albumId === albumId).length;
+    return getAlbumCountValue(albumId, ["commentCount", "commentsCount"]);
 }
 
 function updateCommentDisplays(){
@@ -3896,12 +3883,14 @@ function updateCommentDisplays(){
 
 const q = query(
     collection(db, "albums"),
-    where("isPublic", "==", true)
+    where("isPublic", "==", true),
+    limit(50)
 );
 
 const listQuery = query(
     collection(db, "lists"),
-    where("isPublic", "==", true)
+    where("isPublic", "==", true),
+    limit(50)
 );
 
 function setupFollowingListener(user){
