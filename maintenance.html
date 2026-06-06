@@ -1,1 +1,218 @@
 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>メンテナンス中 - Album Collection</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    background:#050505;
+    color:#ffffff;
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Noto Sans JP",sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+}
+
+.maintenance-box{
+    width:100%;
+    max-width:390px;
+    background:#0b0d0e;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:24px;
+    padding:28px 24px 24px;
+    box-shadow:0 22px 70px rgba(0,0,0,0.55);
+}
+
+.logo{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:-0.045em;
+    line-height:1.08;
+    margin-bottom:18px;
+}
+
+.status{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    color:#9fcdd9;
+    font-size:12px;
+    font-weight:900;
+    border:1px solid rgba(159,205,217,0.25);
+    background:rgba(159,205,217,0.10);
+    border-radius:999px;
+    padding:7px 10px;
+    margin-bottom:16px;
+}
+
+h1{
+    font-size:22px;
+    line-height:1.35;
+    letter-spacing:-0.03em;
+    margin-bottom:10px;
+}
+
+p{
+    color:#aab3b8;
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:18px;
+}
+
+input{
+    width:100%;
+    height:48px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.16);
+    background:#050505;
+    color:#ffffff;
+    font:inherit;
+    font-size:16px;
+    padding:0 14px;
+    outline:none;
+}
+
+input:focus{
+    border-color:rgba(159,205,217,0.65);
+    box-shadow:0 0 0 3px rgba(159,205,217,0.12);
+}
+
+button{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    height:48px;
+    border:none;
+    border-radius:14px;
+    background:#9fcdd9;
+    color:#050505;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:900;
+    cursor:pointer;
+    margin-top:12px;
+}
+
+button:active{
+    transform:scale(0.99);
+}
+
+.error{
+    min-height:20px;
+    color:#ff8b8b;
+    font-size:13px;
+    font-weight:700;
+    margin-top:12px;
+}
+
+.note{
+    color:#7f8a90;
+    font-size:12px;
+    line-height:1.6;
+    margin-top:14px;
+    margin-bottom:0;
+}
+</style>
+</head>
+
+<body>
+
+<main class="maintenance-box">
+    <div class="logo">Album<br>Collection</div>
+
+    <div class="status">● メンテナンス中</div>
+
+    <h1>現在アップデート作業中です</h1>
+
+    <p>
+        管理者・確認用ユーザーのみ閲覧できます。<br>
+        パスワードを入力してください。
+    </p>
+
+    <input id="passwordInput" type="password" placeholder="パスワード" autocomplete="current-password">
+    <button type="button" onclick="checkPassword()">入る</button>
+
+    <div id="error" class="error"></div>
+
+    <p class="note">
+        入れない場合は、入力内容を確認してください。
+    </p>
+</main>
+
+<script>
+const MAINTENANCE_PASS_KEY = "album_collection_maintenance_pass_ok";
+const MAINTENANCE_PASSWORD_HASH = "9d4fc536b7faa3083411b3fbc1a57357f93119df89f43aef55f6c03a19e7bbe7";
+
+async function sha256(text){
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    return hashArray
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join("");
+}
+
+function getRedirectUrl(){
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get("redirect");
+
+    if(redirect){
+        try{
+            const url = new URL(redirect, location.href);
+
+            if(url.origin === location.origin){
+                return url.href;
+            }
+        }catch(error){
+            console.warn("redirect URLが不正です", error);
+        }
+    }
+
+    return "index.html";
+}
+
+async function checkPassword(){
+    const input = document.getElementById("passwordInput");
+    const error = document.getElementById("error");
+    const value = input.value;
+
+    error.textContent = "";
+
+    if(!value){
+        error.textContent = "パスワードを入力してください。";
+        return;
+    }
+
+    const inputHash = await sha256(value);
+
+    if(inputHash === MAINTENANCE_PASSWORD_HASH){
+        sessionStorage.setItem(MAINTENANCE_PASS_KEY, "true");
+        location.href = getRedirectUrl();
+    }else{
+        error.textContent = "パスワードが違います。";
+        input.select();
+    }
+}
+
+document.getElementById("passwordInput").addEventListener("keydown", (event) => {
+    if(event.key === "Enter"){
+        checkPassword();
+    }
+});
+</script>
+
+</body>
+</html>
