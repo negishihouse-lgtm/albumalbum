@@ -1890,8 +1890,7 @@ a{
     <h1 class="page-title">Album Detail</h1>
 
     <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <button class="btn" onclick="location.href='./index.html'">一覧へ戻る</button>
-        <button id="mypageBtn" class="btn" style="display:none;">マイページ</button>
+        <button id="smartBackBtn" class="btn smart-back-btn" type="button">戻る</button>
     </div>
 </div>
 
@@ -1972,7 +1971,7 @@ const db = initializeFirestore(app, {
 const auth = getAuth(app);
 
 const detailWrap = document.getElementById("detailWrap");
-const mypageBtn = document.getElementById("mypageBtn");
+const smartBackBtn = document.getElementById("smartBackBtn");
 const myPageLink = document.getElementById("myPageLink");
 const mobileMyPageLink = document.getElementById("mobileMyPageLink");
 const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
@@ -1986,6 +1985,78 @@ const listenActions = document.getElementById("listenActions");
 
 const params = new URLSearchParams(location.search);
 const albumId = params.get("id");
+
+function normalizeLocalBackUrl(value){
+    if(!value){
+        return null;
+    }
+
+    try{
+        const url = new URL(value, location.href);
+
+        if(url.origin !== location.origin){
+            return null;
+        }
+
+        const currentPath = location.pathname.split("/").pop() || "detail.html";
+        const targetPath = url.pathname.split("/").pop() || "index.html";
+
+        if(targetPath === currentPath){
+            return null;
+        }
+
+        return `${targetPath}${url.search}${url.hash}`;
+    }catch(error){
+        return null;
+    }
+}
+
+function getBackLabel(backUrl){
+    const path = String(backUrl || "").split("?")[0].split("#")[0];
+
+    if(path === "profile.html"){
+        return "プロフィールへ戻る";
+    }
+
+    if(path === "list-detail.html"){
+        return "リストへ戻る";
+    }
+
+    if(path === "search.html"){
+        return "検索へ戻る";
+    }
+
+    return "ホームへ戻る";
+}
+
+function getSmartBackInfo(){
+    const explicitBack =
+        normalizeLocalBackUrl(params.get("from")) ||
+        normalizeLocalBackUrl(params.get("back")) ||
+        normalizeLocalBackUrl(params.get("returnTo"));
+
+    const referrerBack = normalizeLocalBackUrl(document.referrer);
+    const href = explicitBack || referrerBack || "index.html";
+
+    return {
+        href,
+        label:getBackLabel(href)
+    };
+}
+
+function setupSmartBackButton(){
+    if(!smartBackBtn){
+        return;
+    }
+
+    const backInfo = getSmartBackInfo();
+    smartBackBtn.textContent = `← ${backInfo.label}`;
+    smartBackBtn.onclick = () => {
+        location.href = backInfo.href;
+    };
+}
+
+setupSmartBackButton();
 
 let currentUser = null;
 let albumData = null;
@@ -2008,11 +2079,6 @@ onAuthStateChanged(auth, (user) => {
     currentUser = user;
 
     if(user){
-        mypageBtn.style.display = "inline-block";
-        mypageBtn.onclick = () => {
-            location.href = `profile.html?uid=${user.uid}`;
-        };
-
         const url = `profile.html?uid=${encodeURIComponent(user.uid)}`;
 
         if(myPageLink){
@@ -2025,8 +2091,6 @@ onAuthStateChanged(auth, (user) => {
 
         ensureUserLoaded(user.uid);
     } else {
-        mypageBtn.style.display = "none";
-
         if(myPageLink){
             myPageLink.href = "login.html";
         }
@@ -3972,5 +4036,37 @@ loadAlbum();
     }
 }
 </style>
+
+<style>
+/* ============================================================
+   FINAL: 流入元に戻るボタン
+   - indexから来たらホームへ
+   - profileから来たらそのプロフィールへ
+   - list-detailから来たらリストへ
+============================================================ */
+.smart-back-btn{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    white-space:nowrap !important;
+}
+
+@media(max-width:900px){
+    .topbar{
+        display:flex !important;
+        align-items:center !important;
+        justify-content:space-between !important;
+        gap:12px !important;
+    }
+
+    .topbar .smart-back-btn{
+        display:inline-flex !important;
+        padding:9px 12px !important;
+        font-size:12px !important;
+        min-height:34px !important;
+    }
+}
+</style>
+
 </body>
 </html>
