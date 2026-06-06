@@ -665,7 +665,8 @@
       doc,
       getDoc,
       where,
-      orderBy
+      orderBy,
+      limit
     } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -918,60 +919,11 @@
     }
 
     /*
-      検索欄で「♡ 0」「💬 0」になるバグ対策。
-
-      以前のコードは albums ドキュメント内の
-      likeCount / likesCount / commentCount / commentsCount だけを見ていました。
-
-      ただし、実際のいいね・コメントを likes / comments コレクションに保存している場合、
-      albums 側に件数フィールドがないため、検索ページだけ 0 表示になります。
-
-      そこで、検索ページの読み込み時に各投稿IDごとの件数を取得して、
-      album.likeCount / album.commentCount に入れてから表示します。
+      読み取り削減版：
+      検索ページでは likes / comments コレクションを投稿ごとに読みに行かず、
+      albums ドキュメント内の likeCount / commentCount だけを表示します。
     */
-    async function getCountFromCollection(collectionName, albumId){
-      try{
-        const q = query(
-          collection(db, collectionName),
-          where("albumId", "==", albumId)
-        );
-
-        const snapshot = await getDocs(q);
-        return snapshot.size;
-      }catch(error){
-        console.warn(`${collectionName} の件数取得に失敗:`, error);
-        return 0;
-      }
-    }
-
-    async function attachCountsToAlbums(items){
-      const itemsWithCounts = await Promise.all(
-        items.map(async (item) => {
-          const album = item.data;
-
-          const localLikeCount = getLocalLikeCount(album);
-          const localCommentCount = getLocalCommentCount(album);
-
-          const [fetchedLikeCount, fetchedCommentCount] = await Promise.all([
-            getCountFromCollection("likes", item.id),
-            getCountFromCollection("comments", item.id)
-          ]);
-
-          return {
-            ...item,
-            data: {
-              ...album,
-              likeCount: Math.max(localLikeCount, fetchedLikeCount),
-              commentCount: Math.max(localCommentCount, fetchedCommentCount)
-            }
-          };
-        })
-      );
-
-      return itemsWithCounts;
-    }
-
-    function getCommentCount(album){
+function getCommentCount(album){
       if(typeof album.commentCount === "number") return album.commentCount;
       if(typeof album.commentsCount === "number") return album.commentsCount;
       return 0;
@@ -1085,7 +1037,8 @@
         const albumsQuery = query(
           collection(db, "albums"),
           where("isPublic", "==", true),
-          orderBy("createdAt", "desc")
+          orderBy("createdAt", "desc"),
+          limit(50)
         );
 
         const snapshot = await getDocs(albumsQuery);
@@ -1095,10 +1048,7 @@
           data: doc.data()
         }));
 
-        statusEl.textContent = "いいね・コメント数を読み込み中...";
-
-        const albumsWithCounts = await attachCountsToAlbums(albumsWithoutCounts);
-        publicAlbums = await attachDisplayNamesToAlbums(albumsWithCounts);
+        publicAlbums = await attachDisplayNamesToAlbums(albumsWithoutCounts);
 
         renderAlbums(publicAlbums, "");
       }catch(error){
