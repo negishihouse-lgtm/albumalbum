@@ -2696,6 +2696,49 @@ function getAlbumItemById(albumId){
     return allAlbums.find(item => item.id === albumId) || null;
 }
 
+function canManageAlbum(album){
+    return !!(currentUser && album && album.userId === currentUser.uid);
+}
+
+function editAlbum(albumId){
+    if(!albumId){
+        return;
+    }
+
+    location.href = `editor.html?id=${encodeURIComponent(albumId)}`;
+}
+
+async function deleteAlbumPost(albumId){
+    if(!currentUser || !albumId){
+        return;
+    }
+
+    const item = getAlbumItemById(albumId);
+    const album = item?.data || {};
+
+    if(album.userId !== currentUser.uid){
+        alert("自分の投稿だけ削除できます");
+        return;
+    }
+
+    const ok = confirm("この投稿を削除しますか？");
+
+    if(!ok){
+        return;
+    }
+
+    try{
+        await deleteDoc(doc(db, "albums", albumId));
+        showShareToast("投稿を削除しました");
+    }catch(error){
+        console.error("投稿の削除に失敗しました", error);
+        alert("投稿の削除に失敗しました：" + (error?.message || error));
+    }
+}
+
+window.editAlbum = editAlbum;
+window.deleteAlbumPost = deleteAlbumPost;
+
 function getShareUrl(albumId){
     const url = new URL("detail.html", location.href);
     url.searchParams.set("id", albumId);
