@@ -3025,6 +3025,167 @@ body{
     }
 }
 
+
+
+/* ============================================================
+   FINAL UPDATE: 投稿カードのアクション整理
+   - コメント件数の横に再生ボタンだけ表示
+   - 編集/削除は右上の三点メニューに収納
+============================================================ */
+.album-card{
+    position:relative !important;
+}
+
+.reaction-row{
+    position:relative !important;
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+    flex-wrap:nowrap !important;
+    min-width:0 !important;
+}
+
+.reaction-row .comment-count{
+    flex:0 1 auto !important;
+    white-space:nowrap !important;
+}
+
+.reaction-row .listen-btn.icon-listen-btn{
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    min-height:30px !important;
+    margin-left:0 !important;
+    border-radius:50% !important;
+    flex:0 0 auto !important;
+}
+
+.post-more-wrap{
+    position:absolute !important;
+    top:12px !important;
+    right:12px !important;
+    z-index:30 !important;
+}
+
+.post-more-btn{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    width:34px !important;
+    height:34px !important;
+    border-radius:50% !important;
+    border:1px solid rgba(255,255,255,0.12) !important;
+    background:rgba(5,5,5,0.62) !important;
+    color:#edf8f9 !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:21px !important;
+    font-weight:900 !important;
+    line-height:1 !important;
+    cursor:pointer !important;
+    backdrop-filter:blur(10px) !important;
+    -webkit-backdrop-filter:blur(10px) !important;
+}
+
+.post-more-btn:hover{
+    border-color:rgba(159,205,217,0.42) !important;
+    background:rgba(159,205,217,0.12) !important;
+}
+
+.post-more-menu{
+    position:absolute !important;
+    top:40px !important;
+    right:0 !important;
+    width:132px !important;
+    display:none !important;
+    padding:7px !important;
+    border-radius:16px !important;
+    background:#0b0d0e !important;
+    border:1px solid rgba(255,255,255,0.14) !important;
+    box-shadow:0 18px 50px rgba(0,0,0,0.56) !important;
+    z-index:40 !important;
+}
+
+.post-more-menu.open{
+    display:grid !important;
+    gap:6px !important;
+}
+
+.post-menu-item{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    width:100% !important;
+    border:none !important;
+    border-radius:12px !important;
+    background:transparent !important;
+    color:#ffffff !important;
+    min-height:38px !important;
+    padding:0 10px !important;
+    font-family:inherit !important;
+    font-size:13px !important;
+    font-weight:850 !important;
+    cursor:pointer !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:9px !important;
+    text-align:left !important;
+}
+
+.post-menu-item:hover{
+    background:rgba(159,205,217,0.10) !important;
+}
+
+.post-menu-item.danger{
+    color:#ffb4b4 !important;
+}
+
+.post-menu-item.danger:hover{
+    background:rgba(120,38,38,0.22) !important;
+}
+
+.post-menu-icon{
+    width:18px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:15px !important;
+    line-height:1 !important;
+}
+
+.card-action-icons{
+    display:none !important;
+}
+
+@media(max-width:900px){
+    .post-more-wrap{
+        top:10px !important;
+        right:10px !important;
+    }
+
+    .post-more-btn{
+        width:32px !important;
+        height:32px !important;
+        font-size:20px !important;
+    }
+
+    .post-more-menu{
+        top:38px !important;
+        width:126px !important;
+    }
+
+    .reaction-row{
+        gap:9px !important;
+    }
+
+    .reaction-row .listen-btn.icon-listen-btn{
+        width:28px !important;
+        height:28px !important;
+        min-width:28px !important;
+        min-height:28px !important;
+    }
+}
+
 </style>
 </head>
 
@@ -3988,6 +4149,36 @@ window.toggleLike = toggleLike;
 window.deleteAlbum = deleteAlbum;
 window.editAlbum = editAlbum;
 
+function closePostMoreMenus(){
+    document.querySelectorAll(".post-more-menu.open").forEach((menu) => {
+        menu.classList.remove("open");
+    });
+}
+
+function togglePostMoreMenu(albumId){
+    const target = Array.from(document.querySelectorAll("[data-post-menu]")).find((menu) => {
+        return menu.dataset.postMenu === albumId;
+    });
+
+    if(!target){
+        return;
+    }
+
+    const shouldOpen = !target.classList.contains("open");
+    closePostMoreMenus();
+
+    if(shouldOpen){
+        target.classList.add("open");
+    }
+}
+
+document.addEventListener("click", () => {
+    closePostMoreMenus();
+});
+
+window.closePostMoreMenus = closePostMoreMenus;
+window.togglePostMoreMenu = togglePostMoreMenu;
+
 function updateLikeDisplays(){
     const likeAreas = document.querySelectorAll("[data-like-area]");
 
@@ -4315,24 +4506,33 @@ function albumCardHTML(album, options = {}){
 
     const ownerActions = showOwnerActions
         ? `
-            <div class="owner-actions">
+            <div class="post-more-wrap">
                 <button
-                    class="edit-post-btn icon-action-btn"
+                    class="post-more-btn"
                     type="button"
-                    title="編集"
-                    aria-label="編集"
-                    onclick="event.stopPropagation(); editAlbum('${escapeHTML(albumId)}')">
-                    <span class="icon-action-symbol" aria-hidden="true">✎</span>
+                    title="その他"
+                    aria-label="その他"
+                    onclick="event.stopPropagation(); togglePostMoreMenu('${escapeHTML(albumId)}')">
+                    ⋯
                 </button>
 
-                <button
-                    class="delete-post-btn icon-action-btn danger"
-                    type="button"
-                    title="削除"
-                    aria-label="削除"
-                    onclick="event.stopPropagation(); deleteAlbum('${escapeHTML(albumId)}')">
-                    <span class="icon-action-symbol" aria-hidden="true">⌫</span>
-                </button>
+                <div class="post-more-menu" data-post-menu="${escapeHTML(albumId)}" onclick="event.stopPropagation();">
+                    <button
+                        class="post-menu-item"
+                        type="button"
+                        onclick="event.stopPropagation(); closePostMoreMenus(); editAlbum('${escapeHTML(albumId)}')">
+                        <span class="post-menu-icon" aria-hidden="true">✎</span>
+                        <span>編集</span>
+                    </button>
+
+                    <button
+                        class="post-menu-item danger"
+                        type="button"
+                        onclick="event.stopPropagation(); closePostMoreMenus(); deleteAlbum('${escapeHTML(albumId)}')">
+                        <span class="post-menu-icon" aria-hidden="true">⌫</span>
+                        <span>削除</span>
+                    </button>
+                </div>
             </div>
         `
         : "";
@@ -4340,6 +4540,8 @@ function albumCardHTML(album, options = {}){
     return `
 <div class="album-card"
      onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
+
+    ${ownerActions}
 
     <div class="card-top">
 
@@ -4386,11 +4588,6 @@ function albumCardHTML(album, options = {}){
                      data-album-id="${escapeHTML(albumId)}">
                     コメント 0件
                 </div>
-
-            </div>
-
-            <div class="card-action-icons">
-                ${ownerActions}
 
                 <button
                     type="button"
