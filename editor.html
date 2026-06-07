@@ -956,9 +956,13 @@ button:disabled{
     line-height:1.7;
 }
 
-.song-meter-grid{
-    display:grid;
+.song-tab-panel.song-meter-grid{
+    display:none;
     gap:16px;
+}
+
+.song-tab-panel.song-meter-grid.active{
+    display:grid;
 }
 
 @media(min-width:901px){
@@ -1755,11 +1759,8 @@ body.tier-drag-lock{
 
             <div id="songFormSection">
 
-            <div class="section-title">Song Form</div>
+            <div class="section-title">曲投稿</div>
 
-                <div class="song-layout-note">
-                    曲投稿フォームを「基本情報」「キーワード」「評価軸」に分けています。縦に長くなりすぎないよう、必要な項目だけ切り替えて入力できます。
-                </div>
 
                 <div class="song-editor-tabs" id="songEditorTabs">
                     <button type="button" class="song-editor-tab active" data-song-tab="basic">基本情報</button>
@@ -2430,10 +2431,10 @@ function setupSongEditorTabs(){
     moveInputGroup(basicPanel, coverInput);
     moveInputGroup(basicPanel, titleInput);
     moveInputGroup(basicPanel, artistInput);
+    moveInputGroup(basicPanel, isPublicInput);
 
     moveInputGroup(wordsPanel, keywordsInput);
     moveInputGroup(wordsPanel, descInput);
-    moveInputGroup(wordsPanel, isPublicInput);
 
     moveInputGroup(reviewPanel, darknessInput);
     moveInputGroup(reviewPanel, intenseInput);
