@@ -7046,5 +7046,51 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 </style>
 
+
+<style>
+/* ============================================================
+   FINAL FIX: スマホ版 三点メニューと投稿日の重なり解消
+   - 三点リーダーは右上のまま
+   - 投稿日は三点リーダーの左側へ逃がす
+   - カード本文の右余白も少し広げる
+============================================================ */
+@media(max-width:900px){
+    .post-more-wrap{
+        top:12px !important;
+        right:12px !important;
+    }
+
+    .mobile-post-date{
+        top:22px !important;
+        right:56px !important;
+        max-width:86px !important;
+        text-align:right !important;
+        white-space:nowrap !important;
+    }
+
+    .album-main{
+        padding-right:86px !important;
+    }
+}
+
+@media(max-width:430px){
+    .post-more-wrap{
+        top:10px !important;
+        right:10px !important;
+    }
+
+    .mobile-post-date{
+        top:20px !important;
+        right:50px !important;
+        max-width:78px !important;
+        font-size:11.5px !important;
+    }
+
+    .album-main{
+        padding-right:78px !important;
+    }
+}
+</style>
+
 </body>
 </html>
