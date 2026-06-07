@@ -898,6 +898,94 @@ button:disabled{
 
 
 
+
+/* =====================
+   Song Editor Compact UI
+===================== */
+
+.song-editor-tabs{
+    position:sticky;
+    top:16px;
+    z-index:30;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin:14px 0 18px;
+    padding:8px;
+    background:rgba(12,12,12,0.92);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:18px;
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+}
+
+.song-editor-tab{
+    width:100%;
+    margin-top:0;
+    padding:11px 8px;
+    border-radius:13px;
+    background:transparent;
+    color:#aaa;
+    font-size:13px;
+    font-weight:900;
+    border:1px solid transparent;
+}
+
+.song-editor-tab.active{
+    background:#6fa8dc;
+    color:white;
+    border-color:#6fa8dc;
+}
+
+.song-tab-panel{
+    display:none;
+}
+
+.song-tab-panel.active{
+    display:block;
+}
+
+.song-layout-note{
+    margin-bottom:14px;
+    padding:12px;
+    border-radius:14px;
+    background:rgba(111,168,220,0.10);
+    border:1px solid rgba(111,168,220,0.22);
+    color:#dff3ff;
+    font-size:12px;
+    line-height:1.7;
+}
+
+.song-meter-grid{
+    display:grid;
+    gap:16px;
+}
+
+@media(min-width:901px){
+    .song-tab-panel[data-song-panel="basic"],
+    .song-tab-panel[data-song-panel="review"]{
+        max-height:calc(100vh - 210px);
+        overflow:auto;
+        padding-right:4px;
+    }
+}
+
+@media(max-width:900px){
+    .song-editor-tabs{
+        top:8px;
+        grid-template-columns:repeat(3,1fr);
+        gap:6px;
+        margin-top:10px;
+        border-radius:16px;
+    }
+
+    .song-editor-tab{
+        padding:10px 4px;
+        font-size:12px;
+    }
+}
+
+
 /* =====================
    List Editor Compact UI
 ===================== */
@@ -1669,6 +1757,21 @@ body.tier-drag-lock{
 
             <div class="section-title">Song Form</div>
 
+                <div class="song-layout-note">
+                    曲投稿フォームを「基本情報」「キーワード」「評価軸」に分けています。縦に長くなりすぎないよう、必要な項目だけ切り替えて入力できます。
+                </div>
+
+                <div class="song-editor-tabs" id="songEditorTabs">
+                    <button type="button" class="song-editor-tab active" data-song-tab="basic">基本情報</button>
+                    <button type="button" class="song-editor-tab" data-song-tab="words">キーワード</button>
+                    <button type="button" class="song-editor-tab" data-song-tab="review">評価軸</button>
+                </div>
+
+                <div class="song-tab-panel active" data-song-panel="basic"></div>
+                <div class="song-tab-panel" data-song-panel="words"></div>
+                <div class="song-tab-panel" data-song-panel="review"></div>
+
+
             <div id="songSpotifyMount">
             <div class="spotify-box" id="spotifyBox">
                 <div class="section-title">Spotify Search</div>
@@ -2204,6 +2307,7 @@ const spotifyResults = document.getElementById("spotifyResults");
 const spotifyUrlInput = document.getElementById("spotifyUrlInput");
 
 const songFormSection = document.getElementById("songFormSection");
+const songEditorTabs = document.getElementById("songEditorTabs");
 const listFormSection = document.getElementById("listFormSection");
 const postTypeButtons = document.querySelectorAll(".post-type-btn");
 const listTitleInput = document.getElementById("listTitleInput");
@@ -2277,6 +2381,75 @@ function showListTab(tabName){
     document.querySelectorAll(".list-tab-panel").forEach((panel) => {
         panel.classList.toggle("active", panel.dataset.listPanel === name);
     });
+}
+
+
+function showSongTab(tabName){
+    if(!songEditorTabs){
+        return;
+    }
+
+    const name = tabName || "basic";
+
+    songEditorTabs.querySelectorAll(".song-editor-tab").forEach((button) => {
+        button.classList.toggle("active", button.dataset.songTab === name);
+    });
+
+    document.querySelectorAll(".song-tab-panel").forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.songPanel === name);
+    });
+}
+
+function setupSongEditorTabs(){
+    if(!songEditorTabs){
+        return;
+    }
+
+    const basicPanel = document.querySelector('.song-tab-panel[data-song-panel="basic"]');
+    const wordsPanel = document.querySelector('.song-tab-panel[data-song-panel="words"]');
+    const reviewPanel = document.querySelector('.song-tab-panel[data-song-panel="review"]');
+
+    if(!basicPanel || !wordsPanel || !reviewPanel){
+        return;
+    }
+
+    const moveToPanel = (panel, element) => {
+        if(element && element.parentElement !== panel){
+            panel.appendChild(element);
+        }
+    };
+
+    const moveInputGroup = (panel, inputElement) => {
+        if(inputElement){
+            moveToPanel(panel, inputElement.closest(".input-group"));
+        }
+    };
+
+    moveToPanel(basicPanel, songSpotifyMount);
+    moveInputGroup(basicPanel, spotifyUrlInput);
+    moveInputGroup(basicPanel, coverInput);
+    moveInputGroup(basicPanel, titleInput);
+    moveInputGroup(basicPanel, artistInput);
+
+    moveInputGroup(wordsPanel, keywordsInput);
+    moveInputGroup(wordsPanel, descInput);
+    moveInputGroup(wordsPanel, isPublicInput);
+
+    moveInputGroup(reviewPanel, darknessInput);
+    moveInputGroup(reviewPanel, intenseInput);
+    moveInputGroup(reviewPanel, complexInput);
+    moveInputGroup(reviewPanel, hopeInput);
+    moveInputGroup(reviewPanel, worldInput);
+
+    reviewPanel.classList.add("song-meter-grid");
+
+    songEditorTabs.querySelectorAll(".song-editor-tab").forEach((button) => {
+        button.addEventListener("click", () => {
+            showSongTab(button.dataset.songTab || "basic");
+        });
+    });
+
+    showSongTab("basic");
 }
 
 function updateListStickySummary(){
@@ -4262,6 +4435,8 @@ if(listEditorTabs){
         showListTab(button.dataset.listTab || "info");
     });
 }
+
+setupSongEditorTabs();
 
 if(openAddedListBtn){
     openAddedListBtn.addEventListener("click", () => {
