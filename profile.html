@@ -4145,9 +4145,66 @@ function editAlbum(albumId){
     location.href = `editor.html?id=${encodeURIComponent(albumId)}`;
 }
 
+function getAlbumForAction(albumId){
+    return (
+        profileAlbums.find(album => album.id === albumId) ||
+        likedAlbums.find(album => album.id === albumId) ||
+        null
+    );
+}
+
+function getAlbumShareUrl(albumId){
+    const url = new URL("detail.html", location.href);
+    url.searchParams.set("id", albumId);
+    return url.href;
+}
+
+function getAlbumShareText(albumId){
+    const album = getAlbumForAction(albumId) || {};
+    const title = album.title || "Album Collectionの投稿";
+    const artist = album.artist ? ` / ${album.artist}` : "";
+    return `${title}${artist}`;
+}
+
+async function shareAlbum(albumId){
+    if(!albumId){
+        return;
+    }
+
+    closePostMoreMenus();
+
+    const shareUrl = getAlbumShareUrl(albumId);
+    const shareText = getAlbumShareText(albumId);
+
+    if(navigator.share){
+        try{
+            await navigator.share({
+                title: shareText,
+                text: shareText,
+                url: shareUrl
+            });
+            return;
+        }catch(error){
+            if(error?.name === "AbortError"){
+                return;
+            }
+            console.warn("共有メニューを開けませんでした", error);
+        }
+    }
+
+    try{
+        await navigator.clipboard.writeText(shareUrl);
+        alert("リンクをコピーしました");
+    }catch(error){
+        console.warn("リンクコピーに失敗しました", error);
+        prompt("このリンクをコピーしてください", shareUrl);
+    }
+}
+
 window.toggleLike = toggleLike;
 window.deleteAlbum = deleteAlbum;
 window.editAlbum = editAlbum;
+window.shareAlbum = shareAlbum;
 
 function closePostMoreMenus(){
     document.querySelectorAll(".post-more-menu.open").forEach((menu) => {
@@ -4504,19 +4561,27 @@ function albumCardHTML(album, options = {}){
         ? `<span class="private-badge">非公開</span>`
         : "";
 
-    const ownerActions = showOwnerActions
-        ? `
-            <div class="post-more-wrap">
+    const postActions = `
+        <div class="post-more-wrap">
+            <button
+                class="post-more-btn"
+                type="button"
+                title="その他"
+                aria-label="その他"
+                onclick="event.stopPropagation(); togglePostMoreMenu('${escapeHTML(albumId)}')">
+                ⋯
+            </button>
+
+            <div class="post-more-menu" data-post-menu="${escapeHTML(albumId)}" onclick="event.stopPropagation();">
                 <button
-                    class="post-more-btn"
+                    class="post-menu-item"
                     type="button"
-                    title="その他"
-                    aria-label="その他"
-                    onclick="event.stopPropagation(); togglePostMoreMenu('${escapeHTML(albumId)}')">
-                    ⋯
+                    onclick="event.stopPropagation(); shareAlbum('${escapeHTML(albumId)}')">
+                    <span class="post-menu-icon" aria-hidden="true">↗</span>
+                    <span>共有</span>
                 </button>
 
-                <div class="post-more-menu" data-post-menu="${escapeHTML(albumId)}" onclick="event.stopPropagation();">
+                ${showOwnerActions ? `
                     <button
                         class="post-menu-item"
                         type="button"
@@ -4532,16 +4597,16 @@ function albumCardHTML(album, options = {}){
                         <span class="post-menu-icon" aria-hidden="true">⌫</span>
                         <span>削除</span>
                     </button>
-                </div>
+                ` : ""}
             </div>
-        `
-        : "";
+        </div>
+    `;
 
     return `
 <div class="album-card"
      onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
 
-    ${ownerActions}
+    ${postActions}
 
     <div class="card-top">
 
@@ -4626,7 +4691,6 @@ function albumCardHTML(album, options = {}){
 </div>
     `;
 }
-
 
 document.addEventListener("click", (event) => {
     const keywordButton = event.target.closest(".keyword-tag");
@@ -5421,6 +5485,28 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 </script>
+
+
+<style>
+/* ============================================================
+   FINAL FIX: profile 三点メニューを全投稿/いいね投稿に表示
+   - 共有は全投稿で表示
+   - 自分の投稿だけ編集/削除も表示
+============================================================ */
+.post-more-menu{
+    width:148px !important;
+}
+
+.post-menu-item{
+    min-height:39px !important;
+}
+
+@media(max-width:900px){
+    .post-more-menu{
+        width:138px !important;
+    }
+}
+</style>
 
 </body>
 </html>
