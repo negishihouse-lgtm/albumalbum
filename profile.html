@@ -410,6 +410,40 @@ body{
     background:#9fcdd9;
 }
 
+
+
+/* ===== 投稿/リスト/カレンダー タブの改行防止 ===== */
+.profile-content-tabs{
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    scrollbar-width:none !important;
+    -webkit-overflow-scrolling:touch !important;
+}
+
+.profile-content-tabs::-webkit-scrollbar{
+    display:none !important;
+}
+
+.profile-content-tab{
+    flex:0 0 auto !important;
+    white-space:nowrap !important;
+    min-width:max-content !important;
+}
+
+@media(max-width:900px){
+    .profile-content-tabs{
+        gap:4px !important;
+        margin-bottom:18px !important;
+    }
+
+    .profile-content-tab{
+        margin-right:12px !important;
+        padding:11px 2px !important;
+        font-size:14px !important;
+    }
+}
+
 /* ===== 投稿カード ===== */
 .album-grid{
     display:grid;
@@ -818,6 +852,14 @@ body{
     cursor:pointer;
     font-size:12px;
     font-weight:800;
+}
+
+.list-edit-btn{
+    background:#555;
+}
+
+.list-edit-btn:hover{
+    background:#666;
 }
 
 .list-delete-btn{
@@ -2452,6 +2494,20 @@ body{
 }
 
 
+
+
+/* 空のカレンダー投稿パネルが余白を作らないようにする */
+.calendar-day-panel:empty{
+    display:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+}
+
+.calendar-day-panel:not(:empty){
+    display:block !important;
+}
+
 /* ============================================================
    CALENDAR UPDATE:
    - 年月タイトルをタップして月選択
@@ -2867,11 +2923,11 @@ body{
         </div>
 
         <div class="profile-content-tabs" id="profileContentTabs">
-            <button class="profile-content-tab active" type="button" data-tab="lists">
-                リスト
-            </button>
-            <button class="profile-content-tab" type="button" data-tab="posts">
+            <button class="profile-content-tab active" type="button" data-tab="posts">
                 投稿
+            </button>
+            <button class="profile-content-tab" type="button" data-tab="lists">
+                リスト
             </button>
             <button class="profile-content-tab" type="button" data-tab="calendar">
                 カレンダー
@@ -2994,7 +3050,7 @@ let profileLists = [];
 let likedAlbums = [];
 let allLikes = [];
 let allComments = [];
-let activeProfileTab = "lists";
+let activeProfileTab = "posts";
 
 let unsubscribeAlbums = null;
 let unsubscribeLists = null;
@@ -3868,6 +3924,27 @@ function listCoverCollageHTML(list){
     return `<div class="list-cover-collage">${cells.join("")}</div>`;
 }
 
+function editList(listId){
+    if(!currentUser){
+        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
+        return;
+    }
+
+    const target = profileLists.find(list => list.id === listId);
+
+    if(!target){
+        alert("編集対象のリストが見つかりません");
+        return;
+    }
+
+    if(target.userId !== currentUser.uid){
+        alert("自分のリスト以外は編集できません");
+        return;
+    }
+
+    location.href = `editor.html?listId=${encodeURIComponent(listId)}`;
+}
+
 async function deleteList(listId){
     if(!currentUser){
         location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
@@ -3930,6 +4007,13 @@ function listCardHTML(list, options = {}){
         ? `
             <div class="list-owner-actions">
                 <button
+                    class="list-edit-btn"
+                    type="button"
+                    onclick="event.stopPropagation(); editList('${escapeHTML(listId)}')">
+                    編集
+                </button>
+
+                <button
                     class="list-delete-btn"
                     type="button"
                     onclick="event.stopPropagation(); deleteList('${escapeHTML(listId)}')">
@@ -3965,6 +4049,7 @@ function listCardHTML(list, options = {}){
     `;
 }
 
+window.editList = editList;
 window.deleteList = deleteList;
 
 function albumCardHTML(album, options = {}){
