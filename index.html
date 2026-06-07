@@ -2350,6 +2350,165 @@ a{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   FINAL: index 投稿カード 三点メニュー
+   - コメント数の横には再生ボタンだけ残す
+   - 共有・編集・削除は右上の「…」に収納
+   - 自分の投稿：共有 / 編集 / 削除
+   - 他人の投稿：共有のみ
+============================================================ */
+.album-card{
+    position:relative;
+}
+
+.post-more-wrap{
+    position:absolute;
+    top:14px;
+    right:14px;
+    z-index:20;
+}
+
+.post-more-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:34px;
+    height:34px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(5,5,5,0.42);
+    color:#f3f7f8;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-family:inherit;
+    font-size:22px;
+    font-weight:900;
+    line-height:1;
+    cursor:pointer;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+}
+
+.post-more-btn:hover{
+    background:rgba(159,205,217,0.12);
+    border-color:rgba(159,205,217,0.34);
+    color:#ffffff;
+}
+
+.post-more-menu{
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    width:178px;
+    padding:7px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:#0b0d0e;
+    box-shadow:0 18px 48px rgba(0,0,0,0.48);
+    display:none;
+    z-index:30;
+}
+
+.post-more-menu.open{
+    display:block;
+}
+
+.post-more-action{
+    appearance:none;
+    -webkit-appearance:none;
+    width:100%;
+    border:none;
+    background:transparent;
+    color:#f2f5f7;
+    border-radius:11px;
+    padding:11px 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:850;
+    line-height:1;
+    text-align:left;
+    cursor:pointer;
+}
+
+.post-more-action:hover{
+    background:rgba(255,255,255,0.07);
+}
+
+.post-more-action.delete{
+    color:#ffb4b4;
+}
+
+.post-more-action.delete:hover{
+    background:rgba(255,80,80,0.12);
+    color:#ffd1d1;
+}
+
+.post-more-icon{
+    width:18px;
+    height:18px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 18px;
+    font-size:15px;
+    line-height:1;
+}
+
+.post-more-icon svg{
+    width:18px;
+    height:18px;
+    display:block;
+}
+
+@media(max-width:900px){
+    .post-more-wrap{
+        top:12px;
+        right:12px;
+    }
+
+    .post-more-btn{
+        width:32px;
+        height:32px;
+        font-size:21px;
+        background:rgba(5,5,5,0.36);
+    }
+
+    .post-more-menu{
+        width:166px;
+    }
+
+    .post-more-action{
+        padding:11px 11px;
+        font-size:13px;
+    }
+
+    .album-main{
+        padding-right:50px !important;
+    }
+}
+
+@media(max-width:430px){
+    .post-more-wrap{
+        top:10px;
+        right:10px;
+    }
+
+    .post-more-btn{
+        width:30px;
+        height:30px;
+    }
+
+    .album-main{
+        padding-right:42px !important;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -2813,6 +2972,55 @@ async function deleteAlbumPost(albumId){
 
 window.editAlbum = editAlbum;
 window.deleteAlbumPost = deleteAlbumPost;
+
+function closeAllPostMoreMenus(){
+    document.querySelectorAll("[data-post-more-menu].open").forEach((menu) => {
+        menu.classList.remove("open");
+    });
+
+    document.querySelectorAll("[data-post-more-button]").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+    });
+}
+
+function togglePostMoreMenu(albumId){
+    const menuList = Array.from(document.querySelectorAll("[data-post-more-menu]"));
+    const targetMenu = menuList.find(menu => menu.dataset.postMoreMenu === albumId);
+
+    if(!targetMenu){
+        return;
+    }
+
+    const isOpen = targetMenu.classList.contains("open");
+
+    closeAllPostMoreMenus();
+
+    if(!isOpen){
+        targetMenu.classList.add("open");
+
+        const button = document.querySelector(`[data-post-more-button="${CSS.escape(albumId)}"]`);
+        if(button){
+            button.setAttribute("aria-expanded", "true");
+        }
+    }
+}
+
+document.addEventListener("click", (event) => {
+    if(event.target.closest(".post-more-wrap")){
+        return;
+    }
+
+    closeAllPostMoreMenus();
+});
+
+document.addEventListener("keydown", (event) => {
+    if(event.key === "Escape"){
+        closeAllPostMoreMenus();
+    }
+});
+
+window.togglePostMoreMenu = togglePostMoreMenu;
+window.closeAllPostMoreMenus = closeAllPostMoreMenus;
 
 function getListItemById(listId){
     return allLists.find(item => item.id === listId) || null;
@@ -4140,26 +4348,77 @@ document.addEventListener("click", (event) => {
 function albumCardHTML(item, posterProfile){
     const a = item.data;
     const albumId = item.id;
-    const ownerActions = canManageAlbum(a)
+    const canManage = canManageAlbum(a);
+
+    const moreMenuActions = canManage
         ? `
-            <div class="owner-actions">
-                <button
-                    type="button"
-                    class="owner-action-btn edit"
-                    onclick="event.stopPropagation(); editAlbum('${escapeHTML(albumId)}')"
-                >編集</button>
-                <button
-                    type="button"
-                    class="owner-action-btn delete"
-                    onclick="event.stopPropagation(); deleteAlbumPost('${escapeHTML(albumId)}')"
-                >削除</button>
-            </div>
+            <button
+                type="button"
+                class="post-more-action"
+                onclick="event.stopPropagation(); closeAllPostMoreMenus(); openShareMenu('${escapeHTML(albumId)}')"
+            >
+                <span class="post-more-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.5 6.5L12 3l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 12.5v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                共有
+            </button>
+            <button
+                type="button"
+                class="post-more-action"
+                onclick="event.stopPropagation(); closeAllPostMoreMenus(); editAlbum('${escapeHTML(albumId)}')"
+            >
+                <span class="post-more-icon" aria-hidden="true">✎</span>
+                編集
+            </button>
+            <button
+                type="button"
+                class="post-more-action delete"
+                onclick="event.stopPropagation(); closeAllPostMoreMenus(); deleteAlbumPost('${escapeHTML(albumId)}')"
+            >
+                <span class="post-more-icon" aria-hidden="true">⌫</span>
+                削除
+            </button>
         `
-        : "";
+        : `
+            <button
+                type="button"
+                class="post-more-action"
+                onclick="event.stopPropagation(); closeAllPostMoreMenus(); openShareMenu('${escapeHTML(albumId)}')"
+            >
+                <span class="post-more-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.5 6.5L12 3l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 12.5v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                共有
+            </button>
+        `;
 
     return `
 <div class="album-card"
      onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
+
+    <div class="post-more-wrap" onclick="event.stopPropagation();">
+        <button
+            type="button"
+            class="post-more-btn"
+            data-post-more-button="${escapeHTML(albumId)}"
+            onclick="event.stopPropagation(); togglePostMoreMenu('${escapeHTML(albumId)}')"
+            aria-label="投稿メニューを開く"
+            aria-expanded="false"
+            title="メニュー"
+        >⋯</button>
+
+        <div class="post-more-menu" data-post-more-menu="${escapeHTML(albumId)}">
+            ${moreMenuActions}
+        </div>
+    </div>
 
     <div class="album-main">
         <img class="cover" src="${escapeHTML(a.cover || "")}" alt="">
@@ -4209,27 +4468,7 @@ function albumCardHTML(item, posterProfile){
                         <span class="spotify-icon" aria-hidden="true"></span>
                     </button>
                 </div>
-
-                <div class="share-area">
-                    <button
-                        class="share-btn share-pill-btn"
-                        type="button"
-                        onclick="event.stopPropagation(); openShareMenu('${escapeHTML(albumId)}')"
-                        aria-label="共有"
-                        title="共有"
-                    >
-                        <span class="share-pill-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M8.5 6.5L12 3l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M5 12.5v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </span>
-                        <span class="share-pill-label">共有</span>
-                    </button>
-                </div>
             </div>
-            ${ownerActions}
         </div>
     </div>
 
@@ -4250,7 +4489,6 @@ function albumCardHTML(item, posterProfile){
     </div>
 </div>`;
 }
-
 
 function listCoverGridHTML(coverImages){
     const covers = Array.isArray(coverImages)
