@@ -4520,6 +4520,63 @@ body{
     font-size:38px !important;
 }
 }
+
+
+/* ============================================================
+   PATCH 02: スマホカード内メーター横幅だけ微調整
+   - 下端合わせ・発信アイコン修正済みの現行版を維持
+   - メーター左右ラベルの幅と余白を少し詰めて、線を長く見せる
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card .story-analysis{
+        padding:8px 6px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter{
+        grid-template-columns:38px minmax(0,1fr) 36px !important;
+        gap:5px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label{
+        font-size:10px !important;
+        letter-spacing:-0.045em !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list{
+        gap:8px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic::before{
+        left:3px !important;
+        right:3px !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .story-analysis{
+        padding:7px 5px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter{
+        grid-template-columns:38px minmax(0,1fr) 36px !important;
+        gap:4px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label{
+        font-size:9.5px !important;
+        letter-spacing:-0.055em !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list{
+        gap:8px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic::before{
+        left:2px !important;
+        right:2px !important;
+    }
+}
+
 </style>
 </head>
 
