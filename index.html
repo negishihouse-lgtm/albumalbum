@@ -8623,6 +8623,187 @@ document.addEventListener("DOMContentLoaded", () => {
         height:10.5px !important;
     }
 }
+
+
+/* ============================================================
+   2026-06-10 追加修正 PATCH 05
+   - スマホ投稿カード：5本目「個人 / 世界」を最優先で必ず表示
+   - 直前のPATCH 03で入った overflow:hidden を上書き
+   - 下端合わせ・発信アイコンは維持
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        align-items:start !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        min-height:124px !important;
+        height:124px !important;
+        max-height:124px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:flex-start !important;
+        gap:4px !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 32px !important;
+        height:32px !important;
+        max-height:32px !important;
+        margin:0 !important;
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .story-title,
+    .story-layout-card .story-title{
+        font-size:17px !important;
+        line-height:1.02 !important;
+        margin:0 0 1px !important;
+        -webkit-line-clamp:1 !important;
+    }
+
+    .album-card.story-layout-card .story-artist,
+    .story-layout-card .story-artist{
+        font-size:10.2px !important;
+        line-height:1.02 !important;
+        margin:0 !important;
+        -webkit-line-clamp:1 !important;
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:0 0 82px !important;
+        height:82px !important;
+        min-height:82px !important;
+        max-height:82px !important;
+        padding:0 !important;
+        margin:0 !important;
+        background:transparent !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:82px !important;
+        min-height:82px !important;
+        max-height:82px !important;
+        padding:0 !important;
+        margin:0 !important;
+        border-bottom:none !important;
+        display:grid !important;
+        grid-template-rows:repeat(5, 14px) !important;
+        row-gap:3px !important;
+        align-content:start !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:14px !important;
+        min-height:14px !important;
+        max-height:14px !important;
+        margin:0 !important;
+        grid-template-columns:36px minmax(0,1fr) 36px !important;
+        gap:5px !important;
+        align-items:center !important;
+        line-height:1 !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        font-size:9.8px !important;
+        line-height:1 !important;
+        letter-spacing:-0.06em !important;
+        white-space:nowrap !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:14px !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before{
+        left:2px !important;
+        right:2px !important;
+        height:1.5px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:10.5px !important;
+        height:10.5px !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        min-height:116px !important;
+        height:116px !important;
+        max-height:116px !important;
+        gap:3px !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex-basis:29px !important;
+        height:29px !important;
+        max-height:29px !important;
+    }
+
+    .album-card.story-layout-card .story-title,
+    .story-layout-card .story-title{
+        font-size:16.2px !important;
+        line-height:1.01 !important;
+    }
+
+    .album-card.story-layout-card .story-artist,
+    .story-layout-card .story-artist{
+        font-size:9.8px !important;
+        line-height:1.01 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis,
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:84px !important;
+        min-height:84px !important;
+        max-height:84px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        grid-template-rows:repeat(5, 13px) !important;
+        row-gap:3px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:13px !important;
+        min-height:13px !important;
+        max-height:13px !important;
+        grid-template-columns:34px minmax(0,1fr) 34px !important;
+        gap:4px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        font-size:9.2px !important;
+        letter-spacing:-0.075em !important;
+    }
+}
 </style>
 
 </body>
