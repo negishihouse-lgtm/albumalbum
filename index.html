@@ -5256,6 +5256,184 @@ body{
     }
 }
 
+
+/* ============================================================
+   PATCH 14: violet accent + thinner reaction / meter lines
+   - ハート・コメントの線を細く見せる
+   - メーター線を細く
+   - メーター/キーワード/なし表示を紫系に統一
+============================================================ */
+:root{
+    --ac-violet:#b06cff;
+    --ac-violet-2:#d5a8ff;
+    --ac-violet-soft:rgba(176,108,255,0.72);
+    --ac-violet-faint:rgba(176,108,255,0.24);
+    --ac-violet-line:rgba(176,108,255,0.66);
+    --ac-violet-glow:rgba(176,108,255,0.30);
+    --ac-violet-chip-bg:rgba(176,108,255,0.070);
+    --ac-violet-chip-border:rgba(176,108,255,0.34);
+    --ac-reaction-thin:rgba(232,238,244,0.72);
+}
+
+/* ハートを細く・淡く */
+.story-layout-card .story-reaction-row .like-btn,
+.album-card.story-layout-card .story-reaction-row .like-btn,
+.like-btn{
+    font-family:"SF Pro Display","Helvetica Neue",Arial,sans-serif !important;
+    font-weight:200 !important;
+    color:var(--ac-reaction-thin) !important;
+    text-shadow:none !important;
+    -webkit-text-stroke:0 !important;
+}
+
+.story-layout-card .story-reaction-row .like-btn.liked,
+.album-card.story-layout-card .story-reaction-row .like-btn.liked,
+.like-btn.liked{
+    color:var(--ac-violet-2) !important;
+    text-shadow:0 0 8px var(--ac-violet-glow) !important;
+}
+
+/* コメントアイコンの線を細く */
+.comment-icon,
+.comment-icon::after{
+    border-width:1.15px !important;
+}
+
+.comment-icon-clean svg,
+.story-layout-card .story-reaction-row .comment-icon-clean svg,
+.album-card.story-layout-card .story-reaction-row .comment-icon-clean svg,
+.list-reaction-icon svg,
+.post-more-icon svg,
+.share-pill-icon svg{
+    stroke-width:1.35 !important;
+}
+
+.story-layout-card .story-reaction-row .comment-icon-wrap,
+.album-card.story-layout-card .story-reaction-row .comment-icon-wrap,
+.story-layout-card .story-reaction-row .comment-icon-clean,
+.album-card.story-layout-card .story-reaction-row .comment-icon-clean,
+.story-layout-card .story-reaction-row .comment-icon-clean svg,
+.album-card.story-layout-card .story-reaction-row .comment-icon-clean svg{
+    color:var(--ac-reaction-thin) !important;
+}
+
+/* メーター線を細く、紫系に統一 */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    height:1px !important;
+    background:linear-gradient(
+        90deg,
+        rgba(176,108,255,0.30) 0%,
+        rgba(176,108,255,0.74) 52%,
+        rgba(213,168,255,0.92) 100%
+    ) !important;
+    box-shadow:0 0 7px rgba(176,108,255,0.18) !important;
+}
+
+.connector,
+.connector.active,
+.connector.active.level-1,
+.connector.active.level-2,
+.connector.active.level-3,
+.connector.active.level-4{
+    height:1px !important;
+    background:var(--ac-violet-line) !important;
+    box-shadow:0 0 6px rgba(176,108,255,0.16) !important;
+}
+
+.dot.active,
+.dot.active.level-1,
+.dot.active.level-2,
+.dot.active.level-3,
+.dot.active.level-4,
+.dot.active.level-5{
+    background:var(--ac-violet) !important;
+    border-color:var(--ac-violet) !important;
+}
+
+.dot.active{
+    box-shadow:0 0 10px rgba(176,108,255,0.26) !important;
+}
+
+.meter-graphic .dot.selected,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected.level-1,
+.story-analysis .meter-graphic .dot.selected.level-2,
+.story-analysis .meter-graphic .dot.selected.level-3,
+.story-analysis .meter-graphic .dot.selected.level-4,
+.story-analysis .meter-graphic .dot.selected.level-5{
+    background:var(--ac-violet) !important;
+    border-color:#ead6ff !important;
+    box-shadow:0 0 8px rgba(176,108,255,0.44),
+        0 0 16px rgba(176,108,255,0.20) !important;
+}
+
+.story-analysis .meter-graphic .dot,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:9px !important;
+    height:9px !important;
+}
+
+/* キーワードチップを紫系に統一。なし表示も含む */
+.keyword-tag,
+.keyword-text,
+.keyword-empty,
+.story-keyword-box .keyword-tag,
+.story-keyword-box .keyword-empty,
+.album-card.story-layout-card .story-keyword-box .keyword-tag,
+.album-card.story-layout-card .story-keyword-box .keyword-empty{
+    color:#dcbcff !important;
+    border-color:var(--ac-violet-chip-border) !important;
+    background:var(--ac-violet-chip-bg) !important;
+    text-shadow:0 0 8px rgba(176,108,255,0.22) !important;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.018),
+        0 0 10px rgba(176,108,255,0.055) !important;
+}
+
+.keyword-empty,
+.story-keyword-box .keyword-empty,
+.album-card.story-layout-card .story-keyword-box .keyword-empty,
+.keyword-tag.empty,
+.keyword-tag.none,
+.story-keyword-box .keyword-tag.empty,
+.story-keyword-box .keyword-tag.none{
+    color:rgba(220,188,255,0.68) !important;
+    border-color:rgba(176,108,255,0.24) !important;
+    background:rgba(176,108,255,0.045) !important;
+    text-shadow:none !important;
+}
+
+.keyword-title,
+.story-keyword-box .keyword-title{
+    color:#d5a8ff !important;
+}
+
+/* 発信アイコンなど既存アクセントも少しだけ紫に寄せる */
+.receive-mini-icon,
+.feed-tab.active,
+.mobile-tabbar a.active{
+    color:#c58cff !important;
+}
+
+.mobile-feed-tabs::after,
+.feed-tab.active::after{
+    background:linear-gradient(90deg, #9b5cff, #d5a8ff) !important;
+    box-shadow:0 0 14px rgba(176,108,255,0.36) !important;
+}
+
 </style>
 </head>
 
