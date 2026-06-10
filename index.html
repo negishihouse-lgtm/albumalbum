@@ -4659,6 +4659,7 @@ function albumCardHTML(item, posterProfile){
     const a = item.data;
     const albumId = item.id;
     const canManage = canManageAlbum(a);
+    const postDate = formatPostDate(a.createdAt || a.updatedAt);
 
     const moreMenuActions = canManage
         ? `
@@ -4711,7 +4712,7 @@ function albumCardHTML(item, posterProfile){
         `;
 
     return `
-<div class="album-card"
+<div class="album-card story-layout-card"
      onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
 
     <div class="post-more-wrap" onclick="event.stopPropagation();">
@@ -4730,71 +4731,99 @@ function albumCardHTML(item, posterProfile){
         </div>
     </div>
 
-    <div class="album-main">
-        <img class="cover" src="${escapeHTML(a.cover || "")}" alt="">
-        <div class="album-text">
-            <div class="title">${escapeHTML(a.title || "")}</div>
-            <div class="artist">${escapeHTML(a.artist || "")}</div>
-            <div class="meta">${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(" / ") || a.year || "")}</div>
-            <div class="creator creator-highlight">
-                <a href="profile.html?uid=${escapeHTML(a.userId || "")}" class="creator-link" onclick="event.stopPropagation();">
-                    ${creatorAvatarHTML(posterProfile)}
-                    <span class="creator-text">
-                        <span class="creator-prefix">投稿者：</span><span class="creator-name">${escapeHTML(posterProfile?.name || "匿名ユーザー")}</span>
-                    </span>
-                </a>
+    <div class="album-card-header story-card-header">
+        <a href="profile.html?uid=${escapeHTML(a.userId || '')}" class="creator-link story-creator-link" onclick="event.stopPropagation();">
+            ${creatorAvatarHTML(posterProfile)}
+            <span class="story-creator-meta">
+                <span class="story-creator-line1">
+                    <span class="story-creator-name">${escapeHTML(posterProfile?.name || '匿名ユーザー')}</span>
+                    <span class="story-creator-from">から受信</span>
+                </span>
+                <span class="story-creator-line2">${escapeHTML(postDate || '')}</span>
+            </span>
+        </a>
+    </div>
+
+    <div class="album-content-row">
+        <img class="cover story-cover" src="${escapeHTML(a.cover || '')}" alt="">
+
+        <div class="album-right-stack">
+            <div class="album-heading-block">
+                <div class="title story-title">${escapeHTML(a.title || '')}</div>
+                <div class="artist story-artist">${escapeHTML(a.artist || '')}</div>
+                <div class="meta story-meta">${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(' / ') || a.year || '')}</div>
             </div>
-            <div class="reaction-row">
-                <div class="like-area" data-like-area data-album-id="${escapeHTML(albumId)}">
-                    <button class="like-btn" onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">♡</button>
-                    <span class="like-count">0</span>
-                </div>
 
-                <button
-                    class="comment-count comment-icon-wrap"
-                    type="button"
-                    data-comment-count
-                    data-album-id="${escapeHTML(albumId)}"
-                    onclick="event.stopPropagation(); location.href='detail.html?id=${escapeHTML(albumId)}#comments';"
-                    aria-label="コメントを見る"
-                    title="コメントを見る"
-                >
-                    <span class="comment-icon-clean" aria-hidden="true">
-                        <svg viewBox="-2 -2 28 28" fill="none" aria-hidden="true">
-                            <path d="M7.2 18.2c1.3.7 2.9 1.1 4.8 1.1 4.6 0 8-2.7 8-6.5s-3.4-6.5-8-6.5-8 2.7-8 6.5c0 1.6.6 3 1.7 4.1l-.7 3.1 2.2-1.8Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-                    <span class="comment-count-number">0</span>
-                </button>
-
-                <div class="spotify-area">
-                    <button
-                        class="icon-action-btn spotify-btn"
-                        type="button"
-                        onclick="event.stopPropagation(); openListenMenu('${escapeHTML(albumId)}')"
-                        aria-label="聴く"
-                        title="聴く"
-                    >
-                        <span class="spotify-icon" aria-hidden="true"></span>
-                    </button>
+            <div class="album-analysis story-analysis">
+                <div class="meter-list">
+                    ${meter('暗い', '明るい', a.darkness)}
+                    ${meter('静か', '激しい', a.intense)}
+                    ${meter('シンプル', '複雑', a.complex)}
+                    ${meter('絶望', '希望', a.hope)}
+                    ${meter('個人', '世界', a.world)}
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="mobile-post-date">${formatPostDate(a.createdAt || a.updatedAt)}</div>
+    <div class="keyword-box story-keyword-box">
+        <div class="keyword-title">キーワード</div>
+        <div class="keyword-tags">${renderKeywordTags(a.keywords)}</div>
+    </div>
 
-    <div class="album-analysis">
-        <div class="meter-list">
-            ${meter("暗い", "明るい", a.darkness)}
-            ${meter("静か", "激しい", a.intense)}
-            ${meter("シンプル", "複雑", a.complex)}
-            ${meter("絶望", "希望", a.hope)}
-            ${meter("個人", "世界", a.world)}
+    <div class="reaction-row story-reaction-row">
+        <div class="reaction-left-group">
+            <div class="like-area" data-like-area data-album-id="${escapeHTML(albumId)}">
+                <button class="like-btn" onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">♡</button>
+                <span class="like-count">0</span>
+            </div>
+
+            <button
+                class="comment-count comment-icon-wrap"
+                type="button"
+                data-comment-count
+                data-album-id="${escapeHTML(albumId)}"
+                onclick="event.stopPropagation(); location.href='detail.html?id=${escapeHTML(albumId)}#comments';"
+                aria-label="コメントを見る"
+                title="コメントを見る"
+            >
+                <span class="comment-icon-clean" aria-hidden="true">
+                    <svg viewBox="-2 -2 28 28" fill="none" aria-hidden="true">
+                        <path d="M7.2 18.2c1.3.7 2.9 1.1 4.8 1.1 4.6 0 8-2.7 8-6.5s-3.4-6.5-8-6.5-8 2.7-8 6.5c0 1.6.6 3 1.7 4.1l-.7 3.1 2.2-1.8Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="comment-count-number">0</span>
+            </button>
         </div>
-        <div class="keyword-box">
-            <div class="keyword-title">キーワード</div>
-            <div class="keyword-tags">${renderKeywordTags(a.keywords)}</div>
+
+        <div class="reaction-center-group">
+            <div class="spotify-area">
+                <button
+                    class="icon-action-btn spotify-btn story-play-btn"
+                    type="button"
+                    onclick="event.stopPropagation(); openListenMenu('${escapeHTML(albumId)}')"
+                    aria-label="聴く"
+                    title="聴く"
+                >
+                    <span class="spotify-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="reaction-right-group">
+            <button
+                type="button"
+                class="story-share-btn"
+                onclick="event.stopPropagation(); openShareMenu('${escapeHTML(albumId)}')"
+                aria-label="共有"
+                title="共有"
+            >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.5 6.5L12 3l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5 12.5v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
         </div>
     </div>
 </div>`;
@@ -7477,6 +7506,444 @@ body::before{
 
     .album-analysis{
         background:transparent !important;
+    }
+}
+</style>
+
+
+
+<style>
+/* ============================================================
+   FINAL UPDATE 2: 落ち着いた配色 + 参考画像寄せレイアウト
+   - 黒 + Pale Ice 系を基調に調整
+   - カード内の配置を参考画像左側に近づける
+============================================================ */
+:root{
+    --space-bg:#03070d;
+    --space-panel:rgba(5,9,14,0.52);
+    --space-panel-strong:rgba(5,9,14,0.72);
+    --space-border:rgba(159,205,217,0.20);
+    --space-border-soft:rgba(159,205,217,0.12);
+    --space-purple:#9fcdd9;
+    --space-purple-2:#d7edf0;
+    --space-blue:#9fcdd9;
+    --space-text:#f7fbff;
+    --space-muted:#aeb8c8;
+}
+
+body::before{
+    background-image:
+        linear-gradient(180deg, rgba(3,7,13,0.50) 0%, rgba(3,7,13,0.62) 40%, rgba(3,7,13,0.92) 100%),
+        url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1600&q=85"),
+        radial-gradient(circle at 74% 18%, rgba(159,205,217,0.10) 0 12%, transparent 34%),
+        radial-gradient(circle at 22% 72%, rgba(215,237,240,0.08) 0 8%, transparent 32%),
+        radial-gradient(circle, rgba(255,255,255,0.16) 0 1px, transparent 1.6px) !important;
+    background-size:
+        cover,
+        760px auto,
+        1200px 1200px,
+        980px 980px,
+        170px 170px !important;
+    opacity:0.92;
+}
+
+body::after{
+    background:
+        radial-gradient(circle at 50% 0%, rgba(159,205,217,0.08), transparent 34%),
+        linear-gradient(90deg, rgba(0,0,0,0.34), transparent 18%, transparent 82%, rgba(0,0,0,0.38)) !important;
+}
+
+.mobile-feed-tabs::after{
+    background:linear-gradient(90deg, #9fcdd9, #d7edf0) !important;
+    box-shadow:0 0 14px rgba(159,205,217,0.34) !important;
+}
+
+.story-layout-card{
+    display:block !important;
+    padding:18px 18px 14px !important;
+    border-radius:24px !important;
+    background:linear-gradient(145deg, rgba(7,12,18,0.46), rgba(4,7,12,0.34)) !important;
+    border:1px solid rgba(159,205,217,0.22) !important;
+}
+
+.story-card-header{
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    margin-bottom:16px;
+    padding-right:54px;
+}
+
+.story-creator-link{
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:10px !important;
+}
+
+.story-creator-link .creator-avatar,
+.story-creator-link .creator-avatar-fallback{
+    width:42px !important;
+    height:42px !important;
+    flex:0 0 42px !important;
+    border-radius:50% !important;
+}
+
+.story-creator-meta{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+}
+
+.story-creator-line1{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    min-width:0;
+    line-height:1.2;
+}
+
+.story-creator-name{
+    font-size:16px;
+    font-weight:800;
+    color:#ffffff;
+}
+
+.story-creator-from{
+    font-size:13px;
+    color:#b6c0cf;
+}
+
+.story-creator-line2{
+    margin-top:3px;
+    font-size:12px;
+    color:#9fcdd9;
+}
+
+.album-content-row{
+    display:grid;
+    grid-template-columns:170px minmax(0, 1fr);
+    gap:18px;
+    align-items:start;
+}
+
+.story-cover{
+    width:170px !important;
+    height:170px !important;
+    border-radius:16px !important;
+    margin:0 !important;
+    display:block !important;
+    border:1px solid rgba(255,255,255,0.12) !important;
+}
+
+.album-right-stack{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.album-heading-block{
+    min-width:0;
+}
+
+.story-title{
+    font-size:24px !important;
+    line-height:1.08 !important;
+    margin-bottom:6px !important;
+}
+
+.story-artist{
+    font-size:18px !important;
+    color:#ffffff !important;
+    opacity:0.92;
+    margin-bottom:8px !important;
+}
+
+.story-meta{
+    font-size:11px !important;
+    color:#9caab6 !important;
+    margin-bottom:0 !important;
+}
+
+.story-analysis{
+    background:rgba(255,255,255,0.03) !important;
+    border:1px solid rgba(159,205,217,0.10) !important;
+    border-radius:16px !important;
+    padding:12px 14px !important;
+}
+
+.story-analysis .meter-list{
+    padding-bottom:0 !important;
+    border-bottom:none !important;
+    gap:10px !important;
+}
+
+.story-analysis .meter{
+    margin:0 !important;
+}
+
+.story-analysis .meter-label{
+    font-size:12px !important;
+    color:#eef6f7 !important;
+}
+
+.story-keyword-box{
+    margin-top:14px !important;
+    display:flex !important;
+    align-items:center !important;
+    gap:12px !important;
+    grid-template-columns:none !important;
+    padding:0 !important;
+    border:none !important;
+    background:transparent !important;
+}
+
+.story-keyword-box .keyword-title{
+    flex:0 0 auto;
+    font-size:14px !important;
+    color:#9fcdd9 !important;
+    font-weight:900 !important;
+}
+
+.story-keyword-box .keyword-tags{
+    flex:1 1 auto;
+    display:flex !important;
+    gap:8px !important;
+    flex-wrap:wrap !important;
+    max-height:none !important;
+    overflow:visible !important;
+}
+
+.story-keyword-box .keyword-tag{
+    background:rgba(255,255,255,0.04) !important;
+    border:1px solid rgba(159,205,217,0.16) !important;
+    color:#e6eef2 !important;
+    padding:8px 12px !important;
+    font-size:12px !important;
+}
+
+.story-reaction-row{
+    margin-top:14px !important;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    display:grid !important;
+    grid-template-columns:1fr auto 1fr !important;
+    align-items:center !important;
+    gap:10px !important;
+}
+
+.reaction-left-group,
+.reaction-center-group,
+.reaction-right-group{
+    display:flex;
+    align-items:center;
+}
+
+.reaction-left-group{
+    justify-content:flex-start;
+    gap:16px;
+}
+
+.reaction-center-group{
+    justify-content:center;
+}
+
+.reaction-right-group{
+    justify-content:flex-end;
+}
+
+.story-play-btn{
+    width:46px !important;
+    height:46px !important;
+    min-width:46px !important;
+    min-height:46px !important;
+    background:rgba(255,255,255,0.03) !important;
+    border:1px solid rgba(159,205,217,0.28) !important;
+    box-shadow:0 0 0 1px rgba(159,205,217,0.08), 0 0 22px rgba(159,205,217,0.10) !important;
+}
+
+.story-share-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:34px;
+    height:34px;
+    border-radius:999px;
+    border:1px solid rgba(159,205,217,0.18);
+    background:rgba(255,255,255,0.03);
+    color:#e8f2f5;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+.story-share-btn svg{
+    width:18px;
+    height:18px;
+    display:block;
+}
+
+.story-share-btn:hover{
+    background:rgba(159,205,217,0.10);
+}
+
+.story-reaction-row .like-btn{
+    font-size:22px !important;
+}
+
+.story-reaction-row .like-count,
+.story-reaction-row .comment-count-number{
+    font-size:14px !important;
+}
+
+.story-reaction-row .comment-icon-wrap{
+    color:#d8e0e5 !important;
+}
+
+.post-more-btn{
+    background:rgba(5,10,16,0.56) !important;
+}
+
+@media(max-width:900px){
+    body::before{
+        background-size:
+            cover,
+            620px auto,
+            900px 900px,
+            760px 760px,
+            150px 150px !important;
+    }
+
+    .story-layout-card{
+        padding:14px 14px 12px !important;
+        border-radius:20px !important;
+    }
+
+    .story-card-header{
+        margin-bottom:12px;
+        padding-right:44px;
+    }
+
+    .story-creator-link .creator-avatar,
+    .story-creator-link .creator-avatar-fallback{
+        width:38px !important;
+        height:38px !important;
+        flex-basis:38px !important;
+    }
+
+    .story-creator-name{
+        font-size:15px;
+    }
+
+    .story-creator-from,
+    .story-creator-line2{
+        font-size:12px;
+    }
+
+    .album-content-row{
+        grid-template-columns:112px minmax(0,1fr);
+        gap:12px;
+    }
+
+    .story-cover{
+        width:112px !important;
+        height:112px !important;
+        border-radius:14px !important;
+    }
+
+    .album-right-stack{
+        gap:10px;
+    }
+
+    .story-title{
+        font-size:18px !important;
+        margin-bottom:4px !important;
+    }
+
+    .story-artist{
+        font-size:14px !important;
+        margin-bottom:6px !important;
+    }
+
+    .story-analysis{
+        padding:10px 10px !important;
+        border-radius:14px !important;
+        background:rgba(255,255,255,0.02) !important;
+    }
+
+    .story-analysis .meter{
+        grid-template-columns:46px minmax(0,1fr) 46px !important;
+        gap:8px !important;
+    }
+
+    .story-analysis .meter-label{
+        font-size:10px !important;
+    }
+
+    .story-keyword-box{
+        margin-top:12px !important;
+        flex-direction:column !important;
+        align-items:flex-start !important;
+        gap:8px !important;
+    }
+
+    .story-keyword-box .keyword-tags{
+        flex-wrap:nowrap !important;
+        overflow-x:auto !important;
+        width:100%;
+        padding-bottom:2px;
+    }
+
+    .story-keyword-box .keyword-tag{
+        padding:7px 11px !important;
+        font-size:11px !important;
+    }
+
+    .story-reaction-row{
+        margin-top:12px !important;
+        padding-top:10px;
+        grid-template-columns:1fr auto auto !important;
+    }
+
+    .reaction-left-group{
+        gap:12px;
+    }
+
+    .story-play-btn{
+        width:40px !important;
+        height:40px !important;
+        min-width:40px !important;
+        min-height:40px !important;
+    }
+
+    .story-share-btn{
+        width:30px;
+        height:30px;
+    }
+}
+
+@media(max-width:430px){
+    .album-content-row{
+        grid-template-columns:100px minmax(0,1fr);
+        gap:10px;
+    }
+
+    .story-cover{
+        width:100px !important;
+        height:100px !important;
+    }
+
+    .story-title{
+        font-size:16px !important;
+    }
+
+    .story-artist{
+        font-size:13px !important;
+    }
+
+    .story-analysis .meter{
+        grid-template-columns:42px minmax(0,1fr) 42px !important;
+        gap:6px !important;
     }
 }
 </style>
