@@ -8490,5 +8490,160 @@ body::after{
 }
 </style>
 
+
+
+<style>
+/* ============================================================
+   FINAL FIX 5: ゴージャスな天の川背景へ
+   - 今の背景は簡素すぎるので、参考画像のような
+     "高級感のある銀河 / 星雲 / 星粒" に寄せる
+   - Pale Ice 基調は維持
+   - カードのレイアウトは現状維持
+============================================================ */
+@keyframes deluxeStarfield {
+    0% {
+        background-position:
+            center top,
+            center top,
+            50% 18%,
+            52% 52%,
+            0 0,
+            0 0,
+            0 0,
+            0 0;
+    }
+    50% {
+        background-position:
+            center top,
+            center top,
+            49% 20%,
+            53% 50%,
+            -18px 12px,
+            16px -14px,
+            -12px 10px,
+            18px -16px;
+    }
+    100% {
+        background-position:
+            center top,
+            center top,
+            48% 22%,
+            54% 48%,
+            -36px 24px,
+            32px -28px,
+            -24px 20px,
+            36px -32px;
+    }
+}
+
+html,
+body{
+    background:#020814 !important;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    pointer-events:none;
+    opacity:1 !important;
+    filter:saturate(0.88) brightness(0.92) contrast(1.06) !important;
+    background-image:
+        linear-gradient(180deg, rgba(2,8,20,0.26) 0%, rgba(2,8,20,0.38) 34%, rgba(2,8,20,0.76) 100%),
+        url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1800&q=85"),
+        radial-gradient(ellipse 120% 45% at 50% 18%, rgba(241,249,250,0.14) 0%, rgba(215,237,240,0.12) 12%, rgba(159,205,217,0.08) 28%, rgba(159,205,217,0.03) 48%, transparent 70%),
+        radial-gradient(ellipse 90% 62% at 52% 52%, rgba(159,205,217,0.09) 0%, rgba(120,165,185,0.05) 28%, transparent 68%),
+        radial-gradient(circle, rgba(255,255,255,0.96) 0 0.8px, transparent 1.25px),
+        radial-gradient(circle, rgba(215,237,240,0.78) 0 0.9px, transparent 1.45px),
+        radial-gradient(circle, rgba(159,205,217,0.46) 0 1.1px, transparent 1.8px),
+        radial-gradient(circle, rgba(255,255,255,0.16) 0 1.7px, transparent 2.7px) !important;
+    background-size:
+        cover,
+        cover,
+        cover,
+        cover,
+        110px 110px,
+        160px 160px,
+        230px 230px,
+        340px 340px !important;
+    background-repeat:
+        no-repeat,
+        no-repeat,
+        no-repeat,
+        no-repeat,
+        repeat,
+        repeat,
+        repeat,
+        repeat !important;
+    background-position:
+        center top,
+        center top,
+        50% 18%,
+        52% 52%,
+        0 0,
+        0 0,
+        0 0,
+        0 0 !important;
+    animation:deluxeStarfield 85s linear infinite !important;
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(112deg, transparent 18%, rgba(215,237,240,0.03) 40%, rgba(255,255,255,0.10) 50%, rgba(215,237,240,0.03) 60%, transparent 82%),
+        linear-gradient(90deg, rgba(0,0,0,0.20), transparent 16%, transparent 84%, rgba(0,0,0,0.22)) !important;
+}
+
+.mobile-feed-tabs,
+.mobile-tabbar{
+    background:rgba(2,8,20,0.54) !important;
+    backdrop-filter:blur(20px) saturate(1.12) !important;
+    -webkit-backdrop-filter:blur(20px) saturate(1.12) !important;
+}
+
+.mobile-feed-tabs::after,
+.feed-tab.active::after{
+    background:linear-gradient(90deg, #9fcdd9, #f0fbfc) !important;
+    box-shadow:0 0 14px rgba(159,205,217,0.34) !important;
+}
+
+.page-title{
+    text-shadow:
+        0 0 16px rgba(255,255,255,0.06),
+        0 0 32px rgba(159,205,217,0.12) !important;
+}
+
+.album-card.story-layout-card,
+.list-card{
+    background:linear-gradient(145deg, rgba(5,10,18,0.50), rgba(4,7,12,0.32)) !important;
+    border:1px solid rgba(159,205,217,0.24) !important;
+    box-shadow:
+        0 16px 48px rgba(0,0,0,0.26),
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        0 0 24px rgba(159,205,217,0.05) !important;
+}
+
+@media(max-width:900px){
+    body::before{
+        background-size:
+            cover,
+            cover,
+            cover,
+            cover,
+            92px 92px,
+            132px 132px,
+            190px 190px,
+            270px 270px !important;
+        animation:deluxeStarfield 92s linear infinite !important;
+    }
+}
+</style>
+
 </body>
 </html>
