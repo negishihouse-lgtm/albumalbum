@@ -5434,6 +5434,238 @@ body{
     box-shadow:0 0 14px rgba(176,108,255,0.36) !important;
 }
 
+
+
+/* ============================================================
+   PATCH 16: thinner meter lines + no white ring on meter dots
+   - メーター線をさらに細く
+   - メーターのドットから白い縁取りを除去
+============================================================ */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    height:0.85px !important;
+    background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+    box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot,
+.meter-graphic .dot.selected,
+.meter-graphic .dot.level-1,
+.meter-graphic .dot.level-2,
+.meter-graphic .dot.level-3,
+.meter-graphic .dot.level-4,
+.meter-graphic .dot.level-5,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    border:none !important;
+    border-width:0 !important;
+    outline:none !important;
+    background:var(--ac-violet) !important;
+    box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+}
+
+@media (max-width:900px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.85px !important;
+        background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+        box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        background:var(--ac-violet) !important;
+        box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.8px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        box-shadow:0 0 6px rgba(176,108,255,0.26) !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 17: larger cover + align meter bottom to cover bottom
+   - ジャケット写真を少し大きく
+   - メーター下端がジャケット画像下端と揃うよう再調整
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:114px minmax(0,1fr) !important;
+        gap:11px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:114px !important;
+        height:114px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:114px !important;
+        min-height:114px !important;
+        max-height:114px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 28px !important;
+        height:28px !important;
+        max-height:28px !important;
+        margin:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        display:flex !important;
+        align-items:stretch !important;
+        margin-top:0 !important;
+        margin-bottom:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:4px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:108px minmax(0,1fr) !important;
+        gap:10px !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:108px !important;
+        height:108px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:108px !important;
+        min-height:108px !important;
+        max-height:108px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 26px !important;
+        height:26px !important;
+        max-height:26px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis,
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:82px !important;
+        min-height:82px !important;
+        max-height:82px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        display:flex !important;
+        align-items:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:3.5px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
+    }
+}
+
 </style>
 </head>
 
@@ -8779,6 +9011,238 @@ document.addEventListener("DOMContentLoaded", () => {
         height:17px !important;
     }
 }
+
+
+/* ============================================================
+   PATCH 16: thinner meter lines + no white ring on meter dots
+   - メーター線をさらに細く
+   - メーターのドットから白い縁取りを除去
+============================================================ */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    height:0.85px !important;
+    background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+    box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot,
+.meter-graphic .dot.selected,
+.meter-graphic .dot.level-1,
+.meter-graphic .dot.level-2,
+.meter-graphic .dot.level-3,
+.meter-graphic .dot.level-4,
+.meter-graphic .dot.level-5,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    border:none !important;
+    border-width:0 !important;
+    outline:none !important;
+    background:var(--ac-violet) !important;
+    box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+}
+
+@media (max-width:900px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.85px !important;
+        background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+        box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        background:var(--ac-violet) !important;
+        box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.8px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        box-shadow:0 0 6px rgba(176,108,255,0.26) !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 17: larger cover + align meter bottom to cover bottom
+   - ジャケット写真を少し大きく
+   - メーター下端がジャケット画像下端と揃うよう再調整
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:114px minmax(0,1fr) !important;
+        gap:11px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:114px !important;
+        height:114px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:114px !important;
+        min-height:114px !important;
+        max-height:114px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 28px !important;
+        height:28px !important;
+        max-height:28px !important;
+        margin:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        display:flex !important;
+        align-items:stretch !important;
+        margin-top:0 !important;
+        margin-bottom:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:4px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:108px minmax(0,1fr) !important;
+        gap:10px !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:108px !important;
+        height:108px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:108px !important;
+        min-height:108px !important;
+        max-height:108px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 26px !important;
+        height:26px !important;
+        max-height:26px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis,
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:82px !important;
+        min-height:82px !important;
+        max-height:82px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        display:flex !important;
+        align-items:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:3.5px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
+    }
+}
+
 </style>
 
 
@@ -8883,6 +9347,238 @@ document.addEventListener("DOMContentLoaded", () => {
         min-height:26px !important;
     }
 }
+
+
+/* ============================================================
+   PATCH 16: thinner meter lines + no white ring on meter dots
+   - メーター線をさらに細く
+   - メーターのドットから白い縁取りを除去
+============================================================ */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    height:0.85px !important;
+    background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+    box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot,
+.meter-graphic .dot.selected,
+.meter-graphic .dot.level-1,
+.meter-graphic .dot.level-2,
+.meter-graphic .dot.level-3,
+.meter-graphic .dot.level-4,
+.meter-graphic .dot.level-5,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    border:none !important;
+    border-width:0 !important;
+    outline:none !important;
+    background:var(--ac-violet) !important;
+    box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+}
+
+@media (max-width:900px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.85px !important;
+        background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+        box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        background:var(--ac-violet) !important;
+        box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.8px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        box-shadow:0 0 6px rgba(176,108,255,0.26) !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 17: larger cover + align meter bottom to cover bottom
+   - ジャケット写真を少し大きく
+   - メーター下端がジャケット画像下端と揃うよう再調整
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:114px minmax(0,1fr) !important;
+        gap:11px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:114px !important;
+        height:114px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:114px !important;
+        min-height:114px !important;
+        max-height:114px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 28px !important;
+        height:28px !important;
+        max-height:28px !important;
+        margin:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        display:flex !important;
+        align-items:stretch !important;
+        margin-top:0 !important;
+        margin-bottom:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:4px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:108px minmax(0,1fr) !important;
+        gap:10px !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:108px !important;
+        height:108px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:108px !important;
+        min-height:108px !important;
+        max-height:108px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 26px !important;
+        height:26px !important;
+        max-height:26px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis,
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:82px !important;
+        min-height:82px !important;
+        max-height:82px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        display:flex !important;
+        align-items:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:3.5px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
+    }
+}
+
 </style>
 
 
@@ -8957,6 +9653,238 @@ document.addEventListener("DOMContentLoaded", () => {
         height:25px !important;
     }
 }
+
+
+/* ============================================================
+   PATCH 16: thinner meter lines + no white ring on meter dots
+   - メーター線をさらに細く
+   - メーターのドットから白い縁取りを除去
+============================================================ */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    height:0.85px !important;
+    background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+    box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot,
+.meter-graphic .dot.selected,
+.meter-graphic .dot.level-1,
+.meter-graphic .dot.level-2,
+.meter-graphic .dot.level-3,
+.meter-graphic .dot.level-4,
+.meter-graphic .dot.level-5,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    border:none !important;
+    border-width:0 !important;
+    outline:none !important;
+    background:var(--ac-violet) !important;
+    box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+}
+
+@media (max-width:900px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.85px !important;
+        background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+        box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        background:var(--ac-violet) !important;
+        box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.8px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        box-shadow:0 0 6px rgba(176,108,255,0.26) !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 17: larger cover + align meter bottom to cover bottom
+   - ジャケット写真を少し大きく
+   - メーター下端がジャケット画像下端と揃うよう再調整
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:114px minmax(0,1fr) !important;
+        gap:11px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:114px !important;
+        height:114px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:114px !important;
+        min-height:114px !important;
+        max-height:114px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 28px !important;
+        height:28px !important;
+        max-height:28px !important;
+        margin:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        display:flex !important;
+        align-items:stretch !important;
+        margin-top:0 !important;
+        margin-bottom:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:4px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:108px minmax(0,1fr) !important;
+        gap:10px !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:108px !important;
+        height:108px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:108px !important;
+        min-height:108px !important;
+        max-height:108px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 26px !important;
+        height:26px !important;
+        max-height:26px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis,
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:82px !important;
+        min-height:82px !important;
+        max-height:82px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        display:flex !important;
+        align-items:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:3.5px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
+    }
+}
+
 </style>
 
 
@@ -9949,6 +10877,238 @@ document.addEventListener("DOMContentLoaded", () => {
         min-width:25px !important;
         min-height:25px !important;
         margin-left:6px !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 16: thinner meter lines + no white ring on meter dots
+   - メーター線をさらに細く
+   - メーターのドットから白い縁取りを除去
+============================================================ */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    height:0.85px !important;
+    background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+    box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot,
+.meter-graphic .dot.selected,
+.meter-graphic .dot.level-1,
+.meter-graphic .dot.level-2,
+.meter-graphic .dot.level-3,
+.meter-graphic .dot.level-4,
+.meter-graphic .dot.level-5,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    border:none !important;
+    border-width:0 !important;
+    outline:none !important;
+    background:var(--ac-violet) !important;
+    box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+}
+
+@media (max-width:900px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.85px !important;
+        background:linear-gradient(90deg, rgba(176,108,255,0.14), rgba(176,108,255,0.54), rgba(216,182,255,0.24)) !important;
+        box-shadow:0 0 5px rgba(176,108,255,0.10) !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        background:var(--ac-violet) !important;
+        box-shadow:0 0 7px rgba(176,108,255,0.28) !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:0.8px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot,
+    .meter-graphic .dot.selected{
+        border:none !important;
+        border-width:0 !important;
+        outline:none !important;
+        box-shadow:0 0 6px rgba(176,108,255,0.26) !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 17: larger cover + align meter bottom to cover bottom
+   - ジャケット写真を少し大きく
+   - メーター下端がジャケット画像下端と揃うよう再調整
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:114px minmax(0,1fr) !important;
+        gap:11px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:114px !important;
+        height:114px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:114px !important;
+        min-height:114px !important;
+        max-height:114px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 28px !important;
+        height:28px !important;
+        max-height:28px !important;
+        margin:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        display:flex !important;
+        align-items:stretch !important;
+        margin-top:0 !important;
+        margin-bottom:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:4px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:108px minmax(0,1fr) !important;
+        gap:10px !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:108px !important;
+        height:108px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:108px !important;
+        min-height:108px !important;
+        max-height:108px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 26px !important;
+        height:26px !important;
+        max-height:26px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis,
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:82px !important;
+        min-height:82px !important;
+        max-height:82px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        display:flex !important;
+        align-items:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        grid-template-rows:repeat(5, minmax(0, 1fr)) !important;
+        row-gap:3.5px !important;
+        align-content:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:auto !important;
+        min-height:0 !important;
+        max-height:none !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        height:100% !important;
+        display:flex !important;
+        align-items:center !important;
     }
 }
 
