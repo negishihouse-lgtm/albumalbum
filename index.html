@@ -8045,5 +8045,157 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 </style>
 
+
+<style>
+/* ============================================================
+   FINAL FIX 23: 発信アイコン位置補正 + ジャケット下端とメーター下端を揃える
+============================================================ */
+
+/* 発信アイコン：塔の頭だけを中央に補正 */
+@media(max-width:900px){
+    .mobile-tabbar a[href="editor.html"] > .icon{
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        width:28px !important;
+        height:28px !important;
+        min-width:28px !important;
+        min-height:28px !important;
+        transform:none !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] > .icon::before{
+        content:"" !important;
+        display:block !important;
+        width:27px !important;
+        height:27px !important;
+        margin:0 !important;
+        transform:translateY(-1px) !important;
+        background:currentColor !important;
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2715%27%20r%3D%273.1%27%2F%3E%3Cpath%20d%3D%27M11%2010.8c-1.35%201.25-2.1%202.7-2.1%204.2s.75%202.95%202.1%204.2%27%2F%3E%3Cpath%20d%3D%27M21%2010.8c1.35%201.25%202.1%202.7%202.1%204.2s-.75%202.95-2.1%204.2%27%2F%3E%3Cpath%20d%3D%27M6.8%207.4C4.3%209.7%202.9%2012.3%202.9%2015s1.4%205.3%203.9%207.6%27%2F%3E%3Cpath%20d%3D%27M25.2%207.4c2.5%202.3%203.9%204.9%203.9%207.6s-1.4%205.3-3.9%207.6%27%2F%3E%3Cpath%20d%3D%27M16%2018.2v2.8%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2715%27%20r%3D%273.1%27%2F%3E%3Cpath%20d%3D%27M11%2010.8c-1.35%201.25-2.1%202.7-2.1%204.2s.75%202.95%202.1%204.2%27%2F%3E%3Cpath%20d%3D%27M21%2010.8c1.35%201.25%202.1%202.7%202.1%204.2s-.75%202.95-2.1%204.2%27%2F%3E%3Cpath%20d%3D%27M6.8%207.4C4.3%209.7%202.9%2012.3%202.9%2015s1.4%205.3%203.9%207.6%27%2F%3E%3Cpath%20d%3D%27M25.2%207.4c2.5%202.3%203.9%204.9%203.9%207.6s-1.4%205.3-3.9%207.6%27%2F%3E%3Cpath%20d%3D%27M16%2018.2v2.8%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    }
+}
+
+@media(max-width:430px){
+    .mobile-tabbar a[href="editor.html"] > .icon::before{
+        width:26px !important;
+        height:26px !important;
+        transform:translateY(-1px) !important;
+    }
+}
+
+/* 投稿カード内：ジャケット画像の下側とメーターの下側を揃える */
+@media(max-width:900px){
+    .story-layout-card .album-content-row{
+        display:grid !important;
+        grid-template-columns:210px minmax(0,1fr) !important;
+        column-gap:20px !important;
+        align-items:start !important;
+    }
+
+    .story-layout-card .story-cover{
+        width:210px !important;
+        height:210px !important;
+        aspect-ratio:1/1 !important;
+        object-fit:cover !important;
+        align-self:start !important;
+        margin:0 !important;
+    }
+
+    .story-layout-card .album-right-stack{
+        min-height:210px !important;
+        height:210px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:flex-start !important;
+        min-width:0 !important;
+    }
+
+    .story-layout-card .album-heading-block{
+        flex:0 0 auto !important;
+        margin:0 0 10px !important;
+    }
+
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        height:auto !important;
+        min-height:0 !important;
+        display:flex !important;
+        align-items:stretch !important;
+        margin:0 !important;
+        padding:14px 16px !important;
+    }
+
+    .story-layout-card .story-analysis .meter-list{
+        width:100% !important;
+        height:100% !important;
+        min-height:0 !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+        padding:0 !important;
+        margin:0 !important;
+        border-bottom:0 !important;
+    }
+
+    .story-layout-card .story-analysis .meter{
+        margin:0 !important;
+    }
+}
+
+@media(max-width:430px){
+    .story-layout-card .album-content-row{
+        grid-template-columns:112px minmax(0,1fr) !important;
+        column-gap:18px !important;
+    }
+
+    .story-layout-card .story-cover{
+        width:112px !important;
+        height:112px !important;
+    }
+
+    .story-layout-card .album-right-stack{
+        min-height:112px !important;
+        height:112px !important;
+    }
+
+    .story-layout-card .album-heading-block{
+        margin-bottom:8px !important;
+    }
+
+    .story-layout-card .story-analysis{
+        padding:10px 13px !important;
+    }
+}
+
+/* かなり狭い端末ではメーターの行間を詰めて下端揃えを維持 */
+@media(max-width:390px){
+    .story-layout-card .album-content-row{
+        grid-template-columns:108px minmax(0,1fr) !important;
+        column-gap:16px !important;
+    }
+
+    .story-layout-card .story-cover{
+        width:108px !important;
+        height:108px !important;
+    }
+
+    .story-layout-card .album-right-stack{
+        min-height:108px !important;
+        height:108px !important;
+    }
+
+    .story-layout-card .story-analysis{
+        padding:9px 11px !important;
+    }
+
+    .story-layout-card .story-analysis .meter-label{
+        font-size:11px !important;
+    }
+}
+</style>
+
 </body>
 </html>
