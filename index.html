@@ -8383,6 +8383,130 @@ document.addEventListener("DOMContentLoaded", () => {
         mask-size:26px 26px !important;
     }
 }
+
+
+/* ============================================================
+   2026-06-10 追加修正 PATCH 03
+   - スマホ投稿カード：曲名・アーティスト名を少し小さくしてメーター5本を見切れにくくする
+   - 下端合わせ・発信アイコン中央配置は維持
+   - メーター横幅はPATCH 02の方向性を維持
+============================================================ */
+@media (max-width:900px){
+    .story-layout-card .album-heading-block{
+        flex:0 0 auto !important;
+        max-height:40px !important;
+        overflow:hidden !important;
+        margin-bottom:3px !important;
+    }
+
+    .story-layout-card .story-title,
+    .album-card.story-layout-card .story-title{
+        font-size:18px !important;
+        line-height:1.05 !important;
+        letter-spacing:-0.045em !important;
+        margin:0 0 2px !important;
+        -webkit-line-clamp:1 !important;
+    }
+
+    .story-layout-card .story-artist,
+    .album-card.story-layout-card .story-artist{
+        font-size:10.8px !important;
+        line-height:1.05 !important;
+        margin:0 !important;
+        opacity:0.86 !important;
+        -webkit-line-clamp:1 !important;
+        overflow:hidden !important;
+        display:-webkit-box !important;
+        -webkit-box-orient:vertical !important;
+    }
+
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        min-height:0 !important;
+        margin-top:0 !important;
+        padding:0 !important;
+        overflow:hidden !important;
+    }
+
+    .story-layout-card .story-analysis .meter-list{
+        height:100% !important;
+        min-height:0 !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+        overflow:hidden !important;
+    }
+
+    .story-layout-card .story-analysis .meter{
+        grid-template-columns:36px minmax(0,1fr) 36px !important;
+        gap:5px !important;
+        min-height:10px !important;
+        height:10px !important;
+        line-height:1 !important;
+    }
+
+    .story-layout-card .story-analysis .meter-label{
+        font-size:10px !important;
+        line-height:1 !important;
+        font-weight:520 !important;
+    }
+
+    .story-layout-card .story-analysis .meter-graphic{
+        height:10px !important;
+    }
+
+    .story-layout-card .story-analysis .meter-graphic::before{
+        left:2px !important;
+        right:2px !important;
+        height:1.5px !important;
+    }
+
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:11px !important;
+        height:11px !important;
+    }
+}
+
+@media (max-width:430px){
+    .story-layout-card .album-heading-block{
+        max-height:36px !important;
+        margin-bottom:2px !important;
+    }
+
+    .story-layout-card .story-title,
+    .album-card.story-layout-card .story-title{
+        font-size:17px !important;
+        line-height:1.03 !important;
+        margin-bottom:2px !important;
+    }
+
+    .story-layout-card .story-artist,
+    .album-card.story-layout-card .story-artist{
+        font-size:10.4px !important;
+        line-height:1.04 !important;
+    }
+
+    .story-layout-card .story-analysis .meter{
+        grid-template-columns:34px minmax(0,1fr) 34px !important;
+        gap:4px !important;
+        height:9.5px !important;
+        min-height:9.5px !important;
+    }
+
+    .story-layout-card .story-analysis .meter-label{
+        font-size:9.6px !important;
+    }
+
+    .story-layout-card .story-analysis .meter-graphic{
+        height:9.5px !important;
+    }
+
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:10.5px !important;
+        height:10.5px !important;
+    }
+}
 </style>
 
 </body>
