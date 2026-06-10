@@ -6432,7 +6432,9 @@ function albumCardHTML(item, posterProfile){
             <span class="story-creator-meta">
                 <span class="story-creator-line1">
                     <span class="story-creator-name">${escapeHTML(posterProfile?.name || '匿名ユーザー')}</span>
-                    <span class="story-creator-from">から受信</span><img class="receive-mini-icon-img" src="./receive_signal_tile.png" alt="" aria-hidden="true">
+                    <span class="story-creator-from">から受信</span><span class="receive-mini-icon" aria-hidden="true">
+                        <span class="receive-mini-core"></span>
+                    </span>
                 </span>
                 <span class="story-creator-line2">${escapeHTML(postDate || '')}</span>
             </span>
@@ -7941,6 +7943,242 @@ document.addEventListener("DOMContentLoaded", () => {
         width:20px !important;
         height:20px !important;
         vertical-align:-5px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   FINAL FIX 18: PNGなし / CSSのみで大きめアイコンタイル
+   - 画像ファイル読み込み不要
+   - 灰色タイル問題を回避
+   - 生成PNG案のサイズ感だけCSSで再現
+   - 発信 / 観測 / リスト / 受信をPale Iceで統一
+============================================================ */
+
+@media(max-width:900px){
+    .mobile-tabbar{
+        height:88px !important;
+        padding-top:7px !important;
+        padding-bottom:calc(7px + env(safe-area-inset-bottom)) !important;
+        align-items:start !important;
+        background:rgba(3,6,12,0.78) !important;
+        border-top:1px solid rgba(159,205,217,0.14) !important;
+        box-shadow:0 -18px 46px rgba(0,0,0,0.38) !important;
+    }
+
+    .mobile-tabbar a{
+        height:74px !important;
+        gap:4px !important;
+        justify-content:flex-start !important;
+        padding-top:0 !important;
+        color:rgba(215,237,240,0.58) !important;
+        font-weight:600 !important;
+    }
+
+    .mobile-tabbar a.active{
+        color:#d7edf0 !important;
+        font-weight:800 !important;
+    }
+
+    .mobile-tabbar .icon,
+    .mobile-tabbar .mypage-icon-text{
+        position:relative !important;
+        width:43px !important;
+        height:43px !important;
+        min-width:43px !important;
+        min-height:43px !important;
+        border-radius:13px !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        font-size:0 !important;
+        line-height:1 !important;
+        color:currentColor !important;
+        background:
+            radial-gradient(circle at 50% 46%, rgba(159,205,217,0.13), transparent 44%),
+            linear-gradient(145deg, rgba(7,13,25,0.92), rgba(3,7,15,0.92)) !important;
+        border:1px solid rgba(159,205,217,0.13) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.055),
+            0 8px 20px rgba(0,0,0,0.28),
+            0 0 14px rgba(159,205,217,0.07) !important;
+        overflow:hidden !important;
+        text-shadow:none !important;
+        -webkit-mask:none !important;
+        mask:none !important;
+    }
+
+    .mobile-tabbar .tab-avatar{
+        width:43px !important;
+        height:43px !important;
+        min-width:43px !important;
+        min-height:43px !important;
+        border-radius:13px !important;
+        object-fit:cover !important;
+        border:1px solid rgba(159,205,217,0.26) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.055),
+            0 8px 20px rgba(0,0,0,0.28),
+            0 0 14px rgba(159,205,217,0.12) !important;
+    }
+
+    .mobile-tabbar a.active .icon,
+    .mobile-tabbar a.active .mypage-icon-text,
+    .mobile-tabbar a.active .tab-avatar{
+        border-color:rgba(159,205,217,0.42) !important;
+        background:
+            radial-gradient(circle at 50% 46%, rgba(159,205,217,0.20), transparent 48%),
+            linear-gradient(145deg, rgba(8,16,30,0.96), rgba(4,8,18,0.96)) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.09),
+            0 10px 24px rgba(0,0,0,0.32),
+            0 0 18px rgba(159,205,217,0.20) !important;
+    }
+
+    .mobile-tabbar .icon::before,
+    .mobile-tabbar .mypage-icon-text::before{
+        content:"" !important;
+        display:block !important;
+        width:27px !important;
+        height:27px !important;
+        background:currentColor !important;
+        filter:
+            drop-shadow(0 0 3px rgba(215,237,240,0.50))
+            drop-shadow(0 0 9px rgba(159,205,217,0.20)) !important;
+    }
+
+    .mobile-tabbar a[href="index.html"] .icon::before{
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M5%2015.2L16%206l11%209.2%27%2F%3E%3Cpath%20d%3D%27M8.2%2014.2V26h15.6V14.2%27%2F%3E%3Cpath%20d%3D%27M13%2026v-7.2h6V26%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M5%2015.2L16%206l11%209.2%27%2F%3E%3Cpath%20d%3D%27M8.2%2014.2V26h15.6V14.2%27%2F%3E%3Cpath%20d%3D%27M13%2026v-7.2h6V26%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    }
+
+    .mobile-tabbar a[href="search.html"] .icon::before{
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.05%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%2713%27%20y%3D%2713%27%20width%3D%276.2%27%20height%3D%277.8%27%20rx%3D%272%27%20transform%3D%27rotate%28-35%2016.1%2016.9%29%27%2F%3E%3Crect%20x%3D%274.2%27%20y%3D%2710.7%27%20width%3D%278.2%27%20height%3D%275.7%27%20rx%3D%271.1%27%20transform%3D%27rotate%28-35%208.3%2013.55%29%27%2F%3E%3Crect%20x%3D%2719.8%27%20y%3D%2718.6%27%20width%3D%278.2%27%20height%3D%275.7%27%20rx%3D%271.1%27%20transform%3D%27rotate%28-35%2023.9%2021.45%29%27%2F%3E%3Cpath%20d%3D%27M11.6%2014.5l2.4%201.5%27%2F%3E%3Cpath%20d%3D%27M18.2%2018.1l2.4%201.5%27%2F%3E%3Cpath%20d%3D%27M18.8%2011.6l4-2.8%27%2F%3E%3Cpath%20d%3D%27M21.5%207.5c2.1.5%203.8%202%204.7%204%27%2F%3E%3Cpath%20d%3D%27M24.5%205.5c2.4.9%204.3%202.7%205.2%205.1%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.05%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%2713%27%20y%3D%2713%27%20width%3D%276.2%27%20height%3D%277.8%27%20rx%3D%272%27%20transform%3D%27rotate%28-35%2016.1%2016.9%29%27%2F%3E%3Crect%20x%3D%274.2%27%20y%3D%2710.7%27%20width%3D%278.2%27%20height%3D%275.7%27%20rx%3D%271.1%27%20transform%3D%27rotate%28-35%208.3%2013.55%29%27%2F%3E%3Crect%20x%3D%2719.8%27%20y%3D%2718.6%27%20width%3D%278.2%27%20height%3D%275.7%27%20rx%3D%271.1%27%20transform%3D%27rotate%28-35%2023.9%2021.45%29%27%2F%3E%3Cpath%20d%3D%27M11.6%2014.5l2.4%201.5%27%2F%3E%3Cpath%20d%3D%27M18.2%2018.1l2.4%201.5%27%2F%3E%3Cpath%20d%3D%27M18.8%2011.6l4-2.8%27%2F%3E%3Cpath%20d%3D%27M21.5%207.5c2.1.5%203.8%202%204.7%204%27%2F%3E%3Cpath%20d%3D%27M24.5%205.5c2.4.9%204.3%202.7%205.2%205.1%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon::before{
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.15%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M9.8%2025h12.4%27%2F%3E%3Cpath%20d%3D%27M11.5%2025L16%2012l4.5%2013%27%2F%3E%3Cpath%20d%3D%27M13.1%2019h5.8%27%2F%3E%3Cpath%20d%3D%27M13%2025l7.2-8.2%27%2F%3E%3Cpath%20d%3D%27M19%2025l-7.2-8.2%27%2F%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%279.5%27%20r%3D%272.8%27%2F%3E%3Cpath%20d%3D%27M8.4%208.1c-2.4%202.3-2.4%206.5%200%208.8%27%2F%3E%3Cpath%20d%3D%27M23.6%208.1c2.4%202.3%202.4%206.5%200%208.8%27%2F%3E%3Cpath%20d%3D%27M5.2%205.1c-4.2%204.1-4.2%2011.7%200%2015.8%27%2F%3E%3Cpath%20d%3D%27M26.8%205.1c4.2%204.1%204.2%2011.7%200%2015.8%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.15%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M9.8%2025h12.4%27%2F%3E%3Cpath%20d%3D%27M11.5%2025L16%2012l4.5%2013%27%2F%3E%3Cpath%20d%3D%27M13.1%2019h5.8%27%2F%3E%3Cpath%20d%3D%27M13%2025l7.2-8.2%27%2F%3E%3Cpath%20d%3D%27M19%2025l-7.2-8.2%27%2F%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%279.5%27%20r%3D%272.8%27%2F%3E%3Cpath%20d%3D%27M8.4%208.1c-2.4%202.3-2.4%206.5%200%208.8%27%2F%3E%3Cpath%20d%3D%27M23.6%208.1c2.4%202.3%202.4%206.5%200%208.8%27%2F%3E%3Cpath%20d%3D%27M5.2%205.1c-4.2%204.1-4.2%2011.7%200%2015.8%27%2F%3E%3Cpath%20d%3D%27M26.8%205.1c4.2%204.1%204.2%2011.7%200%2015.8%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    }
+
+    .mobile-tabbar a[href="notifications.html"] .icon::before{
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%2026.5S5.2%2020.2%205.2%2012.7c0-3.7%202.6-6.2%205.8-6.2%202.1%200%203.9%201.1%205%203%201.1-1.9%202.9-3%205-3%203.2%200%205.8%202.5%205.8%206.2%200%207.5-10.8%2013.8-10.8%2013.8Z%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.3%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cpath%20d%3D%27M16%2026.5S5.2%2020.2%205.2%2012.7c0-3.7%202.6-6.2%205.8-6.2%202.1%200%203.9%201.1%205%203%201.1-1.9%202.9-3%205-3%203.2%200%205.8%202.5%205.8%206.2%200%207.5-10.8%2013.8-10.8%2013.8Z%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.3%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    }
+
+    .mobile-tabbar .mypage-icon-text::before{
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.1%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2716%27%20r%3D%277.2%27%2F%3E%3Cpath%20d%3D%27M4.7%2018.2c3.6%203.3%2011.3%204.4%2018.1%201.9%204.1-1.5%206.2-3.8%205.5-5.7-.5-1.3-2.2-1.9-4.8-1.8%27%2F%3E%3Cpath%20d%3D%27M27.3%2013.8c-3.6-3.3-11.3-4.4-18.1-1.9-4.1%201.5-6.2%203.8-5.5%205.7.5%201.3%202.2%201.9%204.8%201.8%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.1%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2716%27%20r%3D%277.2%27%2F%3E%3Cpath%20d%3D%27M4.7%2018.2c3.6%203.3%2011.3%204.4%2018.1%201.9%204.1-1.5%206.2-3.8%205.5-5.7-.5-1.3-2.2-1.9-4.8-1.8%27%2F%3E%3Cpath%20d%3D%27M27.3%2013.8c-3.6-3.3-11.3-4.4-18.1-1.9-4.1%201.5-6.2%203.8-5.5%205.7.5%201.3%202.2%201.9%204.8%201.8%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon::after,
+    .mobile-tabbar a[href="search.html"] .icon::after,
+    .mobile-tabbar a[href="index.html"] .icon::after,
+    .mobile-tabbar a[href="notifications.html"] .icon::after{
+        display:none !important;
+        content:none !important;
+    }
+
+    .mobile-tabbar .label{
+        font-size:10.5px !important;
+        line-height:1 !important;
+        color:currentColor !important;
+    }
+
+    /* 上部リストタブの小アイコンもCSSだけで表示 */
+    #listTab{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        gap:7px !important;
+    }
+
+    #listTab::before{
+        content:"" !important;
+        width:20px !important;
+        height:20px !important;
+        display:inline-block !important;
+        background:currentColor !important;
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%275.2%27%20y%3D%277.2%27%20width%3D%274.6%27%20height%3D%274.6%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%209.5h13%27%2F%3E%3Crect%20x%3D%275.2%27%20y%3D%2714%27%20width%3D%274.6%27%20height%3D%274.6%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%2016.3h13%27%2F%3E%3Crect%20x%3D%275.2%27%20y%3D%2720.8%27%20width%3D%274.6%27%20height%3D%274.6%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%2023.1h13%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.25%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%275.2%27%20y%3D%277.2%27%20width%3D%274.6%27%20height%3D%274.6%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%209.5h13%27%2F%3E%3Crect%20x%3D%275.2%27%20y%3D%2714%27%20width%3D%274.6%27%20height%3D%274.6%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%2016.3h13%27%2F%3E%3Crect%20x%3D%275.2%27%20y%3D%2720.8%27%20width%3D%274.6%27%20height%3D%274.6%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%2023.1h13%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+        filter:
+            drop-shadow(0 0 3px rgba(215,237,240,0.36))
+            drop-shadow(0 0 8px rgba(159,205,217,0.12)) !important;
+        opacity:0.95 !important;
+        flex:0 0 auto !important;
+    }
+
+    /* 受信横のミニアイコンもCSSだけ */
+    .receive-mini-icon-img{
+        display:none !important;
+    }
+
+    .receive-mini-icon{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        width:22px !important;
+        height:15px !important;
+        margin-left:4px !important;
+        vertical-align:-3px !important;
+        color:#9fcdd9 !important;
+        flex:0 0 auto !important;
+        filter:
+            drop-shadow(0 0 3px rgba(215,237,240,0.40))
+            drop-shadow(0 0 8px rgba(159,205,217,0.14)) !important;
+    }
+
+    .receive-mini-icon .receive-mini-core{
+        width:22px !important;
+        height:15px !important;
+        display:block !important;
+        background:currentColor !important;
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2710%27%20r%3D%273.2%27%2F%3E%3Cpath%20d%3D%27M10.6%205.5C9.3%206.8%208.6%208.3%208.6%2010c0%201.7.7%203.2%202%204.5%27%2F%3E%3Cpath%20d%3D%27M21.4%205.5c1.3%201.3%202%202.8%202%204.5%200%201.7-.7%203.2-2%204.5%27%2F%3E%3Cpath%20d%3D%27M6.1%202.7C3.9%204.8%202.7%207.2%202.7%2010c0%202.8%201.2%205.2%203.4%207.3%27%2F%3E%3Cpath%20d%3D%27M25.9%202.7c2.2%202.1%203.4%204.5%203.4%207.3%200%202.8-1.2%205.2-3.4%207.3%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2020%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2710%27%20r%3D%273.2%27%2F%3E%3Cpath%20d%3D%27M10.6%205.5C9.3%206.8%208.6%208.3%208.6%2010c0%201.7.7%203.2%202%204.5%27%2F%3E%3Cpath%20d%3D%27M21.4%205.5c1.3%201.3%202%202.8%202%204.5%200%201.7-.7%203.2-2%204.5%27%2F%3E%3Cpath%20d%3D%27M6.1%202.7C3.9%204.8%202.7%207.2%202.7%2010c0%202.8%201.2%205.2%203.4%207.3%27%2F%3E%3Cpath%20d%3D%27M25.9%202.7c2.2%202.1%203.4%204.5%203.4%207.3%200%202.8-1.2%205.2-3.4%207.3%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    }
+}
+
+@media(max-width:430px){
+    .mobile-tabbar{
+        height:86px !important;
+    }
+
+    .mobile-tabbar a{
+        height:72px !important;
+    }
+
+    .mobile-tabbar .icon,
+    .mobile-tabbar .mypage-icon-text,
+    .mobile-tabbar .tab-avatar{
+        width:40px !important;
+        height:40px !important;
+        min-width:40px !important;
+        min-height:40px !important;
+        border-radius:12px !important;
+    }
+
+    .mobile-tabbar .icon::before,
+    .mobile-tabbar .mypage-icon-text::before{
+        width:25px !important;
+        height:25px !important;
+    }
+
+    #listTab::before{
+        width:18px !important;
+        height:18px !important;
+    }
+
+    .receive-mini-icon{
+        width:20px !important;
+        height:14px !important;
+    }
+
+    .receive-mini-icon .receive-mini-core{
+        width:20px !important;
+        height:14px !important;
     }
 }
 </style>
