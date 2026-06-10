@@ -4738,15 +4738,6 @@ function albumCardHTML(item, posterProfile){
                 <span class="story-creator-line1">
                     <span class="story-creator-name">${escapeHTML(posterProfile?.name || '匿名ユーザー')}</span>
                     <span class="story-creator-from">から受信</span><img class="receive-mini-icon-img" src="./receive_signal_icon.png" alt="" aria-hidden="true">
-                    <span class="receive-mini-icon" aria-hidden="true">
-                        <svg viewBox="0 0 28 18" fill="none">
-                            <circle cx="14" cy="9" r="3.2" stroke="currentColor" stroke-width="2"/>
-                            <path d="M9.2 4.8C7.9 6 7.2 7.4 7.2 9c0 1.6.7 3 2 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M18.8 4.8c1.3 1.2 2 2.6 2 4.2 0 1.6-.7 3-2 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M5 2.2C2.9 4.1 1.8 6.4 1.8 9c0 2.6 1.1 4.9 3.2 6.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M23 2.2c2.1 1.9 3.2 4.2 3.2 6.8 0 2.6-1.1 4.9-3.2 6.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </span>
                 </span>
                 <span class="story-creator-line2">${escapeHTML(postDate || '')}</span>
             </span>
@@ -9770,6 +9761,197 @@ body{
     #listTab::before{
         width:18px !important;
         height:18px !important;
+    }
+
+    .story-artist,
+    .artist{
+        font-size:11.5px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   FINAL FIX 14: PNGアイコン透明化版
+   - 生成PNGを透明背景化して使用
+   - 黒い四角が出ない
+   - 受信アイコンの二重表示を防止
+============================================================ */
+
+/* 旧CSS受信アイコンは完全に無効化 */
+.receive-mini-icon{
+    display:none !important;
+}
+
+/* PNGアイコン共通：背景画像の黒四角を出さない */
+.mobile-tabbar a[href="editor.html"] .icon,
+.mobile-tabbar a[href="search.html"] .icon{
+    position:relative !important;
+    font-size:0 !important;
+    line-height:1 !important;
+    background-color:transparent !important;
+    -webkit-mask:none !important;
+    mask:none !important;
+}
+
+/* 発信：透明PNGの電波塔 */
+.mobile-tabbar a[href="editor.html"] .icon{
+    width:29px !important;
+    height:29px !important;
+    display:block !important;
+    background-image:url("./broadcast_tower_icon.png") !important;
+    background-size:contain !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.26)) !important;
+}
+
+.mobile-tabbar a[href="editor.html"] .icon::before,
+.mobile-tabbar a[href="editor.html"] .icon::after{
+    display:none !important;
+    content:none !important;
+}
+
+/* 探索：透明PNGの人工衛星 */
+.mobile-tabbar a[href="search.html"] .icon{
+    width:29px !important;
+    height:29px !important;
+    display:block !important;
+    background-image:url("./satellite_search_icon.png") !important;
+    background-size:contain !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.22)) !important;
+}
+
+.mobile-tabbar a[href="search.html"] .icon::before,
+.mobile-tabbar a[href="search.html"] .icon::after{
+    display:none !important;
+    content:none !important;
+}
+
+/* 受信横：透明PNG */
+.receive-mini-icon-img{
+    width:20px !important;
+    height:20px !important;
+    object-fit:contain !important;
+    display:inline-block !important;
+    margin-left:4px !important;
+    vertical-align:-5px !important;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.26)) !important;
+    opacity:0.96 !important;
+    mix-blend-mode:screen;
+}
+
+/* リストタブ：透明PNG */
+#listTab{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:7px !important;
+}
+
+#listTab::before{
+    content:"" !important;
+    width:18px !important;
+    height:18px !important;
+    display:inline-block !important;
+    background-image:url("./list_icon.png") !important;
+    background-size:contain !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.20)) !important;
+    opacity:0.96 !important;
+}
+
+/* タブのアクティブ時は少し明るく */
+.mobile-tabbar a.active .icon,
+.feed-tab.active::before{
+    filter:drop-shadow(0 0 8px rgba(159,205,217,0.40)) !important;
+}
+
+/* キーワード色をpale blueへ */
+.story-keyword-box .keyword-tag,
+.keyword-tag{
+    color:#bfe7ee !important;
+    border-color:rgba(159,205,217,0.20) !important;
+    background:rgba(159,205,217,0.055) !important;
+    text-shadow:0 0 8px rgba(159,205,217,0.20) !important;
+}
+
+/* メーターをさらに細める */
+.story-analysis .meter-graphic{
+    height:12px !important;
+}
+
+.story-analysis .meter-graphic::before{
+    height:1px !important;
+    left:5px !important;
+    right:5px !important;
+    background:linear-gradient(90deg, rgba(159,205,217,0.14), rgba(159,205,217,0.70)) !important;
+}
+
+.story-analysis .meter-graphic .dot,
+.story-analysis .meter-graphic .dot.selected{
+    width:10px !important;
+    height:10px !important;
+}
+
+.story-analysis .meter-graphic .dot.selected{
+    border:2px solid #eaf7f9 !important;
+    box-shadow:0 0 8px rgba(159,205,217,0.30) !important;
+}
+
+.connector{
+    height:1px !important;
+}
+
+/* 再生ボタンをコメント数のすぐ横へ */
+.story-reaction-row{
+    grid-template-columns:1fr auto !important;
+}
+
+.reaction-left-group{
+    gap:12px !important;
+}
+
+.reaction-center-group{
+    display:none !important;
+}
+
+.story-play-btn{
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    min-height:30px !important;
+}
+
+/* アーティスト名を小さく */
+.story-artist,
+.artist{
+    font-size:12px !important;
+    line-height:1.22 !important;
+    font-weight:450 !important;
+    color:rgba(245,250,252,0.82) !important;
+}
+
+@media(max-width:430px){
+    .mobile-tabbar a[href="editor.html"] .icon,
+    .mobile-tabbar a[href="search.html"] .icon{
+        width:27px !important;
+        height:27px !important;
+    }
+
+    .receive-mini-icon-img{
+        width:18px !important;
+        height:18px !important;
+        vertical-align:-4px !important;
+    }
+
+    #listTab::before{
+        width:17px !important;
+        height:17px !important;
     }
 
     .story-artist,
