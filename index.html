@@ -4577,6 +4577,122 @@ body{
     }
 }
 
+
+
+/* ============================================================
+   2026-06-10 追加修正 PATCH 04
+   - スマホ投稿カード：5本目「個人 / 世界」のメーターが切れないようにする
+   - 曲名・アーティスト名をさらに少しだけ圧縮
+   - メーター領域の高さを明示して、5本すべてを収める
+============================================================ */
+@media (max-width:900px){
+    .story-layout-card .album-heading-block{
+        max-height:34px !important;
+        margin-bottom:2px !important;
+        overflow:hidden !important;
+    }
+
+    .story-layout-card .story-title,
+    .album-card.story-layout-card .story-title{
+        font-size:17px !important;
+        line-height:1.02 !important;
+        margin:0 0 1px !important;
+        -webkit-line-clamp:1 !important;
+    }
+
+    .story-layout-card .story-artist,
+    .album-card.story-layout-card .story-artist{
+        font-size:10.2px !important;
+        line-height:1.02 !important;
+        margin:0 !important;
+    }
+
+    .story-layout-card .story-analysis{
+        flex:1 1 auto !important;
+        height:auto !important;
+        min-height:68px !important;
+        padding:0 !important;
+        margin-top:0 !important;
+        overflow:visible !important;
+    }
+
+    .story-layout-card .story-analysis .meter-list{
+        height:68px !important;
+        min-height:68px !important;
+        max-height:68px !important;
+        padding:0 !important;
+        border-bottom:none !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+        overflow:visible !important;
+    }
+
+    .story-layout-card .story-analysis .meter{
+        height:10px !important;
+        min-height:10px !important;
+        max-height:10px !important;
+        line-height:1 !important;
+        overflow:visible !important;
+    }
+
+    .story-layout-card .story-analysis .meter-label{
+        font-size:9.7px !important;
+        line-height:1 !important;
+    }
+}
+
+@media (max-width:430px){
+    .story-layout-card .album-heading-block{
+        max-height:31px !important;
+        margin-bottom:2px !important;
+    }
+
+    .story-layout-card .story-title,
+    .album-card.story-layout-card .story-title{
+        font-size:16px !important;
+        line-height:1.01 !important;
+        margin-bottom:1px !important;
+    }
+
+    .story-layout-card .story-artist,
+    .album-card.story-layout-card .story-artist{
+        font-size:9.8px !important;
+        line-height:1.01 !important;
+    }
+
+    .story-layout-card .story-analysis{
+        min-height:70px !important;
+        overflow:visible !important;
+    }
+
+    .story-layout-card .story-analysis .meter-list{
+        height:70px !important;
+        min-height:70px !important;
+        max-height:70px !important;
+        overflow:visible !important;
+    }
+
+    .story-layout-card .story-analysis .meter{
+        height:9px !important;
+        min-height:9px !important;
+        max-height:9px !important;
+        grid-template-columns:34px minmax(0,1fr) 34px !important;
+        gap:4px !important;
+    }
+
+    .story-layout-card .story-analysis .meter-label{
+        font-size:9.2px !important;
+    }
+
+    .story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        overflow:visible !important;
+    }
+}
+
 </style>
 </head>
 
