@@ -11,7 +11,7 @@
    Album Collection index.html
    CSS整理版
    - 既存の多重 <style> を1つに統合
-   - 同一セレクタ内の重複プロパティは最後の指定だけ残すああ
+   - 同一セレクタ内の重複プロパティは最後の指定だけ残す
    - SVGアイコン + Pale Ice + 銀河背景の最終デザインを維持
 ============================================================ */
 
@@ -9545,6 +9545,413 @@ document.addEventListener("DOMContentLoaded", () => {
         letter-spacing:-0.075em !important;
     }
 }
+
+
+/* ============================================================
+   PATCH 15: compact mobile card + thinner reaction icons
+   - コメントマークの線をさらに細く
+   - ハートも細く・少し軽く
+   - ジャケット画像を小さく
+   - スマホカードの縦長感を圧縮
+   - メーター下端/発信アイコン/共有非表示は維持
+============================================================ */
+:root{
+    --ac-violet:#b06cff;
+    --ac-violet-2:#d5a8ff;
+    --ac-violet-line:rgba(176,108,255,0.58);
+    --ac-violet-faint:rgba(176,108,255,0.18);
+    --ac-violet-chip-bg:rgba(176,108,255,0.060);
+    --ac-violet-chip-border:rgba(176,108,255,0.30);
+}
+
+/* コメントアイコンがSVGの場合 */
+.comment-icon-clean svg,
+.comment-icon-clean svg *,
+.story-reaction-row .comment-icon-clean svg,
+.story-reaction-row .comment-icon-clean svg *{
+    stroke-width:1.35px !important;
+    stroke:rgba(232,238,244,0.72) !important;
+}
+
+/* コメントアイコンがCSS描画の場合 */
+.comment-icon{
+    border-width:1.25px !important;
+}
+
+.comment-icon::after{
+    border-left-width:1.25px !important;
+    border-bottom-width:1.25px !important;
+}
+
+/* ハートも細く・軽く */
+.story-reaction-row .like-btn,
+.album-card.story-layout-card .story-reaction-row .like-btn,
+.like-btn{
+    font-family:"SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif !important;
+    font-weight:300 !important;
+    text-shadow:none !important;
+    -webkit-text-stroke:0 !important;
+    color:rgba(232,238,244,0.72) !important;
+}
+
+.story-reaction-row .like-btn svg,
+.album-card.story-layout-card .story-reaction-row .like-btn svg,
+.like-btn svg{
+    stroke-width:1.35px !important;
+    stroke:rgba(232,238,244,0.72) !important;
+}
+
+.story-reaction-row .like-btn.liked,
+.album-card.story-layout-card .story-reaction-row .like-btn.liked,
+.like-btn.liked{
+    color:var(--ac-violet-2) !important;
+}
+
+.story-reaction-row .like-btn.liked svg,
+.album-card.story-layout-card .story-reaction-row .like-btn.liked svg,
+.like-btn.liked svg{
+    stroke:var(--ac-violet-2) !important;
+    fill:rgba(176,108,255,0.18) !important;
+}
+
+@media (max-width:900px){
+    /* カード全体を少し薄くする */
+    .album-card.story-layout-card,
+    .story-layout-card{
+        padding:11px 12px 10px !important;
+        border-radius:20px !important;
+    }
+
+    .story-card-header{
+        margin-bottom:7px !important;
+        padding-right:40px !important;
+    }
+
+    .story-creator-link{
+        gap:8px !important;
+    }
+
+    .story-creator-link .creator-avatar,
+    .story-creator-link .creator-avatar-fallback{
+        width:34px !important;
+        height:34px !important;
+        flex-basis:34px !important;
+    }
+
+    /* ジャケットを小さく */
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:108px minmax(0,1fr) !important;
+        gap:11px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:108px !important;
+        height:108px !important;
+        border-radius:12px !important;
+    }
+
+    /* 右側もジャケットに合わせて圧縮 */
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:108px !important;
+        min-height:108px !important;
+        max-height:108px !important;
+        gap:3px !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 27px !important;
+        height:27px !important;
+        max-height:27px !important;
+        margin:0 !important;
+    }
+
+    .album-card.story-layout-card .story-title,
+    .story-layout-card .story-title{
+        font-size:15.8px !important;
+        line-height:1.02 !important;
+        margin:0 0 1px !important;
+    }
+
+    .album-card.story-layout-card .story-artist,
+    .story-layout-card .story-artist{
+        font-size:9.5px !important;
+        line-height:1.02 !important;
+        margin:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        height:78px !important;
+        min-height:78px !important;
+        max-height:78px !important;
+        padding:0 !important;
+        margin:0 !important;
+        background:transparent !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:78px !important;
+        min-height:78px !important;
+        max-height:78px !important;
+        display:grid !important;
+        grid-template-rows:repeat(5, 12px) !important;
+        row-gap:3px !important;
+        align-content:start !important;
+        padding:0 !important;
+        margin:0 !important;
+        border-bottom:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:12px !important;
+        min-height:12px !important;
+        max-height:12px !important;
+        grid-template-columns:34px minmax(0,1fr) 34px !important;
+        gap:5px !important;
+        margin:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        font-size:9.2px !important;
+        letter-spacing:-0.065em !important;
+        line-height:1 !important;
+    }
+
+    /* メーター線をより細く */
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before,
+    .meter-graphic::before{
+        height:1px !important;
+        background:linear-gradient(90deg, var(--ac-violet-faint), var(--ac-violet-line), rgba(216,182,255,0.30)) !important;
+        box-shadow:0 0 7px rgba(176,108,255,0.14) !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .meter-graphic .dot.selected{
+        width:9.5px !important;
+        height:9.5px !important;
+        border-width:1.8px !important;
+        background:var(--ac-violet) !important;
+        border-color:#ead8ff !important;
+        box-shadow:0 0 8px rgba(176,108,255,0.34) !important;
+    }
+
+    /* キーワード行の高さを圧縮 */
+    .story-keyword-box{
+        margin-top:8px !important;
+        gap:6px !important;
+    }
+
+    .story-keyword-box .keyword-tags{
+        gap:7px !important;
+        padding-bottom:0 !important;
+    }
+
+    .story-keyword-box .keyword-tag,
+    .story-keyword-box .keyword-empty,
+    .keyword-tag{
+        padding:6px 10px !important;
+        font-size:10.5px !important;
+        color:var(--ac-violet-2) !important;
+        border-color:var(--ac-violet-chip-border) !important;
+        background:var(--ac-violet-chip-bg) !important;
+        text-shadow:0 0 7px rgba(176,108,255,0.20) !important;
+    }
+
+    /* 反応行の縦幅も圧縮 */
+    .story-reaction-row{
+        margin-top:8px !important;
+        padding-top:5px !important;
+        min-height:28px !important;
+        gap:8px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .reaction-left-group,
+    .story-layout-card .story-reaction-row .reaction-left-group{
+        gap:18px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .like-btn,
+    .story-layout-card .story-reaction-row .like-btn{
+        font-size:20px !important;
+        width:20px !important;
+        height:20px !important;
+        min-width:20px !important;
+        min-height:20px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .comment-icon-clean,
+    .story-layout-card .story-reaction-row .comment-icon-clean,
+    .album-card.story-layout-card .story-reaction-row .comment-icon-clean svg,
+    .story-layout-card .story-reaction-row .comment-icon-clean svg{
+        width:19px !important;
+        height:19px !important;
+        flex-basis:19px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .story-play-btn,
+    .story-layout-card .story-reaction-row .story-play-btn,
+    .album-card.story-layout-card .story-reaction-row .spotify-btn,
+    .story-layout-card .story-reaction-row .spotify-btn{
+        width:26px !important;
+        height:26px !important;
+        min-width:26px !important;
+        min-height:26px !important;
+        margin-left:7px !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card,
+    .story-layout-card{
+        padding:10px 11px 9px !important;
+        border-radius:20px !important;
+    }
+
+    .story-card-header{
+        margin-bottom:6px !important;
+        padding-right:38px !important;
+    }
+
+    .story-creator-link .creator-avatar,
+    .story-creator-link .creator-avatar-fallback{
+        width:32px !important;
+        height:32px !important;
+        flex-basis:32px !important;
+    }
+
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:102px minmax(0,1fr) !important;
+        gap:10px !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:102px !important;
+        height:102px !important;
+        border-radius:12px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:102px !important;
+        min-height:102px !important;
+        max-height:102px !important;
+        gap:2px !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex-basis:25px !important;
+        height:25px !important;
+        max-height:25px !important;
+    }
+
+    .album-card.story-layout-card .story-title,
+    .story-layout-card .story-title{
+        font-size:15px !important;
+        line-height:1.01 !important;
+    }
+
+    .album-card.story-layout-card .story-artist,
+    .story-layout-card .story-artist{
+        font-size:9px !important;
+        line-height:1.01 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis,
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:75px !important;
+        min-height:75px !important;
+        max-height:75px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        grid-template-rows:repeat(5, 11.5px) !important;
+        row-gap:2.5px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        height:11.5px !important;
+        min-height:11.5px !important;
+        max-height:11.5px !important;
+        grid-template-columns:32px minmax(0,1fr) 32px !important;
+        gap:4px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        font-size:8.8px !important;
+        letter-spacing:-0.085em !important;
+    }
+
+    .story-keyword-box{
+        margin-top:7px !important;
+    }
+
+    .story-keyword-box .keyword-tag,
+    .story-keyword-box .keyword-empty,
+    .keyword-tag{
+        padding:6px 9px !important;
+        font-size:10px !important;
+    }
+
+    .story-reaction-row{
+        margin-top:7px !important;
+        padding-top:4px !important;
+        min-height:27px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .reaction-left-group,
+    .story-layout-card .story-reaction-row .reaction-left-group{
+        gap:16px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .like-btn,
+    .story-layout-card .story-reaction-row .like-btn{
+        font-size:19px !important;
+        width:19px !important;
+        height:19px !important;
+        min-width:19px !important;
+        min-height:19px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .comment-icon-clean,
+    .story-layout-card .story-reaction-row .comment-icon-clean,
+    .album-card.story-layout-card .story-reaction-row .comment-icon-clean svg,
+    .story-layout-card .story-reaction-row .comment-icon-clean svg{
+        width:18px !important;
+        height:18px !important;
+        flex-basis:18px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .story-play-btn,
+    .story-layout-card .story-reaction-row .story-play-btn,
+    .album-card.story-layout-card .story-reaction-row .spotify-btn,
+    .story-layout-card .story-reaction-row .spotify-btn{
+        width:25px !important;
+        height:25px !important;
+        min-width:25px !important;
+        min-height:25px !important;
+        margin-left:6px !important;
+    }
+}
+
 </style>
 
 </body>
