@@ -4738,6 +4738,15 @@ function albumCardHTML(item, posterProfile){
                 <span class="story-creator-line1">
                     <span class="story-creator-name">${escapeHTML(posterProfile?.name || '匿名ユーザー')}</span>
                     <span class="story-creator-from">から受信</span>
+                    <span class="receive-mini-icon" aria-hidden="true">
+                        <svg viewBox="0 0 28 18" fill="none">
+                            <circle cx="14" cy="9" r="3.2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M9.2 4.8C7.9 6 7.2 7.4 7.2 9c0 1.6.7 3 2 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M18.8 4.8c1.3 1.2 2 2.6 2 4.2 0 1.6-.7 3-2 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M5 2.2C2.9 4.1 1.8 6.4 1.8 9c0 2.6 1.1 4.9 3.2 6.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M23 2.2c2.1 1.9 3.2 4.2 3.2 6.8 0 2.6-1.1 4.9-3.2 6.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </span>
                 </span>
                 <span class="story-creator-line2">${escapeHTML(postDate || '')}</span>
             </span>
@@ -4794,9 +4803,7 @@ function albumCardHTML(item, posterProfile){
                 </span>
                 <span class="comment-count-number">0</span>
             </button>
-        </div>
 
-        <div class="reaction-center-group">
             <div class="spotify-area">
                 <button
                     class="icon-action-btn spotify-btn story-play-btn"
@@ -4809,6 +4816,8 @@ function albumCardHTML(item, posterProfile){
                 </button>
             </div>
         </div>
+
+        <div class="reaction-center-group" aria-hidden="true"></div>
 
         <div class="reaction-right-group">
             <button
@@ -9344,6 +9353,249 @@ body{
     .story-artist,
     .artist{
         font-size:14px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   FINAL FIX 12: 生成アイコン反映 + pale調整
+   - 発信：コンパクト電波塔アイコン
+   - 受信横：電波塔上部の受信ミニアイコン
+   - 探索：人工衛星アイコン
+   - リスト：リストマーク追加
+   - キーワード文字をpale blueへ
+   - メーター線を細く
+   - 再生ボタンをコメント数のすぐ横へ
+   - アーティスト名をさらに小さく
+============================================================ */
+
+/* 受信ミニアイコン */
+.receive-mini-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:20px;
+    height:14px;
+    margin-left:4px;
+    color:#9fcdd9;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.34));
+    flex:0 0 auto;
+}
+
+.receive-mini-icon svg{
+    width:20px;
+    height:14px;
+    display:block;
+}
+
+/* 下部タブ：発信 = 電波塔 */
+.mobile-tabbar a[href="editor.html"] .icon{
+    position:relative !important;
+    width:28px !important;
+    height:28px !important;
+    display:block !important;
+    font-size:0 !important;
+    line-height:1 !important;
+    background:currentColor !important;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M10%2024h12%27%2F%3E%3Cpath%20d%3D%27M11.5%2024L16%2011l4.5%2013%27%2F%3E%3Cpath%20d%3D%27M13.2%2018.5h5.6%27%2F%3E%3Cpath%20d%3D%27M13%2024l7-8%27%2F%3E%3Cpath%20d%3D%27M19%2024l-7-8%27%2F%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%279%27%20r%3D%272.8%27%2F%3E%3Cpath%20d%3D%27M8.5%207.5c-2.4%202.3-2.4%206.7%200%209%27%2F%3E%3Cpath%20d%3D%27M23.5%207.5c2.4%202.3%202.4%206.7%200%209%27%2F%3E%3Cpath%20d%3D%27M5.2%204.5c-4.2%204.1-4.2%2011.9%200%2016%27%2F%3E%3Cpath%20d%3D%27M26.8%204.5c4.2%204.1%204.2%2011.9%200%2016%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M10%2024h12%27%2F%3E%3Cpath%20d%3D%27M11.5%2024L16%2011l4.5%2013%27%2F%3E%3Cpath%20d%3D%27M13.2%2018.5h5.6%27%2F%3E%3Cpath%20d%3D%27M13%2024l7-8%27%2F%3E%3Cpath%20d%3D%27M19%2024l-7-8%27%2F%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%279%27%20r%3D%272.8%27%2F%3E%3Cpath%20d%3D%27M8.5%207.5c-2.4%202.3-2.4%206.7%200%209%27%2F%3E%3Cpath%20d%3D%27M23.5%207.5c2.4%202.3%202.4%206.7%200%209%27%2F%3E%3Cpath%20d%3D%27M5.2%204.5c-4.2%204.1-4.2%2011.9%200%2016%27%2F%3E%3Cpath%20d%3D%27M26.8%204.5c4.2%204.1%204.2%2011.9%200%2016%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    filter:drop-shadow(0 0 6px rgba(159,205,217,0.24));
+}
+
+.mobile-tabbar a[href="editor.html"] .icon::before,
+.mobile-tabbar a[href="editor.html"] .icon::after{
+    display:none !important;
+    content:none !important;
+}
+
+/* 下部タブ：探索 = 人工衛星 */
+.mobile-tabbar a[href="search.html"] .icon{
+    position:relative !important;
+    width:28px !important;
+    height:28px !important;
+    display:block !important;
+    font-size:0 !important;
+    line-height:1 !important;
+    background:currentColor !important;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.1%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%2713%27%20y%3D%2713%27%20width%3D%276%27%20height%3D%278%27%20rx%3D%272%27%20transform%3D%27rotate%28-35%2016%2017%29%27%2F%3E%3Crect%20x%3D%273.8%27%20y%3D%2710.5%27%20width%3D%278.5%27%20height%3D%276%27%20rx%3D%271%27%20transform%3D%27rotate%28-35%208%2013.5%29%27%2F%3E%3Crect%20x%3D%2720.2%27%20y%3D%2718.5%27%20width%3D%278.5%27%20height%3D%276%27%20rx%3D%271%27%20transform%3D%27rotate%28-35%2024.5%2021.5%29%27%2F%3E%3Cpath%20d%3D%27M11.5%2014.5l2.5%201.5%27%2F%3E%3Cpath%20d%3D%27M18.2%2018.2l2.5%201.5%27%2F%3E%3Cpath%20d%3D%27M18.8%2011.5l4.1-2.9%27%2F%3E%3Cpath%20d%3D%27M21.4%207.5c2.3.5%204.1%202.1%205%204.3%27%2F%3E%3Cpath%20d%3D%27M24.3%205.3c2.6.9%204.7%202.9%205.7%205.5%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.1%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%2713%27%20y%3D%2713%27%20width%3D%276%27%20height%3D%278%27%20rx%3D%272%27%20transform%3D%27rotate%28-35%2016%2017%29%27%2F%3E%3Crect%20x%3D%273.8%27%20y%3D%2710.5%27%20width%3D%278.5%27%20height%3D%276%27%20rx%3D%271%27%20transform%3D%27rotate%28-35%208%2013.5%29%27%2F%3E%3Crect%20x%3D%2720.2%27%20y%3D%2718.5%27%20width%3D%278.5%27%20height%3D%276%27%20rx%3D%271%27%20transform%3D%27rotate%28-35%2024.5%2021.5%29%27%2F%3E%3Cpath%20d%3D%27M11.5%2014.5l2.5%201.5%27%2F%3E%3Cpath%20d%3D%27M18.2%2018.2l2.5%201.5%27%2F%3E%3Cpath%20d%3D%27M18.8%2011.5l4.1-2.9%27%2F%3E%3Cpath%20d%3D%27M21.4%207.5c2.3.5%204.1%202.1%205%204.3%27%2F%3E%3Cpath%20d%3D%27M24.3%205.3c2.6.9%204.7%202.9%205.7%205.5%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    filter:drop-shadow(0 0 6px rgba(159,205,217,0.20));
+}
+
+/* 上部タブ：リストにリストマーク */
+#listTab{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:7px !important;
+}
+
+#listTab::before{
+    content:"" !important;
+    width:18px !important;
+    height:18px !important;
+    display:inline-block !important;
+    background:currentColor !important;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.3%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%275%27%20y%3D%277%27%20width%3D%274.5%27%20height%3D%274.5%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%209.2h13%27%2F%3E%3Crect%20x%3D%275%27%20y%3D%2714%27%20width%3D%274.5%27%20height%3D%274.5%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%2016.2h13%27%2F%3E%3Crect%20x%3D%275%27%20y%3D%2721%27%20width%3D%274.5%27%20height%3D%274.5%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%2023.2h13%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.3%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%275%27%20y%3D%277%27%20width%3D%274.5%27%20height%3D%274.5%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%209.2h13%27%2F%3E%3Crect%20x%3D%275%27%20y%3D%2714%27%20width%3D%274.5%27%20height%3D%274.5%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%2016.2h13%27%2F%3E%3Crect%20x%3D%275%27%20y%3D%2721%27%20width%3D%274.5%27%20height%3D%274.5%27%20rx%3D%271.1%27%2F%3E%3Cpath%20d%3D%27M14%2023.2h13%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
+    opacity:0.92;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.18));
+}
+
+/* キーワード：pale blueに寄せる */
+.story-keyword-box .keyword-tag,
+.keyword-tag{
+    color:#bfe7ee !important;
+    border-color:rgba(159,205,217,0.20) !important;
+    background:rgba(159,205,217,0.055) !important;
+    text-shadow:0 0 8px rgba(159,205,217,0.20) !important;
+}
+
+.keyword-title{
+    color:#9fcdd9 !important;
+}
+
+/* メーター線を細く、ドットも少し控えめ */
+.story-analysis .meter-graphic{
+    height:12px !important;
+}
+
+.story-analysis .meter-graphic::before{
+    height:1px !important;
+    left:5px !important;
+    right:5px !important;
+    background:linear-gradient(90deg, rgba(159,205,217,0.14), rgba(159,205,217,0.72)) !important;
+}
+
+.story-analysis .meter-graphic .dot{
+    width:10px !important;
+    height:10px !important;
+}
+
+.story-analysis .meter-graphic .dot.selected{
+    width:10px !important;
+    height:10px !important;
+    border:2px solid #eaf7f9 !important;
+    box-shadow:0 0 8px rgba(159,205,217,0.30) !important;
+}
+
+/* PC側の旧メーターにも効かせる */
+.connector{
+    height:1px !important;
+}
+
+.dot{
+    width:12px !important;
+    height:12px !important;
+    flex-basis:12px !important;
+}
+
+/* 再生ボタンをコメントのすぐ横に置く */
+.story-reaction-row{
+    grid-template-columns:1fr auto !important;
+}
+
+.reaction-left-group{
+    gap:14px !important;
+}
+
+.reaction-center-group{
+    display:none !important;
+}
+
+.story-play-btn{
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    min-height:30px !important;
+    margin-left:0 !important;
+}
+
+.story-play-btn .spotify-icon,
+.spotify-btn .spotify-icon{
+    width:22px !important;
+    height:22px !important;
+}
+
+.story-play-btn .spotify-icon::before,
+.spotify-btn .spotify-icon::before{
+    left:8px !important;
+    top:5px !important;
+    border-top-width:5px !important;
+    border-bottom-width:5px !important;
+    border-left-width:7px !important;
+}
+
+/* アーティスト名を小さく */
+.story-artist,
+.artist{
+    font-size:12.5px !important;
+    line-height:1.22 !important;
+    font-weight:450 !important;
+    color:rgba(245,250,252,0.82) !important;
+}
+
+@media(max-width:900px){
+    .receive-mini-icon{
+        width:18px;
+        height:13px;
+        margin-left:3px;
+    }
+
+    .receive-mini-icon svg{
+        width:18px;
+        height:13px;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon,
+    .mobile-tabbar a[href="search.html"] .icon{
+        width:27px !important;
+        height:27px !important;
+    }
+
+    #listTab::before{
+        width:17px !important;
+        height:17px !important;
+    }
+
+    .story-artist,
+    .artist{
+        font-size:12px !important;
+    }
+
+    .story-reaction-row{
+        grid-template-columns:1fr auto !important;
+    }
+
+    .reaction-left-group{
+        gap:12px !important;
+    }
+
+    .story-play-btn{
+        width:29px !important;
+        height:29px !important;
+        min-width:29px !important;
+        min-height:29px !important;
+    }
+}
+
+@media(max-width:430px){
+    .story-artist,
+    .artist{
+        font-size:11.5px !important;
+    }
+
+    .reaction-left-group{
+        gap:11px !important;
+    }
+
+    .story-play-btn{
+        width:28px !important;
+        height:28px !important;
+        min-width:28px !important;
+        min-height:28px !important;
     }
 }
 </style>
