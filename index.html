@@ -8730,5 +8730,315 @@ body::after{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   FINAL FIX 7: 背景画像のズーム感をなくし、スクロール連動にする
+   - iPhone Safari の fixed 背景ズーム/揺れ対策
+   - 背景を body 本体に置く
+   - 下スクロールと一緒に背景も自然に流れる
+============================================================ */
+
+html{
+    background:#030814 !important;
+}
+
+body{
+    background-color:#030814 !important;
+    background-image:
+        linear-gradient(180deg, rgba(3,8,20,0.18) 0%, rgba(3,8,20,0.30) 42%, rgba(3,8,20,0.62) 100%),
+        url("./milkyway_bg.png") !important;
+    background-size:
+        100% auto,
+        100% auto !important;
+    background-repeat:
+        repeat-y,
+        repeat-y !important;
+    background-position:
+        center top,
+        center top !important;
+    background-attachment:
+        scroll,
+        scroll !important;
+}
+
+/* これまでの fixed 疑似背景を止める */
+body::before{
+    display:none !important;
+    content:none !important;
+    animation:none !important;
+}
+
+/* 暗さ調整用の薄いベールだけ残す。これは固定しない */
+body::after{
+    position:absolute !important;
+    inset:0 !important;
+    min-height:100% !important;
+    z-index:-2 !important;
+    pointer-events:none !important;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,0.16), transparent 16%, transparent 84%, rgba(0,0,0,0.18)),
+        linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.16)) !important;
+}
+
+@media(max-width:900px){
+    body{
+        background-size:
+            100% auto,
+            100% auto !important;
+        background-repeat:
+            repeat-y,
+            repeat-y !important;
+        background-position:
+            center top,
+            center top !important;
+        background-attachment:
+            scroll,
+            scroll !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   FINAL FIX 8: ロゴ位置 + 細めフォント調整
+   - Album Collection ロゴをタブバーの上へ
+   - 全体のフォントウェイトを参考画像寄りに軽くする
+   - スマホ上部を「ロゴ → タブ」の順番に見せる
+============================================================ */
+
+/* 全体：少し細い印象に */
+body{
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Helvetica Neue",
+        "Hiragino Sans",
+        "Noto Sans JP",
+        sans-serif !important;
+    font-weight:400 !important;
+    letter-spacing:-0.018em !important;
+}
+
+.page-title,
+.title,
+.story-title,
+.list-title,
+.logo,
+.feed-tab,
+.mobile-tabbar a,
+.story-creator-name,
+.artist,
+.story-artist,
+.meter-label,
+.keyword-title,
+.keyword-tag,
+.post-more-action,
+.sort-option-btn{
+    font-weight:600 !important;
+}
+
+.page-title{
+    font-weight:650 !important;
+    letter-spacing:-0.045em !important;
+}
+
+.story-title,
+.title{
+    font-weight:650 !important;
+}
+
+.story-artist,
+.artist{
+    font-weight:500 !important;
+}
+
+.story-creator-name{
+    font-weight:600 !important;
+}
+
+.story-creator-from,
+.story-creator-line2,
+.meta,
+.story-meta,
+.creator-prefix,
+.creator-name{
+    font-weight:400 !important;
+}
+
+.meter-label{
+    font-weight:500 !important;
+}
+
+.keyword-tag,
+.story-keyword-box .keyword-tag{
+    font-weight:500 !important;
+}
+
+.like-count,
+.comment-count-number,
+.list-reaction-number{
+    font-weight:400 !important;
+}
+
+/* PCは今のまま大きく崩さない */
+@media(min-width:901px){
+    .topbar{
+        margin-bottom:22px !important;
+    }
+
+    .page-title{
+        font-size:38px !important;
+    }
+}
+
+/* スマホ：ロゴをタブバーの上に移動して見せる */
+@media(max-width:900px){
+    body{
+        padding-top:0 !important;
+        font-weight:400 !important;
+    }
+
+    /* DOM順はタブ→ロゴだが、flexのorderで見た目をロゴ→タブにする */
+    body{
+        display:flex !important;
+        flex-direction:column !important;
+        min-height:100% !important;
+    }
+
+    .topbar{
+        order:1 !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:space-between !important;
+        gap:12px !important;
+        margin:0 -16px 0 !important;
+        padding:20px 30px 14px !important;
+        background:rgba(2,8,20,0.46) !important;
+        border-bottom:none !important;
+        backdrop-filter:blur(18px) saturate(1.12) !important;
+        -webkit-backdrop-filter:blur(18px) saturate(1.12) !important;
+        z-index:910 !important;
+    }
+
+    .page-title{
+        font-size:25px !important;
+        line-height:1.05 !important;
+        margin:0 !important;
+        font-weight:650 !important;
+        letter-spacing:-0.04em !important;
+        text-shadow:0 0 20px rgba(159,205,217,0.12) !important;
+    }
+
+    .home-sortbar{
+        margin:0 !important;
+        flex:0 0 auto !important;
+    }
+
+    .sort-filter-btn{
+        width:38px !important;
+        height:38px !important;
+        background:rgba(0,0,0,0.22) !important;
+        border-color:rgba(255,255,255,0.16) !important;
+    }
+
+    .mobile-feed-tabs{
+        order:2 !important;
+        position:sticky !important;
+        top:0 !important;
+        z-index:905 !important;
+        margin:0 -16px 14px !important;
+        padding:0 26px !important;
+        height:58px !important;
+        background:rgba(2,8,20,0.46) !important;
+        border-top:none !important;
+        border-bottom:1px solid rgba(159,205,217,0.12) !important;
+        backdrop-filter:blur(18px) saturate(1.12) !important;
+        -webkit-backdrop-filter:blur(18px) saturate(1.12) !important;
+    }
+
+    .feed-tab{
+        height:58px !important;
+        font-size:15px !important;
+        font-weight:500 !important;
+        color:rgba(238,246,247,0.52) !important;
+        letter-spacing:-0.015em !important;
+    }
+
+    .feed-tab.active{
+        color:#ffffff !important;
+        font-weight:600 !important;
+    }
+
+    .mobile-feed-tabs::after{
+        bottom:0 !important;
+        width:90px !important;
+        height:3px !important;
+        background:linear-gradient(90deg,#9fcdd9,#f0fbfc) !important;
+        box-shadow:0 0 14px rgba(159,205,217,0.34) !important;
+    }
+
+    .feed-swipe{
+        order:3 !important;
+    }
+
+    .share-sheet,
+    .listen-sheet,
+    .tutorial-overlay,
+    .mobile-tabbar{
+        order:initial !important;
+    }
+
+    /* 投稿カード内も少し軽く */
+    .story-creator-name{
+        font-size:14px !important;
+        font-weight:600 !important;
+    }
+
+    .story-creator-from,
+    .story-creator-line2{
+        font-weight:400 !important;
+    }
+
+    .story-title{
+        font-weight:650 !important;
+    }
+
+    .story-artist{
+        font-weight:500 !important;
+    }
+
+    .story-analysis .meter-label{
+        font-weight:500 !important;
+    }
+
+    .mobile-tabbar a{
+        font-weight:400 !important;
+    }
+
+    .mobile-tabbar a.active{
+        font-weight:500 !important;
+    }
+}
+
+/* 狭いスマホでもロゴが大きすぎないように */
+@media(max-width:430px){
+    .topbar{
+        padding:18px 30px 13px !important;
+    }
+
+    .page-title{
+        font-size:24px !important;
+    }
+
+    .feed-tab{
+        font-size:14px !important;
+    }
+}
+</style>
+
 </body>
 </html>
