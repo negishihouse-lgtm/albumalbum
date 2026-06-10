@@ -8645,5 +8645,90 @@ body::after{
 }
 </style>
 
+
+
+<style>
+/* ============================================================
+   FINAL FIX 6: 生成した銀河背景をそのまま採用
+   - 同階層の milkyway_bg.png を背景に使用
+   - 既存のガスっぽいCSS背景を上書き
+============================================================ */
+html,
+body{
+    background:#030814 !important;
+}
+
+@keyframes milkywayPan {
+    0%   { background-position:center top; }
+    50%  { background-position:center 22px; }
+    100% { background-position:center top; }
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    pointer-events:none;
+    opacity:1 !important;
+    filter:saturate(1.02) brightness(0.92) contrast(1.06) !important;
+    background-image:
+        linear-gradient(180deg, rgba(3,8,20,0.22) 0%, rgba(3,8,20,0.36) 38%, rgba(3,8,20,0.72) 100%),
+        url("./milkyway_bg.png") !important;
+    background-size:
+        cover,
+        cover !important;
+    background-repeat:
+        no-repeat,
+        no-repeat !important;
+    background-position:
+        center top,
+        center top !important;
+    animation:milkywayPan 38s ease-in-out infinite !important;
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 50% 12%, rgba(255,255,255,0.06), transparent 18%),
+        linear-gradient(90deg, rgba(0,0,0,0.18), transparent 16%, transparent 84%, rgba(0,0,0,0.20)) !important;
+}
+
+.mobile-feed-tabs,
+.mobile-tabbar,
+.sidebar{
+    background:rgba(2,8,20,0.52) !important;
+    backdrop-filter:blur(20px) saturate(1.12) !important;
+    -webkit-backdrop-filter:blur(20px) saturate(1.12) !important;
+}
+
+.mobile-feed-tabs::after,
+.feed-tab.active::after{
+    background:linear-gradient(90deg, #9fcdd9, #f0fbfc) !important;
+    box-shadow:0 0 14px rgba(159,205,217,0.34) !important;
+}
+
+.album-card.story-layout-card,
+.list-card,
+.album-card,
+.album-analysis{
+    background:linear-gradient(145deg, rgba(5,10,18,0.48), rgba(4,7,12,0.28)) !important;
+    border-color:rgba(159,205,217,0.22) !important;
+}
+
+@media(max-width:900px){
+    body::before{
+        background-size:
+            cover,
+            cover !important;
+        animation:milkywayPan 44s ease-in-out infinite !important;
+    }
+}
+</style>
+
 </body>
 </html>
