@@ -6544,6 +6544,145 @@ body{
     }
 }
 
+
+
+/* ============================================================
+   PATCH 25: match reference meter look
+   - ドットは丸ごと表示
+   - ドット左側の線だけ紫に発光
+   - ドット右側の線はグレー寄りで維持
+   - 参考画像の見え方に寄せる
+============================================================ */
+
+/* メーター全体の基準線はかなり淡く */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    position:relative !important;
+    overflow:visible !important;
+}
+
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.16) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* コネクタは右側(未到達側)の薄いグレー線 */
+.meter-graphic .connector,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.18) !important;
+    box-shadow:none !important;
+}
+
+/* 左側(到達済み側)だけ紫にする */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(118,86,255,0.92) 0%,
+        rgba(186,126,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.24),
+        0 0 12px rgba(165,111,255,0.10) !important;
+}
+
+/* ドットは丸ごとそのまま見せる */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+    width:7.8px !important;
+    height:7.8px !important;
+    min-width:7.8px !important;
+    min-height:7.8px !important;
+    max-width:7.8px !important;
+    max-height:7.8px !important;
+    flex:0 0 7.8px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    border:none !important;
+    outline:none !important;
+    background:#c99aff !important;
+    box-shadow:
+        0 0 6px rgba(201,154,255,0.34),
+        0 0 12px rgba(165,111,255,0.12) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:8.2px !important;
+    height:8.2px !important;
+    min-width:8.2px !important;
+    min-height:8.2px !important;
+    max-width:8.2px !important;
+    max-height:8.2px !important;
+    flex:0 0 8.2px !important;
+    background:#d6a9ff !important;
+    box-shadow:
+        0 0 8px rgba(214,169,255,0.55),
+        0 0 15px rgba(165,111,255,0.18) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.3px !important;
+        height:7.3px !important;
+        min-width:7.3px !important;
+        min-height:7.3px !important;
+        max-width:7.3px !important;
+        max-height:7.3px !important;
+        flex:0 0 7.3px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.7px !important;
+        height:7.7px !important;
+        min-width:7.7px !important;
+        min-height:7.7px !important;
+        max-width:7.7px !important;
+        max-height:7.7px !important;
+        flex:0 0 7.7px !important;
+    }
+}
+
 </style>
 </head>
 
@@ -10999,6 +11138,145 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+
+
+/* ============================================================
+   PATCH 25: match reference meter look
+   - ドットは丸ごと表示
+   - ドット左側の線だけ紫に発光
+   - ドット右側の線はグレー寄りで維持
+   - 参考画像の見え方に寄せる
+============================================================ */
+
+/* メーター全体の基準線はかなり淡く */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    position:relative !important;
+    overflow:visible !important;
+}
+
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.16) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* コネクタは右側(未到達側)の薄いグレー線 */
+.meter-graphic .connector,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.18) !important;
+    box-shadow:none !important;
+}
+
+/* 左側(到達済み側)だけ紫にする */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(118,86,255,0.92) 0%,
+        rgba(186,126,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.24),
+        0 0 12px rgba(165,111,255,0.10) !important;
+}
+
+/* ドットは丸ごとそのまま見せる */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+    width:7.8px !important;
+    height:7.8px !important;
+    min-width:7.8px !important;
+    min-height:7.8px !important;
+    max-width:7.8px !important;
+    max-height:7.8px !important;
+    flex:0 0 7.8px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    border:none !important;
+    outline:none !important;
+    background:#c99aff !important;
+    box-shadow:
+        0 0 6px rgba(201,154,255,0.34),
+        0 0 12px rgba(165,111,255,0.12) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:8.2px !important;
+    height:8.2px !important;
+    min-width:8.2px !important;
+    min-height:8.2px !important;
+    max-width:8.2px !important;
+    max-height:8.2px !important;
+    flex:0 0 8.2px !important;
+    background:#d6a9ff !important;
+    box-shadow:
+        0 0 8px rgba(214,169,255,0.55),
+        0 0 15px rgba(165,111,255,0.18) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.3px !important;
+        height:7.3px !important;
+        min-width:7.3px !important;
+        min-height:7.3px !important;
+        max-width:7.3px !important;
+        max-height:7.3px !important;
+        flex:0 0 7.3px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.7px !important;
+        height:7.7px !important;
+        min-width:7.7px !important;
+        min-height:7.7px !important;
+        max-width:7.7px !important;
+        max-height:7.7px !important;
+        flex:0 0 7.7px !important;
+    }
+}
+
 </style>
 
 
@@ -12213,6 +12491,145 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+
+
+/* ============================================================
+   PATCH 25: match reference meter look
+   - ドットは丸ごと表示
+   - ドット左側の線だけ紫に発光
+   - ドット右側の線はグレー寄りで維持
+   - 参考画像の見え方に寄せる
+============================================================ */
+
+/* メーター全体の基準線はかなり淡く */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    position:relative !important;
+    overflow:visible !important;
+}
+
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.16) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* コネクタは右側(未到達側)の薄いグレー線 */
+.meter-graphic .connector,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.18) !important;
+    box-shadow:none !important;
+}
+
+/* 左側(到達済み側)だけ紫にする */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(118,86,255,0.92) 0%,
+        rgba(186,126,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.24),
+        0 0 12px rgba(165,111,255,0.10) !important;
+}
+
+/* ドットは丸ごとそのまま見せる */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+    width:7.8px !important;
+    height:7.8px !important;
+    min-width:7.8px !important;
+    min-height:7.8px !important;
+    max-width:7.8px !important;
+    max-height:7.8px !important;
+    flex:0 0 7.8px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    border:none !important;
+    outline:none !important;
+    background:#c99aff !important;
+    box-shadow:
+        0 0 6px rgba(201,154,255,0.34),
+        0 0 12px rgba(165,111,255,0.12) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:8.2px !important;
+    height:8.2px !important;
+    min-width:8.2px !important;
+    min-height:8.2px !important;
+    max-width:8.2px !important;
+    max-height:8.2px !important;
+    flex:0 0 8.2px !important;
+    background:#d6a9ff !important;
+    box-shadow:
+        0 0 8px rgba(214,169,255,0.55),
+        0 0 15px rgba(165,111,255,0.18) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.3px !important;
+        height:7.3px !important;
+        min-width:7.3px !important;
+        min-height:7.3px !important;
+        max-width:7.3px !important;
+        max-height:7.3px !important;
+        flex:0 0 7.3px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.7px !important;
+        height:7.7px !important;
+        min-width:7.7px !important;
+        min-height:7.7px !important;
+        max-width:7.7px !important;
+        max-height:7.7px !important;
+        flex:0 0 7.7px !important;
+    }
+}
+
 </style>
 
 
@@ -13394,6 +13811,145 @@ document.addEventListener("DOMContentLoaded", () => {
         max-width:7.4px !important;
         max-height:7.4px !important;
         flex:0 0 7.4px !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 25: match reference meter look
+   - ドットは丸ごと表示
+   - ドット左側の線だけ紫に発光
+   - ドット右側の線はグレー寄りで維持
+   - 参考画像の見え方に寄せる
+============================================================ */
+
+/* メーター全体の基準線はかなり淡く */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    position:relative !important;
+    overflow:visible !important;
+}
+
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.16) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* コネクタは右側(未到達側)の薄いグレー線 */
+.meter-graphic .connector,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.18) !important;
+    box-shadow:none !important;
+}
+
+/* 左側(到達済み側)だけ紫にする */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(118,86,255,0.92) 0%,
+        rgba(186,126,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.24),
+        0 0 12px rgba(165,111,255,0.10) !important;
+}
+
+/* ドットは丸ごとそのまま見せる */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+    width:7.8px !important;
+    height:7.8px !important;
+    min-width:7.8px !important;
+    min-height:7.8px !important;
+    max-width:7.8px !important;
+    max-height:7.8px !important;
+    flex:0 0 7.8px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    border:none !important;
+    outline:none !important;
+    background:#c99aff !important;
+    box-shadow:
+        0 0 6px rgba(201,154,255,0.34),
+        0 0 12px rgba(165,111,255,0.12) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:8.2px !important;
+    height:8.2px !important;
+    min-width:8.2px !important;
+    min-height:8.2px !important;
+    max-width:8.2px !important;
+    max-height:8.2px !important;
+    flex:0 0 8.2px !important;
+    background:#d6a9ff !important;
+    box-shadow:
+        0 0 8px rgba(214,169,255,0.55),
+        0 0 15px rgba(165,111,255,0.18) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.3px !important;
+        height:7.3px !important;
+        min-width:7.3px !important;
+        min-height:7.3px !important;
+        max-width:7.3px !important;
+        max-height:7.3px !important;
+        flex:0 0 7.3px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.7px !important;
+        height:7.7px !important;
+        min-width:7.7px !important;
+        min-height:7.7px !important;
+        max-width:7.7px !important;
+        max-height:7.7px !important;
+        flex:0 0 7.7px !important;
     }
 }
 
@@ -15499,6 +16055,145 @@ document.addEventListener("DOMContentLoaded", () => {
         max-width:7.4px !important;
         max-height:7.4px !important;
         flex:0 0 7.4px !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 25: match reference meter look
+   - ドットは丸ごと表示
+   - ドット左側の線だけ紫に発光
+   - ドット右側の線はグレー寄りで維持
+   - 参考画像の見え方に寄せる
+============================================================ */
+
+/* メーター全体の基準線はかなり淡く */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    position:relative !important;
+    overflow:visible !important;
+}
+
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.16) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* コネクタは右側(未到達側)の薄いグレー線 */
+.meter-graphic .connector,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.18) !important;
+    box-shadow:none !important;
+}
+
+/* 左側(到達済み側)だけ紫にする */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(118,86,255,0.92) 0%,
+        rgba(186,126,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.24),
+        0 0 12px rgba(165,111,255,0.10) !important;
+}
+
+/* ドットは丸ごとそのまま見せる */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+    width:7.8px !important;
+    height:7.8px !important;
+    min-width:7.8px !important;
+    min-height:7.8px !important;
+    max-width:7.8px !important;
+    max-height:7.8px !important;
+    flex:0 0 7.8px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    border:none !important;
+    outline:none !important;
+    background:#c99aff !important;
+    box-shadow:
+        0 0 6px rgba(201,154,255,0.34),
+        0 0 12px rgba(165,111,255,0.12) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:8.2px !important;
+    height:8.2px !important;
+    min-width:8.2px !important;
+    min-height:8.2px !important;
+    max-width:8.2px !important;
+    max-height:8.2px !important;
+    flex:0 0 8.2px !important;
+    background:#d6a9ff !important;
+    box-shadow:
+        0 0 8px rgba(214,169,255,0.55),
+        0 0 15px rgba(165,111,255,0.18) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.3px !important;
+        height:7.3px !important;
+        min-width:7.3px !important;
+        min-height:7.3px !important;
+        max-width:7.3px !important;
+        max-height:7.3px !important;
+        flex:0 0 7.3px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.7px !important;
+        height:7.7px !important;
+        min-width:7.7px !important;
+        min-height:7.7px !important;
+        max-width:7.7px !important;
+        max-height:7.7px !important;
+        flex:0 0 7.7px !important;
     }
 }
 
