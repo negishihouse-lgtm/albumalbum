@@ -9040,5 +9040,46 @@ body{
 }
 </style>
 
+
+<style>
+/* ============================================================
+   FINAL FIX 9: アルバムカードの透明度を下げる
+   - 背景は見えるが、カード自体はもう少し読みやすく
+   - listカードも同じ質感に合わせる
+============================================================ */
+
+.album-card.story-layout-card,
+.album-card,
+.list-card{
+    background:linear-gradient(
+        145deg,
+        rgba(5,10,18,0.66),
+        rgba(4,7,12,0.50)
+    ) !important;
+    border-color:rgba(159,205,217,0.26) !important;
+    box-shadow:
+        0 16px 48px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.075),
+        0 0 24px rgba(159,205,217,0.055) !important;
+}
+
+.album-analysis,
+.story-analysis{
+    background:rgba(4,8,14,0.18) !important;
+}
+
+@media(max-width:900px){
+    .album-card.story-layout-card,
+    .album-card,
+    .list-card{
+        background:linear-gradient(
+            145deg,
+            rgba(5,10,18,0.68),
+            rgba(4,7,12,0.52)
+        ) !important;
+    }
+}
+</style>
+
 </body>
 </html>
