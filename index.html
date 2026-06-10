@@ -9175,5 +9175,178 @@ body::after{
 })();
 </script>
 
+
+<style>
+/* ============================================================
+   FINAL FIX 11: タイトル/アーティスト/フォント/発信アイコン調整
+   - タイトルとアーティストのサイズを参考画像寄りに再調整
+   - 全体フォントを美麗寄りに変更
+   - 下部タブの「発信」アイコンを電波塔風に変更
+============================================================ */
+
+/* 美麗寄りフォント：
+   Apple端末では SF Pro 系、日本語は Hiragino Sans を優先 */
+body{
+    font-family:
+        "SF Pro Display",
+        "SF Pro Text",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Helvetica Neue",
+        "Hiragino Sans",
+        "Hiragino Kaku Gothic ProN",
+        "Noto Sans JP",
+        sans-serif !important;
+    font-feature-settings:"palt" 1;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:geometricPrecision;
+}
+
+/* ロゴは少し洗練された太さ */
+.page-title{
+    font-size:30px !important;
+    font-weight:680 !important;
+    letter-spacing:-0.055em !important;
+}
+
+/* 投稿タイトル：大きすぎず、でも主役にする */
+.story-title,
+.title{
+    font-size:22px !important;
+    line-height:1.12 !important;
+    font-weight:680 !important;
+    letter-spacing:-0.045em !important;
+    color:#ffffff !important;
+}
+
+/* アーティスト名：タイトルより小さく、品よく */
+.story-artist,
+.artist{
+    font-size:15px !important;
+    line-height:1.25 !important;
+    font-weight:500 !important;
+    letter-spacing:-0.025em !important;
+    color:rgba(245,250,252,0.90) !important;
+}
+
+/* 投稿者名も少し上品に */
+.story-creator-name,
+.creator-name{
+    font-weight:560 !important;
+    letter-spacing:-0.025em !important;
+}
+
+/* メーター文字は細めで読みやすく */
+.story-analysis .meter-label,
+.meter-label{
+    font-weight:520 !important;
+    letter-spacing:-0.015em !important;
+}
+
+/* 下部タブ全体 */
+.mobile-tabbar a{
+    font-family:
+        "SF Pro Text",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Helvetica Neue",
+        "Hiragino Sans",
+        "Noto Sans JP",
+        sans-serif !important;
+    font-weight:400 !important;
+}
+
+/* 発信アイコンを電波塔風にする。
+   HTMLの「＋」を視覚的に隠してCSSで描画 */
+.mobile-tabbar a[href="editor.html"] .icon{
+    position:relative !important;
+    width:32px !important;
+    height:28px !important;
+    font-size:0 !important;
+    line-height:1 !important;
+    display:block !important;
+    margin-bottom:1px !important;
+}
+
+/* 塔の本体 */
+.mobile-tabbar a[href="editor.html"] .icon::before{
+    content:"" !important;
+    position:absolute !important;
+    left:50% !important;
+    bottom:2px !important;
+    width:16px !important;
+    height:22px !important;
+    transform:translateX(-50%) !important;
+    background:
+        linear-gradient(115deg, transparent 0 42%, currentColor 43% 52%, transparent 53% 100%),
+        linear-gradient(65deg, transparent 0 42%, currentColor 43% 52%, transparent 53% 100%),
+        linear-gradient(currentColor, currentColor);
+    background-size:
+        16px 22px,
+        16px 22px,
+        2px 19px;
+    background-position:
+        center bottom,
+        center bottom,
+        center bottom;
+    background-repeat:no-repeat;
+    opacity:0.96;
+}
+
+/* 電波 */
+.mobile-tabbar a[href="editor.html"] .icon::after{
+    content:"" !important;
+    position:absolute !important;
+    left:50% !important;
+    top:0 !important;
+    width:26px !important;
+    height:16px !important;
+    transform:translateX(-50%) !important;
+    border-top:2px solid currentColor !important;
+    border-left:2px solid transparent !important;
+    border-right:2px solid transparent !important;
+    border-radius:50% 50% 0 0 !important;
+    box-shadow:
+        0 -5px 0 -3px currentColor,
+        0 5px 0 -3px currentColor;
+    opacity:0.92;
+}
+
+@media(max-width:900px){
+    .page-title{
+        font-size:27px !important;
+        font-weight:680 !important;
+    }
+
+    .story-title,
+    .title{
+        font-size:21px !important;
+        line-height:1.10 !important;
+    }
+
+    .story-artist,
+    .artist{
+        font-size:15px !important;
+        line-height:1.18 !important;
+    }
+}
+
+@media(max-width:430px){
+    .page-title{
+        font-size:26px !important;
+    }
+
+    .story-title,
+    .title{
+        font-size:19px !important;
+    }
+
+    .story-artist,
+    .artist{
+        font-size:14px !important;
+    }
+}
+</style>
+
 </body>
 </html>
