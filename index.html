@@ -4884,66 +4884,124 @@ body{
 
 
 
-/* ============================================================
-   2026-06-10 追加修正 PATCH 07
-   - スマホ投稿カード：ハート / コメント / 再生ボタンの間隔を広げる
-   - 未いいね時のハート、コメントアイコンを理想画像寄りの暗め白にする
-   - メーター・下端・発信アイコンは触らない
-============================================================ */
-@media (max-width:900px){
-    .album-card.story-layout-card .reaction-left-group,
-    .story-layout-card .reaction-left-group{
-        gap:22px !important;
-    }
-
-    .album-card.story-layout-card .like-area,
-    .story-layout-card .like-area{
-        gap:8px !important;
-    }
-
-    .album-card.story-layout-card .comment-icon-wrap,
-    .story-layout-card .comment-icon-wrap{
-        gap:7px !important;
-        color:rgba(216,230,235,0.70) !important;
-    }
-
-    .album-card.story-layout-card .story-reaction-row .like-btn:not(.liked),
-    .story-layout-card .story-reaction-row .like-btn:not(.liked){
-        color:rgba(216,230,235,0.70) !important;
-    }
-
-    .album-card.story-layout-card .story-reaction-row .comment-icon-clean,
-    .album-card.story-layout-card .story-reaction-row .comment-icon-clean svg,
-    .story-layout-card .story-reaction-row .comment-icon-clean,
-    .story-layout-card .story-reaction-row .comment-icon-clean svg{
-        color:rgba(216,230,235,0.70) !important;
-    }
-
-    .album-card.story-layout-card .story-reaction-row .like-btn.liked,
-    .story-layout-card .story-reaction-row .like-btn.liked{
-        color:#ffffff !important;
-    }
-
-    .album-card.story-layout-card .story-play-btn,
-    .story-layout-card .story-play-btn{
-        margin-left:2px !important;
-    }
+/* ===== PATCH 08: story reaction row refine ===== */
+.album-card.story-layout-card .story-reaction-row,
+.story-layout-card .story-reaction-row{
+    grid-template-columns:minmax(0,1fr) auto !important;
+    align-items:center !important;
+    column-gap:12px !important;
 }
 
-@media (max-width:430px){
-    .album-card.story-layout-card .reaction-left-group,
-    .story-layout-card .reaction-left-group{
-        gap:19px !important;
+.album-card.story-layout-card .story-reaction-row .reaction-left-group,
+.story-layout-card .story-reaction-row .reaction-left-group{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    flex-wrap:nowrap !important;
+    gap:16px !important;
+    min-width:0 !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .reaction-right-group,
+.story-layout-card .story-reaction-row .reaction-right-group{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    flex:0 0 auto !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-area,
+.story-layout-card .story-reaction-row .like-area{
+    display:inline-flex !important;
+    align-items:center !important;
+    flex:0 0 auto !important;
+    gap:5px !important;
+    min-width:auto !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-icon-wrap,
+.story-layout-card .story-reaction-row .comment-icon-wrap{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    flex:0 0 auto !important;
+    width:auto !important;
+    min-width:auto !important;
+    height:auto !important;
+    min-height:auto !important;
+    padding:0 !important;
+    gap:5px !important;
+    background:transparent !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .story-play-btn,
+.story-layout-card .story-reaction-row .story-play-btn{
+    flex:0 0 auto !important;
+    margin-left:4px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-btn,
+.story-layout-card .story-reaction-row .like-btn{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    line-height:1 !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-btn:not(.liked),
+.story-layout-card .story-reaction-row .like-btn:not(.liked){
+    color:rgba(221,229,233,0.72) !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-count,
+.story-layout-card .story-reaction-row .like-count{
+    display:inline-flex !important;
+    align-items:center !important;
+    line-height:1 !important;
+    color:rgba(231,238,241,0.88) !important;
+    font-weight:600 !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-icon-wrap,
+.album-card.story-layout-card .story-reaction-row .comment-icon-clean,
+.album-card.story-layout-card .story-reaction-row .comment-icon-clean svg,
+.story-layout-card .story-reaction-row .comment-icon-wrap,
+.story-layout-card .story-reaction-row .comment-icon-clean,
+.story-layout-card .story-reaction-row .comment-icon-clean svg{
+    color:rgba(221,229,233,0.72) !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-count-number,
+.story-layout-card .story-reaction-row .comment-count-number{
+    display:inline-flex !important;
+    align-items:center !important;
+    line-height:1 !important;
+    color:rgba(231,238,241,0.84) !important;
+    font-weight:600 !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-icon-clean,
+.story-layout-card .story-reaction-row .comment-icon-clean{
+    width:18px !important;
+    height:18px !important;
+    flex:0 0 18px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-icon-clean svg,
+.story-layout-card .story-reaction-row .comment-icon-clean svg{
+    width:18px !important;
+    height:18px !important;
+}
+
+@media (max-width: 430px){
+    .album-card.story-layout-card .story-reaction-row .reaction-left-group,
+    .story-layout-card .story-reaction-row .reaction-left-group{
+        gap:14px !important;
     }
 
-    .album-card.story-layout-card .like-area,
-    .story-layout-card .like-area{
-        gap:7px !important;
-    }
-
-    .album-card.story-layout-card .comment-icon-wrap,
-    .story-layout-card .comment-icon-wrap{
-        gap:6px !important;
+    .album-card.story-layout-card .story-reaction-row .story-play-btn,
+    .story-layout-card .story-reaction-row .story-play-btn{
+        margin-left:2px !important;
     }
 }
 
