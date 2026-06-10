@@ -5118,6 +5118,115 @@ body{
     }
 }
 
+
+
+/* ===== PATCH 11: smaller heart + smaller play circle + centered triangle ===== */
+.album-card.story-layout-card .story-reaction-row .like-btn,
+.story-layout-card .story-reaction-row .like-btn{
+    font-size:22px !important;
+    width:22px !important;
+    height:22px !important;
+    min-width:22px !important;
+    min-height:22px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .story-play-btn,
+.story-layout-card .story-reaction-row .story-play-btn,
+.album-card.story-layout-card .story-reaction-row .spotify-btn,
+.story-layout-card .story-reaction-row .spotify-btn{
+    width:28px !important;
+    height:28px !important;
+    min-width:28px !important;
+    min-height:28px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .story-play-btn .spotify-icon::before,
+.story-layout-card .story-reaction-row .story-play-btn .spotify-icon::before,
+.album-card.story-layout-card .story-reaction-row .spotify-btn .spotify-icon::before,
+.story-layout-card .story-reaction-row .spotify-btn .spotify-icon::before{
+    left:50% !important;
+    top:50% !important;
+    border-top-width:4.5px !important;
+    border-bottom-width:4.5px !important;
+    border-left-width:6.5px !important;
+    transform:translate(-50%, -50%) !important;
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .story-reaction-row .like-btn,
+    .story-layout-card .story-reaction-row .like-btn{
+        font-size:21px !important;
+        width:21px !important;
+        height:21px !important;
+        min-width:21px !important;
+        min-height:21px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .story-play-btn,
+    .story-layout-card .story-reaction-row .story-play-btn,
+    .album-card.story-layout-card .story-reaction-row .spotify-btn,
+    .story-layout-card .story-reaction-row .spotify-btn{
+        width:27px !important;
+        height:27px !important;
+        min-width:27px !important;
+        min-height:27px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .story-play-btn .spotify-icon::before,
+    .story-layout-card .story-reaction-row .story-play-btn .spotify-icon::before,
+    .album-card.story-layout-card .story-reaction-row .spotify-btn .spotify-icon::before,
+    .story-layout-card .story-reaction-row .spotify-btn .spotify-icon::before{
+        border-top-width:4.2px !important;
+        border-bottom-width:4.2px !important;
+        border-left-width:6.2px !important;
+    }
+}
+
+
+
+/* ===== PATCH 12: lighter username + artist font ===== */
+.story-layout-card .story-creator-name,
+.album-card.story-layout-card .story-creator-name,
+.story-layout-card .creator-name,
+.album-card.story-layout-card .creator-name{
+    font-weight:400 !important;
+    letter-spacing:-0.018em !important;
+    color:rgba(248,252,255,0.92) !important;
+}
+
+.story-layout-card .story-artist,
+.album-card.story-layout-card .story-artist,
+.story-layout-card .artist,
+.album-card.story-layout-card .artist{
+    font-weight:360 !important;
+    letter-spacing:-0.018em !important;
+    color:rgba(238,247,250,0.76) !important;
+}
+
+.story-layout-card .story-creator-from,
+.album-card.story-layout-card .story-creator-from,
+.story-layout-card .story-creator-line2,
+.album-card.story-layout-card .story-creator-line2{
+    font-weight:350 !important;
+    color:rgba(174,184,200,0.82) !important;
+}
+
+@media (max-width:900px){
+    .story-layout-card .story-creator-name,
+    .album-card.story-layout-card .story-creator-name,
+    .story-layout-card .creator-name,
+    .album-card.story-layout-card .creator-name{
+        font-weight:390 !important;
+    }
+
+    .story-layout-card .story-artist,
+    .album-card.story-layout-card .story-artist,
+    .story-layout-card .artist,
+    .album-card.story-layout-card .artist{
+        font-weight:340 !important;
+    }
+}
+
 </style>
 </head>
 
