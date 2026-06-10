@@ -4737,7 +4737,7 @@ function albumCardHTML(item, posterProfile){
             <span class="story-creator-meta">
                 <span class="story-creator-line1">
                     <span class="story-creator-name">${escapeHTML(posterProfile?.name || '匿名ユーザー')}</span>
-                    <span class="story-creator-from">から受信</span>
+                    <span class="story-creator-from">から受信</span><img class="receive-mini-icon-img" src="./receive_signal_icon.png" alt="" aria-hidden="true">
                     <span class="receive-mini-icon" aria-hidden="true">
                         <svg viewBox="0 0 28 18" fill="none">
                             <circle cx="14" cy="9" r="3.2" stroke="currentColor" stroke-width="2"/>
@@ -9596,6 +9596,185 @@ body{
         height:28px !important;
         min-width:28px !important;
         min-height:28px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   FINAL FIX 13: 生成したPNGアイコンをそのまま使用
+   - CSSで無理に描画しない
+   - index.html と同じ階層に以下を置く：
+     broadcast_tower_icon.png
+     receive_signal_icon.png
+     satellite_search_icon.png
+     list_icon.png
+============================================================ */
+
+/* 前回のmask / CSS描画アイコンを無効化 */
+.mobile-tabbar a[href="editor.html"] .icon,
+.mobile-tabbar a[href="search.html"] .icon{
+    position:relative !important;
+    font-size:0 !important;
+    line-height:1 !important;
+    background:none !important;
+    -webkit-mask:none !important;
+    mask:none !important;
+    filter:none !important;
+}
+
+.mobile-tabbar a[href="editor.html"] .icon::before,
+.mobile-tabbar a[href="editor.html"] .icon::after,
+.mobile-tabbar a[href="search.html"] .icon::before,
+.mobile-tabbar a[href="search.html"] .icon::after{
+    display:none !important;
+    content:none !important;
+}
+
+/* 発信：生成した電波塔アイコン */
+.mobile-tabbar a[href="editor.html"] .icon{
+    width:30px !important;
+    height:30px !important;
+    display:block !important;
+    background-image:url("./broadcast_tower_icon.png") !important;
+    background-size:contain !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.22)) !important;
+}
+
+/* 探索：生成した人工衛星アイコン */
+.mobile-tabbar a[href="search.html"] .icon{
+    width:30px !important;
+    height:30px !important;
+    display:block !important;
+    background-image:url("./satellite_search_icon.png") !important;
+    background-size:contain !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.20)) !important;
+}
+
+/* 受信：投稿者名横に生成した受信マーク */
+.receive-mini-icon-img{
+    width:22px !important;
+    height:22px !important;
+    object-fit:contain !important;
+    display:inline-block !important;
+    margin-left:3px !important;
+    vertical-align:-5px !important;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.22)) !important;
+    opacity:0.95 !important;
+}
+
+/* リストタブ：生成したリストアイコン */
+#listTab{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:7px !important;
+}
+
+#listTab::before{
+    content:"" !important;
+    width:20px !important;
+    height:20px !important;
+    display:inline-block !important;
+    background-image:url("./list_icon.png") !important;
+    background-size:contain !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    filter:drop-shadow(0 0 5px rgba(159,205,217,0.18)) !important;
+    opacity:0.95 !important;
+}
+
+/* キーワードをpale blueへ */
+.story-keyword-box .keyword-tag,
+.keyword-tag{
+    color:#bfe7ee !important;
+    border-color:rgba(159,205,217,0.20) !important;
+    background:rgba(159,205,217,0.055) !important;
+    text-shadow:0 0 8px rgba(159,205,217,0.20) !important;
+}
+
+/* メーター線を細く */
+.story-analysis .meter-graphic{
+    height:12px !important;
+}
+
+.story-analysis .meter-graphic::before{
+    height:1px !important;
+    left:5px !important;
+    right:5px !important;
+    background:linear-gradient(90deg, rgba(159,205,217,0.14), rgba(159,205,217,0.72)) !important;
+}
+
+.story-analysis .meter-graphic .dot,
+.story-analysis .meter-graphic .dot.selected{
+    width:10px !important;
+    height:10px !important;
+}
+
+.story-analysis .meter-graphic .dot.selected{
+    border:2px solid #eaf7f9 !important;
+    box-shadow:0 0 8px rgba(159,205,217,0.30) !important;
+}
+
+.connector{
+    height:1px !important;
+}
+
+/* 再生ボタンをコメント数のすぐ横へ寄せる */
+.story-reaction-row{
+    grid-template-columns:1fr auto !important;
+}
+
+.reaction-left-group{
+    gap:12px !important;
+}
+
+.reaction-center-group{
+    display:none !important;
+}
+
+.story-play-btn{
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    min-height:30px !important;
+}
+
+/* アーティスト名を小さく */
+.story-artist,
+.artist{
+    font-size:12px !important;
+    line-height:1.22 !important;
+    font-weight:450 !important;
+    color:rgba(245,250,252,0.82) !important;
+}
+
+@media(max-width:430px){
+    .mobile-tabbar a[href="editor.html"] .icon,
+    .mobile-tabbar a[href="search.html"] .icon{
+        width:28px !important;
+        height:28px !important;
+    }
+
+    .receive-mini-icon-img{
+        width:20px !important;
+        height:20px !important;
+        vertical-align:-5px !important;
+    }
+
+    #listTab::before{
+        width:18px !important;
+        height:18px !important;
+    }
+
+    .story-artist,
+    .artist{
+        font-size:11.5px !important;
     }
 }
 </style>
