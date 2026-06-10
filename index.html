@@ -4520,6 +4520,54 @@ body{
     font-size:38px !important;
 }
 }
+
+
+/* ============================================================
+   PATCH 01：スマホ版カード内のジャケット下端とメーター下端を揃える
+   まずはこれだけを </style> の直前に追加して確認
+============================================================ */
+
+@media (max-width:900px){
+    .album-content-row{
+        align-items:stretch !important;
+    }
+
+    .album-right-stack{
+        height:124px !important;
+        min-height:124px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+    }
+
+    .story-analysis{
+        flex:1 1 auto !important;
+        display:flex !important;
+        align-items:flex-end !important;
+        padding:0 !important;
+        margin:0 !important;
+        background:transparent !important;
+    }
+
+    .story-analysis .meter-list{
+        width:100% !important;
+        height:auto !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:flex-end !important;
+        gap:6px !important;
+        padding:0 !important;
+        margin:0 !important;
+        border-bottom:none !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-right-stack{
+        height:116px !important;
+        min-height:116px !important;
+    }
+}
 </style>
 </head>
 
@@ -8193,137 +8241,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     .story-layout-card .story-analysis .meter-label{
         font-size:11px !important;
-    }
-}
-
-
-/* ============================================================
-   2026-06-10 追加修正
-   - スマホ投稿カード：メーターエリア下端とジャケット画像下端を揃える
-   - スマホ下部タブ：発信アイコンを「発信」ラベルの真上へ中央配置
-   - PNGアイコンは使わずCSS / SVG maskのみ
-============================================================ */
-@media (max-width:900px){
-    .album-content-row{
-        align-items:stretch !important;
-    }
-
-    .story-cover{
-        align-self:start !important;
-        flex:0 0 auto !important;
-    }
-
-    .album-right-stack{
-        display:flex !important;
-        flex-direction:column !important;
-        justify-content:flex-start !important;
-        height:124px !important;
-        min-height:124px !important;
-        max-height:124px !important;
-        gap:5px !important;
-        overflow:hidden !important;
-    }
-
-    .album-heading-block{
-        flex:0 0 auto !important;
-        min-height:0 !important;
-    }
-
-    .story-title{
-        margin-bottom:3px !important;
-    }
-
-    .story-artist{
-        margin-bottom:0 !important;
-    }
-
-    .story-analysis{
-        flex:1 1 auto !important;
-        min-height:0 !important;
-        margin-top:auto !important;
-        padding:0 !important;
-        border-radius:0 !important;
-        background:transparent !important;
-        display:flex !important;
-        align-items:stretch !important;
-    }
-
-    .story-analysis .meter-list{
-        width:100% !important;
-        height:100% !important;
-        min-height:0 !important;
-        display:flex !important;
-        flex-direction:column !important;
-        justify-content:space-between !important;
-        gap:0 !important;
-        padding:0 !important;
-        border:0 !important;
-    }
-
-    .story-analysis .meter{
-        min-height:0 !important;
-        height:auto !important;
-        margin:0 !important;
-        flex:0 0 auto !important;
-    }
-
-    .story-analysis .meter-graphic{
-        height:11px !important;
-    }
-
-    .mobile-tabbar a[href="editor.html"]{
-        align-items:center !important;
-        justify-content:center !important;
-        text-align:center !important;
-    }
-
-    .mobile-tabbar a[href="editor.html"] .icon{
-        position:relative !important;
-        display:block !important;
-        width:28px !important;
-        height:28px !important;
-        margin:0 auto 2px !important;
-        padding:0 !important;
-        left:auto !important;
-        right:auto !important;
-        top:auto !important;
-        transform:none !important;
-        font-size:0 !important;
-        line-height:1 !important;
-        color:currentColor !important;
-        background:currentColor !important;
-        background-color:currentColor !important;
-        background-image:none !important;
-        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.35%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2717%27%20r%3D%272.8%27%2F%3E%3Cpath%20d%3D%27M10.8%2013.2c-1.9%201.9-1.9%205.7%200%207.6%27%2F%3E%3Cpath%20d%3D%27M21.2%2013.2c1.9%201.9%201.9%205.7%200%207.6%27%2F%3E%3Cpath%20d%3D%27M7.2%209.8c-3.6%203.7-3.6%2010.7%200%2014.4%27%2F%3E%3Cpath%20d%3D%27M24.8%209.8c3.6%203.7%203.6%2010.7%200%2014.4%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 27px 27px no-repeat !important;
-        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.35%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2717%27%20r%3D%272.8%27%2F%3E%3Cpath%20d%3D%27M10.8%2013.2c-1.9%201.9-1.9%205.7%200%207.6%27%2F%3E%3Cpath%20d%3D%27M21.2%2013.2c1.9%201.9%201.9%205.7%200%207.6%27%2F%3E%3Cpath%20d%3D%27M7.2%209.8c-3.6%203.7-3.6%2010.7%200%2014.4%27%2F%3E%3Cpath%20d%3D%27M24.8%209.8c3.6%203.7%203.6%2010.7%200%2014.4%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / 27px 27px no-repeat !important;
-        filter:drop-shadow(0 0 4px rgba(159,205,217,0.48)) drop-shadow(0 0 10px rgba(159,205,217,0.18)) !important;
-    }
-
-    .mobile-tabbar a[href="editor.html"] .icon::before,
-    .mobile-tabbar a[href="editor.html"] .icon::after{
-        display:none !important;
-        content:none !important;
-    }
-}
-
-@media (max-width:430px){
-    .album-right-stack{
-        height:116px !important;
-        min-height:116px !important;
-        max-height:116px !important;
-        gap:4px !important;
-    }
-
-    .story-analysis .meter-graphic{
-        height:10px !important;
-    }
-
-    .mobile-tabbar a[href="editor.html"] .icon{
-        width:27px !important;
-        height:27px !important;
-        margin-bottom:2px !important;
-        -webkit-mask-size:26px 26px !important;
-        mask-size:26px 26px !important;
     }
 }
 </style>
