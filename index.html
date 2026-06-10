@@ -6683,6 +6683,149 @@ body{
     }
 }
 
+
+
+/* ============================================================
+   PATCH 26: make right-side meter line clearly gray
+   - 右側の線をはっきりグレー化
+   - 左側(active)だけ紫
+   - 以前の紫グラデ背景を無効化
+============================================================ */
+
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    background:none !important;
+    background-image:none !important;
+    filter:none !important;
+}
+
+/* 全体のベース線はグレー */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* 余計な疑似要素は消す */
+.meter-graphic::after,
+.story-analysis .meter-graphic::after,
+.album-card.story-layout-card .story-analysis .meter-graphic::after,
+.story-layout-card .story-analysis .meter-graphic::after{
+    content:none !important;
+    display:none !important;
+    background:none !important;
+}
+
+/* 右側(未到達側)の線はグレー固定 */
+.meter-graphic .connector,
+.meter-graphic .connector.level-1,
+.meter-graphic .connector.level-2,
+.meter-graphic .connector.level-3,
+.meter-graphic .connector.level-4,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    border:none !important;
+    box-shadow:none !important;
+}
+
+/* 左側(active)の線だけ紫 */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(123,90,255,0.95) 0%,
+        rgba(208,154,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.20),
+        0 0 10px rgba(165,111,255,0.08) !important;
+}
+
+/* ドットはそのまま丸表示 */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+}
+
+
+
+/* ============================================================
+   PATCH 27: ensure 5th rating dot sits at the far right
+   - メーターを5点固定のグリッド配置にする
+   - 5段階評価で「5」のとき最後のドットが必ず一番右に来るようにする
+============================================================ */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    display:grid !important;
+    grid-template-columns:max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content !important;
+    align-items:center !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    width:100% !important;
+    min-width:0 !important;
+}
+
+.meter-graphic > .dot,
+.story-analysis .meter-graphic > .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot,
+.story-layout-card .story-analysis .meter-graphic > .dot{
+    justify-self:center !important;
+    align-self:center !important;
+    margin:0 !important;
+}
+
+.meter-graphic > .dot:first-child,
+.story-analysis .meter-graphic > .dot:first-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:first-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:first-child{
+    justify-self:start !important;
+}
+
+.meter-graphic > .dot:last-child,
+.story-analysis .meter-graphic > .dot:last-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:last-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:last-child{
+    justify-self:end !important;
+}
+
+.meter-graphic > .connector,
+.story-analysis .meter-graphic > .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic > .connector,
+.story-layout-card .story-analysis .meter-graphic > .connector{
+    width:100% !important;
+    min-width:0 !important;
+    justify-self:stretch !important;
+    align-self:center !important;
+    margin:0 !important;
+}
+
 </style>
 </head>
 
@@ -11277,6 +11420,149 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+
+
+/* ============================================================
+   PATCH 26: make right-side meter line clearly gray
+   - 右側の線をはっきりグレー化
+   - 左側(active)だけ紫
+   - 以前の紫グラデ背景を無効化
+============================================================ */
+
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    background:none !important;
+    background-image:none !important;
+    filter:none !important;
+}
+
+/* 全体のベース線はグレー */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* 余計な疑似要素は消す */
+.meter-graphic::after,
+.story-analysis .meter-graphic::after,
+.album-card.story-layout-card .story-analysis .meter-graphic::after,
+.story-layout-card .story-analysis .meter-graphic::after{
+    content:none !important;
+    display:none !important;
+    background:none !important;
+}
+
+/* 右側(未到達側)の線はグレー固定 */
+.meter-graphic .connector,
+.meter-graphic .connector.level-1,
+.meter-graphic .connector.level-2,
+.meter-graphic .connector.level-3,
+.meter-graphic .connector.level-4,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    border:none !important;
+    box-shadow:none !important;
+}
+
+/* 左側(active)の線だけ紫 */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(123,90,255,0.95) 0%,
+        rgba(208,154,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.20),
+        0 0 10px rgba(165,111,255,0.08) !important;
+}
+
+/* ドットはそのまま丸表示 */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+}
+
+
+
+/* ============================================================
+   PATCH 27: ensure 5th rating dot sits at the far right
+   - メーターを5点固定のグリッド配置にする
+   - 5段階評価で「5」のとき最後のドットが必ず一番右に来るようにする
+============================================================ */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    display:grid !important;
+    grid-template-columns:max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content !important;
+    align-items:center !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    width:100% !important;
+    min-width:0 !important;
+}
+
+.meter-graphic > .dot,
+.story-analysis .meter-graphic > .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot,
+.story-layout-card .story-analysis .meter-graphic > .dot{
+    justify-self:center !important;
+    align-self:center !important;
+    margin:0 !important;
+}
+
+.meter-graphic > .dot:first-child,
+.story-analysis .meter-graphic > .dot:first-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:first-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:first-child{
+    justify-self:start !important;
+}
+
+.meter-graphic > .dot:last-child,
+.story-analysis .meter-graphic > .dot:last-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:last-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:last-child{
+    justify-self:end !important;
+}
+
+.meter-graphic > .connector,
+.story-analysis .meter-graphic > .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic > .connector,
+.story-layout-card .story-analysis .meter-graphic > .connector{
+    width:100% !important;
+    min-width:0 !important;
+    justify-self:stretch !important;
+    align-self:center !important;
+    margin:0 !important;
+}
+
 </style>
 
 
@@ -12630,6 +12916,149 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+
+
+/* ============================================================
+   PATCH 26: make right-side meter line clearly gray
+   - 右側の線をはっきりグレー化
+   - 左側(active)だけ紫
+   - 以前の紫グラデ背景を無効化
+============================================================ */
+
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    background:none !important;
+    background-image:none !important;
+    filter:none !important;
+}
+
+/* 全体のベース線はグレー */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* 余計な疑似要素は消す */
+.meter-graphic::after,
+.story-analysis .meter-graphic::after,
+.album-card.story-layout-card .story-analysis .meter-graphic::after,
+.story-layout-card .story-analysis .meter-graphic::after{
+    content:none !important;
+    display:none !important;
+    background:none !important;
+}
+
+/* 右側(未到達側)の線はグレー固定 */
+.meter-graphic .connector,
+.meter-graphic .connector.level-1,
+.meter-graphic .connector.level-2,
+.meter-graphic .connector.level-3,
+.meter-graphic .connector.level-4,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    border:none !important;
+    box-shadow:none !important;
+}
+
+/* 左側(active)の線だけ紫 */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(123,90,255,0.95) 0%,
+        rgba(208,154,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.20),
+        0 0 10px rgba(165,111,255,0.08) !important;
+}
+
+/* ドットはそのまま丸表示 */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+}
+
+
+
+/* ============================================================
+   PATCH 27: ensure 5th rating dot sits at the far right
+   - メーターを5点固定のグリッド配置にする
+   - 5段階評価で「5」のとき最後のドットが必ず一番右に来るようにする
+============================================================ */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    display:grid !important;
+    grid-template-columns:max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content !important;
+    align-items:center !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    width:100% !important;
+    min-width:0 !important;
+}
+
+.meter-graphic > .dot,
+.story-analysis .meter-graphic > .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot,
+.story-layout-card .story-analysis .meter-graphic > .dot{
+    justify-self:center !important;
+    align-self:center !important;
+    margin:0 !important;
+}
+
+.meter-graphic > .dot:first-child,
+.story-analysis .meter-graphic > .dot:first-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:first-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:first-child{
+    justify-self:start !important;
+}
+
+.meter-graphic > .dot:last-child,
+.story-analysis .meter-graphic > .dot:last-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:last-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:last-child{
+    justify-self:end !important;
+}
+
+.meter-graphic > .connector,
+.story-analysis .meter-graphic > .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic > .connector,
+.story-layout-card .story-analysis .meter-graphic > .connector{
+    width:100% !important;
+    min-width:0 !important;
+    justify-self:stretch !important;
+    align-self:center !important;
+    margin:0 !important;
+}
+
 </style>
 
 
@@ -13951,6 +14380,149 @@ document.addEventListener("DOMContentLoaded", () => {
         max-height:7.7px !important;
         flex:0 0 7.7px !important;
     }
+}
+
+
+
+/* ============================================================
+   PATCH 26: make right-side meter line clearly gray
+   - 右側の線をはっきりグレー化
+   - 左側(active)だけ紫
+   - 以前の紫グラデ背景を無効化
+============================================================ */
+
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    background:none !important;
+    background-image:none !important;
+    filter:none !important;
+}
+
+/* 全体のベース線はグレー */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* 余計な疑似要素は消す */
+.meter-graphic::after,
+.story-analysis .meter-graphic::after,
+.album-card.story-layout-card .story-analysis .meter-graphic::after,
+.story-layout-card .story-analysis .meter-graphic::after{
+    content:none !important;
+    display:none !important;
+    background:none !important;
+}
+
+/* 右側(未到達側)の線はグレー固定 */
+.meter-graphic .connector,
+.meter-graphic .connector.level-1,
+.meter-graphic .connector.level-2,
+.meter-graphic .connector.level-3,
+.meter-graphic .connector.level-4,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    border:none !important;
+    box-shadow:none !important;
+}
+
+/* 左側(active)の線だけ紫 */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(123,90,255,0.95) 0%,
+        rgba(208,154,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.20),
+        0 0 10px rgba(165,111,255,0.08) !important;
+}
+
+/* ドットはそのまま丸表示 */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+}
+
+
+
+/* ============================================================
+   PATCH 27: ensure 5th rating dot sits at the far right
+   - メーターを5点固定のグリッド配置にする
+   - 5段階評価で「5」のとき最後のドットが必ず一番右に来るようにする
+============================================================ */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    display:grid !important;
+    grid-template-columns:max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content !important;
+    align-items:center !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    width:100% !important;
+    min-width:0 !important;
+}
+
+.meter-graphic > .dot,
+.story-analysis .meter-graphic > .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot,
+.story-layout-card .story-analysis .meter-graphic > .dot{
+    justify-self:center !important;
+    align-self:center !important;
+    margin:0 !important;
+}
+
+.meter-graphic > .dot:first-child,
+.story-analysis .meter-graphic > .dot:first-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:first-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:first-child{
+    justify-self:start !important;
+}
+
+.meter-graphic > .dot:last-child,
+.story-analysis .meter-graphic > .dot:last-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:last-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:last-child{
+    justify-self:end !important;
+}
+
+.meter-graphic > .connector,
+.story-analysis .meter-graphic > .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic > .connector,
+.story-layout-card .story-analysis .meter-graphic > .connector{
+    width:100% !important;
+    min-width:0 !important;
+    justify-self:stretch !important;
+    align-self:center !important;
+    margin:0 !important;
 }
 
 </style>
@@ -16195,6 +16767,149 @@ document.addEventListener("DOMContentLoaded", () => {
         max-height:7.7px !important;
         flex:0 0 7.7px !important;
     }
+}
+
+
+
+/* ============================================================
+   PATCH 26: make right-side meter line clearly gray
+   - 右側の線をはっきりグレー化
+   - 左側(active)だけ紫
+   - 以前の紫グラデ背景を無効化
+============================================================ */
+
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    background:none !important;
+    background-image:none !important;
+    filter:none !important;
+}
+
+/* 全体のベース線はグレー */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* 余計な疑似要素は消す */
+.meter-graphic::after,
+.story-analysis .meter-graphic::after,
+.album-card.story-layout-card .story-analysis .meter-graphic::after,
+.story-layout-card .story-analysis .meter-graphic::after{
+    content:none !important;
+    display:none !important;
+    background:none !important;
+}
+
+/* 右側(未到達側)の線はグレー固定 */
+.meter-graphic .connector,
+.meter-graphic .connector.level-1,
+.meter-graphic .connector.level-2,
+.meter-graphic .connector.level-3,
+.meter-graphic .connector.level-4,
+.story-analysis .meter-graphic .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector,
+.story-layout-card .story-analysis .meter-graphic .connector{
+    position:relative !important;
+    z-index:1 !important;
+    height:1px !important;
+    background:rgba(255,255,255,0.22) !important;
+    border:none !important;
+    box-shadow:none !important;
+}
+
+/* 左側(active)の線だけ紫 */
+.meter-graphic .connector.active,
+.meter-graphic .connector.active.level-1,
+.meter-graphic .connector.active.level-2,
+.meter-graphic .connector.active.level-3,
+.meter-graphic .connector.active.level-4,
+.story-analysis .meter-graphic .connector.active,
+.album-card.story-layout-card .story-analysis .meter-graphic .connector.active,
+.story-layout-card .story-analysis .meter-graphic .connector.active{
+    background:linear-gradient(90deg,
+        rgba(123,90,255,0.95) 0%,
+        rgba(208,154,255,0.98) 100%) !important;
+    box-shadow:
+        0 0 6px rgba(165,111,255,0.20),
+        0 0 10px rgba(165,111,255,0.08) !important;
+}
+
+/* ドットはそのまま丸表示 */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+}
+
+
+
+/* ============================================================
+   PATCH 27: ensure 5th rating dot sits at the far right
+   - メーターを5点固定のグリッド配置にする
+   - 5段階評価で「5」のとき最後のドットが必ず一番右に来るようにする
+============================================================ */
+.meter-graphic,
+.story-analysis .meter-graphic,
+.album-card.story-layout-card .story-analysis .meter-graphic,
+.story-layout-card .story-analysis .meter-graphic{
+    display:grid !important;
+    grid-template-columns:max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content minmax(0,1fr) max-content !important;
+    align-items:center !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    width:100% !important;
+    min-width:0 !important;
+}
+
+.meter-graphic > .dot,
+.story-analysis .meter-graphic > .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot,
+.story-layout-card .story-analysis .meter-graphic > .dot{
+    justify-self:center !important;
+    align-self:center !important;
+    margin:0 !important;
+}
+
+.meter-graphic > .dot:first-child,
+.story-analysis .meter-graphic > .dot:first-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:first-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:first-child{
+    justify-self:start !important;
+}
+
+.meter-graphic > .dot:last-child,
+.story-analysis .meter-graphic > .dot:last-child,
+.album-card.story-layout-card .story-analysis .meter-graphic > .dot:last-child,
+.story-layout-card .story-analysis .meter-graphic > .dot:last-child{
+    justify-self:end !important;
+}
+
+.meter-graphic > .connector,
+.story-analysis .meter-graphic > .connector,
+.album-card.story-layout-card .story-analysis .meter-graphic > .connector,
+.story-layout-card .story-analysis .meter-graphic > .connector{
+    width:100% !important;
+    min-width:0 !important;
+    justify-self:stretch !important;
+    align-self:center !important;
+    margin:0 !important;
 }
 
 </style>
