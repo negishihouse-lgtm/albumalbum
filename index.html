@@ -5,15 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Album Collection</title>
 
-
 <style>
-/* ============================================================
-   Album Collection index.html
-   CSS整理版
-   - 既存の多重 <style> を1つに統合
-   - 同一セレクタ内の重複プロパティは最後の指定だけ残す
-   - SVGアイコン + Pale Ice + 銀河背景の最終デザインを維持
-============================================================ */
 
 @keyframes galaxyDrift {
     0%   { background-position:center top, 0 0, 0 0, 0 0, 0 0; }
@@ -4521,12 +4513,6 @@ body{
 }
 }
 
-
-/* ============================================================
-   PATCH 02: スマホカード内メーター横幅だけ微調整
-   - 下端合わせ・発信アイコン修正済みの現行版を維持
-   - メーター左右ラベルの幅と余白を少し詰めて、線を長く見せる
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .story-analysis{
         padding:8px 6px !important;
@@ -4577,14 +4563,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   2026-06-10 追加修正 PATCH 04
-   - スマホ投稿カード：5本目「個人 / 世界」のメーターが切れないようにする
-   - 曲名・アーティスト名をさらに少しだけ圧縮
-   - メーター領域の高さを明示して、5本すべてを収める
-============================================================ */
 @media (max-width:900px){
     .story-layout-card .album-heading-block{
         max-height:34px !important;
@@ -4693,14 +4671,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   2026-06-10 追加修正 PATCH 06
-   - PATCH 05でメーターが狭くなりすぎたため、横幅を戻す
-   - 5本目「個人 / 世界」は表示したまま維持
-   - 曲名・発信アイコン・下端合わせは維持
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -4882,9 +4852,6 @@ body{
     }
 }
 
-
-
-/* ===== PATCH 08: story reaction row refine ===== */
 .album-card.story-layout-card .story-reaction-row,
 .story-layout-card .story-reaction-row{
     grid-template-columns:minmax(0,1fr) auto !important;
@@ -5005,9 +4972,6 @@ body{
     }
 }
 
-
-
-/* ===== PATCH 09: more spacing + remove story share icon ===== */
 .album-card.story-layout-card .story-reaction-row,
 .story-layout-card .story-reaction-row{
     grid-template-columns:minmax(0,1fr) !important;
@@ -5052,9 +5016,6 @@ body{
     }
 }
 
-
-
-/* ===== PATCH 10: wider reaction spacing + comment icon size match ===== */
 .album-card.story-layout-card .story-reaction-row .reaction-left-group,
 .story-layout-card .story-reaction-row .reaction-left-group{
     gap:24px !important;
@@ -5118,9 +5079,6 @@ body{
     }
 }
 
-
-
-/* ===== PATCH 11: smaller heart + smaller play circle + centered triangle ===== */
 .album-card.story-layout-card .story-reaction-row .like-btn,
 .story-layout-card .story-reaction-row .like-btn{
     font-size:22px !important;
@@ -5182,9 +5140,6 @@ body{
     }
 }
 
-
-
-/* ===== PATCH 12: lighter username + artist font ===== */
 .story-layout-card .story-creator-name,
 .album-card.story-layout-card .story-creator-name,
 .story-layout-card .creator-name,
@@ -5227,9 +5182,6 @@ body{
     }
 }
 
-
-
-/* ===== PATCH 13: creator name and "から受信" same font size ===== */
 .story-layout-card .story-creator-name,
 .album-card.story-layout-card .story-creator-name,
 .story-layout-card .creator-name,
@@ -5256,13 +5208,6 @@ body{
     }
 }
 
-
-/* ============================================================
-   PATCH 14: violet accent + thinner reaction / meter lines
-   - ハート・コメントの線を細く見せる
-   - メーター線を細く
-   - メーター/キーワード/なし表示を紫系に統一
-============================================================ */
 :root{
     --ac-violet:#b06cff;
     --ac-violet-2:#d5a8ff;
@@ -5275,7 +5220,6 @@ body{
     --ac-reaction-thin:rgba(232,238,244,0.72);
 }
 
-/* ハートを細く・淡く */
 .story-layout-card .story-reaction-row .like-btn,
 .album-card.story-layout-card .story-reaction-row .like-btn,
 .like-btn{
@@ -5293,7 +5237,6 @@ body{
     text-shadow:0 0 8px var(--ac-violet-glow) !important;
 }
 
-/* コメントアイコンの線を細く */
 .comment-icon,
 .comment-icon::after{
     border-width:1.15px !important;
@@ -5317,7 +5260,6 @@ body{
     color:var(--ac-reaction-thin) !important;
 }
 
-/* メーター線を細く、紫系に統一 */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -5387,7 +5329,6 @@ body{
     height:9px !important;
 }
 
-/* キーワードチップを紫系に統一。なし表示も含む */
 .keyword-tag,
 .keyword-text,
 .keyword-empty,
@@ -5421,7 +5362,6 @@ body{
     color:#d5a8ff !important;
 }
 
-/* 発信アイコンなど既存アクセントも少しだけ紫に寄せる */
 .receive-mini-icon,
 .feed-tab.active,
 .mobile-tabbar a.active{
@@ -5434,13 +5374,6 @@ body{
     box-shadow:0 0 14px rgba(176,108,255,0.36) !important;
 }
 
-
-
-/* ============================================================
-   PATCH 16: thinner meter lines + no white ring on meter dots
-   - メーター線をさらに細く
-   - メーターのドットから白い縁取りを除去
-============================================================ */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -5518,13 +5451,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 17: larger cover + align meter bottom to cover bottom
-   - ジャケット写真を少し大きく
-   - メーター下端がジャケット画像下端と揃うよう再調整
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -5666,14 +5592,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 18: bigger cover + circular dots + raster on meter
-   - ジャケット画像をもう少し大きく
-   - ドットの横長化を防ぎ、正円に固定
-   - メーターに薄いラスター（目盛り）を追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -5681,7 +5599,6 @@ body{
     position:relative !important;
 }
 
-/* メーターの薄いラスター（目盛り） */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -5704,7 +5621,6 @@ body{
     opacity:0.95 !important;
 }
 
-/* ドットを正円固定 */
 .meter-graphic .dot,
 .meter-graphic .dot.selected,
 .meter-graphic .dot.level-1,
@@ -5844,13 +5760,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 19: visible meter ticks + glowing raster line
-   - メーター上に見える目盛りを明示
-   - ラスターの発光感をメーター本体に追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -5883,7 +5792,6 @@ body{
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 既存の疑似要素でも発光線を出す */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -5904,7 +5812,6 @@ body{
     pointer-events:none !important;
 }
 
-/* 目盛り線を疑似要素でも重ねて確実に表示 */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -6003,13 +5910,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 20: remove meter ticks, keep glowing raster feel
-   - メモリを削除
-   - メーターの光っている感じは維持
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -6024,7 +5924,6 @@ body{
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 目盛りは消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -6034,7 +5933,6 @@ body{
     background:none !important;
 }
 
-/* 発光ラインは維持 */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -6097,13 +5995,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 21: bigger cover + larger right meter labels
-   - ジャケット画像をさらに少し大きく
-   - メーター右の文言（明るい/激しいなど）を右端寄りに大きく表示
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -6244,14 +6135,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 22: stronger dot glow + less transparent card
-   - ドットの輝きを強化
-   - ドット周辺のメーター線の輝きを強化
-   - カードの透明度を下げて少し不透明に
-============================================================ */
 .album-card.story-layout-card,
 .story-layout-card{
     background:rgba(2,8,20,0.66) !important;
@@ -6347,13 +6230,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 23: smaller dots + purple only on left side of dots
-   - ドットを小さく
-   - ドットの左側だけ紫、右側は薄く/暗く見せる
-============================================================ */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -6437,16 +6313,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 24: full circular dots + color only the line left of the dot
-   - ドット自体は丸ごと表示
-   - 「左側だけ紫」はドットではなく、ドット左側の線で表現
-   - 右側の線は淡いまま維持
-============================================================ */
-
-/* ドットは通常の丸に戻す */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -6490,7 +6356,6 @@ body{
         0 0 24px rgba(176,108,255,0.14) !important;
 }
 
-/* 線はデフォルトでは淡く */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -6499,7 +6364,6 @@ body{
     box-shadow:none !important;
 }
 
-/* ドットの左側（= active の connector）だけ紫に光らせる */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -6544,17 +6408,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 25: match reference meter look
-   - ドットは丸ごと表示
-   - ドット左側の線だけ紫に発光
-   - ドット右側の線はグレー寄りで維持
-   - 参考画像の見え方に寄せる
-============================================================ */
-
-/* メーター全体の基準線はかなり淡く */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -6580,7 +6433,6 @@ body{
     pointer-events:none !important;
 }
 
-/* コネクタは右側(未到達側)の薄いグレー線 */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -6592,7 +6444,6 @@ body{
     box-shadow:none !important;
 }
 
-/* 左側(到達済み側)だけ紫にする */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -6609,7 +6460,6 @@ body{
         0 0 12px rgba(165,111,255,0.10) !important;
 }
 
-/* ドットは丸ごとそのまま見せる */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -6683,15 +6533,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 26: make right-side meter line clearly gray
-   - 右側の線をはっきりグレー化
-   - 左側(active)だけ紫
-   - 以前の紫グラデ背景を無効化
-============================================================ */
-
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -6701,7 +6542,6 @@ body{
     filter:none !important;
 }
 
-/* 全体のベース線はグレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -6719,7 +6559,6 @@ body{
     pointer-events:none !important;
 }
 
-/* 余計な疑似要素は消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -6729,7 +6568,6 @@ body{
     background:none !important;
 }
 
-/* 右側(未到達側)の線はグレー固定 */
 .meter-graphic .connector,
 .meter-graphic .connector.level-1,
 .meter-graphic .connector.level-2,
@@ -6746,7 +6584,6 @@ body{
     box-shadow:none !important;
 }
 
-/* 左側(active)の線だけ紫 */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -6763,7 +6600,6 @@ body{
         0 0 10px rgba(165,111,255,0.08) !important;
 }
 
-/* ドットはそのまま丸表示 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -6771,16 +6607,6 @@ body{
     position:relative !important;
     z-index:2 !important;
 }
-
-
-
-/* ============================================================
-   PATCH 29: recover meter lines + keep left purple / right gray
-   - PATCH 28 を使わず、PATCH 26 ベースで復旧
-   - 消えた線を戻す
-   - 左側だけ紫、右側はグレーを維持
-   - 5段階評価「5」で右端ドットが切れないようにする
-============================================================ */
 
 .meter-graphic,
 .story-analysis .meter-graphic,
@@ -6862,15 +6688,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 30: stable meter rendering
-   - connectorの色指定に依存せず、CSS変数で左側だけ紫にする
-   - 右側は必ずグレー
-   - メーター横幅の縮みを解除
-   - 5段階目のドットを右端へ固定
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -6889,7 +6706,6 @@ body{
     filter:none !important;
 }
 
-/* 右側まで含めたベース線＝グレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -6908,7 +6724,6 @@ body{
     pointer-events:none !important;
 }
 
-/* 左側だけ紫。JSの --meter-fill で長さを決める */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -6931,7 +6746,6 @@ body{
     pointer-events:none !important;
 }
 
-/* DOM上のconnectorは見た目に使わない */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -6939,7 +6753,6 @@ body{
     display:none !important;
 }
 
-/* dotを5分割グリッド上に固定 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layoutCard .story-analysis .meter-graphic .dot,
@@ -7016,14 +6829,6 @@ body{
     }
 }
 
-
-
-/* ============================================================
-   PATCH 31: push right meter labels to card edge
-   - 色指定はPATCH 30のまま維持
-   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
-   - メーター領域を右いっぱいまで使う
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card,
     .story-layout-card{
@@ -7114,6 +6919,172 @@ body{
         margin-right:0 !important;
         text-align:right !important;
     }
+}
+
+@media (max-width:900px){
+
+  .album-card.story-layout-card .story-analysis,
+  .story-layout-card .story-analysis{
+    overflow:hidden !important;
+  }
+
+  .album-card.story-layout-card .story-analysis .meter,
+  .story-layout-card .story-analysis .meter{
+    grid-template-columns:30px minmax(150px,1fr) 42px !important;
+    gap:4px !important;
+  }
+
+  .album-card.story-layout-card .story-analysis .meter-label,
+  .story-layout-card .story-analysis .meter-label{
+    font-size:9.5px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+  }
+
+  .album-card.story-layout-card .story-analysis .meter-label.right-label,
+  .story-layout-card .story-analysis .meter-label.right-label{
+    text-align:right !important;
+    justify-self:end !important;
+  }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic,
+  .story-layout-card .story-analysis .meter-graphic{
+    position:relative !important;
+    display:grid !important;
+    grid-template-columns:repeat(5, 1fr) !important;
+    width:100% !important;
+    min-width:150px !important;
+    height:13px !important;
+    overflow:hidden !important;
+    background:none !important;
+    filter:none !important;
+  }
+
+  
+  .album-card.story-layout-card .story-analysis .meter-graphic::before,
+  .story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    height:1px !important;
+    transform:translateY(-50%) !important;
+    background:rgba(180,188,205,0.30) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+  }
+
+  
+  .album-card.story-layout-card .story-analysis .meter-graphic::after,
+  .story-layout-card .story-analysis .meter-graphic::after{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    top:50% !important;
+    height:1px !important;
+    width:0 !important;
+    transform:translateY(-50%) !important;
+    background:linear-gradient(90deg, #a95cff, #d2a0ff) !important;
+    box-shadow:0 0 8px rgba(176,108,255,0.55),
+               0 0 16px rgba(176,108,255,0.24) !important;
+    z-index:1 !important;
+    pointer-events:none !important;
+  }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-1)::after,
+  .story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-1)::after{ width:10% !important; }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-2)::after,
+  .story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-2)::after{ width:30% !important; }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-3)::after,
+  .story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-3)::after{ width:50% !important; }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-4)::after,
+  .story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-4)::after{ width:70% !important; }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-5)::after,
+  .story-layout-card .story-analysis .meter-graphic:has(.dot.selected.level-5)::after{ width:90% !important; }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic .connector,
+  .story-layout-card .story-analysis .meter-graphic .connector{
+    display:none !important;
+  }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+  .story-layout-card .story-analysis .meter-graphic .dot{
+    position:relative !important;
+    z-index:2 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    align-self:center !important;
+    width:7.5px !important;
+    height:7.5px !important;
+    min-width:7.5px !important;
+    min-height:7.5px !important;
+    max-width:7.5px !important;
+    max-height:7.5px !important;
+    border:none !important;
+    border-radius:50% !important;
+    background:#c58cff !important;
+    opacity:0 !important;
+    box-shadow:none !important;
+    overflow:visible !important;
+  }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-1,
+  .story-layout-card .story-analysis .meter-graphic .dot.level-1{ grid-column:1 !important; }
+  .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-2,
+  .story-layout-card .story-analysis .meter-graphic .dot.level-2{ grid-column:2 !important; }
+  .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-3,
+  .story-layout-card .story-analysis .meter-graphic .dot.level-3{ grid-column:3 !important; }
+  .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-4,
+  .story-layout-card .story-analysis .meter-graphic .dot.level-4{ grid-column:4 !important; }
+  .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-5,
+  .story-layout-card .story-analysis .meter-graphic .dot.level-5{ grid-column:5 !important; }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+  .story-layout-card .story-analysis .meter-graphic .dot.selected{
+    opacity:1 !important;
+    background:#c58cff !important;
+    box-shadow:0 0 8px rgba(197,140,255,0.78),
+               0 0 16px rgba(197,140,255,0.34) !important;
+  }
+
+  
+  .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected::before,
+  .story-layout-card .story-analysis .meter-graphic .dot.selected::before{
+    content:none !important;
+    display:none !important;
+  }
+}
+
+@media (max-width:430px){
+  .album-card.story-layout-card .story-analysis .meter,
+  .story-layout-card .story-analysis .meter{
+    grid-template-columns:28px minmax(145px,1fr) 40px !important;
+    gap:4px !important;
+  }
+
+  .album-card.story-layout-card .story-analysis .meter-graphic,
+  .story-layout-card .story-analysis .meter-graphic{
+    min-width:145px !important;
+  }
+
+  .album-card.story-layout-card .story-analysis .meter-label,
+  .story-layout-card .story-analysis .meter-label{
+    font-size:9px !important;
+  }
+}
+
+@media (max-width:900px){
+  .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected::before,
+  .story-layout-card .story-analysis .meter-graphic .dot.selected::before{
+    content:none !important;
+    display:none !important;
+  }
 }
 
 </style>
@@ -10207,7 +10178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script>
-/* 背景だけ少し遅れて動かす */
+
 (function(){
     const PARALLAX_RATE = 0.18;
     let ticking = false;
@@ -10233,15 +10204,7 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 </script>
 
-
 <style>
-/* ============================================================
-   FINAL FIX 20: 下部タブアイコン最終整理
-   - タイル背景なし
-   - PNGなし
-   - 全アイコンを同じサイズに統一
-   - 以前のタイル/PNG/古いCSSを強制的に無効化
-============================================================ */
 
 @media(max-width:900px){
     .mobile-tabbar{
@@ -10375,7 +10338,7 @@ document.addEventListener("DOMContentLoaded", () => {
         white-space:nowrap !important;
     }
 
-    /* 上部リストタブ */
+    
     #listTab{
         display:inline-flex !important;
         align-items:center !important;
@@ -10403,7 +10366,7 @@ document.addEventListener("DOMContentLoaded", () => {
         flex:0 0 auto !important;
     }
 
-    /* 受信横のミニアイコン */
+    
     .receive-mini-icon-img{
         display:none !important;
     }
@@ -10464,12 +10427,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-/* ============================================================
-   PATCH 16: thinner meter lines + no white ring on meter dots
-   - メーター線をさらに細く
-   - メーターのドットから白い縁取りを除去
-============================================================ */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -10547,13 +10504,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 17: larger cover + align meter bottom to cover bottom
-   - ジャケット写真を少し大きく
-   - メーター下端がジャケット画像下端と揃うよう再調整
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -10695,14 +10645,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 18: bigger cover + circular dots + raster on meter
-   - ジャケット画像をもう少し大きく
-   - ドットの横長化を防ぎ、正円に固定
-   - メーターに薄いラスター（目盛り）を追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -10710,7 +10652,6 @@ document.addEventListener("DOMContentLoaded", () => {
     position:relative !important;
 }
 
-/* メーターの薄いラスター（目盛り） */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -10733,7 +10674,6 @@ document.addEventListener("DOMContentLoaded", () => {
     opacity:0.95 !important;
 }
 
-/* ドットを正円固定 */
 .meter-graphic .dot,
 .meter-graphic .dot.selected,
 .meter-graphic .dot.level-1,
@@ -10873,13 +10813,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 19: visible meter ticks + glowing raster line
-   - メーター上に見える目盛りを明示
-   - ラスターの発光感をメーター本体に追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -10912,7 +10845,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 既存の疑似要素でも発光線を出す */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -10933,7 +10865,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 目盛り線を疑似要素でも重ねて確実に表示 */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -11032,13 +10963,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 20: remove meter ticks, keep glowing raster feel
-   - メモリを削除
-   - メーターの光っている感じは維持
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -11053,7 +10977,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 目盛りは消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -11063,7 +10986,6 @@ document.addEventListener("DOMContentLoaded", () => {
     background:none !important;
 }
 
-/* 発光ラインは維持 */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -11126,13 +11048,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 21: bigger cover + larger right meter labels
-   - ジャケット画像をさらに少し大きく
-   - メーター右の文言（明るい/激しいなど）を右端寄りに大きく表示
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -11273,14 +11188,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 22: stronger dot glow + less transparent card
-   - ドットの輝きを強化
-   - ドット周辺のメーター線の輝きを強化
-   - カードの透明度を下げて少し不透明に
-============================================================ */
 .album-card.story-layout-card,
 .story-layout-card{
     background:rgba(2,8,20,0.66) !important;
@@ -11376,13 +11283,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 23: smaller dots + purple only on left side of dots
-   - ドットを小さく
-   - ドットの左側だけ紫、右側は薄く/暗く見せる
-============================================================ */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -11466,16 +11366,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 24: full circular dots + color only the line left of the dot
-   - ドット自体は丸ごと表示
-   - 「左側だけ紫」はドットではなく、ドット左側の線で表現
-   - 右側の線は淡いまま維持
-============================================================ */
-
-/* ドットは通常の丸に戻す */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -11519,7 +11409,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 24px rgba(176,108,255,0.14) !important;
 }
 
-/* 線はデフォルトでは淡く */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -11528,7 +11417,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* ドットの左側（= active の connector）だけ紫に光らせる */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -11573,17 +11461,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 25: match reference meter look
-   - ドットは丸ごと表示
-   - ドット左側の線だけ紫に発光
-   - ドット右側の線はグレー寄りで維持
-   - 参考画像の見え方に寄せる
-============================================================ */
-
-/* メーター全体の基準線はかなり淡く */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -11609,7 +11486,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* コネクタは右側(未到達側)の薄いグレー線 */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -11621,7 +11497,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* 左側(到達済み側)だけ紫にする */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -11638,7 +11513,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 12px rgba(165,111,255,0.10) !important;
 }
 
-/* ドットは丸ごとそのまま見せる */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -11712,15 +11586,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 26: make right-side meter line clearly gray
-   - 右側の線をはっきりグレー化
-   - 左側(active)だけ紫
-   - 以前の紫グラデ背景を無効化
-============================================================ */
-
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -11730,7 +11595,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:none !important;
 }
 
-/* 全体のベース線はグレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -11748,7 +11612,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 余計な疑似要素は消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -11758,7 +11621,6 @@ document.addEventListener("DOMContentLoaded", () => {
     background:none !important;
 }
 
-/* 右側(未到達側)の線はグレー固定 */
 .meter-graphic .connector,
 .meter-graphic .connector.level-1,
 .meter-graphic .connector.level-2,
@@ -11775,7 +11637,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* 左側(active)の線だけ紫 */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -11792,7 +11653,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 10px rgba(165,111,255,0.08) !important;
 }
 
-/* ドットはそのまま丸表示 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -11800,16 +11660,6 @@ document.addEventListener("DOMContentLoaded", () => {
     position:relative !important;
     z-index:2 !important;
 }
-
-
-
-/* ============================================================
-   PATCH 29: recover meter lines + keep left purple / right gray
-   - PATCH 28 を使わず、PATCH 26 ベースで復旧
-   - 消えた線を戻す
-   - 左側だけ紫、右側はグレーを維持
-   - 5段階評価「5」で右端ドットが切れないようにする
-============================================================ */
 
 .meter-graphic,
 .story-analysis .meter-graphic,
@@ -11891,15 +11741,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 30: stable meter rendering
-   - connectorの色指定に依存せず、CSS変数で左側だけ紫にする
-   - 右側は必ずグレー
-   - メーター横幅の縮みを解除
-   - 5段階目のドットを右端へ固定
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -11918,7 +11759,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:none !important;
 }
 
-/* 右側まで含めたベース線＝グレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -11937,7 +11777,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 左側だけ紫。JSの --meter-fill で長さを決める */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -11960,7 +11799,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* DOM上のconnectorは見た目に使わない */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -11968,7 +11806,6 @@ document.addEventListener("DOMContentLoaded", () => {
     display:none !important;
 }
 
-/* dotを5分割グリッド上に固定 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layoutCard .story-analysis .meter-graphic .dot,
@@ -12045,14 +11882,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 31: push right meter labels to card edge
-   - 色指定はPATCH 30のまま維持
-   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
-   - メーター領域を右いっぱいまで使う
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card,
     .story-layout-card{
@@ -12147,20 +11976,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </style>
 
-
 <style>
-/* ============================================================
-   FINAL FIX 21: 観測/発信の灰色四角を強制修正
-   原因：
-   以前の「タイル/PNG用CSS」のうち、
-   .mobile-tabbar a[href="..."] .icon {
-      background: currentColor !important;
-   }
-   が残って勝っていたため、アイコンが灰色の四角になっていた。
-============================================================ */
 
 @media(max-width:900px){
-    /* 観測・発信のspan自体は絶対に四角背景にしない */
+    
     .mobile-tabbar a[href="search.html"] > .icon,
     .mobile-tabbar a[href="editor.html"] > .icon{
         background:none !important;
@@ -12194,7 +12013,7 @@ document.addEventListener("DOMContentLoaded", () => {
             drop-shadow(0 0 10px rgba(159,205,217,0.22)) !important;
     }
 
-    /* 以前の display:none 指定より強いセレクタで復活させる */
+    
     .mobile-tabbar a[href="search.html"] > .icon::before,
     .mobile-tabbar a[href="editor.html"] > .icon::before{
         content:"" !important;
@@ -12250,12 +12069,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-/* ============================================================
-   PATCH 16: thinner meter lines + no white ring on meter dots
-   - メーター線をさらに細く
-   - メーターのドットから白い縁取りを除去
-============================================================ */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -12333,13 +12146,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 17: larger cover + align meter bottom to cover bottom
-   - ジャケット写真を少し大きく
-   - メーター下端がジャケット画像下端と揃うよう再調整
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -12481,14 +12287,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 18: bigger cover + circular dots + raster on meter
-   - ジャケット画像をもう少し大きく
-   - ドットの横長化を防ぎ、正円に固定
-   - メーターに薄いラスター（目盛り）を追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -12496,7 +12294,6 @@ document.addEventListener("DOMContentLoaded", () => {
     position:relative !important;
 }
 
-/* メーターの薄いラスター（目盛り） */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -12519,7 +12316,6 @@ document.addEventListener("DOMContentLoaded", () => {
     opacity:0.95 !important;
 }
 
-/* ドットを正円固定 */
 .meter-graphic .dot,
 .meter-graphic .dot.selected,
 .meter-graphic .dot.level-1,
@@ -12659,13 +12455,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 19: visible meter ticks + glowing raster line
-   - メーター上に見える目盛りを明示
-   - ラスターの発光感をメーター本体に追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -12698,7 +12487,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 既存の疑似要素でも発光線を出す */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -12719,7 +12507,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 目盛り線を疑似要素でも重ねて確実に表示 */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -12818,13 +12605,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 20: remove meter ticks, keep glowing raster feel
-   - メモリを削除
-   - メーターの光っている感じは維持
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -12839,7 +12619,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 目盛りは消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -12849,7 +12628,6 @@ document.addEventListener("DOMContentLoaded", () => {
     background:none !important;
 }
 
-/* 発光ラインは維持 */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -12912,13 +12690,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 21: bigger cover + larger right meter labels
-   - ジャケット画像をさらに少し大きく
-   - メーター右の文言（明るい/激しいなど）を右端寄りに大きく表示
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -13059,14 +12830,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 22: stronger dot glow + less transparent card
-   - ドットの輝きを強化
-   - ドット周辺のメーター線の輝きを強化
-   - カードの透明度を下げて少し不透明に
-============================================================ */
 .album-card.story-layout-card,
 .story-layout-card{
     background:rgba(2,8,20,0.66) !important;
@@ -13162,13 +12925,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 23: smaller dots + purple only on left side of dots
-   - ドットを小さく
-   - ドットの左側だけ紫、右側は薄く/暗く見せる
-============================================================ */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -13252,16 +13008,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 24: full circular dots + color only the line left of the dot
-   - ドット自体は丸ごと表示
-   - 「左側だけ紫」はドットではなく、ドット左側の線で表現
-   - 右側の線は淡いまま維持
-============================================================ */
-
-/* ドットは通常の丸に戻す */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -13305,7 +13051,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 24px rgba(176,108,255,0.14) !important;
 }
 
-/* 線はデフォルトでは淡く */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -13314,7 +13059,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* ドットの左側（= active の connector）だけ紫に光らせる */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -13359,17 +13103,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 25: match reference meter look
-   - ドットは丸ごと表示
-   - ドット左側の線だけ紫に発光
-   - ドット右側の線はグレー寄りで維持
-   - 参考画像の見え方に寄せる
-============================================================ */
-
-/* メーター全体の基準線はかなり淡く */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -13395,7 +13128,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* コネクタは右側(未到達側)の薄いグレー線 */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -13407,7 +13139,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* 左側(到達済み側)だけ紫にする */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -13424,7 +13155,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 12px rgba(165,111,255,0.10) !important;
 }
 
-/* ドットは丸ごとそのまま見せる */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -13498,15 +13228,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 26: make right-side meter line clearly gray
-   - 右側の線をはっきりグレー化
-   - 左側(active)だけ紫
-   - 以前の紫グラデ背景を無効化
-============================================================ */
-
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -13516,7 +13237,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:none !important;
 }
 
-/* 全体のベース線はグレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -13534,7 +13254,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 余計な疑似要素は消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -13544,7 +13263,6 @@ document.addEventListener("DOMContentLoaded", () => {
     background:none !important;
 }
 
-/* 右側(未到達側)の線はグレー固定 */
 .meter-graphic .connector,
 .meter-graphic .connector.level-1,
 .meter-graphic .connector.level-2,
@@ -13561,7 +13279,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* 左側(active)の線だけ紫 */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -13578,7 +13295,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 10px rgba(165,111,255,0.08) !important;
 }
 
-/* ドットはそのまま丸表示 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -13586,16 +13302,6 @@ document.addEventListener("DOMContentLoaded", () => {
     position:relative !important;
     z-index:2 !important;
 }
-
-
-
-/* ============================================================
-   PATCH 29: recover meter lines + keep left purple / right gray
-   - PATCH 28 を使わず、PATCH 26 ベースで復旧
-   - 消えた線を戻す
-   - 左側だけ紫、右側はグレーを維持
-   - 5段階評価「5」で右端ドットが切れないようにする
-============================================================ */
 
 .meter-graphic,
 .story-analysis .meter-graphic,
@@ -13677,15 +13383,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 30: stable meter rendering
-   - connectorの色指定に依存せず、CSS変数で左側だけ紫にする
-   - 右側は必ずグレー
-   - メーター横幅の縮みを解除
-   - 5段階目のドットを右端へ固定
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -13704,7 +13401,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:none !important;
 }
 
-/* 右側まで含めたベース線＝グレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -13723,7 +13419,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 左側だけ紫。JSの --meter-fill で長さを決める */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -13746,7 +13441,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* DOM上のconnectorは見た目に使わない */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -13754,7 +13448,6 @@ document.addEventListener("DOMContentLoaded", () => {
     display:none !important;
 }
 
-/* dotを5分割グリッド上に固定 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layoutCard .story-analysis .meter-graphic .dot,
@@ -13831,14 +13524,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 31: push right meter labels to card edge
-   - 色指定はPATCH 30のまま維持
-   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
-   - メーター領域を右いっぱいまで使う
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card,
     .story-layout-card{
@@ -13933,14 +13618,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </style>
 
-
 <style>
-/* ============================================================
-   FINAL FIX 22: 発信は塔の頭だけ / 惑星は写真アイコンへ
-============================================================ */
 
 @media(max-width:900px){
-    /* 発信アイコンを塔の頭だけにする */
+    
     .mobile-tabbar a[href="editor.html"] > .icon::before{
         -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2716%27%20r%3D%273.2%27%2F%3E%3Cpath%20d%3D%27M10.8%2011.6c-1.4%201.3-2.2%202.8-2.2%204.4s.8%203.1%202.2%204.4%27%2F%3E%3Cpath%20d%3D%27M21.2%2011.6c1.4%201.3%202.2%202.8%202.2%204.4s-.8%203.1-2.2%204.4%27%2F%3E%3Cpath%20d%3D%27M6.6%208.3C4.2%2010.5%202.8%2013.1%202.8%2016s1.4%205.5%203.8%207.7%27%2F%3E%3Cpath%20d%3D%27M25.4%208.3c2.4%202.2%203.8%204.8%203.8%207.7s-1.4%205.5-3.8%207.7%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
         mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2716%27%20r%3D%273.2%27%2F%3E%3Cpath%20d%3D%27M10.8%2011.6c-1.4%201.3-2.2%202.8-2.2%204.4s.8%203.1%202.2%204.4%27%2F%3E%3Cpath%20d%3D%27M21.2%2011.6c1.4%201.3%202.2%202.8%202.2%204.4s-.8%203.1-2.2%204.4%27%2F%3E%3Cpath%20d%3D%27M6.6%208.3C4.2%2010.5%202.8%2013.1%202.8%2016s1.4%205.5%203.8%207.7%27%2F%3E%3Cpath%20d%3D%27M25.4%208.3c2.4%202.2%203.8%204.8%203.8%207.7s-1.4%205.5-3.8%207.7%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") center / contain no-repeat !important;
@@ -13948,7 +13629,7 @@ document.addEventListener("DOMContentLoaded", () => {
         height:26px !important;
     }
 
-    /* マイページは写真アイコン。アバターが表示されている時はフォールバック非表示 */
+    
     #mobileMyPageAvatar[style*="display:block"] + #mobileMyPageFallback,
     #mobileMyPageAvatar[style*="display: block"] + #mobileMyPageFallback{
         display:none !important;
@@ -14006,12 +13687,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-/* ============================================================
-   PATCH 16: thinner meter lines + no white ring on meter dots
-   - メーター線をさらに細く
-   - メーターのドットから白い縁取りを除去
-============================================================ */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -14089,13 +13764,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 17: larger cover + align meter bottom to cover bottom
-   - ジャケット写真を少し大きく
-   - メーター下端がジャケット画像下端と揃うよう再調整
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -14237,14 +13905,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 18: bigger cover + circular dots + raster on meter
-   - ジャケット画像をもう少し大きく
-   - ドットの横長化を防ぎ、正円に固定
-   - メーターに薄いラスター（目盛り）を追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -14252,7 +13912,6 @@ document.addEventListener("DOMContentLoaded", () => {
     position:relative !important;
 }
 
-/* メーターの薄いラスター（目盛り） */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -14275,7 +13934,6 @@ document.addEventListener("DOMContentLoaded", () => {
     opacity:0.95 !important;
 }
 
-/* ドットを正円固定 */
 .meter-graphic .dot,
 .meter-graphic .dot.selected,
 .meter-graphic .dot.level-1,
@@ -14415,13 +14073,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 19: visible meter ticks + glowing raster line
-   - メーター上に見える目盛りを明示
-   - ラスターの発光感をメーター本体に追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -14454,7 +14105,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 既存の疑似要素でも発光線を出す */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -14475,7 +14125,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 目盛り線を疑似要素でも重ねて確実に表示 */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -14574,13 +14223,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 20: remove meter ticks, keep glowing raster feel
-   - メモリを削除
-   - メーターの光っている感じは維持
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -14595,7 +14237,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 目盛りは消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -14605,7 +14246,6 @@ document.addEventListener("DOMContentLoaded", () => {
     background:none !important;
 }
 
-/* 発光ラインは維持 */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -14668,13 +14308,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 21: bigger cover + larger right meter labels
-   - ジャケット画像をさらに少し大きく
-   - メーター右の文言（明るい/激しいなど）を右端寄りに大きく表示
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -14815,14 +14448,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 22: stronger dot glow + less transparent card
-   - ドットの輝きを強化
-   - ドット周辺のメーター線の輝きを強化
-   - カードの透明度を下げて少し不透明に
-============================================================ */
 .album-card.story-layout-card,
 .story-layout-card{
     background:rgba(2,8,20,0.66) !important;
@@ -14918,13 +14543,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 23: smaller dots + purple only on left side of dots
-   - ドットを小さく
-   - ドットの左側だけ紫、右側は薄く/暗く見せる
-============================================================ */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -15008,16 +14626,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 24: full circular dots + color only the line left of the dot
-   - ドット自体は丸ごと表示
-   - 「左側だけ紫」はドットではなく、ドット左側の線で表現
-   - 右側の線は淡いまま維持
-============================================================ */
-
-/* ドットは通常の丸に戻す */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -15061,7 +14669,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 24px rgba(176,108,255,0.14) !important;
 }
 
-/* 線はデフォルトでは淡く */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -15070,7 +14677,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* ドットの左側（= active の connector）だけ紫に光らせる */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -15115,17 +14721,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 25: match reference meter look
-   - ドットは丸ごと表示
-   - ドット左側の線だけ紫に発光
-   - ドット右側の線はグレー寄りで維持
-   - 参考画像の見え方に寄せる
-============================================================ */
-
-/* メーター全体の基準線はかなり淡く */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -15151,7 +14746,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* コネクタは右側(未到達側)の薄いグレー線 */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -15163,7 +14757,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* 左側(到達済み側)だけ紫にする */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -15180,7 +14773,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 12px rgba(165,111,255,0.10) !important;
 }
 
-/* ドットは丸ごとそのまま見せる */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -15254,15 +14846,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 26: make right-side meter line clearly gray
-   - 右側の線をはっきりグレー化
-   - 左側(active)だけ紫
-   - 以前の紫グラデ背景を無効化
-============================================================ */
-
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -15272,7 +14855,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:none !important;
 }
 
-/* 全体のベース線はグレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -15290,7 +14872,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 余計な疑似要素は消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -15300,7 +14881,6 @@ document.addEventListener("DOMContentLoaded", () => {
     background:none !important;
 }
 
-/* 右側(未到達側)の線はグレー固定 */
 .meter-graphic .connector,
 .meter-graphic .connector.level-1,
 .meter-graphic .connector.level-2,
@@ -15317,7 +14897,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* 左側(active)の線だけ紫 */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -15334,7 +14913,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 10px rgba(165,111,255,0.08) !important;
 }
 
-/* ドットはそのまま丸表示 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -15342,16 +14920,6 @@ document.addEventListener("DOMContentLoaded", () => {
     position:relative !important;
     z-index:2 !important;
 }
-
-
-
-/* ============================================================
-   PATCH 29: recover meter lines + keep left purple / right gray
-   - PATCH 28 を使わず、PATCH 26 ベースで復旧
-   - 消えた線を戻す
-   - 左側だけ紫、右側はグレーを維持
-   - 5段階評価「5」で右端ドットが切れないようにする
-============================================================ */
 
 .meter-graphic,
 .story-analysis .meter-graphic,
@@ -15433,15 +15001,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 30: stable meter rendering
-   - connectorの色指定に依存せず、CSS変数で左側だけ紫にする
-   - 右側は必ずグレー
-   - メーター横幅の縮みを解除
-   - 5段階目のドットを右端へ固定
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -15460,7 +15019,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:none !important;
 }
 
-/* 右側まで含めたベース線＝グレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -15479,7 +15037,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 左側だけ紫。JSの --meter-fill で長さを決める */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -15502,7 +15059,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* DOM上のconnectorは見た目に使わない */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -15510,7 +15066,6 @@ document.addEventListener("DOMContentLoaded", () => {
     display:none !important;
 }
 
-/* dotを5分割グリッド上に固定 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layoutCard .story-analysis .meter-graphic .dot,
@@ -15587,14 +15142,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 31: push right meter labels to card edge
-   - 色指定はPATCH 30のまま維持
-   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
-   - メーター領域を右いっぱいまで使う
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card,
     .story-layout-card{
@@ -15689,13 +15236,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </style>
 
-
 <style>
-/* ============================================================
-   FINAL FIX 23: 発信アイコン位置補正 + ジャケット下端とメーター下端を揃える
-============================================================ */
 
-/* 発信アイコン：塔の頭だけを中央に補正 */
 @media(max-width:900px){
     .mobile-tabbar a[href="editor.html"] > .icon{
         display:flex !important;
@@ -15729,7 +15271,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-/* 投稿カード内：ジャケット画像の下側とメーターの下側を揃える */
 @media(max-width:900px){
     .story-layout-card .album-content-row{
         display:grid !important;
@@ -15814,7 +15355,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-/* かなり狭い端末ではメーターの行間を詰めて下端揃えを維持 */
 @media(max-width:390px){
     .story-layout-card .album-content-row{
         grid-template-columns:108px minmax(0,1fr) !important;
@@ -15840,13 +15380,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-/* ============================================================
-   2026-06-10 追加修正
-   - スマホ投稿カード：メーターエリア下端とジャケット画像下端を揃える
-   - スマホ下部タブ：発信アイコンを「発信」ラベルの真上へ中央配置
-   - PNGアイコンは使わずCSS / SVG maskのみ
-============================================================ */
 @media (max-width:900px){
     .album-content-row{
         align-items:stretch !important;
@@ -15971,13 +15504,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-/* ============================================================
-   2026-06-10 追加修正 PATCH 03
-   - スマホ投稿カード：曲名・アーティスト名を少し小さくしてメーター5本を見切れにくくする
-   - 下端合わせ・発信アイコン中央配置は維持
-   - メーター横幅はPATCH 02の方向性を維持
-============================================================ */
 @media (max-width:900px){
     .story-layout-card .album-heading-block{
         flex:0 0 auto !important;
@@ -16095,13 +15621,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-/* ============================================================
-   2026-06-10 追加修正 PATCH 05
-   - スマホ投稿カード：5本目「個人 / 世界」を最優先で必ず表示
-   - 直前のPATCH 03で入った overflow:hidden を上書き
-   - 下端合わせ・発信アイコンは維持
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -16276,15 +15795,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-/* ============================================================
-   PATCH 15: compact mobile card + thinner reaction icons
-   - コメントマークの線をさらに細く
-   - ハートも細く・少し軽く
-   - ジャケット画像を小さく
-   - スマホカードの縦長感を圧縮
-   - メーター下端/発信アイコン/共有非表示は維持
-============================================================ */
 :root{
     --ac-violet:#b06cff;
     --ac-violet-2:#d5a8ff;
@@ -16294,7 +15804,6 @@ document.addEventListener("DOMContentLoaded", () => {
     --ac-violet-chip-border:rgba(176,108,255,0.30);
 }
 
-/* コメントアイコンがSVGの場合 */
 .comment-icon-clean svg,
 .comment-icon-clean svg *,
 .story-reaction-row .comment-icon-clean svg,
@@ -16303,7 +15812,6 @@ document.addEventListener("DOMContentLoaded", () => {
     stroke:rgba(232,238,244,0.72) !important;
 }
 
-/* コメントアイコンがCSS描画の場合 */
 .comment-icon{
     border-width:1.25px !important;
 }
@@ -16313,7 +15821,6 @@ document.addEventListener("DOMContentLoaded", () => {
     border-bottom-width:1.25px !important;
 }
 
-/* ハートも細く・軽く */
 .story-reaction-row .like-btn,
 .album-card.story-layout-card .story-reaction-row .like-btn,
 .like-btn{
@@ -16345,7 +15852,7 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 @media (max-width:900px){
-    /* カード全体を少し薄くする */
+    
     .album-card.story-layout-card,
     .story-layout-card{
         padding:11px 12px 10px !important;
@@ -16368,7 +15875,7 @@ document.addEventListener("DOMContentLoaded", () => {
         flex-basis:34px !important;
     }
 
-    /* ジャケットを小さく */
+    
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
         grid-template-columns:108px minmax(0,1fr) !important;
@@ -16383,7 +15890,7 @@ document.addEventListener("DOMContentLoaded", () => {
         border-radius:12px !important;
     }
 
-    /* 右側もジャケットに合わせて圧縮 */
+    
     .album-card.story-layout-card .album-right-stack,
     .story-layout-card .album-right-stack{
         height:108px !important;
@@ -16456,7 +15963,7 @@ document.addEventListener("DOMContentLoaded", () => {
         line-height:1 !important;
     }
 
-    /* メーター線をより細く */
+    
     .album-card.story-layout-card .story-analysis .meter-graphic::before,
     .story-layout-card .story-analysis .meter-graphic::before,
     .meter-graphic::before{
@@ -16476,7 +15983,7 @@ document.addEventListener("DOMContentLoaded", () => {
         box-shadow:0 0 8px rgba(176,108,255,0.34) !important;
     }
 
-    /* キーワード行の高さを圧縮 */
+    
     .story-keyword-box{
         margin-top:8px !important;
         gap:6px !important;
@@ -16498,7 +16005,7 @@ document.addEventListener("DOMContentLoaded", () => {
         text-shadow:0 0 7px rgba(176,108,255,0.20) !important;
     }
 
-    /* 反応行の縦幅も圧縮 */
+    
     .story-reaction-row{
         margin-top:8px !important;
         padding-top:5px !important;
@@ -16682,13 +16189,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 16: thinner meter lines + no white ring on meter dots
-   - メーター線をさらに細く
-   - メーターのドットから白い縁取りを除去
-============================================================ */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -16766,13 +16266,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 17: larger cover + align meter bottom to cover bottom
-   - ジャケット写真を少し大きく
-   - メーター下端がジャケット画像下端と揃うよう再調整
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -16914,14 +16407,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 18: bigger cover + circular dots + raster on meter
-   - ジャケット画像をもう少し大きく
-   - ドットの横長化を防ぎ、正円に固定
-   - メーターに薄いラスター（目盛り）を追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -16929,7 +16414,6 @@ document.addEventListener("DOMContentLoaded", () => {
     position:relative !important;
 }
 
-/* メーターの薄いラスター（目盛り） */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -16952,7 +16436,6 @@ document.addEventListener("DOMContentLoaded", () => {
     opacity:0.95 !important;
 }
 
-/* ドットを正円固定 */
 .meter-graphic .dot,
 .meter-graphic .dot.selected,
 .meter-graphic .dot.level-1,
@@ -17092,13 +16575,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 19: visible meter ticks + glowing raster line
-   - メーター上に見える目盛りを明示
-   - ラスターの発光感をメーター本体に追加
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -17131,7 +16607,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 既存の疑似要素でも発光線を出す */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -17152,7 +16627,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 目盛り線を疑似要素でも重ねて確実に表示 */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -17251,13 +16725,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 20: remove meter ticks, keep glowing raster feel
-   - メモリを削除
-   - メーターの光っている感じは維持
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -17272,7 +16739,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:drop-shadow(0 0 4px rgba(176,108,255,0.18)) !important;
 }
 
-/* 目盛りは消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -17282,7 +16748,6 @@ document.addEventListener("DOMContentLoaded", () => {
     background:none !important;
 }
 
-/* 発光ラインは維持 */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -17345,13 +16810,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 21: bigger cover + larger right meter labels
-   - ジャケット画像をさらに少し大きく
-   - メーター右の文言（明るい/激しいなど）を右端寄りに大きく表示
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card .album-content-row,
     .story-layout-card .album-content-row{
@@ -17492,14 +16950,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 22: stronger dot glow + less transparent card
-   - ドットの輝きを強化
-   - ドット周辺のメーター線の輝きを強化
-   - カードの透明度を下げて少し不透明に
-============================================================ */
 .album-card.story-layout-card,
 .story-layout-card{
     background:rgba(2,8,20,0.66) !important;
@@ -17595,13 +17045,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 23: smaller dots + purple only on left side of dots
-   - ドットを小さく
-   - ドットの左側だけ紫、右側は薄く/暗く見せる
-============================================================ */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -17685,16 +17128,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 24: full circular dots + color only the line left of the dot
-   - ドット自体は丸ごと表示
-   - 「左側だけ紫」はドットではなく、ドット左側の線で表現
-   - 右側の線は淡いまま維持
-============================================================ */
-
-/* ドットは通常の丸に戻す */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -17738,7 +17171,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 24px rgba(176,108,255,0.14) !important;
 }
 
-/* 線はデフォルトでは淡く */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -17747,7 +17179,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* ドットの左側（= active の connector）だけ紫に光らせる */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -17792,17 +17223,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 25: match reference meter look
-   - ドットは丸ごと表示
-   - ドット左側の線だけ紫に発光
-   - ドット右側の線はグレー寄りで維持
-   - 参考画像の見え方に寄せる
-============================================================ */
-
-/* メーター全体の基準線はかなり淡く */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -17828,7 +17248,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* コネクタは右側(未到達側)の薄いグレー線 */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -17840,7 +17259,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* 左側(到達済み側)だけ紫にする */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -17857,7 +17275,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 12px rgba(165,111,255,0.10) !important;
 }
 
-/* ドットは丸ごとそのまま見せる */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -17931,15 +17348,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 26: make right-side meter line clearly gray
-   - 右側の線をはっきりグレー化
-   - 左側(active)だけ紫
-   - 以前の紫グラデ背景を無効化
-============================================================ */
-
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -17949,7 +17357,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:none !important;
 }
 
-/* 全体のベース線はグレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -17967,7 +17374,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 余計な疑似要素は消す */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -17977,7 +17383,6 @@ document.addEventListener("DOMContentLoaded", () => {
     background:none !important;
 }
 
-/* 右側(未到達側)の線はグレー固定 */
 .meter-graphic .connector,
 .meter-graphic .connector.level-1,
 .meter-graphic .connector.level-2,
@@ -17994,7 +17399,6 @@ document.addEventListener("DOMContentLoaded", () => {
     box-shadow:none !important;
 }
 
-/* 左側(active)の線だけ紫 */
 .meter-graphic .connector.active,
 .meter-graphic .connector.active.level-1,
 .meter-graphic .connector.active.level-2,
@@ -18011,7 +17415,6 @@ document.addEventListener("DOMContentLoaded", () => {
         0 0 10px rgba(165,111,255,0.08) !important;
 }
 
-/* ドットはそのまま丸表示 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layout-card .story-analysis .meter-graphic .dot,
@@ -18019,16 +17422,6 @@ document.addEventListener("DOMContentLoaded", () => {
     position:relative !important;
     z-index:2 !important;
 }
-
-
-
-/* ============================================================
-   PATCH 29: recover meter lines + keep left purple / right gray
-   - PATCH 28 を使わず、PATCH 26 ベースで復旧
-   - 消えた線を戻す
-   - 左側だけ紫、右側はグレーを維持
-   - 5段階評価「5」で右端ドットが切れないようにする
-============================================================ */
 
 .meter-graphic,
 .story-analysis .meter-graphic,
@@ -18110,15 +17503,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 30: stable meter rendering
-   - connectorの色指定に依存せず、CSS変数で左側だけ紫にする
-   - 右側は必ずグレー
-   - メーター横幅の縮みを解除
-   - 5段階目のドットを右端へ固定
-============================================================ */
 .meter-graphic,
 .story-analysis .meter-graphic,
 .album-card.story-layout-card .story-analysis .meter-graphic,
@@ -18137,7 +17521,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filter:none !important;
 }
 
-/* 右側まで含めたベース線＝グレー */
 .meter-graphic::before,
 .story-analysis .meter-graphic::before,
 .album-card.story-layout-card .story-analysis .meter-graphic::before,
@@ -18156,7 +17539,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* 左側だけ紫。JSの --meter-fill で長さを決める */
 .meter-graphic::after,
 .story-analysis .meter-graphic::after,
 .album-card.story-layout-card .story-analysis .meter-graphic::after,
@@ -18179,7 +17561,6 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events:none !important;
 }
 
-/* DOM上のconnectorは見た目に使わない */
 .meter-graphic .connector,
 .story-analysis .meter-graphic .connector,
 .album-card.story-layout-card .story-analysis .meter-graphic .connector,
@@ -18187,7 +17568,6 @@ document.addEventListener("DOMContentLoaded", () => {
     display:none !important;
 }
 
-/* dotを5分割グリッド上に固定 */
 .meter-graphic .dot,
 .story-analysis .meter-graphic .dot,
 .album-card.story-layoutCard .story-analysis .meter-graphic .dot,
@@ -18264,14 +17644,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   PATCH 31: push right meter labels to card edge
-   - 色指定はPATCH 30のまま維持
-   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
-   - メーター領域を右いっぱいまで使う
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card,
     .story-layout-card{
@@ -18364,16 +17736,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
-
-
-/* ============================================================
-   FINAL PATCH 2026-06-10: smartphone story meter full-width fix
-   - メーターの横幅が狭すぎる問題を修正
-   - 右側の線はグレー寄り
-   - 選択ドットの左側だけ紫に発光
-   - 5段階評価の5でも右端ドットを表示
-   - カード右端に右ラベルが来る配置を維持
-============================================================ */
 @media (max-width:900px){
     .album-card.story-layout-card,
     .story-layout-card{
