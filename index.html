@@ -18364,6 +18364,306 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+
+
+/* ============================================================
+   FINAL PATCH 2026-06-10: smartphone story meter full-width fix
+   - メーターの横幅が狭すぎる問題を修正
+   - 右側の線はグレー寄り
+   - 選択ドットの左側だけ紫に発光
+   - 5段階評価の5でも右端ドットを表示
+   - カード右端に右ラベルが来る配置を維持
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card,
+    .story-layout-card{
+        padding:13px 13px 12px !important;
+    }
+
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:116px minmax(0,1fr) !important;
+        gap:9px !important;
+        align-items:start !important;
+        width:100% !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:116px !important;
+        height:116px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        width:100% !important;
+        min-width:0 !important;
+        height:116px !important;
+        min-height:116px !important;
+        max-height:116px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 27px !important;
+        height:27px !important;
+        max-height:27px !important;
+        margin:0 !important;
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .story-title,
+    .story-layout-card .story-title{
+        font-size:16.4px !important;
+        line-height:1.03 !important;
+        margin:0 0 1px !important;
+        -webkit-line-clamp:1 !important;
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .story-artist,
+    .story-layout-card .story-artist{
+        font-size:9.9px !important;
+        line-height:1.03 !important;
+        margin:0 !important;
+        -webkit-line-clamp:1 !important;
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        width:100% !important;
+        flex:1 1 auto !important;
+        height:89px !important;
+        min-height:89px !important;
+        max-height:89px !important;
+        padding:0 !important;
+        margin:0 !important;
+        background:transparent !important;
+        border:none !important;
+        overflow:visible !important;
+        display:flex !important;
+        align-items:stretch !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        width:100% !important;
+        height:89px !important;
+        min-height:89px !important;
+        max-height:89px !important;
+        padding:0 !important;
+        margin:0 !important;
+        border-bottom:none !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:space-between !important;
+        gap:0 !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        width:100% !important;
+        height:13px !important;
+        min-height:13px !important;
+        max-height:13px !important;
+        margin:0 !important;
+        display:grid !important;
+        grid-template-columns:32px minmax(0,1fr) 38px !important;
+        gap:3px !important;
+        align-items:center !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        font-size:9px !important;
+        line-height:1 !important;
+        letter-spacing:-0.06em !important;
+        white-space:nowrap !important;
+        color:rgba(245,250,252,0.94) !important;
+        font-weight:520 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label{
+        width:100% !important;
+        text-align:right !important;
+        justify-self:end !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        position:relative !important;
+        width:100% !important;
+        min-width:0 !important;
+        height:13px !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, 1fr) !important;
+        align-items:center !important;
+        overflow:visible !important;
+        background:none !important;
+        filter:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before{
+        content:"" !important;
+        position:absolute !important;
+        left:0 !important;
+        right:0 !important;
+        top:50% !important;
+        height:1px !important;
+        transform:translateY(-50%) !important;
+        background:rgba(182,188,204,0.28) !important;
+        box-shadow:none !important;
+        z-index:0 !important;
+        pointer-events:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic::after,
+    .story-layout-card .story-analysis .meter-graphic::after{
+        content:none !important;
+        display:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .connector,
+    .story-layout-card .story-analysis .meter-graphic .connector{
+        display:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        position:relative !important;
+        grid-row:1 !important;
+        justify-self:center !important;
+        align-self:center !important;
+        width:7.4px !important;
+        height:7.4px !important;
+        min-width:7.4px !important;
+        min-height:7.4px !important;
+        max-width:7.4px !important;
+        max-height:7.4px !important;
+        aspect-ratio:1 / 1 !important;
+        flex:none !important;
+        margin:0 !important;
+        padding:0 !important;
+        border:0 !important;
+        outline:0 !important;
+        border-radius:999px !important;
+        opacity:0 !important;
+        background:#c58cff !important;
+        box-shadow:none !important;
+        z-index:2 !important;
+        overflow:visible !important;
+        transform:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-1,
+    .story-layout-card .story-analysis .meter-graphic .dot.level-1{ grid-column:1 !important; }
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-2,
+    .story-layout-card .story-analysis .meter-graphic .dot.level-2{ grid-column:2 !important; }
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-3,
+    .story-layout-card .story-analysis .meter-graphic .dot.level-3{ grid-column:3 !important; }
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-4,
+    .story-layout-card .story-analysis .meter-graphic .dot.level-4{ grid-column:4 !important; }
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.level-5,
+    .story-layout-card .story-analysis .meter-graphic .dot.level-5{ grid-column:5 !important; }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        opacity:1 !important;
+        background:#c58cff !important;
+        box-shadow:
+            0 0 8px rgba(197,140,255,0.74),
+            0 0 15px rgba(197,140,255,0.30) !important;
+        filter:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected::before,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected::before{
+        content:"" !important;
+        position:absolute !important;
+        right:50% !important;
+        top:50% !important;
+        height:1px !important;
+        width:999px !important;
+        transform:translateY(-50%) !important;
+        background:#b06cff !important;
+        box-shadow:
+            0 0 8px rgba(176,108,255,0.55),
+            0 0 15px rgba(176,108,255,0.22) !important;
+        z-index:-1 !important;
+        pointer-events:none !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:112px minmax(0,1fr) !important;
+        gap:8px !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        width:112px !important;
+        height:112px !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        height:112px !important;
+        min-height:112px !important;
+        max-height:112px !important;
+    }
+
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex-basis:26px !important;
+        height:26px !important;
+        max-height:26px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis,
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        height:86px !important;
+        min-height:86px !important;
+        max-height:86px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        grid-template-columns:30px minmax(0,1fr) 36px !important;
+        gap:3px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        font-size:8.8px !important;
+        letter-spacing:-0.07em !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7px !important;
+        height:7px !important;
+        min-width:7px !important;
+        min-height:7px !important;
+        max-width:7px !important;
+        max-height:7px !important;
+    }
+}
+
 </style>
 
 </body>
