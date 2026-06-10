@@ -5052,6 +5052,72 @@ body{
     }
 }
 
+
+
+/* ===== PATCH 10: wider reaction spacing + comment icon size match ===== */
+.album-card.story-layout-card .story-reaction-row .reaction-left-group,
+.story-layout-card .story-reaction-row .reaction-left-group{
+    gap:24px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-area,
+.story-layout-card .story-reaction-row .like-area{
+    gap:6px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-icon-wrap,
+.story-layout-card .story-reaction-row .comment-icon-wrap{
+    gap:6px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .story-play-btn,
+.story-layout-card .story-reaction-row .story-play-btn{
+    margin-left:12px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-icon-clean,
+.story-layout-card .story-reaction-row .comment-icon-clean{
+    width:21px !important;
+    height:21px !important;
+    flex:0 0 21px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-icon-clean svg,
+.story-layout-card .story-reaction-row .comment-icon-clean svg{
+    width:21px !important;
+    height:21px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-count-number,
+.story-layout-card .story-reaction-row .comment-count-number{
+    font-size:13px !important;
+}
+
+@media (max-width: 430px){
+    .album-card.story-layout-card .story-reaction-row .reaction-left-group,
+    .story-layout-card .story-reaction-row .reaction-left-group{
+        gap:21px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .story-play-btn,
+    .story-layout-card .story-reaction-row .story-play-btn{
+        margin-left:10px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .comment-icon-clean,
+    .story-layout-card .story-reaction-row .comment-icon-clean{
+        width:20px !important;
+        height:20px !important;
+        flex:0 0 20px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .comment-icon-clean svg,
+    .story-layout-card .story-reaction-row .comment-icon-clean svg{
+        width:20px !important;
+        height:20px !important;
+    }
+}
+
 </style>
 </head>
 
