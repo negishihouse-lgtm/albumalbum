@@ -5005,6 +5005,53 @@ body{
     }
 }
 
+
+
+/* ===== PATCH 09: more spacing + remove story share icon ===== */
+.album-card.story-layout-card .story-reaction-row,
+.story-layout-card .story-reaction-row{
+    grid-template-columns:minmax(0,1fr) !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .reaction-left-group,
+.story-layout-card .story-reaction-row .reaction-left-group{
+    gap:18px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-area,
+.story-layout-card .story-reaction-row .like-area{
+    gap:6px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .comment-icon-wrap,
+.story-layout-card .story-reaction-row .comment-icon-wrap{
+    gap:6px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .story-play-btn,
+.story-layout-card .story-reaction-row .story-play-btn{
+    margin-left:8px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .reaction-right-group,
+.story-layout-card .story-reaction-row .reaction-right-group,
+.album-card.story-layout-card .story-reaction-row .story-share-btn,
+.story-layout-card .story-reaction-row .story-share-btn{
+    display:none !important;
+}
+
+@media (max-width: 430px){
+    .album-card.story-layout-card .story-reaction-row .reaction-left-group,
+    .story-layout-card .story-reaction-row .reaction-left-group{
+        gap:16px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .story-play-btn,
+    .story-layout-card .story-reaction-row .story-play-btn{
+        margin-left:6px !important;
+    }
+}
+
 </style>
 </head>
 
