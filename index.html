@@ -2509,6 +2509,316 @@ a{
 }
 </style>
 
+
+
+<style>
+/* ============================================================
+   SPACE / GALAXY HOME DESIGN OVERRIDE
+   - index背景に銀河画像を配置
+   - 左の参考画像に寄せて、黒×紫×ガラス質のタイムラインへ
+   - 既存JSのIDは維持。観測タブはストーリー用の入口名として表示
+============================================================ */
+:root{
+    --space-bg:#02050b;
+    --space-panel:rgba(5,8,14,0.70);
+    --space-panel-strong:rgba(5,8,14,0.84);
+    --space-border:rgba(196,215,255,0.18);
+    --space-border-soft:rgba(196,215,255,0.11);
+    --space-purple:#9a5cff;
+    --space-purple-2:#c99cff;
+    --space-blue:#69c6ff;
+    --space-text:#f7fbff;
+    --space-muted:#aeb8c8;
+}
+
+html{
+    background:#02050b;
+}
+
+body{
+    background:#02050b !important;
+    position:relative;
+    isolation:isolate;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    pointer-events:none;
+    background-image:
+        linear-gradient(180deg, rgba(2,5,11,0.28) 0%, rgba(2,5,11,0.48) 46%, rgba(2,5,11,0.92) 100%),
+        radial-gradient(circle at 74% 18%, rgba(105,198,255,0.20) 0 12%, transparent 34%),
+        radial-gradient(circle at 22% 72%, rgba(154,92,255,0.18) 0 8%, transparent 32%),
+        url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1800&q=85");
+    background-size:cover, cover, cover, cover;
+    background-position:center top, center, center, center top;
+    background-repeat:no-repeat;
+    transform:translateZ(0);
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(154,92,255,0.20), transparent 34%),
+        linear-gradient(90deg, rgba(0,0,0,0.30), transparent 18%, transparent 82%, rgba(0,0,0,0.34));
+}
+
+.sidebar,
+.mobile-tabbar,
+.mobile-feed-tabs,
+.album-card,
+.list-card,
+.album-analysis,
+.sort-filter-menu,
+.share-panel,
+.listen-panel,
+.tutorial-card{
+    backdrop-filter:blur(18px) saturate(1.15) !important;
+    -webkit-backdrop-filter:blur(18px) saturate(1.15) !important;
+}
+
+.sidebar{
+    background:rgba(3,6,12,0.74) !important;
+    border-right:1px solid var(--space-border-soft) !important;
+    box-shadow:18px 0 48px rgba(0,0,0,0.28) !important;
+}
+
+.logo,
+.page-title{
+    text-shadow:0 0 28px rgba(105,198,255,0.18), 0 0 38px rgba(154,92,255,0.12);
+}
+
+.sidebar a.active,
+.sidebar a:hover,
+.tutorial-reopen-btn:hover{
+    background:rgba(154,92,255,0.13) !important;
+    color:#ffffff !important;
+}
+
+.album-card,
+.list-card{
+    background:linear-gradient(145deg, rgba(7,12,22,0.74), rgba(4,7,13,0.66)) !important;
+    border:1px solid var(--space-border) !important;
+    box-shadow:0 18px 60px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+
+.album-card:hover,
+.list-card:hover{
+    border-color:rgba(154,92,255,0.48) !important;
+    box-shadow:0 18px 70px rgba(0,0,0,0.34), 0 0 34px rgba(154,92,255,0.10) !important;
+}
+
+.album-analysis{
+    background:rgba(4,7,13,0.44) !important;
+    border-color:var(--space-border-soft) !important;
+}
+
+.creator-avatar,
+.creator-avatar-fallback,
+.mobile-tabbar .tab-avatar{
+    box-shadow:0 0 0 1px rgba(154,92,255,0.38), 0 0 18px rgba(105,198,255,0.18) !important;
+}
+
+.artist,
+.creator a,
+.keyword-title,
+.list-open-hint,
+.sidebar a.active{
+    color:#c9d9ff !important;
+}
+
+.keyword-tag,
+.list-type-label{
+    background:rgba(154,92,255,0.12) !important;
+    border-color:rgba(154,92,255,0.22) !important;
+}
+
+.dot.active.level-1,
+.connector.active.level-1{
+    background:#7656ff !important;
+    border-color:#7656ff !important;
+}
+.dot.active.level-2,
+.connector.active.level-2{
+    background:#906dff !important;
+    border-color:#906dff !important;
+}
+.dot.active.level-3,
+.connector.active.level-3{
+    background:#ad8cff !important;
+    border-color:#ad8cff !important;
+}
+.dot.active.level-4,
+.connector.active.level-4{
+    background:#c7b1ff !important;
+    border-color:#c7b1ff !important;
+}
+.dot.active.level-5,
+.connector.active.level-5{
+    background:#eff4ff !important;
+    border-color:#eff4ff !important;
+}
+
+.sort-filter-btn,
+.post-more-btn,
+.icon-action-btn,
+.share-pill-btn{
+    background:rgba(8,12,22,0.54) !important;
+    border-color:rgba(196,215,255,0.16) !important;
+}
+
+@media(max-width:900px){
+    body{
+        padding-top:14px !important;
+        background:#02050b !important;
+    }
+
+    body::before{
+        background-attachment:scroll;
+        background-position:center top;
+        opacity:0.96;
+    }
+
+    .topbar{
+        display:flex !important;
+        align-items:center !important;
+        justify-content:space-between !important;
+        gap:12px !important;
+        margin:0 -2px 12px !important;
+        padding:18px 2px 6px !important;
+    }
+
+    .page-title{
+        font-size:25px !important;
+        line-height:1 !important;
+        margin:0 !important;
+        letter-spacing:-0.04em !important;
+    }
+
+    .home-sortbar{
+        margin:0 !important;
+        flex:0 0 auto !important;
+    }
+
+    .sort-filter-btn{
+        width:38px !important;
+        height:38px !important;
+        background:rgba(7,10,18,0.50) !important;
+        border-color:rgba(255,255,255,0.16) !important;
+    }
+
+    .mobile-feed-tabs{
+        display:grid !important;
+        grid-template-columns:repeat(3,1fr) !important;
+        position:sticky !important;
+        top:0 !important;
+        z-index:900 !important;
+        margin:0 -16px 14px !important;
+        padding:0 16px !important;
+        background:rgba(2,5,11,0.58) !important;
+        border-bottom:1px solid rgba(196,215,255,0.12) !important;
+        box-shadow:0 12px 34px rgba(0,0,0,0.18) !important;
+    }
+
+    .mobile-feed-tabs::after{
+        height:3px !important;
+        width:86px !important;
+        background:linear-gradient(90deg, var(--space-purple), var(--space-purple-2)) !important;
+        box-shadow:0 0 16px rgba(154,92,255,0.60) !important;
+    }
+
+    .feed-tab{
+        height:52px !important;
+        color:rgba(245,248,255,0.60) !important;
+        font-size:14px !important;
+        font-weight:850 !important;
+        letter-spacing:0 !important;
+    }
+
+    .feed-tab.active{
+        color:#ffffff !important;
+    }
+
+    .album-card{
+        border-radius:22px !important;
+        background:linear-gradient(145deg, rgba(8,12,22,0.72), rgba(4,7,13,0.58)) !important;
+        border-color:rgba(196,215,255,0.16) !important;
+    }
+
+    .album-main{
+        border-bottom:0 !important;
+        padding-bottom:10px !important;
+    }
+
+    .cover{
+        border-radius:12px !important;
+        box-shadow:0 16px 34px rgba(0,0,0,0.30) !important;
+    }
+
+    .album-analysis{
+        padding:12px 0 0 !important;
+        background:transparent !important;
+    }
+
+    .meter-list{
+        border-bottom:0 !important;
+        padding-bottom:11px !important;
+    }
+
+    .meter-graphic::before{
+        background:linear-gradient(90deg, #4934a5 0%, #7b55ff 34%, #b48dff 66%, #ecf3ff 100%) !important;
+        box-shadow:0 0 14px rgba(154,92,255,0.22) !important;
+    }
+
+    .keyword-box{
+        padding-top:2px !important;
+    }
+
+    .keyword-title{
+        color:#b487ff !important;
+    }
+
+    .keyword-tag{
+        background:rgba(7,10,18,0.52) !important;
+        border-color:rgba(154,92,255,0.20) !important;
+        color:#f4f0ff !important;
+    }
+
+    .mobile-tabbar{
+        height:76px !important;
+        background:rgba(3,6,12,0.72) !important;
+        border-top:1px solid rgba(196,215,255,0.14) !important;
+        box-shadow:0 -18px 46px rgba(0,0,0,0.36) !important;
+    }
+
+    .mobile-tabbar a{
+        height:76px !important;
+        color:rgba(247,251,255,0.58) !important;
+    }
+
+    .mobile-tabbar a.active{
+        color:#a970ff !important;
+    }
+
+    .mobile-tabbar .icon{
+        font-size:25px !important;
+        text-shadow:0 0 14px rgba(154,92,255,0.36) !important;
+    }
+
+    .post-more-btn{
+        background:transparent !important;
+        border-color:transparent !important;
+        color:#ffffff !important;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -2541,7 +2851,7 @@ a{
 <nav class="sidebar">
     <div class="logo">Album<br>Collection</div>
 
-    <a href="index.html" class="active">ホーム</a>
+    <a href="index.html" class="active">天の川</a>
     <a href="search.html">検索</a>
     <a href="editor.html">投稿する</a>
     <a href="notifications.html">通知</a>
@@ -2555,17 +2865,17 @@ a{
 <nav class="mobile-tabbar">
     <a href="index.html" class="active">
         <span class="icon">⌂</span>
-        <span class="label">ホーム</span>
+        <span class="label">天の川</span>
     </a>
 
     <a href="search.html">
         <span class="icon">⌕</span>
-        <span class="label">検索</span>
+        <span class="label">観測</span>
     </a>
 
     <a href="editor.html">
         <span class="icon">＋</span>
-        <span class="label">投稿</span>
+        <span class="label">発信</span>
     </a>
 
     <a href="notifications.html">
@@ -2576,16 +2886,16 @@ a{
     <a id="mobileMyPageLink" href="login.html">
         <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
         <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
-        <span class="label">マイページ</span>
+        <span class="label">惑星</span>
     </a>
 </nav>
 
 <a href="editor.html" class="fab">＋</a>
 
-<!-- スマホ用：おすすめ / フォロー中 / リスト タブ -->
+<!-- スマホ用：天の川 / 観測 / リスト タブ -->
 <div class="mobile-feed-tabs" id="mobileFeedTabs">
-    <button type="button" class="feed-tab active" id="recommendTab">おすすめ</button>
-    <button type="button" class="feed-tab" id="followingTab">フォロー中</button>
+    <button type="button" class="feed-tab active" id="recommendTab">天の川</button>
+    <button type="button" class="feed-tab" id="followingTab">観測</button>
     <button type="button" class="feed-tab" id="listTab">リスト</button>
 </div>
 
