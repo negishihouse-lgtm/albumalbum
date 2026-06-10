@@ -6432,15 +6432,7 @@ function albumCardHTML(item, posterProfile){
             <span class="story-creator-meta">
                 <span class="story-creator-line1">
                     <span class="story-creator-name">${escapeHTML(posterProfile?.name || '匿名ユーザー')}</span>
-                    <span class="story-creator-from">から受信</span><span class="receive-mini-icon" aria-hidden="true">
-                        <svg viewBox="0 0 32 20" fill="none">
-                            <circle cx="16" cy="10" r="3.2"></circle>
-                            <path d="M10.6 5.5C9.3 6.8 8.6 8.3 8.6 10c0 1.7.7 3.2 2 4.5"></path>
-                            <path d="M21.4 5.5c1.3 1.3 2 2.8 2 4.5 0 1.7-.7 3.2-2 4.5"></path>
-                            <path d="M6.1 2.7C3.9 4.8 2.7 7.2 2.7 10c0 2.8 1.2 5.2 3.4 7.3"></path>
-                            <path d="M25.9 2.7c2.2 2.1 3.4 4.5 3.4 7.3 0 2.8-1.2 5.2-3.4 7.3"></path>
-                        </svg>
-                    </span>
+                    <span class="story-creator-from">から受信</span><img class="receive-mini-icon-img" src="./receive_signal_tile.png" alt="" aria-hidden="true">
                 </span>
                 <span class="story-creator-line2">${escapeHTML(postDate || '')}</span>
             </span>
@@ -7640,6 +7632,446 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("DOMContentLoaded", updateMilkywayBackground);
 })();
 </script>
+
+
+<style>
+/* ============================================================
+   FINAL FIX 16: タブバーアイコンを大きめのタイル表示へ
+   - ChatGPT生成候補くらいの見え方に寄せる
+   - SVG本体はベクターのまま、ラスター風グローだけ追加
+============================================================ */
+
+@media(max-width:900px){
+    .mobile-tabbar{
+        height:86px !important;
+        padding-top:7px !important;
+        padding-bottom:calc(7px + env(safe-area-inset-bottom)) !important;
+        align-items:start !important;
+    }
+
+    .mobile-tabbar a{
+        height:72px !important;
+        gap:4px !important;
+        justify-content:flex-start !important;
+        padding-top:0 !important;
+    }
+
+    .mobile-tabbar .icon,
+    .mobile-tabbar .mypage-icon-text,
+    .mobile-tabbar .tab-avatar{
+        width:42px !important;
+        height:42px !important;
+        min-width:42px !important;
+        min-height:42px !important;
+        border-radius:13px !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        background-color:rgba(7,12,24,0.72) !important;
+        border:1px solid rgba(159,205,217,0.10) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.045),
+            0 8px 20px rgba(0,0,0,0.24),
+            0 0 12px rgba(159,205,217,0.045) !important;
+    }
+
+    .mobile-tabbar a.active .icon,
+    .mobile-tabbar a.active .mypage-icon-text,
+    .mobile-tabbar a.active .tab-avatar{
+        border-color:rgba(159,205,217,0.36) !important;
+        background-color:rgba(8,15,28,0.86) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 10px 24px rgba(0,0,0,0.30),
+            0 0 18px rgba(159,205,217,0.18) !important;
+    }
+
+    /* 既存文字アイコンもタイル内で大きく */
+    .mobile-tabbar .icon{
+        font-size:25px !important;
+        line-height:1 !important;
+        color:currentColor !important;
+        text-shadow:
+            0 0 4px rgba(215,237,240,0.35),
+            0 0 12px rgba(159,205,217,0.14) !important;
+    }
+
+    /* SVGマスク系はタイル自体に背景色を使うと潰れるので、内側だけmaskで描く */
+    .mobile-tabbar a[href="editor.html"] .icon,
+    .mobile-tabbar a[href="search.html"] .icon{
+        position:relative !important;
+        overflow:hidden !important;
+        background-color:rgba(7,12,24,0.72) !important;
+        -webkit-mask:none !important;
+        mask:none !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon::before,
+    .mobile-tabbar a[href="search.html"] .icon::before{
+        content:"" !important;
+        display:block !important;
+        width:27px !important;
+        height:27px !important;
+        background:currentColor !important;
+        filter:
+            drop-shadow(0 0 3px rgba(215,237,240,0.48))
+            drop-shadow(0 0 9px rgba(159,205,217,0.18)) !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon::before{
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M10.2%2024h11.6%27/%3E%3Cpath%20d%3D%27M11.6%2024L16%2011.8%2020.4%2024%27/%3E%3Cpath%20d%3D%27M13.3%2018.2h5.4%27/%3E%3Cpath%20d%3D%27M13%2024l6.8-7.4%27/%3E%3Cpath%20d%3D%27M19%2024l-6.8-7.4%27/%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%279.4%27%20r%3D%272.7%27/%3E%3Cpath%20d%3D%27M8.8%207.8c-2.2%202.2-2.2%206.2%200%208.4%27/%3E%3Cpath%20d%3D%27M23.2%207.8c2.2%202.2%202.2%206.2%200%208.4%27/%3E%3Cpath%20d%3D%27M5.7%204.9c-3.8%203.9-3.8%2011.3%200%2015.2%27/%3E%3Cpath%20d%3D%27M26.3%204.9c3.8%203.9%203.8%2011.3%200%2015.2%27/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M10.2%2024h11.6%27/%3E%3Cpath%20d%3D%27M11.6%2024L16%2011.8%2020.4%2024%27/%3E%3Cpath%20d%3D%27M13.3%2018.2h5.4%27/%3E%3Cpath%20d%3D%27M13%2024l6.8-7.4%27/%3E%3Cpath%20d%3D%27M19%2024l-6.8-7.4%27/%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%279.4%27%20r%3D%272.7%27/%3E%3Cpath%20d%3D%27M8.8%207.8c-2.2%202.2-2.2%206.2%200%208.4%27/%3E%3Cpath%20d%3D%27M23.2%207.8c2.2%202.2%202.2%206.2%200%208.4%27/%3E%3Cpath%20d%3D%27M5.7%204.9c-3.8%203.9-3.8%2011.3%200%2015.2%27/%3E%3Cpath%20d%3D%27M26.3%204.9c3.8%203.9%203.8%2011.3%200%2015.2%27/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat !important;
+    }
+
+    .mobile-tabbar a[href="search.html"] .icon::before{
+        -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.05%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%2713%27%20y%3D%2713%27%20width%3D%276.2%27%20height%3D%277.8%27%20rx%3D%272%27%20transform%3D%27rotate%28-35%2016.1%2016.9%29%27/%3E%3Crect%20x%3D%274.2%27%20y%3D%2710.7%27%20width%3D%278.2%27%20height%3D%275.7%27%20rx%3D%271.1%27%20transform%3D%27rotate%28-35%208.3%2013.55%29%27/%3E%3Crect%20x%3D%2719.8%27%20y%3D%2718.6%27%20width%3D%278.2%27%20height%3D%275.7%27%20rx%3D%271.1%27%20transform%3D%27rotate%28-35%2023.9%2021.45%29%27/%3E%3Cpath%20d%3D%27M11.6%2014.5l2.4%201.5%27/%3E%3Cpath%20d%3D%27M18.2%2018.1l2.4%201.5%27/%3E%3Cpath%20d%3D%27M18.8%2011.6l4-2.8%27/%3E%3Cpath%20d%3D%27M21.5%207.5c2.1.5%203.8%202%204.7%204%27/%3E%3Cpath%20d%3D%27M24.5%205.5c2.4.9%204.3%202.7%205.2%205.1%27/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat !important;
+        mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-width%3D%272.05%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%2713%27%20y%3D%2713%27%20width%3D%276.2%27%20height%3D%277.8%27%20rx%3D%272%27%20transform%3D%27rotate%28-35%2016.1%2016.9%29%27/%3E%3Crect%20x%3D%274.2%27%20y%3D%2710.7%27%20width%3D%278.2%27%20height%3D%275.7%27%20rx%3D%271.1%27%20transform%3D%27rotate%28-35%208.3%2013.55%29%27/%3E%3Crect%20x%3D%2719.8%27%20y%3D%2718.6%27%20width%3D%278.2%27%20height%3D%275.7%27%20rx%3D%271.1%27%20transform%3D%27rotate%28-35%2023.9%2021.45%29%27/%3E%3Cpath%20d%3D%27M11.6%2014.5l2.4%201.5%27/%3E%3Cpath%20d%3D%27M18.2%2018.1l2.4%201.5%27/%3E%3Cpath%20d%3D%27M18.8%2011.6l4-2.8%27/%3E%3Cpath%20d%3D%27M21.5%207.5c2.1.5%203.8%202%204.7%204%27/%3E%3Cpath%20d%3D%27M24.5%205.5c2.4.9%204.3%202.7%205.2%205.1%27/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon::after,
+    .mobile-tabbar a[href="search.html"] .icon::after{
+        display:none !important;
+        content:none !important;
+    }
+
+    .mobile-tabbar .label{
+        font-size:10.5px !important;
+        line-height:1 !important;
+        color:currentColor !important;
+    }
+}
+
+@media(max-width:430px){
+    .mobile-tabbar .icon,
+    .mobile-tabbar .mypage-icon-text,
+    .mobile-tabbar .tab-avatar{
+        width:39px !important;
+        height:39px !important;
+        min-width:39px !important;
+        min-height:39px !important;
+        border-radius:12px !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon::before,
+    .mobile-tabbar a[href="search.html"] .icon::before{
+        width:25px !important;
+        height:25px !important;
+    }
+
+    .mobile-tabbar{
+        height:84px !important;
+    }
+
+    .mobile-tabbar a{
+        height:70px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   FINAL FIX 17: 生成PNG案を大きめタイル表示で採用
+   - SVGではなく、さっきの生成PNG案を使用
+   - 黒背景ごと「タイル」として扱うのでガビガビ・黒四角問題を回避
+   - index.html と同じ階層に以下を置く：
+     broadcast_tower_tile.png
+     receive_signal_tile.png
+     satellite_search_tile.png
+     list_tile.png
+============================================================ */
+
+@media(max-width:900px){
+    .mobile-tabbar{
+        height:88px !important;
+        padding-top:7px !important;
+        padding-bottom:calc(7px + env(safe-area-inset-bottom)) !important;
+        align-items:start !important;
+    }
+
+    .mobile-tabbar a{
+        height:74px !important;
+        gap:4px !important;
+        justify-content:flex-start !important;
+        padding-top:0 !important;
+    }
+
+    .mobile-tabbar .icon,
+    .mobile-tabbar .mypage-icon-text,
+    .mobile-tabbar .tab-avatar{
+        width:43px !important;
+        height:43px !important;
+        min-width:43px !important;
+        min-height:43px !important;
+        border-radius:13px !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        background-color:rgba(4,8,16,0.82) !important;
+        border:1px solid rgba(159,205,217,0.12) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.05),
+            0 8px 20px rgba(0,0,0,0.28),
+            0 0 14px rgba(159,205,217,0.06) !important;
+        overflow:hidden !important;
+    }
+
+    .mobile-tabbar a.active .icon,
+    .mobile-tabbar a.active .mypage-icon-text,
+    .mobile-tabbar a.active .tab-avatar{
+        border-color:rgba(159,205,217,0.42) !important;
+        background-color:rgba(6,12,22,0.92) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 10px 24px rgba(0,0,0,0.32),
+            0 0 18px rgba(159,205,217,0.20) !important;
+    }
+
+    /* 発信：生成PNGタイル */
+    .mobile-tabbar a[href="editor.html"] .icon{
+        font-size:0 !important;
+        line-height:1 !important;
+        background-image:url("./broadcast_tower_tile.png") !important;
+        background-size:cover !important;
+        background-position:center !important;
+        background-repeat:no-repeat !important;
+        color:transparent !important;
+        text-shadow:none !important;
+        -webkit-mask:none !important;
+        mask:none !important;
+    }
+
+    /* 観測/探索：生成PNGタイル */
+    .mobile-tabbar a[href="search.html"] .icon{
+        font-size:0 !important;
+        line-height:1 !important;
+        background-image:url("./satellite_search_tile.png") !important;
+        background-size:cover !important;
+        background-position:center !important;
+        background-repeat:no-repeat !important;
+        color:transparent !important;
+        text-shadow:none !important;
+        -webkit-mask:none !important;
+        mask:none !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon::before,
+    .mobile-tabbar a[href="editor.html"] .icon::after,
+    .mobile-tabbar a[href="search.html"] .icon::before,
+    .mobile-tabbar a[href="search.html"] .icon::after{
+        display:none !important;
+        content:none !important;
+    }
+
+    .mobile-tabbar .label{
+        font-size:10.5px !important;
+        line-height:1 !important;
+    }
+
+    /* 上部リストタブ：生成PNG案を小さめに表示 */
+    #listTab{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        gap:7px !important;
+    }
+
+    #listTab::before{
+        content:"" !important;
+        width:23px !important;
+        height:23px !important;
+        display:inline-block !important;
+        border-radius:7px !important;
+        background-image:url("./list_tile.png") !important;
+        background-size:cover !important;
+        background-position:center !important;
+        background-repeat:no-repeat !important;
+        border:1px solid rgba(159,205,217,0.10) !important;
+        box-shadow:0 0 8px rgba(159,205,217,0.10) !important;
+        opacity:0.96 !important;
+        flex:0 0 auto !important;
+        -webkit-mask:none !important;
+        mask:none !important;
+    }
+
+    /* 受信横：生成PNG案を小さく表示 */
+    .receive-mini-icon{
+        display:none !important;
+    }
+
+    .receive-mini-icon-img{
+        width:22px !important;
+        height:22px !important;
+        object-fit:cover !important;
+        display:inline-block !important;
+        margin-left:4px !important;
+        vertical-align:-6px !important;
+        border-radius:5px !important;
+        opacity:0.95 !important;
+        box-shadow:0 0 7px rgba(159,205,217,0.12) !important;
+    }
+}
+
+@media(max-width:430px){
+    .mobile-tabbar{
+        height:86px !important;
+    }
+
+    .mobile-tabbar a{
+        height:72px !important;
+    }
+
+    .mobile-tabbar .icon,
+    .mobile-tabbar .mypage-icon-text,
+    .mobile-tabbar .tab-avatar{
+        width:40px !important;
+        height:40px !important;
+        min-width:40px !important;
+        min-height:40px !important;
+        border-radius:12px !important;
+    }
+
+    #listTab::before{
+        width:21px !important;
+        height:21px !important;
+        border-radius:6px !important;
+    }
+
+    .receive-mini-icon-img{
+        width:20px !important;
+        height:20px !important;
+        vertical-align:-5px !important;
+    }
+}
+</style>
+
+
+<style>
+/* ============================================================
+   FINAL FIX 18: PNGタイル背景色をindex側と完全に合わせる
+   - PNGの背景色を #03070d に寄せた版を使用
+   - タブバー / アイコンタイルも同じ #03070d 系へ
+   - 黒い四角が「別画像」として浮かないようにする
+============================================================ */
+
+:root{
+    --icon-tile-bg:#03070d;
+}
+
+@media(max-width:900px){
+    .mobile-tabbar{
+        background:rgba(3,7,13,0.84) !important;
+        border-top:1px solid rgba(159,205,217,0.12) !important;
+    }
+
+    .mobile-tabbar .icon,
+    .mobile-tabbar .mypage-icon-text,
+    .mobile-tabbar .tab-avatar{
+        width:43px !important;
+        height:43px !important;
+        min-width:43px !important;
+        min-height:43px !important;
+        border-radius:10px !important;
+        background-color:var(--icon-tile-bg) !important;
+        border:1px solid rgba(159,205,217,0.07) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.035),
+            0 6px 16px rgba(0,0,0,0.20),
+            0 0 10px rgba(159,205,217,0.035) !important;
+        overflow:hidden !important;
+    }
+
+    .mobile-tabbar a.active .icon,
+    .mobile-tabbar a.active .mypage-icon-text,
+    .mobile-tabbar a.active .tab-avatar{
+        border-color:rgba(159,205,217,0.30) !important;
+        background-color:var(--icon-tile-bg) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            0 8px 18px rgba(0,0,0,0.24),
+            0 0 16px rgba(159,205,217,0.16) !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon{
+        background-color:var(--icon-tile-bg) !important;
+        background-image:url("./broadcast_tower_tile.png") !important;
+        background-size:cover !important;
+        background-position:center !important;
+        background-repeat:no-repeat !important;
+        font-size:0 !important;
+        color:transparent !important;
+        -webkit-mask:none !important;
+        mask:none !important;
+    }
+
+    .mobile-tabbar a[href="search.html"] .icon{
+        background-color:var(--icon-tile-bg) !important;
+        background-image:url("./satellite_search_tile.png") !important;
+        background-size:cover !important;
+        background-position:center !important;
+        background-repeat:no-repeat !important;
+        font-size:0 !important;
+        color:transparent !important;
+        -webkit-mask:none !important;
+        mask:none !important;
+    }
+
+    .mobile-tabbar a[href="editor.html"] .icon::before,
+    .mobile-tabbar a[href="editor.html"] .icon::after,
+    .mobile-tabbar a[href="search.html"] .icon::before,
+    .mobile-tabbar a[href="search.html"] .icon::after{
+        display:none !important;
+        content:none !important;
+    }
+
+    #listTab::before{
+        background-color:var(--icon-tile-bg) !important;
+        background-image:url("./list_tile.png") !important;
+        background-size:cover !important;
+        background-position:center !important;
+        background-repeat:no-repeat !important;
+        border-radius:6px !important;
+        border:1px solid rgba(159,205,217,0.07) !important;
+        box-shadow:0 0 8px rgba(159,205,217,0.06) !important;
+        -webkit-mask:none !important;
+        mask:none !important;
+    }
+
+    .receive-mini-icon{
+        display:none !important;
+    }
+
+    .receive-mini-icon-img{
+        width:22px !important;
+        height:22px !important;
+        object-fit:cover !important;
+        display:inline-block !important;
+        margin-left:4px !important;
+        vertical-align:-6px !important;
+        border-radius:5px !important;
+        background:#03070d !important;
+        box-shadow:0 0 6px rgba(159,205,217,0.08) !important;
+        opacity:0.96 !important;
+    }
+}
+
+@media(max-width:430px){
+    .mobile-tabbar .icon,
+    .mobile-tabbar .mypage-icon-text,
+    .mobile-tabbar .tab-avatar{
+        width:40px !important;
+        height:40px !important;
+        min-width:40px !important;
+        min-height:40px !important;
+        border-radius:9px !important;
+    }
+
+    .receive-mini-icon-img{
+        width:20px !important;
+        height:20px !important;
+    }
+}
+</style>
 
 </body>
 </html>
