@@ -6347,6 +6347,96 @@ body{
     }
 }
 
+
+
+/* ============================================================
+   PATCH 23: smaller dots + purple only on left side of dots
+   - ドットを小さく
+   - ドットの左側だけ紫、右側は薄く/暗く見せる
+============================================================ */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    width:7.6px !important;
+    height:7.6px !important;
+    min-width:7.6px !important;
+    min-height:7.6px !important;
+    max-width:7.6px !important;
+    max-height:7.6px !important;
+    flex:0 0 7.6px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    overflow:hidden !important;
+    background:linear-gradient(90deg,
+        rgba(176,108,255,0.96) 0%,
+        rgba(176,108,255,0.96) 46%,
+        rgba(176,108,255,0.18) 46%,
+        rgba(176,108,255,0.05) 100%) !important;
+    box-shadow:
+        -2px 0 6px rgba(176,108,255,0.26),
+        0 0 9px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:7.9px !important;
+    height:7.9px !important;
+    min-width:7.9px !important;
+    min-height:7.9px !important;
+    max-width:7.9px !important;
+    max-height:7.9px !important;
+    flex:0 0 7.9px !important;
+    background:linear-gradient(90deg,
+        rgba(214,182,255,1) 0%,
+        rgba(198,150,255,1) 48%,
+        rgba(198,150,255,0.22) 48%,
+        rgba(198,150,255,0.06) 100%) !important;
+    box-shadow:
+        -3px 0 10px rgba(198,150,255,0.52),
+        0 0 14px rgba(176,108,255,0.22),
+        0 0 22px rgba(176,108,255,0.10) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.1px !important;
+        height:7.1px !important;
+        min-width:7.1px !important;
+        min-height:7.1px !important;
+        max-width:7.1px !important;
+        max-height:7.1px !important;
+        flex:0 0 7.1px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.4px !important;
+        height:7.4px !important;
+        min-width:7.4px !important;
+        min-height:7.4px !important;
+        max-width:7.4px !important;
+        max-height:7.4px !important;
+        flex:0 0 7.4px !important;
+        box-shadow:
+            -3px 0 9px rgba(198,150,255,0.46),
+            0 0 12px rgba(176,108,255,0.18),
+            0 0 18px rgba(176,108,255,0.09) !important;
+    }
+}
+
 </style>
 </head>
 
@@ -10605,6 +10695,96 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+
+
+/* ============================================================
+   PATCH 23: smaller dots + purple only on left side of dots
+   - ドットを小さく
+   - ドットの左側だけ紫、右側は薄く/暗く見せる
+============================================================ */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    width:7.6px !important;
+    height:7.6px !important;
+    min-width:7.6px !important;
+    min-height:7.6px !important;
+    max-width:7.6px !important;
+    max-height:7.6px !important;
+    flex:0 0 7.6px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    overflow:hidden !important;
+    background:linear-gradient(90deg,
+        rgba(176,108,255,0.96) 0%,
+        rgba(176,108,255,0.96) 46%,
+        rgba(176,108,255,0.18) 46%,
+        rgba(176,108,255,0.05) 100%) !important;
+    box-shadow:
+        -2px 0 6px rgba(176,108,255,0.26),
+        0 0 9px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:7.9px !important;
+    height:7.9px !important;
+    min-width:7.9px !important;
+    min-height:7.9px !important;
+    max-width:7.9px !important;
+    max-height:7.9px !important;
+    flex:0 0 7.9px !important;
+    background:linear-gradient(90deg,
+        rgba(214,182,255,1) 0%,
+        rgba(198,150,255,1) 48%,
+        rgba(198,150,255,0.22) 48%,
+        rgba(198,150,255,0.06) 100%) !important;
+    box-shadow:
+        -3px 0 10px rgba(198,150,255,0.52),
+        0 0 14px rgba(176,108,255,0.22),
+        0 0 22px rgba(176,108,255,0.10) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.1px !important;
+        height:7.1px !important;
+        min-width:7.1px !important;
+        min-height:7.1px !important;
+        max-width:7.1px !important;
+        max-height:7.1px !important;
+        flex:0 0 7.1px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.4px !important;
+        height:7.4px !important;
+        min-width:7.4px !important;
+        min-height:7.4px !important;
+        max-width:7.4px !important;
+        max-height:7.4px !important;
+        flex:0 0 7.4px !important;
+        box-shadow:
+            -3px 0 9px rgba(198,150,255,0.46),
+            0 0 12px rgba(176,108,255,0.18),
+            0 0 18px rgba(176,108,255,0.09) !important;
+    }
+}
+
 </style>
 
 
@@ -11622,6 +11802,96 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+
+
+/* ============================================================
+   PATCH 23: smaller dots + purple only on left side of dots
+   - ドットを小さく
+   - ドットの左側だけ紫、右側は薄く/暗く見せる
+============================================================ */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    width:7.6px !important;
+    height:7.6px !important;
+    min-width:7.6px !important;
+    min-height:7.6px !important;
+    max-width:7.6px !important;
+    max-height:7.6px !important;
+    flex:0 0 7.6px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    overflow:hidden !important;
+    background:linear-gradient(90deg,
+        rgba(176,108,255,0.96) 0%,
+        rgba(176,108,255,0.96) 46%,
+        rgba(176,108,255,0.18) 46%,
+        rgba(176,108,255,0.05) 100%) !important;
+    box-shadow:
+        -2px 0 6px rgba(176,108,255,0.26),
+        0 0 9px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:7.9px !important;
+    height:7.9px !important;
+    min-width:7.9px !important;
+    min-height:7.9px !important;
+    max-width:7.9px !important;
+    max-height:7.9px !important;
+    flex:0 0 7.9px !important;
+    background:linear-gradient(90deg,
+        rgba(214,182,255,1) 0%,
+        rgba(198,150,255,1) 48%,
+        rgba(198,150,255,0.22) 48%,
+        rgba(198,150,255,0.06) 100%) !important;
+    box-shadow:
+        -3px 0 10px rgba(198,150,255,0.52),
+        0 0 14px rgba(176,108,255,0.22),
+        0 0 22px rgba(176,108,255,0.10) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.1px !important;
+        height:7.1px !important;
+        min-width:7.1px !important;
+        min-height:7.1px !important;
+        max-width:7.1px !important;
+        max-height:7.1px !important;
+        flex:0 0 7.1px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.4px !important;
+        height:7.4px !important;
+        min-width:7.4px !important;
+        min-height:7.4px !important;
+        max-width:7.4px !important;
+        max-height:7.4px !important;
+        flex:0 0 7.4px !important;
+        box-shadow:
+            -3px 0 9px rgba(198,150,255,0.46),
+            0 0 12px rgba(176,108,255,0.18),
+            0 0 18px rgba(176,108,255,0.09) !important;
+    }
+}
+
 </style>
 
 
@@ -12606,6 +12876,96 @@ document.addEventListener("DOMContentLoaded", () => {
             0 0 9px rgba(198,150,255,0.68),
             0 0 16px rgba(176,108,255,0.34),
             0 0 24px rgba(176,108,255,0.16) !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 23: smaller dots + purple only on left side of dots
+   - ドットを小さく
+   - ドットの左側だけ紫、右側は薄く/暗く見せる
+============================================================ */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    width:7.6px !important;
+    height:7.6px !important;
+    min-width:7.6px !important;
+    min-height:7.6px !important;
+    max-width:7.6px !important;
+    max-height:7.6px !important;
+    flex:0 0 7.6px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    overflow:hidden !important;
+    background:linear-gradient(90deg,
+        rgba(176,108,255,0.96) 0%,
+        rgba(176,108,255,0.96) 46%,
+        rgba(176,108,255,0.18) 46%,
+        rgba(176,108,255,0.05) 100%) !important;
+    box-shadow:
+        -2px 0 6px rgba(176,108,255,0.26),
+        0 0 9px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:7.9px !important;
+    height:7.9px !important;
+    min-width:7.9px !important;
+    min-height:7.9px !important;
+    max-width:7.9px !important;
+    max-height:7.9px !important;
+    flex:0 0 7.9px !important;
+    background:linear-gradient(90deg,
+        rgba(214,182,255,1) 0%,
+        rgba(198,150,255,1) 48%,
+        rgba(198,150,255,0.22) 48%,
+        rgba(198,150,255,0.06) 100%) !important;
+    box-shadow:
+        -3px 0 10px rgba(198,150,255,0.52),
+        0 0 14px rgba(176,108,255,0.22),
+        0 0 22px rgba(176,108,255,0.10) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.1px !important;
+        height:7.1px !important;
+        min-width:7.1px !important;
+        min-height:7.1px !important;
+        max-width:7.1px !important;
+        max-height:7.1px !important;
+        flex:0 0 7.1px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.4px !important;
+        height:7.4px !important;
+        min-width:7.4px !important;
+        min-height:7.4px !important;
+        max-width:7.4px !important;
+        max-height:7.4px !important;
+        flex:0 0 7.4px !important;
+        box-shadow:
+            -3px 0 9px rgba(198,150,255,0.46),
+            0 0 12px rgba(176,108,255,0.18),
+            0 0 18px rgba(176,108,255,0.09) !important;
     }
 }
 
@@ -14514,6 +14874,96 @@ document.addEventListener("DOMContentLoaded", () => {
             0 0 9px rgba(198,150,255,0.68),
             0 0 16px rgba(176,108,255,0.34),
             0 0 24px rgba(176,108,255,0.16) !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 23: smaller dots + purple only on left side of dots
+   - ドットを小さく
+   - ドットの左側だけ紫、右側は薄く/暗く見せる
+============================================================ */
+.meter-graphic .dot,
+.story-analysis .meter-graphic .dot,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot,
+.story-layout-card .story-analysis .meter-graphic .dot{
+    width:7.6px !important;
+    height:7.6px !important;
+    min-width:7.6px !important;
+    min-height:7.6px !important;
+    max-width:7.6px !important;
+    max-height:7.6px !important;
+    flex:0 0 7.6px !important;
+    aspect-ratio:1 / 1 !important;
+    border-radius:999px !important;
+    overflow:hidden !important;
+    background:linear-gradient(90deg,
+        rgba(176,108,255,0.96) 0%,
+        rgba(176,108,255,0.96) 46%,
+        rgba(176,108,255,0.18) 46%,
+        rgba(176,108,255,0.05) 100%) !important;
+    box-shadow:
+        -2px 0 6px rgba(176,108,255,0.26),
+        0 0 9px rgba(176,108,255,0.10) !important;
+}
+
+.meter-graphic .dot.selected,
+.meter-graphic .dot.selected.level-1,
+.meter-graphic .dot.selected.level-2,
+.meter-graphic .dot.selected.level-3,
+.meter-graphic .dot.selected.level-4,
+.meter-graphic .dot.selected.level-5,
+.story-analysis .meter-graphic .dot.selected,
+.album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+.story-layout-card .story-analysis .meter-graphic .dot.selected{
+    width:7.9px !important;
+    height:7.9px !important;
+    min-width:7.9px !important;
+    min-height:7.9px !important;
+    max-width:7.9px !important;
+    max-height:7.9px !important;
+    flex:0 0 7.9px !important;
+    background:linear-gradient(90deg,
+        rgba(214,182,255,1) 0%,
+        rgba(198,150,255,1) 48%,
+        rgba(198,150,255,0.22) 48%,
+        rgba(198,150,255,0.06) 100%) !important;
+    box-shadow:
+        -3px 0 10px rgba(198,150,255,0.52),
+        0 0 14px rgba(176,108,255,0.22),
+        0 0 22px rgba(176,108,255,0.10) !important;
+}
+
+@media (max-width:430px){
+    .meter-graphic .dot,
+    .story-analysis .meter-graphic .dot,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot,
+    .story-layout-card .story-analysis .meter-graphic .dot{
+        width:7.1px !important;
+        height:7.1px !important;
+        min-width:7.1px !important;
+        min-height:7.1px !important;
+        max-width:7.1px !important;
+        max-height:7.1px !important;
+        flex:0 0 7.1px !important;
+    }
+
+    .meter-graphic .dot.selected,
+    .story-analysis .meter-graphic .dot.selected,
+    .album-card.story-layout-card .story-analysis .meter-graphic .dot.selected,
+    .story-layout-card .story-analysis .meter-graphic .dot.selected{
+        width:7.4px !important;
+        height:7.4px !important;
+        min-width:7.4px !important;
+        min-height:7.4px !important;
+        max-width:7.4px !important;
+        max-height:7.4px !important;
+        flex:0 0 7.4px !important;
+        box-shadow:
+            -3px 0 9px rgba(198,150,255,0.46),
+            0 0 12px rgba(176,108,255,0.18),
+            0 0 18px rgba(176,108,255,0.09) !important;
     }
 }
 
