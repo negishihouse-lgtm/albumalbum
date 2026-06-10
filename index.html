@@ -7016,6 +7016,106 @@ body{
     }
 }
 
+
+
+/* ============================================================
+   PATCH 31: push right meter labels to card edge
+   - 色指定はPATCH 30のまま維持
+   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
+   - メーター領域を右いっぱいまで使う
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card,
+    .story-layout-card{
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        width:100% !important;
+        grid-template-columns:122px minmax(0,1fr) !important;
+        column-gap:12px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        grid-template-columns:36px minmax(0,1fr) 54px !important;
+        gap:6px !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        white-space:nowrap !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        text-align:right !important;
+        justify-self:end !important;
+        padding-right:0 !important;
+        margin-right:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:116px minmax(0,1fr) !important;
+        column-gap:11px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        grid-template-columns:34px minmax(0,1fr) 50px !important;
+        gap:5px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        padding-right:0 !important;
+        margin-right:0 !important;
+        text-align:right !important;
+    }
+}
+
 </style>
 </head>
 
@@ -11945,6 +12045,106 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+
+
+/* ============================================================
+   PATCH 31: push right meter labels to card edge
+   - 色指定はPATCH 30のまま維持
+   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
+   - メーター領域を右いっぱいまで使う
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card,
+    .story-layout-card{
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        width:100% !important;
+        grid-template-columns:122px minmax(0,1fr) !important;
+        column-gap:12px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        grid-template-columns:36px minmax(0,1fr) 54px !important;
+        gap:6px !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        white-space:nowrap !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        text-align:right !important;
+        justify-self:end !important;
+        padding-right:0 !important;
+        margin-right:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:116px minmax(0,1fr) !important;
+        column-gap:11px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        grid-template-columns:34px minmax(0,1fr) 50px !important;
+        gap:5px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        padding-right:0 !important;
+        margin-right:0 !important;
+        text-align:right !important;
+    }
+}
+
 </style>
 
 
@@ -13631,6 +13831,106 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+
+
+/* ============================================================
+   PATCH 31: push right meter labels to card edge
+   - 色指定はPATCH 30のまま維持
+   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
+   - メーター領域を右いっぱいまで使う
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card,
+    .story-layout-card{
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        width:100% !important;
+        grid-template-columns:122px minmax(0,1fr) !important;
+        column-gap:12px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        grid-template-columns:36px minmax(0,1fr) 54px !important;
+        gap:6px !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        white-space:nowrap !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        text-align:right !important;
+        justify-self:end !important;
+        padding-right:0 !important;
+        margin-right:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:116px minmax(0,1fr) !important;
+        column-gap:11px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        grid-template-columns:34px minmax(0,1fr) 50px !important;
+        gap:5px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        padding-right:0 !important;
+        margin-right:0 !important;
+        text-align:right !important;
+    }
+}
+
 </style>
 
 
@@ -15284,6 +15584,106 @@ document.addEventListener("DOMContentLoaded", () => {
         min-height:7.3px !important;
         max-width:7.3px !important;
         max-height:7.3px !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 31: push right meter labels to card edge
+   - 色指定はPATCH 30のまま維持
+   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
+   - メーター領域を右いっぱいまで使う
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card,
+    .story-layout-card{
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        width:100% !important;
+        grid-template-columns:122px minmax(0,1fr) !important;
+        column-gap:12px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        grid-template-columns:36px minmax(0,1fr) 54px !important;
+        gap:6px !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        white-space:nowrap !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        text-align:right !important;
+        justify-self:end !important;
+        padding-right:0 !important;
+        margin-right:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:116px minmax(0,1fr) !important;
+        column-gap:11px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        grid-template-columns:34px minmax(0,1fr) 50px !important;
+        gap:5px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        padding-right:0 !important;
+        margin-right:0 !important;
+        text-align:right !important;
     }
 }
 
@@ -17861,6 +18261,106 @@ document.addEventListener("DOMContentLoaded", () => {
         min-height:7.3px !important;
         max-width:7.3px !important;
         max-height:7.3px !important;
+    }
+}
+
+
+
+/* ============================================================
+   PATCH 31: push right meter labels to card edge
+   - 色指定はPATCH 30のまま維持
+   - 「明るい / 激しい / 複雑 / 希望 / 世界」をカード右端寄りへ
+   - メーター領域を右いっぱいまで使う
+============================================================ */
+@media (max-width:900px){
+    .album-card.story-layout-card,
+    .story-layout-card{
+        overflow:hidden !important;
+    }
+
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        width:100% !important;
+        grid-template-columns:122px minmax(0,1fr) !important;
+        column-gap:12px !important;
+        align-items:start !important;
+    }
+
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis,
+    .story-layout-card .story-analysis{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-list,
+    .story-layout-card .story-analysis .meter-list{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        grid-template-columns:36px minmax(0,1fr) 54px !important;
+        gap:6px !important;
+        align-items:center !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label{
+        white-space:nowrap !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+        text-align:right !important;
+        justify-self:end !important;
+        padding-right:0 !important;
+        margin-right:0 !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-graphic,
+    .story-layout-card .story-analysis .meter-graphic{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:none !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-content-row,
+    .story-layout-card .album-content-row{
+        grid-template-columns:116px minmax(0,1fr) !important;
+        column-gap:11px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter,
+    .story-layout-card .story-analysis .meter{
+        grid-template-columns:34px minmax(0,1fr) 50px !important;
+        gap:5px !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label.right-label,
+    .right-label{
+        padding-right:0 !important;
+        margin-right:0 !important;
+        text-align:right !important;
     }
 }
 
