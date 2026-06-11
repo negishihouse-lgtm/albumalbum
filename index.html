@@ -6215,6 +6215,130 @@ h4{
 
 /* END PATCH FINAL NORMAL HEART ICON 2026-06-11 */
 
+
+/* ============================================================
+   PATCH FINAL POST CARD HEART 2026-06-11
+   - 投稿カードのハートを普通のアウトラインハートに変更
+   - 文字の♡を完全に非表示化してSVGマスクだけ表示
+============================================================ */
+
+.album-card.story-layout-card .story-reaction-row .like-btn,
+.story-layout-card .story-reaction-row .like-btn,
+.album-card .story-reaction-row .like-btn,
+.album-card .like-btn{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    position:relative !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:28px !important;
+    height:28px !important;
+    min-width:28px !important;
+    min-height:28px !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:none !important;
+    background:transparent !important;
+    color:rgba(235,240,246,0.78) !important;
+    font-size:0 !important;
+    line-height:0 !important;
+    text-indent:-9999px !important;
+    overflow:visible !important;
+    -webkit-text-stroke:0 !important;
+    text-shadow:none !important;
+    filter:none !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-btn::before,
+.story-layout-card .story-reaction-row .like-btn::before,
+.album-card .story-reaction-row .like-btn::before,
+.album-card .like-btn::before{
+    content:"" !important;
+    display:block !important;
+    width:27px !important;
+    height:27px !important;
+    background:currentColor !important;
+    transform:none !important;
+    opacity:1 !important;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z' fill='none' stroke='white' stroke-width='1.85' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat !important;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z' fill='none' stroke='white' stroke-width='1.85' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+/* いいね済みは自然な塗りハート */
+.album-card.story-layout-card .story-reaction-row .like-btn.liked,
+.story-layout-card .story-reaction-row .like-btn.liked,
+.album-card .story-reaction-row .like-btn.liked,
+.album-card .like-btn.liked{
+    color:#d5a8ff !important;
+    filter:drop-shadow(0 0 7px rgba(176,108,255,0.35)) !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-btn.liked::before,
+.story-layout-card .story-reaction-row .like-btn.liked::before,
+.album-card .story-reaction-row .like-btn.liked::before,
+.album-card .like-btn.liked::before{
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z' fill='white'/%3E%3C/svg%3E") center / contain no-repeat !important;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z' fill='white'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+/* 数字との位置調整 */
+.album-card.story-layout-card .story-reaction-row .like-area,
+.story-layout-card .story-reaction-row .like-area,
+.album-card .like-area{
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:7px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-count,
+.story-layout-card .story-reaction-row .like-count,
+.album-card .like-count{
+    display:inline-flex !important;
+    align-items:center !important;
+    height:28px !important;
+    line-height:1 !important;
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .story-reaction-row .like-btn,
+    .story-layout-card .story-reaction-row .like-btn,
+    .album-card .story-reaction-row .like-btn,
+    .album-card .like-btn{
+        width:27px !important;
+        height:27px !important;
+        min-width:27px !important;
+        min-height:27px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .like-btn::before,
+    .story-layout-card .story-reaction-row .like-btn::before,
+    .album-card .story-reaction-row .like-btn::before,
+    .album-card .like-btn::before{
+        width:26px !important;
+        height:26px !important;
+    }
+}
+
+/* END PATCH FINAL POST CARD HEART 2026-06-11 */
+
+
+/* ============================================================
+   PATCH FINAL HIDE EMPTY KEYWORD 2026-06-11
+   - キーワードがない投稿では「なし」を表示しない
+   - 空のキーワード欄も表示しない
+============================================================ */
+
+.keyword-empty,
+.keyword-tag.empty,
+.keyword-tag.none,
+.story-keyword-box:has(.keyword-tags:empty),
+.keyword-box:has(.keyword-tags:empty){
+    display:none !important;
+}
+
+/* END PATCH FINAL HIDE EMPTY KEYWORD 2026-06-11 */
+
 </style>
 </head>
 
@@ -8010,7 +8134,7 @@ function renderKeywordTags(value){
     const keywords = normalizeKeywords(value);
 
     if(keywords.length === 0){
-        return `<span class="keyword-empty">なし</span>`;
+        return "";
     }
 
     return keywords.map((keyword) => {
@@ -8052,6 +8176,15 @@ function albumCardHTML(item, posterProfile){
     const albumId = item.id;
     const canManage = canManageAlbum(a);
     const postDate = formatPostDate(a.createdAt || a.updatedAt);
+    const keywordTagsHTML = renderKeywordTags(a.keywords);
+    const keywordBoxHTML = keywordTagsHTML
+        ? `
+            <div class="keyword-box story-keyword-box">
+                <div class="keyword-title">キーワード</div>
+                <div class="keyword-tags">${keywordTagsHTML}</div>
+            </div>
+        `
+        : "";
 
     const moreMenuActions = canManage
         ? `
@@ -8160,10 +8293,7 @@ function albumCardHTML(item, posterProfile){
         </div>
     </div>
 
-    <div class="keyword-box story-keyword-box">
-        <div class="keyword-title">キーワード</div>
-        <div class="keyword-tags">${renderKeywordTags(a.keywords)}</div>
-    </div>
+    ${keywordBoxHTML}
 
     <div class="reaction-row story-reaction-row">
         <div class="reaction-left-group">
