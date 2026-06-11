@@ -7962,6 +7962,83 @@ h4{
     .observation-viewer-title{ font-size:22px; }
 }
 
+
+/* ============================================================
+   PATCH 2026-06-11: 背景画像ループ + ぬるぬる移動
+   - milkyway_bg.png を2枚重ねて縦方向に連続ループ
+   - scroll連動を lerp で滑らかにする
+   - 既存の milkywayPan / --milkyway-shift を最後で無効化
+============================================================ */
+:root{
+    --galaxy-loop-y:0px;
+    --galaxy-loop-height:140vh;
+}
+
+body::before{
+    content:"" !important;
+    position:fixed !important;
+    left:0 !important;
+    right:0 !important;
+    top:-12vh !important;
+    height:124vh !important;
+    z-index:-3 !important;
+    pointer-events:none !important;
+    display:block !important;
+    opacity:1 !important;
+    transform:translate3d(0,0,0) !important;
+    will-change:background-position !important;
+    backface-visibility:hidden !important;
+    background-image:
+        linear-gradient(180deg, rgba(3,8,20,0.12) 0%, rgba(3,8,20,0.28) 42%, rgba(3,8,20,0.64) 100%),
+        url("./milkyway_bg.png"),
+        url("./milkyway_bg.png") !important;
+    background-size:
+        100% 100%,
+        100% var(--galaxy-loop-height),
+        100% var(--galaxy-loop-height) !important;
+    background-position:
+        center center,
+        center var(--galaxy-loop-y),
+        center calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
+    background-repeat:
+        no-repeat,
+        no-repeat,
+        no-repeat !important;
+    background-attachment:scroll, scroll, scroll !important;
+    animation:none !important;
+    filter:saturate(1.08) brightness(0.94) contrast(1.08) !important;
+}
+
+body::after{
+    z-index:-2 !important;
+}
+
+@media (max-width:900px){
+    body::before{
+        top:-14vh !important;
+        height:128vh !important;
+        background-size:
+            100% 100%,
+            100% var(--galaxy-loop-height),
+            100% var(--galaxy-loop-height) !important;
+        background-position:
+            center center,
+            center var(--galaxy-loop-y),
+            center calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
+        background-repeat:no-repeat, no-repeat, no-repeat !important;
+        animation:none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    body::before{
+        background-position:
+            center center,
+            center top,
+            center var(--galaxy-loop-height) !important;
+    }
+}
+
 </style>
 </head>
 
@@ -11515,29 +11592,66 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script>
-/* 背景だけ少し遅れて動かす */
+/* 背景画像を縦ループ + 慣性つきでぬるぬる動かす */
 (function(){
-    const PARALLAX_RATE = 0.18;
-    let ticking = false;
+    const BG_SRC = "./milkyway_bg.png";
+    const BASE_SPEED = 10;       // 自動で下へ流れる速度 px/秒。速くしたいなら 14〜18
+    const PARALLAX_RATE = 0.12;  // スクロール追従量。強くしたいなら 0.16〜0.22
+    const LERP = 0.075;          // 小さいほどぬるっと遅れて動く。速い反応なら 0.10〜0.14
 
-    function updateMilkywayBackground(){
-        const y = window.scrollY || window.pageYOffset || 0;
-        document.body.style.setProperty("--milkyway-shift", `${-(y * PARALLAX_RATE)}px`);
-        ticking = false;
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduceMotion){
+        return;
     }
 
-    window.addEventListener("scroll", () => {
-        if(ticking){
-            return;
-        }
+    let loopHeight = Math.max(window.innerHeight * 1.4, 900);
+    let targetScrollY = window.scrollY || window.pageYOffset || 0;
+    let smoothScrollY = targetScrollY;
+    let lastTime = performance.now();
+    let autoY = 0;
+    let imageRatio = 1.45;
 
-        ticking = true;
-        requestAnimationFrame(updateMilkywayBackground);
+    function setLoopHeight(){
+        const naturalHeight = Math.max(window.innerWidth * imageRatio, window.innerHeight * 1.35);
+        loopHeight = Math.ceil(naturalHeight);
+        document.documentElement.style.setProperty("--galaxy-loop-height", `${loopHeight}px`);
+    }
+
+    function loadBackgroundRatio(){
+        const img = new Image();
+        img.onload = () => {
+            if(img.naturalWidth && img.naturalHeight){
+                imageRatio = img.naturalHeight / img.naturalWidth;
+                setLoopHeight();
+            }
+        };
+        img.src = BG_SRC;
+    }
+
+    function tick(now){
+        const dt = Math.min(64, now - lastTime) / 1000;
+        lastTime = now;
+
+        targetScrollY = window.scrollY || window.pageYOffset || 0;
+        smoothScrollY += (targetScrollY - smoothScrollY) * LERP;
+
+        autoY = (autoY + BASE_SPEED * dt) % loopHeight;
+        const y = -((autoY + smoothScrollY * PARALLAX_RATE) % loopHeight);
+
+        document.documentElement.style.setProperty("--galaxy-loop-y", `${y}px`);
+        requestAnimationFrame(tick);
+    }
+
+    window.addEventListener("resize", setLoopHeight, { passive:true });
+    window.addEventListener("orientationchange", () => {
+        setTimeout(setLoopHeight, 180);
     }, { passive:true });
 
-    window.addEventListener("pageshow", updateMilkywayBackground);
-    window.addEventListener("resize", updateMilkywayBackground);
-    document.addEventListener("DOMContentLoaded", updateMilkywayBackground);
+    document.addEventListener("DOMContentLoaded", () => {
+        setLoopHeight();
+        loadBackgroundRatio();
+        requestAnimationFrame(tick);
+    });
 })();
 </script>
 
