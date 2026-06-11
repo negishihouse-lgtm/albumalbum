@@ -6576,6 +6576,182 @@ h4{
 
 /* END PATCH FINAL DESCENDER FIX 2026-06-11 */
 
+
+
+/* ============================================================
+   PATCH FINAL PURPLE PLAY BUTTON 2026-06-11
+   - 再生マークを紫基調に統一
+   - 三角の後ろに見える薄い四角 / 旧Spotify背景を完全に非表示
+   - 再生ボタンの透明度を上げてガラス感を強める
+============================================================ */
+
+.story-play-btn,
+.spotify-btn,
+.album-card.story-layout-card .story-reaction-row .story-play-btn,
+.story-layout-card .story-reaction-row .story-play-btn,
+.album-card.story-layout-card .story-reaction-row .spotify-btn,
+.story-layout-card .story-reaction-row .spotify-btn{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    position:relative !important;
+    width:28px !important;
+    height:28px !important;
+    min-width:28px !important;
+    min-height:28px !important;
+    padding:0 !important;
+    margin-left:12px !important;
+    border-radius:999px !important;
+    border:1px solid rgba(213,168,255,0.42) !important;
+    background:rgba(176,108,255,0.085) !important;
+    color:#dcbcff !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:0 !important;
+    line-height:0 !important;
+    text-indent:-9999px !important;
+    overflow:hidden !important;
+    isolation:isolate !important;
+    backdrop-filter:blur(18px) saturate(1.16) !important;
+    -webkit-backdrop-filter:blur(18px) saturate(1.16) !important;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.055) inset,
+        0 0 14px rgba(176,108,255,0.24),
+        0 0 26px rgba(176,108,255,0.10) !important;
+    transform:none !important;
+}
+
+.story-play-btn:hover,
+.spotify-btn:hover,
+.album-card.story-layout-card .story-reaction-row .story-play-btn:hover,
+.story-layout-card .story-reaction-row .story-play-btn:hover,
+.album-card.story-layout-card .story-reaction-row .spotify-btn:hover,
+.story-layout-card .story-reaction-row .spotify-btn:hover{
+    background:rgba(176,108,255,0.13) !important;
+    border-color:rgba(225,194,255,0.58) !important;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.07) inset,
+        0 0 18px rgba(176,108,255,0.34),
+        0 0 34px rgba(176,108,255,0.14) !important;
+}
+
+/* 三角の背面に出る四角・旧ロゴ・画像・SVGを消す */
+.story-play-btn .spotify-icon,
+.spotify-btn .spotify-icon,
+.album-card.story-layout-card .story-reaction-row .story-play-btn .spotify-icon,
+.story-layout-card .story-reaction-row .story-play-btn .spotify-icon,
+.album-card.story-layout-card .story-reaction-row .spotify-btn .spotify-icon,
+.story-layout-card .story-reaction-row .spotify-btn .spotify-icon{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    min-width:100% !important;
+    min-height:100% !important;
+    display:block !important;
+    background:transparent !important;
+    background-color:transparent !important;
+    background-image:none !important;
+    border:none !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    filter:none !important;
+    opacity:1 !important;
+    overflow:visible !important;
+    transform:none !important;
+    -webkit-mask:none !important;
+    mask:none !important;
+    z-index:1 !important;
+}
+
+.story-play-btn svg,
+.story-play-btn img,
+.story-play-btn i,
+.story-play-btn span:not(.spotify-icon),
+.spotify-btn svg,
+.spotify-btn img,
+.spotify-btn i,
+.spotify-btn span:not(.spotify-icon),
+.story-play-btn .spotify-icon svg,
+.story-play-btn .spotify-icon img,
+.story-play-btn .spotify-icon i,
+.spotify-btn .spotify-icon svg,
+.spotify-btn .spotify-icon img,
+.spotify-btn .spotify-icon i{
+    display:none !important;
+}
+
+.story-play-btn .spotify-icon::after,
+.spotify-btn .spotify-icon::after,
+.album-card.story-layout-card .story-reaction-row .story-play-btn .spotify-icon::after,
+.story-layout-card .story-reaction-row .story-play-btn .spotify-icon::after,
+.album-card.story-layout-card .story-reaction-row .spotify-btn .spotify-icon::after,
+.story-layout-card .story-reaction-row .spotify-btn .spotify-icon::after{
+    display:none !important;
+    content:none !important;
+    background:none !important;
+    box-shadow:none !important;
+}
+
+/* 再生三角：紫だけ。背景四角なし */
+.story-play-btn .spotify-icon::before,
+.spotify-btn .spotify-icon::before,
+.album-card.story-layout-card .story-reaction-row .story-play-btn .spotify-icon::before,
+.story-layout-card .story-reaction-row .story-play-btn .spotify-icon::before,
+.album-card.story-layout-card .story-reaction-row .spotify-btn .spotify-icon::before,
+.story-layout-card .story-reaction-row .spotify-btn .spotify-icon::before{
+    content:"" !important;
+    position:absolute !important;
+    left:52% !important;
+    top:50% !important;
+    width:0 !important;
+    height:0 !important;
+    border-top:5px solid transparent !important;
+    border-bottom:5px solid transparent !important;
+    border-left:7.4px solid #dcbcff !important;
+    border-right:none !important;
+    border-radius:1.2px !important;
+    background:transparent !important;
+    background-color:transparent !important;
+    background-image:none !important;
+    transform:translate(-48%, -50%) !important;
+    box-shadow:
+        0 0 7px rgba(220,188,255,0.72),
+        0 0 14px rgba(176,108,255,0.34) !important;
+    filter:none !important;
+    opacity:1 !important;
+    z-index:2 !important;
+    pointer-events:none !important;
+}
+
+@media (max-width:430px){
+    .story-play-btn,
+    .spotify-btn,
+    .album-card.story-layout-card .story-reaction-row .story-play-btn,
+    .story-layout-card .story-reaction-row .story-play-btn,
+    .album-card.story-layout-card .story-reaction-row .spotify-btn,
+    .story-layout-card .story-reaction-row .spotify-btn{
+        width:27px !important;
+        height:27px !important;
+        min-width:27px !important;
+        min-height:27px !important;
+        margin-left:10px !important;
+    }
+
+    .story-play-btn .spotify-icon::before,
+    .spotify-btn .spotify-icon::before,
+    .album-card.story-layout-card .story-reaction-row .story-play-btn .spotify-icon::before,
+    .story-layout-card .story-reaction-row .story-play-btn .spotify-icon::before,
+    .album-card.story-layout-card .story-reaction-row .spotify-btn .spotify-icon::before,
+    .story-layout-card .story-reaction-row .spotify-btn .spotify-icon::before{
+        border-top-width:4.6px !important;
+        border-bottom-width:4.6px !important;
+        border-left-width:6.9px !important;
+    }
+}
+
+/* END PATCH FINAL PURPLE PLAY BUTTON 2026-06-11 */
+
 </style>
 </head>
 
