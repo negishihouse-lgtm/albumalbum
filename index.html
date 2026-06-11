@@ -8341,6 +8341,249 @@ body::after{
 
 /* END PATCH OBSERVATION V5 */
 
+
+
+/* ============================================================
+   PATCH OBSERVATION V6 2026-06-11
+   - 観測アイコンの周囲を投稿時間で色分け
+   - 色の説明を常時表示
+   - ホームに「今日の流れ星」を追加
+============================================================ */
+
+/* 観測：アイコンの周囲を投稿時間の色にする */
+.observation-planet{
+    border-color:color-mix(in srgb, var(--signal-color) 72%, rgba(255,255,255,0.32)) !important;
+    box-shadow:
+        0 0 18px color-mix(in srgb, var(--signal-color) 72%, transparent),
+        0 0 38px color-mix(in srgb, var(--signal-color) 34%, transparent),
+        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
+}
+
+.observation-planet::after{
+    inset:-6px !important;
+    border-color:color-mix(in srgb, var(--signal-color) 70%, transparent) !important;
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--signal-color) 22%, transparent),
+        0 0 20px color-mix(in srgb, var(--signal-color) 48%, transparent),
+        0 0 40px color-mix(in srgb, var(--signal-color) 18%, transparent) !important;
+}
+
+.observation-planet-core{
+    border:2px solid color-mix(in srgb, var(--signal-color) 82%, rgba(255,255,255,0.26)) !important;
+    box-shadow:
+        0 0 0 3px rgba(2,8,20,0.72),
+        0 0 18px color-mix(in srgb, var(--signal-color) 52%, transparent),
+        inset -10px -12px 20px rgba(0,0,0,0.42),
+        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
+}
+
+.observation-signal-dot{
+    border:1px solid rgba(255,255,255,0.32) !important;
+}
+
+.observation-legend{
+    width:158px !important;
+    display:block !important;
+}
+
+.observation-legend-title{
+    margin:0 0 9px !important;
+    color:rgba(255,255,255,0.88) !important;
+    font-size:11px !important;
+    font-weight:700 !important;
+    line-height:1 !important;
+}
+
+.observation-legend-dot.number{
+    width:16px !important;
+    height:16px !important;
+    display:grid !important;
+    place-items:center !important;
+    color:#1b1133 !important;
+    font-size:9px !important;
+    font-weight:800 !important;
+}
+
+@media (max-height:720px) and (max-width:900px){
+    .observation-legend{
+        display:block !important;
+        transform:scale(0.78) !important;
+        transform-origin:left bottom !important;
+    }
+}
+
+/* ホーム：今日の流れ星 */
+.daily-meteor-box{
+    display:block !important;
+    margin:0 0 14px !important;
+}
+
+.daily-meteor-box:empty{
+    display:none !important;
+}
+
+.daily-meteor-card{
+    position:relative !important;
+    display:grid !important;
+    grid-template-columns:74px minmax(0,1fr) auto !important;
+    gap:14px !important;
+    align-items:center !important;
+    width:100% !important;
+    padding:14px !important;
+    border-radius:20px !important;
+    border:1px solid rgba(213,168,255,0.28) !important;
+    background:
+        radial-gradient(circle at 8% 20%, rgba(213,168,255,0.18), transparent 28%),
+        linear-gradient(145deg, rgba(10,14,30,0.88), rgba(4,8,18,0.78)) !important;
+    box-shadow:
+        0 14px 42px rgba(0,0,0,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.075),
+        0 0 24px rgba(176,108,255,0.08) !important;
+    overflow:hidden !important;
+    cursor:pointer !important;
+    text-align:left !important;
+    color:inherit !important;
+}
+
+.daily-meteor-card::before{
+    content:"" !important;
+    position:absolute !important;
+    left:-30% !important;
+    top:16% !important;
+    width:60% !important;
+    height:1px !important;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.72), rgba(213,168,255,0.35), transparent) !important;
+    transform:rotate(-15deg) !important;
+    animation:dailyMeteorTrail 4.8s ease-in-out infinite !important;
+    pointer-events:none !important;
+}
+
+@keyframes dailyMeteorTrail{
+    0%, 58%{ transform:translate3d(-20%,0,0) rotate(-15deg); opacity:0; }
+    68%{ opacity:1; }
+    100%{ transform:translate3d(260%,80px,0) rotate(-15deg); opacity:0; }
+}
+
+.daily-meteor-cover{
+    width:74px !important;
+    height:74px !important;
+    border-radius:15px !important;
+    overflow:hidden !important;
+    background:linear-gradient(135deg, rgba(176,108,255,0.38), rgba(8,12,26,0.96)) !important;
+    border:1px solid rgba(255,255,255,0.14) !important;
+    box-shadow:0 0 22px rgba(176,108,255,0.18) !important;
+}
+
+.daily-meteor-cover img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    display:block !important;
+}
+
+.daily-meteor-cover-fallback{
+    width:100% !important;
+    height:100% !important;
+    display:grid !important;
+    place-items:center !important;
+    color:rgba(255,255,255,0.72) !important;
+    font-size:28px !important;
+}
+
+.daily-meteor-label{
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:6px !important;
+    margin-bottom:5px !important;
+    color:#d5a8ff !important;
+    font-size:11px !important;
+    font-weight:700 !important;
+    line-height:1 !important;
+}
+
+.daily-meteor-title{
+    margin:0 !important;
+    color:rgba(255,255,255,0.96) !important;
+    font-size:17px !important;
+    line-height:1.12 !important;
+    font-weight:600 !important;
+    letter-spacing:-0.025em !important;
+    display:-webkit-box !important;
+    -webkit-line-clamp:1 !important;
+    -webkit-box-orient:vertical !important;
+    overflow:hidden !important;
+}
+
+.daily-meteor-sub{
+    margin:4px 0 0 !important;
+    color:rgba(238,247,250,0.56) !important;
+    font-size:11px !important;
+    line-height:1.35 !important;
+    display:-webkit-box !important;
+    -webkit-line-clamp:2 !important;
+    -webkit-box-orient:vertical !important;
+    overflow:hidden !important;
+}
+
+.daily-meteor-meta{
+    margin-top:7px !important;
+    color:rgba(238,247,250,0.62) !important;
+    font-size:10.5px !important;
+    line-height:1.2 !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+}
+
+.daily-meteor-arrow{
+    position:relative !important;
+    z-index:1 !important;
+    width:34px !important;
+    height:34px !important;
+    border-radius:999px !important;
+    display:grid !important;
+    place-items:center !important;
+    border:1px solid rgba(213,168,255,0.24) !important;
+    background:rgba(176,108,255,0.10) !important;
+    color:#d5a8ff !important;
+    font-size:18px !important;
+}
+
+@media (max-width:900px){
+    .daily-meteor-box{
+        margin:0 0 12px !important;
+    }
+
+    .daily-meteor-card{
+        grid-template-columns:64px minmax(0,1fr) 30px !important;
+        gap:12px !important;
+        padding:12px !important;
+        border-radius:18px !important;
+    }
+
+    .daily-meteor-cover{
+        width:64px !important;
+        height:64px !important;
+        border-radius:13px !important;
+    }
+
+    .daily-meteor-title{
+        font-size:15.5px !important;
+    }
+
+    .daily-meteor-sub{
+        font-size:10.5px !important;
+        -webkit-line-clamp:1 !important;
+    }
+
+    .daily-meteor-arrow{
+        width:30px !important;
+        height:30px !important;
+    }
+}
+
+/* END PATCH OBSERVATION V6 */
+
 </style>
 </head>
 
@@ -8453,6 +8696,7 @@ body::after{
 
 <div class="feed-swipe" id="feedSwipe">
     <section class="feed-panel" data-feed-panel="recommend">
+        <section class="daily-meteor-box" id="dailyMeteorBox" aria-label="今日の流れ星"></section>
         <div class="album-grid" id="recommendGrid"></div>
     </section>
     <section class="feed-panel" data-feed-panel="following">
@@ -8564,6 +8808,7 @@ const auth = getAuth(app);
 
 const feedSwipe = document.getElementById("feedSwipe");
 const recommendGrid = document.getElementById("recommendGrid");
+const dailyMeteorBox = document.getElementById("dailyMeteorBox");
 const followingGrid = document.getElementById("followingGrid");
 const listGrid = document.getElementById("listGrid");
 const myPageLink = document.getElementById("myPageLink");
@@ -8603,6 +8848,7 @@ const userProfileCache = new Map();
 let observationGroups = [];
 let activeObservationGroupIndex = 0;
 let activeObservationPostIndex = 0;
+let dailyMeteorItem = null;
 
 onAuthStateChanged(auth, async (user) => {
     updateMobileMyPageTab(user);
@@ -11415,7 +11661,7 @@ function observationPlanetHTML(group, index){
     const name = group.profile?.name || "匿名ユーザー";
 
     return `
-        <article class="observation-planet-wrap" style="--x:${style.x};--y:${style.y};--size:${style.size};--planet-bg:${style.bg};--planet-glow:${style.glow};--signal-color:${signal.color};">
+        <article class="observation-planet-wrap ${signal.className}" data-signal="${signal.className}" style="--x:${style.x};--y:${style.y};--size:${style.size};--planet-bg:${style.bg};--planet-glow:${style.glow};--signal-color:${signal.color};">
             <button type="button" class="observation-planet" onclick="openObservationGroup(${index}, 0)" aria-label="${escapeHTML(name)}の新着投稿を開く">
                 ${observationPlanetIconHTML(group.profile, name)}
                 <span class="observation-signal-dot ${signal.className}">${escapeHTML(signal.label)}</span>
@@ -11459,7 +11705,7 @@ async function renderObservationPanel(){
         <div class="observation-head">
             <div>
                 <h2 class="observation-title">観測中の惑星たち</h2>
-                <p class="observation-subtitle">フォロー中の新しい信号を観測できます</p>
+                <p class="observation-subtitle">アイコンの縁の色で、フォロー中ユーザーの投稿時間がわかります</p>
             </div>
             <button type="button" class="observation-new-btn" onclick="openObservationNewest()">新しい信号 ${newSignalCount}件 ⟶</button>
         </div>
@@ -11471,10 +11717,11 @@ async function renderObservationPanel(){
             ${observationGroups.map((group, index) => observationPlanetHTML(group, index)).join("")}
 
             <div class="observation-legend">
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>新しい信号あり</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>24時間以内</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>1日以上前</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>複数の信号</div>
+                <div class="observation-legend-title">色の説明</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>紫：6時間以内</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>水色：24時間以内</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>灰色：1日以上前</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot number" style="--legend-color:#a970ff">2</span>数字：新着件数</div>
             </div>
         </div>
     `;
@@ -11728,9 +11975,144 @@ async function renderFeedGrid(targetGrid, items, emptyHTML){
     targetGrid.innerHTML = cards.join("");
 }
 
+
+
+/* ============================================================
+   DAILY METEOR V1 2026-06-11
+   - ホームに「知らない人の投稿が毎日1件届く」機能を追加
+   - 新規投稿形式は増やさず、既存の albums / lists から1件選ぶ
+============================================================ */
+
+function getDailyMeteorDateKey(){
+    try{
+        return new Intl.DateTimeFormat("sv-SE", { timeZone:"Asia/Tokyo", year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date());
+    }catch(error){
+        return new Date().toISOString().slice(0, 10);
+    }
+}
+
+function hashDailyMeteorSeed(text){
+    let hash = 2166136261;
+    const source = String(text || "");
+    for(let i = 0; i < source.length; i++){
+        hash ^= source.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
+    return Math.abs(hash >>> 0);
+}
+
+function getDailyMeteorCandidates(){
+    const albumItems = (allAlbums || []).map(item => ({ ...item, kind:"album" }));
+    const listItems = (allLists || []).map(item => ({ ...item, kind:"list" }));
+
+    return [...albumItems, ...listItems]
+        .filter(item => {
+            const userId = item?.data?.userId || "";
+            if(!userId){ return false; }
+            if(currentUser && userId === currentUser.uid){ return false; }
+            if(followingIds && followingIds.has(userId)){ return false; }
+            return true;
+        })
+        .sort((a, b) => {
+            const timeA = getPostTime(a.data.createdAt || a.data.updatedAt);
+            const timeB = getPostTime(b.data.createdAt || b.data.updatedAt);
+            return timeB - timeA;
+        })
+        .slice(0, 80);
+}
+
+function selectDailyMeteorItem(candidates){
+    if(!candidates.length){ return null; }
+
+    const dateKey = getDailyMeteorDateKey();
+    const userKey = currentUser?.uid || "guest";
+    const storageKey = `albumCollectionDailyMeteor:${userKey}`;
+
+    try{
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+        if(saved?.dateKey === dateKey){
+            const savedItem = candidates.find(item => item.kind === saved.kind && item.id === saved.id);
+            if(savedItem){ return savedItem; }
+        }
+    }catch(error){
+        // localStorageが使えない環境では、その場で日付ベース選定に戻す
+    }
+
+    const seed = `${dateKey}:${userKey}:${candidates.map(item => `${item.kind}:${item.id}`).join("|")}`;
+    const selected = candidates[hashDailyMeteorSeed(seed) % candidates.length];
+
+    try{
+        localStorage.setItem(storageKey, JSON.stringify({
+            dateKey,
+            kind:selected.kind,
+            id:selected.id
+        }));
+    }catch(error){
+        // 保存できなくても表示自体は続ける
+    }
+
+    return selected;
+}
+
+function getDailyMeteorSnippet(item){
+    const text = getObservationText(item);
+    if(text){ return text; }
+    return "知らない誰かの音楽ログが、1日1件だけ届きます。";
+}
+
+function dailyMeteorCoverHTML(item){
+    const coverUrl = getObservationCoverUrl(item);
+    if(coverUrl){
+        return `<img src="${escapeHTML(coverUrl)}" alt="">`;
+    }
+    return `<div class="daily-meteor-cover-fallback">✦</div>`;
+}
+
+async function renderDailyMeteor(){
+    if(!dailyMeteorBox){ return; }
+
+    const candidates = getDailyMeteorCandidates();
+    const item = selectDailyMeteorItem(candidates);
+    dailyMeteorItem = item;
+
+    if(!item){
+        dailyMeteorBox.innerHTML = "";
+        return;
+    }
+
+    const profile = await getPosterProfileForAlbum(item.data);
+    const name = profile?.name || "知らないユーザー";
+    const title = getObservationTitle(item);
+    const artist = getObservationArtist(item);
+    const meta = [name, artist].filter(Boolean).join(" ・ ");
+
+    dailyMeteorBox.innerHTML = `
+        <button type="button" class="daily-meteor-card" onclick="openDailyMeteorPost()" aria-label="今日の流れ星を開く">
+            <span class="daily-meteor-cover">${dailyMeteorCoverHTML(item)}</span>
+            <span style="min-width:0;position:relative;z-index:1;">
+                <span class="daily-meteor-label">✦ 今日の流れ星</span>
+                <span class="daily-meteor-title">${escapeHTML(title)}</span>
+                <span class="daily-meteor-sub">${escapeHTML(getDailyMeteorSnippet(item))}</span>
+                <span class="daily-meteor-meta">${escapeHTML(meta)}</span>
+            </span>
+            <span class="daily-meteor-arrow">›</span>
+        </button>
+    `;
+}
+
+function openDailyMeteorPost(){
+    if(!dailyMeteorItem){ return; }
+    location.href = getObservationDetailUrl(dailyMeteorItem);
+}
+
+window.openDailyMeteorPost = openDailyMeteorPost;
+
+/* END DAILY METEOR V1 */
+
 async function renderAlbums(){
     updateFeedTabs();
     await renderAlbumGrid(recommendGrid, getRecommendAlbums(), `<div class="empty">保存されたアルバムがありません</div>`);
+    await renderDailyMeteor();
 
     // 観測タブは通常のフォロー中TLではなく、フォロー中ユーザーの新着投稿を惑星マップとして表示する
     await renderObservationPanel();
