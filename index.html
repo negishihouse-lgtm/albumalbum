@@ -8414,7 +8414,8 @@ body::after{
 
 /* ホーム：今日の流れ星 */
 .daily-meteor-box{
-    display:block !important;
+    display:flex !important;
+    justify-content:flex-end !important;
     margin:0 0 14px !important;
 }
 
@@ -8425,20 +8426,22 @@ body::after{
 .daily-meteor-card{
     position:relative !important;
     display:grid !important;
-    grid-template-columns:74px minmax(0,1fr) auto !important;
-    gap:14px !important;
+    grid-template-columns:auto minmax(0,1fr) auto !important;
+    gap:12px !important;
     align-items:center !important;
-    width:100% !important;
-    padding:14px !important;
-    border-radius:20px !important;
-    border:1px solid rgba(213,168,255,0.28) !important;
+    width:min(100%, 360px) !important;
+    min-height:74px !important;
+    padding:14px 16px !important;
+    border-radius:999px !important;
+    border:1px solid rgba(154,120,255,0.42) !important;
     background:
-        radial-gradient(circle at 8% 20%, rgba(213,168,255,0.18), transparent 28%),
-        linear-gradient(145deg, rgba(10,14,30,0.88), rgba(4,8,18,0.78)) !important;
+        radial-gradient(circle at 14% 50%, rgba(148,110,255,0.22), transparent 24%),
+        radial-gradient(circle at 78% 12%, rgba(106,180,255,0.12), transparent 24%),
+        linear-gradient(145deg, rgba(10,14,32,0.92), rgba(6,10,24,0.84)) !important;
     box-shadow:
-        0 14px 42px rgba(0,0,0,0.28),
-        inset 0 1px 0 rgba(255,255,255,0.075),
-        0 0 24px rgba(176,108,255,0.08) !important;
+        0 0 0 1px rgba(255,255,255,0.03) inset,
+        0 14px 36px rgba(0,0,0,0.28),
+        0 0 24px rgba(146,112,255,0.16) !important;
     overflow:hidden !important;
     cursor:pointer !important;
     text-align:left !important;
@@ -8448,91 +8451,82 @@ body::after{
 .daily-meteor-card::before{
     content:"" !important;
     position:absolute !important;
-    left:-30% !important;
-    top:16% !important;
-    width:60% !important;
-    height:1px !important;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.72), rgba(213,168,255,0.35), transparent) !important;
-    transform:rotate(-15deg) !important;
-    animation:dailyMeteorTrail 4.8s ease-in-out infinite !important;
+    inset:0 !important;
+    border-radius:inherit !important;
+    padding:1px !important;
+    background:linear-gradient(90deg, rgba(149,112,255,0.26), rgba(107,176,255,0.34), rgba(149,112,255,0.18)) !important;
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+    -webkit-mask-composite:xor !important;
+            mask-composite:exclude !important;
     pointer-events:none !important;
 }
 
-@keyframes dailyMeteorTrail{
-    0%, 58%{ transform:translate3d(-20%,0,0) rotate(-15deg); opacity:0; }
-    68%{ opacity:1; }
-    100%{ transform:translate3d(260%,80px,0) rotate(-15deg); opacity:0; }
+.daily-meteor-card::after{
+    content:"" !important;
+    position:absolute !important;
+    right:58px !important;
+    top:22px !important;
+    width:92px !important;
+    height:1px !important;
+    background:linear-gradient(90deg, rgba(164,124,255,0), rgba(164,124,255,0.58), rgba(255,255,255,0)) !important;
+    transform:rotate(-12deg) !important;
+    animation:dailyMeteorSweep 4.6s ease-in-out infinite !important;
+    opacity:.7 !important;
+    pointer-events:none !important;
 }
 
-.daily-meteor-cover{
-    width:74px !important;
-    height:74px !important;
-    border-radius:15px !important;
-    overflow:hidden !important;
-    background:linear-gradient(135deg, rgba(176,108,255,0.38), rgba(8,12,26,0.96)) !important;
-    border:1px solid rgba(255,255,255,0.14) !important;
-    box-shadow:0 0 22px rgba(176,108,255,0.18) !important;
+@keyframes dailyMeteorSweep{
+    0%, 54%{ transform:translate3d(-18px,-6px,0) rotate(-12deg); opacity:0; }
+    64%{ opacity:.82; }
+    100%{ transform:translate3d(54px,12px,0) rotate(-12deg); opacity:0; }
 }
 
-.daily-meteor-cover img{
-    width:100% !important;
-    height:100% !important;
-    object-fit:cover !important;
-    display:block !important;
-}
-
-.daily-meteor-cover-fallback{
-    width:100% !important;
-    height:100% !important;
+.daily-meteor-icon{
+    width:34px !important;
+    height:34px !important;
+    border-radius:50% !important;
     display:grid !important;
     place-items:center !important;
-    color:rgba(255,255,255,0.72) !important;
-    font-size:28px !important;
+    color:#d8bcff !important;
+    background:radial-gradient(circle at 50% 50%, rgba(169,112,255,0.24), rgba(169,112,255,0.06)) !important;
+    box-shadow:0 0 18px rgba(164,124,255,0.20) !important;
+    position:relative !important;
+    z-index:1 !important;
 }
 
-.daily-meteor-label{
-    display:inline-flex !important;
-    align-items:center !important;
-    gap:6px !important;
-    margin-bottom:5px !important;
-    color:#d5a8ff !important;
-    font-size:11px !important;
-    font-weight:700 !important;
-    line-height:1 !important;
+.daily-meteor-icon svg{
+    width:20px !important;
+    height:20px !important;
+    stroke:currentColor !important;
+    stroke-width:1.9 !important;
+    fill:none !important;
+    stroke-linecap:round !important;
+    stroke-linejoin:round !important;
+}
+
+.daily-meteor-copy{
+    min-width:0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    position:relative !important;
+    z-index:1 !important;
 }
 
 .daily-meteor-title{
     margin:0 !important;
-    color:rgba(255,255,255,0.96) !important;
+    color:rgba(244,247,255,0.96) !important;
     font-size:17px !important;
     line-height:1.12 !important;
     font-weight:600 !important;
     letter-spacing:-0.025em !important;
-    display:-webkit-box !important;
-    -webkit-line-clamp:1 !important;
-    -webkit-box-orient:vertical !important;
-    overflow:hidden !important;
 }
 
 .daily-meteor-sub{
-    margin:4px 0 0 !important;
-    color:rgba(238,247,250,0.56) !important;
-    font-size:11px !important;
-    line-height:1.35 !important;
-    display:-webkit-box !important;
-    -webkit-line-clamp:2 !important;
-    -webkit-box-orient:vertical !important;
-    overflow:hidden !important;
-}
-
-.daily-meteor-meta{
-    margin-top:7px !important;
-    color:rgba(238,247,250,0.62) !important;
-    font-size:10.5px !important;
+    margin:5px 0 0 !important;
+    color:rgba(234,241,255,0.68) !important;
+    font-size:12px !important;
     line-height:1.2 !important;
-    white-space:nowrap !important;
-    overflow:hidden !important;
-    text-overflow:ellipsis !important;
+    font-weight:500 !important;
 }
 
 .daily-meteor-arrow{
@@ -8540,40 +8534,35 @@ body::after{
     z-index:1 !important;
     width:34px !important;
     height:34px !important;
-    border-radius:999px !important;
+    border-radius:50% !important;
     display:grid !important;
     place-items:center !important;
-    border:1px solid rgba(213,168,255,0.24) !important;
-    background:rgba(176,108,255,0.10) !important;
-    color:#d5a8ff !important;
-    font-size:18px !important;
+    border:1px solid rgba(188,164,255,0.22) !important;
+    background:rgba(126,95,225,0.10) !important;
+    color:#dfcdff !important;
+    font-size:20px !important;
+    line-height:1 !important;
 }
 
 @media (max-width:900px){
     .daily-meteor-box{
         margin:0 0 12px !important;
+        justify-content:stretch !important;
     }
 
     .daily-meteor-card{
-        grid-template-columns:64px minmax(0,1fr) 30px !important;
-        gap:12px !important;
-        padding:12px !important;
-        border-radius:18px !important;
-    }
-
-    .daily-meteor-cover{
-        width:64px !important;
-        height:64px !important;
-        border-radius:13px !important;
+        width:100% !important;
+        min-height:70px !important;
+        padding:13px 15px !important;
+        gap:11px !important;
     }
 
     .daily-meteor-title{
-        font-size:15.5px !important;
+        font-size:15px !important;
     }
 
     .daily-meteor-sub{
-        font-size:10.5px !important;
-        -webkit-line-clamp:1 !important;
+        font-size:11px !important;
     }
 
     .daily-meteor-arrow{
@@ -11705,7 +11694,7 @@ async function renderObservationPanel(){
         <div class="observation-head">
             <div>
                 <h2 class="observation-title">観測中の惑星たち</h2>
-                <p class="observation-subtitle">アイコンの縁の色で、フォロー中ユーザーの投稿時間がわかります</p>
+                <p class="observation-subtitle">フォロー中の新しい投稿を観測できます</p>
             </div>
             <button type="button" class="observation-new-btn" onclick="openObservationNewest()">新しい信号 ${newSignalCount}件 ⟶</button>
         </div>
@@ -11716,12 +11705,10 @@ async function renderObservationPanel(){
             <div class="observation-orbit o3"></div>
             ${observationGroups.map((group, index) => observationPlanetHTML(group, index)).join("")}
 
-            <div class="observation-legend">
-                <div class="observation-legend-title">色の説明</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>紫：6時間以内</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>水色：24時間以内</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>灰色：1日以上前</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot number" style="--legend-color:#a970ff">2</span>数字：新着件数</div>
+            <div class="observation-legend" aria-label="投稿時間の説明">
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>6時間以内</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>24時間以内</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>1日以上前</div>
             </div>
         </div>
     `;
@@ -12084,18 +12071,18 @@ async function renderDailyMeteor(){
     const name = profile?.name || "知らないユーザー";
     const title = getObservationTitle(item);
     const artist = getObservationArtist(item);
-    const meta = [name, artist].filter(Boolean).join(" ・ ");
+    const ariaText = ["今日の流れ星を開く", name, title, artist].filter(Boolean).join(" / ");
 
     dailyMeteorBox.innerHTML = `
-        <button type="button" class="daily-meteor-card" onclick="openDailyMeteorPost()" aria-label="今日の流れ星を開く">
-            <span class="daily-meteor-cover">${dailyMeteorCoverHTML(item)}</span>
-            <span style="min-width:0;position:relative;z-index:1;">
-                <span class="daily-meteor-label">✦ 今日の流れ星</span>
-                <span class="daily-meteor-title">${escapeHTML(title)}</span>
-                <span class="daily-meteor-sub">${escapeHTML(getDailyMeteorSnippet(item))}</span>
-                <span class="daily-meteor-meta">${escapeHTML(meta)}</span>
+        <button type="button" class="daily-meteor-card" onclick="openDailyMeteorPost()" aria-label="${escapeHTML(ariaText)}" title="${escapeHTML([name, title, artist].filter(Boolean).join(" ・ "))}">
+            <span class="daily-meteor-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 20v-8"/><path d="M8 20h8"/><path d="M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M7 9a5 5 0 0 1 10 0"/><path d="M4 9a8 8 0 0 1 16 0"/></svg>
             </span>
-            <span class="daily-meteor-arrow">›</span>
+            <span class="daily-meteor-copy">
+                <span class="daily-meteor-title">流れ星が観測されました</span>
+                <span class="daily-meteor-sub">タップして受信する</span>
+            </span>
+            <span class="daily-meteor-arrow" aria-hidden="true">›</span>
         </button>
     `;
 }
