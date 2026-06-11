@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Album Collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -8234,6 +8234,113 @@ body::after{
 
 /* END PATCH OBSERVATION V4 */
 
+
+
+/* ============================================================
+   PATCH OBSERVATION V5 2026-06-11
+   - 「天の川」名称を「おすすめ」に変更済み
+   - モバイルの おすすめ / 観測 / リスト を横スクロールではなく完全タップ切替にする
+   - 観測画面で上スワイプしてもおすすめへ戻らないように固定
+   - 観測ビューア左右タップ時の拡大・誤ズームを抑制
+============================================================ */
+@media (max-width:900px){
+    .feed-swipe,
+    .feed-swipe.vertical-gesture{
+        display:block !important;
+        width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+        overflow:visible !important;
+        overflow-x:hidden !important;
+        overflow-y:visible !important;
+        scroll-snap-type:none !important;
+        scroll-behavior:auto !important;
+        touch-action:pan-y !important;
+        overscroll-behavior-x:none !important;
+        transform:none !important;
+    }
+
+    .feed-panel{
+        display:none !important;
+        flex:none !important;
+        width:100% !important;
+        min-width:0 !important;
+        padding-left:0 !important;
+        padding-right:0 !important;
+        opacity:1 !important;
+        transform:none !important;
+        scroll-snap-align:none !important;
+        transition:none !important;
+    }
+
+    .feed-panel.is-visible{
+        display:block !important;
+    }
+
+    .mobile-feed-tabs{
+        --recommend-tab-opacity:0.58;
+        --following-tab-opacity:0.58;
+        --list-tab-opacity:0.58;
+        touch-action:manipulation !important;
+    }
+
+    .mobile-feed-tabs[data-active-feed="recommend"]{
+        --feed-progress:0 !important;
+        --recommend-tab-opacity:1 !important;
+    }
+
+    .mobile-feed-tabs[data-active-feed="following"]{
+        --feed-progress:1 !important;
+        --following-tab-opacity:1 !important;
+    }
+
+    .mobile-feed-tabs[data-active-feed="list"]{
+        --feed-progress:2 !important;
+        --list-tab-opacity:1 !important;
+    }
+
+    #recommendTab,
+    #followingTab,
+    #listTab{
+        touch-action:manipulation !important;
+        user-select:none !important;
+        -webkit-user-select:none !important;
+    }
+
+    #followingGrid.observation-map{
+        overflow:hidden !important;
+        overscroll-behavior:contain !important;
+        touch-action:pan-y !important;
+    }
+}
+
+.observation-viewer,
+.observation-viewer *{
+    -webkit-tap-highlight-color:transparent !important;
+}
+
+.observation-viewer{
+    touch-action:manipulation !important;
+    overscroll-behavior:none !important;
+    user-select:none !important;
+    -webkit-user-select:none !important;
+}
+
+.observation-tap-zone{
+    touch-action:manipulation !important;
+    -webkit-user-select:none !important;
+    user-select:none !important;
+    outline:none !important;
+}
+
+.observation-tap-zone:focus,
+.observation-tap-zone:active{
+    outline:none !important;
+    background:transparent !important;
+}
+
+/* END PATCH OBSERVATION V5 */
+
 </style>
 </head>
 
@@ -8266,7 +8373,7 @@ body::after{
 <nav class="sidebar">
     <div class="logo">Album<br>Collection</div>
 
-    <a href="index.html" class="active">天の川</a>
+    <a href="index.html" class="active">おすすめ</a>
     <a href="search.html">検索</a>
     <a href="editor.html">投稿する</a>
     <a href="notifications.html">通知</a>
@@ -8280,7 +8387,7 @@ body::after{
 <nav class="mobile-tabbar">
     <a href="index.html" class="active">
         <span class="icon">⌂</span>
-        <span class="label">天の川</span>
+        <span class="label">おすすめ</span>
     </a>
 
     <a href="search.html">
@@ -8307,9 +8414,9 @@ body::after{
 
 <a href="editor.html" class="fab">＋</a>
 
-<!-- スマホ用：天の川 / 観測 / リスト タブ -->
+<!-- スマホ用：おすすめ / 観測 / リスト タブ -->
 <div class="mobile-feed-tabs" id="mobileFeedTabs">
-    <button type="button" class="feed-tab active" id="recommendTab">天の川</button>
+    <button type="button" class="feed-tab active" id="recommendTab">おすすめ</button>
     <button type="button" class="feed-tab" id="followingTab">観測</button>
     <button type="button" class="feed-tab" id="listTab">リスト</button>
 </div>
@@ -11863,7 +11970,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /* ============================================================
    PATCH OBSERVATION V4 JS
-   - モバイルの天の川/観測/リストを横スクロールさせず、タブ押下で即時切替
+   - モバイルのおすすめ/観測/リストを横スクロールさせず、タブ押下で即時切替
 ============================================================ */
 function getFeedProgress(){
     if(currentFeedMode === "list") return 2;
@@ -11898,6 +12005,196 @@ function resetFeedToRecommendOnOpen(){
 }
 
 /* END PATCH OBSERVATION V4 JS */
+
+
+
+/* ============================================================
+   PATCH OBSERVATION V5 JS 2026-06-11
+   - 横スクロール型フィードを停止して、タップ切替だけにする
+   - 観測タブで縦スワイプしても「おすすめ」に戻らないようにする
+   - 観測ビューア左右タップのダブルタップ拡大を防ぐ
+============================================================ */
+(function(){
+    function feedModeToIndex(mode){
+        if(mode === "list") return 2;
+        if(mode === "following") return 1;
+        return 0;
+    }
+
+    function indexToFeedMode(index){
+        if(index >= 1.5) return "list";
+        if(index >= 0.5) return "following";
+        return "recommend";
+    }
+
+    window.getFeedProgress = function(){
+        return feedModeToIndex(currentFeedMode);
+    };
+
+    window.updateFeedTabs = function(progress = null){
+        if(!recommendTab || !followingTab || !listTab){
+            return;
+        }
+
+        let nextMode = currentFeedMode || "recommend";
+
+        if(typeof progress === "number"){
+            nextMode = indexToFeedMode(progress);
+        }
+
+        if(nextMode !== "recommend" && nextMode !== "following" && nextMode !== "list"){
+            nextMode = "recommend";
+        }
+
+        currentFeedMode = nextMode;
+
+        const panelIndex = feedModeToIndex(nextMode);
+        const tabs = document.getElementById("mobileFeedTabs");
+
+        recommendTab.classList.toggle("active", nextMode === "recommend");
+        followingTab.classList.toggle("active", nextMode === "following");
+        listTab.classList.toggle("active", nextMode === "list");
+
+        if(tabs){
+            tabs.dataset.activeFeed = nextMode;
+            tabs.style.setProperty("--feed-progress", String(panelIndex));
+            tabs.style.setProperty("--recommend-tab-opacity", nextMode === "recommend" ? "1" : "0.58");
+            tabs.style.setProperty("--following-tab-opacity", nextMode === "following" ? "1" : "0.58");
+            tabs.style.setProperty("--list-tab-opacity", nextMode === "list" ? "1" : "0.58");
+        }
+
+        const recommendPanel = document.querySelector('[data-feed-panel="recommend"]');
+        const followingPanel = document.querySelector('[data-feed-panel="following"]');
+        const listPanel = document.querySelector('[data-feed-panel="list"]');
+
+        if(recommendPanel){
+            recommendPanel.classList.toggle("is-visible", nextMode === "recommend");
+        }
+
+        if(followingPanel){
+            followingPanel.classList.toggle("is-visible", nextMode === "following");
+        }
+
+        if(listPanel){
+            listPanel.classList.toggle("is-visible", nextMode === "list");
+        }
+
+        if(feedSwipe && window.innerWidth <= 900 && feedSwipe.scrollLeft !== 0){
+            feedSwipe.scrollLeft = 0;
+        }
+    };
+
+    window.scrollFeedTo = function(mode){
+        if(mode !== "recommend" && mode !== "following" && mode !== "list"){
+            return;
+        }
+
+        currentFeedMode = mode;
+
+        if(feedSwipe && window.innerWidth <= 900){
+            feedSwipe.classList.remove("vertical-gesture");
+            feedSwipe.scrollLeft = 0;
+        }
+
+        updateFeedTabs(feedModeToIndex(mode));
+    };
+
+    window.resetFeedToRecommendOnOpen = function(){
+        if(window.innerWidth > 900){
+            return;
+        }
+
+        currentFeedMode = "recommend";
+
+        if(feedSwipe){
+            feedSwipe.classList.remove("vertical-gesture");
+            feedSwipe.scrollLeft = 0;
+        }
+
+        updateFeedTabs(0);
+    };
+
+    function setupObservationTapZones(){
+        const viewer = document.getElementById("observationViewer");
+        const leftZone = document.getElementById("prevStory");
+        const rightZone = document.getElementById("nextStory");
+        const leftObservationZone = document.querySelector(".observation-tap-zone.left");
+        const rightObservationZone = document.querySelector(".observation-tap-zone.right");
+        const zones = [
+            { el:leftZone || leftObservationZone, fn:() => prevObservationPost() },
+            { el:rightZone || rightObservationZone, fn:() => nextObservationPost() }
+        ];
+
+        if(viewer){
+            viewer.addEventListener("dblclick", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+            }, { passive:false });
+
+            viewer.addEventListener("gesturestart", (event) => {
+                event.preventDefault();
+            }, { passive:false });
+        }
+
+        zones.forEach(({el, fn}) => {
+            if(!el || el.dataset.observationTapFixed === "1"){
+                return;
+            }
+
+            el.dataset.observationTapFixed = "1";
+            el.removeAttribute("onclick");
+            el.onclick = null;
+
+            let lastTapAt = 0;
+
+            const handleTap = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const now = Date.now();
+                if(now - lastTapAt < 110){
+                    return;
+                }
+                lastTapAt = now;
+
+                fn();
+            };
+
+            if("PointerEvent" in window){
+                el.addEventListener("pointerup", handleTap, { passive:false });
+            }else{
+                el.addEventListener("touchend", handleTap, { passive:false });
+                el.addEventListener("click", handleTap, { passive:false });
+            }
+        });
+    }
+
+    function setupTapOnlyFeedTabs(){
+        if(feedSwipe && window.innerWidth <= 900){
+            feedSwipe.classList.remove("vertical-gesture");
+            feedSwipe.scrollLeft = 0;
+        }
+
+        updateFeedTabs(feedModeToIndex(currentFeedMode || "recommend"));
+        setupObservationTapZones();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        requestAnimationFrame(setupTapOnlyFeedTabs);
+    });
+
+    window.addEventListener("pageshow", () => {
+        requestAnimationFrame(setupTapOnlyFeedTabs);
+    });
+
+    window.addEventListener("resize", () => {
+        requestAnimationFrame(setupTapOnlyFeedTabs);
+    });
+
+    setupTapOnlyFeedTabs();
+})();
+
+/* END PATCH OBSERVATION V5 JS */
 
 </script>
 
