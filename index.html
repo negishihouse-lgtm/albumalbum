@@ -6435,6 +6435,49 @@ h4{
 
 /* END PATCH FINAL SMALL HEART SQUARER CARD 2026-06-11 */
 
+
+/* ============================================================
+   PATCH FINAL MORE SQUARE POST CARD 2026-06-11
+   - 投稿カードをさらに四角寄りにする
+   - 角丸は残す
+============================================================ */
+
+.album-card.story-layout-card,
+.story-layout-card{
+    border-radius:13px !important;
+}
+
+.album-card.story-layout-card .story-cover,
+.story-layout-card .story-cover{
+    border-radius:8px !important;
+}
+
+/* 右上の3点ボタンもカードの四角感に合わせる */
+.album-card.story-layout-card .post-more-btn,
+.story-layout-card .post-more-btn{
+    border-radius:12px !important;
+}
+
+/* キーワードタグは丸のまま残す */
+.album-card.story-layout-card .keyword-tag,
+.story-layout-card .keyword-tag{
+    border-radius:999px !important;
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card,
+    .story-layout-card{
+        border-radius:12px !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        border-radius:7px !important;
+    }
+}
+
+/* END PATCH FINAL MORE SQUARE POST CARD 2026-06-11 */
+
 </style>
 </head>
 
