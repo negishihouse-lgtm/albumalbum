@@ -7362,6 +7362,99 @@ h4{
 
 /* END PATCH FINAL FIX 2026-06-11 */
 
+
+
+/* ============================================================
+   PATCH FINAL METER BAR POLES DARK 2026-06-11
+   - 「両極を暗く」は文字ではなくメーター棒の左右端に適用
+   - メーター左右ラベルは明るさを戻す
+   - カード透明度アップ・再生ボタン修正は維持
+============================================================ */
+
+/* 文字は暗くしない：読みやすい白寄りに戻す */
+.meter-label,
+.meter-label.right-label,
+.story-analysis .meter-label,
+.story-analysis .meter-label.right-label,
+.album-card.story-layout-card .story-analysis .meter-label,
+.album-card.story-layout-card .story-analysis .meter-label.right-label,
+.story-layout-card .story-analysis .meter-label,
+.story-layout-card .story-analysis .meter-label.right-label{
+    color:rgba(245,250,252,0.90) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+}
+
+/* メーター棒のベース線：左右端だけ暗く、中央は今まで通り薄いグレー */
+.meter-graphic::before,
+.story-analysis .meter-graphic::before,
+.album-card.story-layout-card .story-analysis .meter-graphic::before,
+.story-layout-card .story-analysis .meter-graphic::before{
+    content:"" !important;
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    top:50% !important;
+    height:1px !important;
+    transform:translateY(-50%) !important;
+    border-radius:999px !important;
+    background:linear-gradient(
+        90deg,
+        rgba(42,32,58,0.72) 0%,
+        rgba(68,54,88,0.52) 8%,
+        rgba(185,190,205,0.30) 22%,
+        rgba(185,190,205,0.30) 78%,
+        rgba(68,54,88,0.52) 92%,
+        rgba(42,32,58,0.72) 100%
+    ) !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+}
+
+/* 選択済みの紫ラインも左端だけ暗く入り、ドット方向に明るくなる */
+.meter-graphic::after,
+.story-analysis .meter-graphic::after,
+.album-card.story-layout-card .story-analysis .meter-graphic::after,
+.story-layout-card .story-analysis .meter-graphic::after{
+    background:linear-gradient(
+        90deg,
+        rgba(52,34,72,0.88) 0%,
+        rgba(128,78,190,0.78) 16%,
+        rgba(176,108,255,0.92) 58%,
+        rgba(213,168,255,0.98) 100%
+    ) !important;
+    box-shadow:0 0 8px rgba(176,108,255,0.30),
+        0 0 14px rgba(176,108,255,0.12) !important;
+}
+
+@media (max-width:900px){
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label.right-label{
+        color:rgba(245,250,252,0.88) !important;
+    }
+
+    .meter-graphic::before,
+    .story-analysis .meter-graphic::before,
+    .album-card.story-layout-card .story-analysis .meter-graphic::before,
+    .story-layout-card .story-analysis .meter-graphic::before{
+        height:1px !important;
+        background:linear-gradient(
+            90deg,
+            rgba(38,30,54,0.78) 0%,
+            rgba(66,50,88,0.56) 9%,
+            rgba(185,190,205,0.28) 23%,
+            rgba(185,190,205,0.28) 77%,
+            rgba(66,50,88,0.56) 91%,
+            rgba(38,30,54,0.78) 100%
+        ) !important;
+    }
+}
+
+/* END PATCH FINAL METER BAR POLES DARK 2026-06-11 */
+
 </style>
 </head>
 
