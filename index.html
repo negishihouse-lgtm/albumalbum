@@ -7161,6 +7161,207 @@ h4{
     }
 }
 
+
+
+/* ============================================================
+   PATCH FINAL FIX 2026-06-11
+   - 前回の「壊れた」原因を修正：CSSを<style>内に収める
+   - メーター左右ラベルを暗めにする
+   - カードの透明度を上げて、銀河背景が少し透けるようにする
+   - 再生ボタンの四角残り対策は維持
+============================================================ */
+
+:root{
+    --card-glass-alpha:0.62;
+    --card-glass-alpha-mobile:0.66;
+    --card-glass-border:rgba(197,140,255,0.24);
+    --meter-pole-dark:rgba(165,170,190,0.56);
+    --meter-pole-dark-mobile:rgba(165,170,190,0.52);
+}
+
+/* カード透明度アップ：背景が前より見える */
+.album-card,
+.album-card.story-layout-card,
+.story-layout-card,
+.list-card{
+    background:linear-gradient(
+        145deg,
+        rgba(5,10,22,var(--card-glass-alpha)),
+        rgba(3,7,16,calc(var(--card-glass-alpha) - 0.08))
+    ) !important;
+    border-color:var(--card-glass-border) !important;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.045) inset,
+        0 14px 38px rgba(0,0,0,0.28),
+        0 0 24px rgba(176,108,255,0.055) !important;
+    backdrop-filter:blur(20px) saturate(1.10) !important;
+    -webkit-backdrop-filter:blur(20px) saturate(1.10) !important;
+}
+
+.album-card:hover,
+.album-card.story-layout-card:hover,
+.story-layout-card:hover,
+.list-card:hover{
+    border-color:rgba(197,140,255,0.40) !important;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.055) inset,
+        0 16px 46px rgba(0,0,0,0.32),
+        0 0 30px rgba(176,108,255,0.11) !important;
+}
+
+/* メーター両極ラベルだけ暗くする。線・ドットは触らない */
+.meter-label,
+.meter-label.right-label,
+.story-analysis .meter-label,
+.story-analysis .meter-label.right-label,
+.album-card.story-layout-card .story-analysis .meter-label,
+.album-card.story-layout-card .story-analysis .meter-label.right-label,
+.story-layout-card .story-analysis .meter-label,
+.story-layout-card .story-analysis .meter-label.right-label{
+    color:var(--meter-pole-dark) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+    font-weight:400 !important;
+}
+
+/* 再生ボタン：ボタン本体に三角を直描きして、中の四角要素を完全に殺す */
+.story-play-btn,
+.spotify-btn,
+.album-card.story-layout-card .story-play-btn,
+.album-card.story-layout-card .spotify-btn{
+    position:relative !important;
+    width:28px !important;
+    height:28px !important;
+    min-width:28px !important;
+    min-height:28px !important;
+    padding:0 !important;
+    border-radius:999px !important;
+    background:rgba(176,108,255,0.13) !important;
+    border:1px solid rgba(197,140,255,0.44) !important;
+    box-shadow:
+        0 0 0 1px rgba(197,140,255,0.10) inset,
+        0 0 15px rgba(176,108,255,0.28),
+        0 0 28px rgba(176,108,255,0.10) !important;
+    overflow:hidden !important;
+}
+
+.story-play-btn *,
+.spotify-btn *,
+.album-card.story-layout-card .story-play-btn *,
+.album-card.story-layout-card .spotify-btn *{
+    background:transparent !important;
+    background-color:transparent !important;
+    background-image:none !important;
+    border:none !important;
+    box-shadow:none !important;
+    filter:none !important;
+}
+
+.story-play-btn .spotify-icon,
+.spotify-btn .spotify-icon,
+.album-card.story-layout-card .story-play-btn .spotify-icon,
+.album-card.story-layout-card .spotify-btn .spotify-icon{
+    position:absolute !important;
+    inset:0 !important;
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    opacity:0 !important;
+    pointer-events:none !important;
+}
+
+.story-play-btn .spotify-icon::before,
+.story-play-btn .spotify-icon::after,
+.spotify-btn .spotify-icon::before,
+.spotify-btn .spotify-icon::after,
+.album-card.story-layout-card .story-play-btn .spotify-icon::before,
+.album-card.story-layout-card .story-play-btn .spotify-icon::after,
+.album-card.story-layout-card .spotify-btn .spotify-icon::before,
+.album-card.story-layout-card .spotify-btn .spotify-icon::after{
+    content:none !important;
+    display:none !important;
+}
+
+.story-play-btn::before,
+.spotify-btn::before,
+.album-card.story-layout-card .story-play-btn::before,
+.album-card.story-layout-card .spotify-btn::before{
+    content:"" !important;
+    position:absolute !important;
+    left:52% !important;
+    top:50% !important;
+    width:9px !important;
+    height:11px !important;
+    transform:translate(-50%, -50%) !important;
+    background:#dcbcff !important;
+    clip-path:polygon(0 0, 100% 50%, 0 100%) !important;
+    filter:drop-shadow(0 0 7px rgba(220,188,255,0.62)) !important;
+    z-index:2 !important;
+}
+
+.story-play-btn::after,
+.spotify-btn::after,
+.album-card.story-layout-card .story-play-btn::after,
+.album-card.story-layout-card .spotify-btn::after{
+    content:none !important;
+    display:none !important;
+}
+
+.story-play-btn img,
+.story-play-btn svg,
+.story-play-btn i,
+.story-play-btn span:not(.spotify-icon),
+.spotify-btn img,
+.spotify-btn svg,
+.spotify-btn i,
+.spotify-btn span:not(.spotify-icon){
+    display:none !important;
+}
+
+@media (max-width:900px){
+    .album-card,
+    .album-card.story-layout-card,
+    .story-layout-card,
+    .list-card{
+        background:linear-gradient(
+            145deg,
+            rgba(5,10,22,var(--card-glass-alpha-mobile)),
+            rgba(3,7,16,calc(var(--card-glass-alpha-mobile) - 0.09))
+        ) !important;
+    }
+
+    .album-card.story-layout-card .story-analysis .meter-label,
+    .album-card.story-layout-card .story-analysis .meter-label.right-label,
+    .story-layout-card .story-analysis .meter-label,
+    .story-layout-card .story-analysis .meter-label.right-label{
+        color:var(--meter-pole-dark-mobile) !important;
+    }
+}
+
+@media (max-width:430px){
+    .story-play-btn,
+    .spotify-btn,
+    .album-card.story-layout-card .story-play-btn,
+    .album-card.story-layout-card .spotify-btn{
+        width:27px !important;
+        height:27px !important;
+        min-width:27px !important;
+        min-height:27px !important;
+    }
+
+    .story-play-btn::before,
+    .spotify-btn::before,
+    .album-card.story-layout-card .story-play-btn::before,
+    .album-card.story-layout-card .spotify-btn::before{
+        width:8.4px !important;
+        height:10.2px !important;
+    }
+}
+
+/* END PATCH FINAL FIX 2026-06-11 */
+
 </style>
 </head>
 
@@ -10292,43 +10493,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
-/* ============================================================
-   PATCH FINAL METER POLES DARK 2026-06-11
-   - メーター左右の極ラベルを暗めにして主張を抑える
-   - 選択ドットと紫ラインはそのまま維持
-============================================================ */
-
-.meter-label,
-.story-analysis .meter-label,
-.album-card.story-layout-card .story-analysis .meter-label,
-.story-layout-card .story-analysis .meter-label,
-.meter-label.right-label,
-.story-analysis .meter-label.right-label,
-.album-card.story-layout-card .story-analysis .meter-label.right-label,
-.story-layout-card .story-analysis .meter-label.right-label{
-    color:rgba(185,190,205,0.64) !important;
-    text-shadow:none !important;
-    opacity:1 !important;
-}
-
-/* スマホ投稿カード内はさらに少し暗くして、線とドットを主役にする */
-@media (max-width:900px){
-    .album-card.story-layout-card .story-analysis .meter-label,
-    .story-layout-card .story-analysis .meter-label,
-    .album-card.story-layout-card .story-analysis .meter-label.right-label,
-    .story-layout-card .story-analysis .meter-label.right-label{
-        color:rgba(185,190,205,0.58) !important;
-        font-weight:400 !important;
-    }
-}
-
-@media (max-width:430px){
-    .album-card.story-layout-card .story-analysis .meter-label,
-    .story-layout-card .story-analysis .meter-label,
-    .album-card.story-layoutCard .story-analysis .meter-label.right-label,
-    .story-layout-card .story-analysis .meter-label.right-label{
-        color:rgba(185,190,205,0.55) !important;
-    }
-}
-
-/* END PATCH FINAL METER POLES DARK 2026-06-11 */
