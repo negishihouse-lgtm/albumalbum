@@ -6981,6 +6981,186 @@ h4{
 
 /* END PATCH FINAL PLAY BUTTON NO SQUARE 2026-06-11 */
 
+
+
+/* ============================================================
+   FIX FINAL 2: 再生ボタンの四角い影を根本から消す
+   - .spotify-icon は完全非表示
+   - 三角は button::before の clip-path だけで描画
+   - border triangle / filter のSafari四角アーティファクトを使わない
+============================================================ */
+.story-play-btn,
+.spotify-btn,
+.album-card.story-layout-card .story-play-btn,
+.album-card.story-layout-card .spotify-btn,
+.story-layout-card .story-play-btn,
+.story-layout-card .spotify-btn,
+.album-card.story-layout-card .story-reaction-row .story-play-btn,
+.album-card.story-layout-card .story-reaction-row .spotify-btn,
+.story-layout-card .story-reaction-row .story-play-btn,
+.story-layout-card .story-reaction-row .spotify-btn{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    position:relative !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:29px !important;
+    height:29px !important;
+    min-width:29px !important;
+    min-height:29px !important;
+    max-width:29px !important;
+    max-height:29px !important;
+    padding:0 !important;
+    margin-left:10px !important;
+    border-radius:999px !important;
+    border:1px solid rgba(197,140,255,0.46) !important;
+    background:rgba(176,108,255,0.115) !important;
+    background-image:none !important;
+    color:#e3c2ff !important;
+    box-shadow:
+        0 0 0 1px rgba(197,140,255,0.10) inset,
+        0 0 13px rgba(176,108,255,0.30),
+        0 0 26px rgba(176,108,255,0.12) !important;
+    backdrop-filter:blur(14px) saturate(1.12) !important;
+    -webkit-backdrop-filter:blur(14px) saturate(1.12) !important;
+    overflow:hidden !important;
+    font-size:0 !important;
+    line-height:0 !important;
+    text-indent:0 !important;
+}
+
+.story-play-btn:hover,
+.spotify-btn:hover,
+.album-card.story-layout-card .story-play-btn:hover,
+.album-card.story-layout-card .spotify-btn:hover,
+.story-layout-card .story-play-btn:hover,
+.story-layout-card .spotify-btn:hover{
+    background:rgba(176,108,255,0.17) !important;
+    border-color:rgba(213,168,255,0.62) !important;
+    transform:none !important;
+}
+
+/* これが四角の本体。完全に消す */
+.story-play-btn .spotify-icon,
+.spotify-btn .spotify-icon,
+.album-card.story-layout-card .story-play-btn .spotify-icon,
+.album-card.story-layout-card .spotify-btn .spotify-icon,
+.story-layout-card .story-play-btn .spotify-icon,
+.story-layout-card .spotify-btn .spotify-icon,
+.story-play-btn .spotify-icon::before,
+.story-play-btn .spotify-icon::after,
+.spotify-btn .spotify-icon::before,
+.spotify-btn .spotify-icon::after,
+.album-card.story-layout-card .story-play-btn .spotify-icon::before,
+.album-card.story-layout-card .story-play-btn .spotify-icon::after,
+.album-card.story-layout-card .spotify-btn .spotify-icon::before,
+.album-card.story-layout-card .spotify-btn .spotify-icon::after,
+.story-layout-card .story-play-btn .spotify-icon::before,
+.story-layout-card .story-play-btn .spotify-icon::after,
+.story-layout-card .spotify-btn .spotify-icon::before,
+.story-layout-card .spotify-btn .spotify-icon::after{
+    content:none !important;
+    display:none !important;
+    visibility:hidden !important;
+    opacity:0 !important;
+    width:0 !important;
+    height:0 !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    max-width:0 !important;
+    max-height:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    background-color:transparent !important;
+    background-image:none !important;
+    box-shadow:none !important;
+    filter:none !important;
+    transform:none !important;
+}
+
+/* button本体に三角を直接描く。透明borderを使わないので四角が出ない */
+.story-play-btn::before,
+.spotify-btn::before,
+.album-card.story-layout-card .story-play-btn::before,
+.album-card.story-layout-card .spotify-btn::before,
+.story-layout-card .story-play-btn::before,
+.story-layout-card .spotify-btn::before{
+    content:"" !important;
+    display:block !important;
+    position:absolute !important;
+    left:52.5% !important;
+    top:50% !important;
+    width:9px !important;
+    height:11px !important;
+    transform:translate(-50%, -50%) !important;
+    background:#e3c2ff !important;
+    background-image:none !important;
+    border:none !important;
+    border-radius:1px !important;
+    box-shadow:none !important;
+    filter:drop-shadow(0 0 6px rgba(227,194,255,0.66)) !important;
+    -webkit-clip-path:polygon(0 0, 100% 50%, 0 100%) !important;
+    clip-path:polygon(0 0, 100% 50%, 0 100%) !important;
+    z-index:2 !important;
+    pointer-events:none !important;
+}
+
+.story-play-btn::after,
+.spotify-btn::after,
+.album-card.story-layout-card .story-play-btn::after,
+.album-card.story-layout-card .spotify-btn::after,
+.story-layout-card .story-play-btn::after,
+.story-layout-card .spotify-btn::after{
+    content:none !important;
+    display:none !important;
+}
+
+/* 念のため、ボタン内に残った画像/SVG/icon/文字要素も消す */
+.story-play-btn > *,
+.spotify-btn > *,
+.album-card.story-layout-card .story-play-btn > *,
+.album-card.story-layout-card .spotify-btn > *,
+.story-layout-card .story-play-btn > *,
+.story-layout-card .spotify-btn > *{
+    display:none !important;
+    visibility:hidden !important;
+    opacity:0 !important;
+    background:transparent !important;
+    background-image:none !important;
+    box-shadow:none !important;
+    filter:none !important;
+}
+
+@media (max-width:430px){
+    .story-play-btn,
+    .spotify-btn,
+    .album-card.story-layout-card .story-play-btn,
+    .album-card.story-layout-card .spotify-btn,
+    .story-layout-card .story-play-btn,
+    .story-layout-card .spotify-btn{
+        width:28px !important;
+        height:28px !important;
+        min-width:28px !important;
+        min-height:28px !important;
+        max-width:28px !important;
+        max-height:28px !important;
+        margin-left:8px !important;
+    }
+
+    .story-play-btn::before,
+    .spotify-btn::before,
+    .album-card.story-layout-card .story-play-btn::before,
+    .album-card.story-layout-card .spotify-btn::before,
+    .story-layout-card .story-play-btn::before,
+    .story-layout-card .spotify-btn::before{
+        width:8.3px !important;
+        height:10.2px !important;
+    }
+}
+
 </style>
 </head>
 
@@ -8968,9 +9148,7 @@ function albumCardHTML(item, posterProfile){
                     onclick="event.stopPropagation(); openListenMenu('${escapeHTML(albumId)}')"
                     aria-label="聴く"
                     title="聴く"
-                >
-                    <span class="spotify-icon" aria-hidden="true"></span>
-                </button>
+                ></button>
             </div>
         </div>
 
