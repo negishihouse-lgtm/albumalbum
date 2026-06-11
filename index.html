@@ -6339,6 +6339,102 @@ h4{
 
 /* END PATCH FINAL HIDE EMPTY KEYWORD 2026-06-11 */
 
+
+/* ============================================================
+   PATCH FINAL SMALL HEART SQUARER CARD 2026-06-11
+   - 投稿カードのハートを小さくする
+   - 投稿カードの角丸を残しつつ四角寄りにする
+============================================================ */
+
+/* 投稿カード：丸すぎる角を少し四角寄りに */
+.album-card.story-layout-card,
+.story-layout-card{
+    border-radius:18px !important;
+}
+
+/* カード内ジャケットも少しだけ四角寄り */
+.album-card.story-layout-card .story-cover,
+.story-layout-card .story-cover{
+    border-radius:11px !important;
+}
+
+/* 投稿カードのハートだけ小さく */
+.album-card.story-layout-card .story-reaction-row .like-btn,
+.story-layout-card .story-reaction-row .like-btn,
+.album-card .story-reaction-row .like-btn,
+.album-card .like-btn{
+    width:22px !important;
+    height:22px !important;
+    min-width:22px !important;
+    min-height:22px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-btn::before,
+.story-layout-card .story-reaction-row .like-btn::before,
+.album-card .story-reaction-row .like-btn::before,
+.album-card .like-btn::before{
+    width:20px !important;
+    height:20px !important;
+}
+
+/* 数字との縦位置を合わせる */
+.album-card.story-layout-card .story-reaction-row .like-count,
+.story-layout-card .story-reaction-row .like-count,
+.album-card .like-count{
+    height:22px !important;
+    line-height:1 !important;
+    font-size:12.5px !important;
+}
+
+/* 反応列の間隔も少し締める */
+.album-card.story-layout-card .story-reaction-row .reaction-left-group,
+.story-layout-card .story-reaction-row .reaction-left-group{
+    gap:18px !important;
+}
+
+.album-card.story-layout-card .story-reaction-row .like-area,
+.story-layout-card .story-reaction-row .like-area,
+.album-card .like-area{
+    gap:5px !important;
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card,
+    .story-layout-card{
+        border-radius:17px !important;
+    }
+
+    .album-card.story-layout-card .story-cover,
+    .story-layout-card .story-cover{
+        border-radius:10px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .like-btn,
+    .story-layout-card .story-reaction-row .like-btn,
+    .album-card .story-reaction-row .like-btn,
+    .album-card .like-btn{
+        width:21px !important;
+        height:21px !important;
+        min-width:21px !important;
+        min-height:21px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .like-btn::before,
+    .story-layout-card .story-reaction-row .like-btn::before,
+    .album-card .story-reaction-row .like-btn::before,
+    .album-card .like-btn::before{
+        width:19px !important;
+        height:19px !important;
+    }
+
+    .album-card.story-layout-card .story-reaction-row .reaction-left-group,
+    .story-layout-card .story-reaction-row .reaction-left-group{
+        gap:17px !important;
+    }
+}
+
+/* END PATCH FINAL SMALL HEART SQUARER CARD 2026-06-11 */
+
 </style>
 </head>
 
