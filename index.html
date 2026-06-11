@@ -7966,7 +7966,7 @@ h4{
 /* ============================================================
    PATCH 2026-06-11: 背景画像ループ + ぬるぬる移動
    - milkyway_bg.png を2枚重ねて縦方向に連続ループ
-   - scroll連動を lerp で滑らかにする
+   - スクロール同期なしで自動アニメーションだけにする
    - 既存の milkywayPan / --milkyway-shift を最後で無効化
 ============================================================ */
 :root{
@@ -11592,12 +11592,10 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script>
-/* 背景画像を縦ループ + 慣性つきでぬるぬる動かす */
+/* 背景画像を縦ループで自動アニメーションさせる。スクロール同期はしない */
 (function(){
     const BG_SRC = "./milkyway_bg.png";
-    const BASE_SPEED = 10;       // 自動で下へ流れる速度 px/秒。速くしたいなら 14〜18
-    const PARALLAX_RATE = 0.12;  // スクロール追従量。強くしたいなら 0.16〜0.22
-    const LERP = 0.075;          // 小さいほどぬるっと遅れて動く。速い反応なら 0.10〜0.14
+    const BASE_SPEED = 8; // 背景が流れる速度 px/秒。遅くしたいなら 5〜6、速くしたいなら 10〜12
 
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if(reduceMotion){
@@ -11605,8 +11603,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let loopHeight = Math.max(window.innerHeight * 1.4, 900);
-    let targetScrollY = window.scrollY || window.pageYOffset || 0;
-    let smoothScrollY = targetScrollY;
     let lastTime = performance.now();
     let autoY = 0;
     let imageRatio = 1.45;
@@ -11632,13 +11628,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const dt = Math.min(64, now - lastTime) / 1000;
         lastTime = now;
 
-        targetScrollY = window.scrollY || window.pageYOffset || 0;
-        smoothScrollY += (targetScrollY - smoothScrollY) * LERP;
-
         autoY = (autoY + BASE_SPEED * dt) % loopHeight;
-        const y = -((autoY + smoothScrollY * PARALLAX_RATE) % loopHeight);
+        document.documentElement.style.setProperty("--galaxy-loop-y", `${-autoY}px`);
 
-        document.documentElement.style.setProperty("--galaxy-loop-y", `${y}px`);
         requestAnimationFrame(tick);
     }
 
