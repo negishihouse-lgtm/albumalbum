@@ -7455,6 +7455,513 @@ h4{
 
 /* END PATCH FINAL METER BAR POLES DARK 2026-06-11 */
 
+
+/* ============================================================
+   OBSERVATION MODE V1 2026-06-11
+   - 「ストーリー投稿」ではなく、フォロー中の新着投稿を惑星として観測する
+   - followingGrid を観測マップ化
+   - 惑星タップで新着投稿ビューアを開く
+============================================================ */
+.observation-map{
+    width:100% !important;
+    min-height:620px !important;
+    position:relative !important;
+    display:block !important;
+    overflow:hidden !important;
+    border-radius:28px !important;
+    padding:22px 18px 26px !important;
+    background:
+        radial-gradient(circle at 50% 44%, rgba(255,210,178,0.72) 0 3px, rgba(255,190,145,0.30) 4px, transparent 9px),
+        radial-gradient(ellipse at 54% 44%, rgba(255,145,210,0.24) 0%, rgba(176,108,255,0.18) 23%, transparent 48%),
+        radial-gradient(circle at 24% 26%, rgba(176,108,255,0.16), transparent 20%),
+        radial-gradient(circle at 82% 36%, rgba(88,220,255,0.13), transparent 21%),
+        linear-gradient(180deg, rgba(2,6,17,0.18), rgba(2,6,17,0.44)) !important;
+    border:1px solid rgba(176,108,255,0.16) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 18px 52px rgba(0,0,0,0.22) !important;
+}
+
+.observation-map::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.85) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(197,140,255,0.72) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(120,220,255,0.58) 0 1px, transparent 1.5px);
+    background-size:53px 53px, 91px 91px, 139px 139px;
+    background-position:0 0, 18px 24px, 40px 12px;
+    opacity:.34;
+}
+
+.observation-map::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:radial-gradient(ellipse at center, transparent 0 36%, rgba(0,0,0,0.18) 68%, rgba(0,0,0,0.52) 100%);
+}
+
+.observation-head{
+    position:relative;
+    z-index:3;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.observation-title{
+    margin:0;
+    font-size:20px;
+    line-height:1.2;
+    font-weight:700;
+    letter-spacing:-0.035em;
+    color:rgba(255,255,255,0.96);
+}
+
+.observation-subtitle{
+    margin:5px 0 0;
+    color:rgba(238,247,250,0.56);
+    font-size:12.5px;
+    line-height:1.35;
+    font-weight:500;
+}
+
+.observation-new-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    border-radius:999px;
+    border:1px solid rgba(176,108,255,0.42);
+    background:rgba(90,38,148,0.26);
+    color:#d9b7ff;
+    padding:9px 12px;
+    font-size:12.5px;
+    line-height:1;
+    font-weight:700;
+    box-shadow:0 0 18px rgba(176,108,255,0.18), inset 0 0 18px rgba(176,108,255,0.10);
+    white-space:nowrap;
+}
+
+.observation-space{
+    position:relative;
+    z-index:2;
+    height:510px;
+    margin-top:12px;
+}
+
+.observation-orbit{
+    position:absolute;
+    border:1px dashed rgba(203,210,255,0.15);
+    border-radius:50%;
+    pointer-events:none;
+    filter:drop-shadow(0 0 8px rgba(176,108,255,0.10));
+}
+
+.observation-orbit.o1{ width:480px; height:185px; left:-82px; top:82px; transform:rotate(-14deg); }
+.observation-orbit.o2{ width:390px; height:165px; left:-4px; top:210px; transform:rotate(5deg); }
+.observation-orbit.o3{ width:470px; height:190px; left:-60px; top:342px; transform:rotate(-8deg); }
+
+.observation-planet-wrap{
+    position:absolute;
+    left:var(--x);
+    top:var(--y);
+    width:var(--size);
+    transform:translate(-50%,-50%);
+    text-align:center;
+    z-index:3;
+}
+
+.observation-planet{
+    appearance:none;
+    -webkit-appearance:none;
+    position:relative;
+    display:block;
+    width:var(--size);
+    height:var(--size);
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:var(--planet-bg);
+    box-shadow:
+        0 0 20px var(--planet-glow),
+        0 0 42px color-mix(in srgb, var(--planet-glow), transparent 58%),
+        inset -18px -20px 24px rgba(0,0,0,0.62),
+        inset 8px 8px 16px rgba(255,255,255,0.14);
+    margin:0 auto;
+    cursor:pointer;
+}
+
+.observation-planet::before{
+    content:"";
+    position:absolute;
+    left:-18%;
+    right:-18%;
+    top:47%;
+    height:10px;
+    border-top:1px solid rgba(195,210,255,0.15);
+    border-bottom:1px solid rgba(195,210,255,0.11);
+    border-left:1px solid transparent;
+    border-right:1px solid transparent;
+    border-radius:50%;
+    transform:rotate(-16deg);
+    pointer-events:none;
+}
+
+.observation-signal-dot{
+    position:absolute;
+    right:-8px;
+    top:7px;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    border-radius:999px;
+    display:grid;
+    place-items:center;
+    background:var(--signal-color);
+    color:#1b1133;
+    font-size:11px;
+    font-weight:800;
+    line-height:1;
+    box-shadow:0 0 15px var(--signal-color);
+    z-index:5;
+}
+
+.observation-planet-name{
+    margin-top:8px;
+    font-size:13.5px;
+    line-height:1.15;
+    font-weight:700;
+    color:rgba(255,255,255,0.94);
+    text-shadow:0 2px 12px rgba(0,0,0,0.85);
+    white-space:nowrap;
+}
+
+.observation-planet-time{
+    margin-top:2px;
+    color:rgba(255,255,255,0.52);
+    font-size:11.5px;
+    line-height:1.1;
+    font-weight:500;
+    white-space:nowrap;
+}
+
+.observation-legend{
+    position:absolute;
+    left:14px;
+    bottom:16px;
+    z-index:4;
+    width:142px;
+    padding:12px 12px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(8,11,25,0.56);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+
+.observation-legend-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:0 0 10px;
+    color:rgba(255,255,255,0.66);
+    font-size:10.8px;
+    line-height:1;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.observation-legend-row:last-child{ margin-bottom:0; }
+
+.observation-legend-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--legend-color);
+    box-shadow:0 0 10px var(--legend-color);
+    flex:0 0 auto;
+}
+
+.observation-empty{
+    position:relative;
+    z-index:5;
+    min-height:360px;
+    display:grid;
+    place-items:center;
+    text-align:center;
+    color:rgba(238,247,250,0.58);
+    font-size:14px;
+    line-height:1.7;
+    padding:40px 24px;
+}
+
+.observation-viewer{
+    position:fixed;
+    inset:0;
+    z-index:19000;
+    display:none;
+    background:
+        radial-gradient(circle at 50% 34%, rgba(176,108,255,0.32), transparent 34%),
+        radial-gradient(circle at 50% 56%, rgba(255,190,154,0.14), transparent 30%),
+        rgba(1,3,10,0.94);
+    backdrop-filter:blur(18px) saturate(1.05);
+    -webkit-backdrop-filter:blur(18px) saturate(1.05);
+}
+
+.observation-viewer.open{ display:block; }
+
+.observation-viewer-progress{
+    position:absolute;
+    left:18px;
+    right:18px;
+    top:calc(14px + env(safe-area-inset-top));
+    display:flex;
+    gap:5px;
+    z-index:3;
+}
+
+.observation-progress-seg{
+    height:3px;
+    flex:1;
+    border-radius:999px;
+    background:rgba(255,255,255,0.22);
+    overflow:hidden;
+}
+
+.observation-progress-seg span{
+    display:block;
+    width:0;
+    height:100%;
+    border-radius:inherit;
+    background:#fff;
+    box-shadow:0 0 12px rgba(255,255,255,0.7);
+}
+
+.observation-progress-seg.done span,
+.observation-progress-seg.active span{ width:100%; }
+
+.observation-viewer-top{
+    position:absolute;
+    top:calc(34px + env(safe-area-inset-top));
+    left:18px;
+    right:18px;
+    z-index:4;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.observation-viewer-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+}
+
+.observation-viewer-avatar,
+.observation-viewer-avatar-fallback{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(176,108,255,0.18);
+    object-fit:cover;
+    flex:0 0 36px;
+}
+
+.observation-viewer-avatar-fallback{
+    display:grid;
+    place-items:center;
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+}
+
+.observation-viewer-name{
+    color:rgba(255,255,255,0.94);
+    font-size:13px;
+    line-height:1.2;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.observation-viewer-time{
+    margin-top:2px;
+    color:rgba(255,255,255,0.52);
+    font-size:11px;
+    line-height:1.2;
+    font-weight:500;
+}
+
+.observation-close{
+    appearance:none;
+    -webkit-appearance:none;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.08);
+    color:#fff;
+    display:grid;
+    place-items:center;
+    font-size:24px;
+    line-height:1;
+}
+
+.observation-viewer-body{
+    position:absolute;
+    inset:calc(88px + env(safe-area-inset-top)) 18px calc(92px + env(safe-area-inset-bottom));
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+.observation-viewer-cover{
+    width:min(238px,64vw);
+    height:min(238px,64vw);
+    border-radius:30px;
+    overflow:hidden;
+    background:linear-gradient(135deg, rgba(176,108,255,0.40), rgba(5,10,18,0.90));
+    border:1px solid rgba(255,255,255,0.16);
+    box-shadow:0 0 52px rgba(176,108,255,0.25), inset -32px -38px 42px rgba(0,0,0,0.36);
+}
+
+.observation-viewer-cover img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.observation-viewer-title{
+    margin:22px 0 0;
+    max-width:330px;
+    color:rgba(255,255,255,0.98);
+    font-size:24px;
+    line-height:1.16;
+    font-weight:700;
+    letter-spacing:-0.045em;
+}
+
+.observation-viewer-artist{
+    margin:5px 0 0;
+    color:rgba(238,247,250,0.62);
+    font-size:13px;
+    line-height:1.25;
+    font-weight:500;
+}
+
+.observation-viewer-text{
+    max-width:330px;
+    margin:16px 0 0;
+    color:rgba(255,255,255,0.76);
+    font-size:13px;
+    line-height:1.65;
+    font-weight:400;
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.observation-viewer-meters{
+    width:100%;
+    max-width:330px;
+    margin-top:20px;
+    display:grid;
+    gap:9px;
+}
+
+.observation-viewer-meters .meter{
+    grid-template-columns:48px minmax(0,1fr) 48px !important;
+    gap:8px !important;
+    margin:0 !important;
+}
+
+.observation-viewer-bottom{
+    position:absolute;
+    left:18px;
+    right:18px;
+    bottom:calc(24px + env(safe-area-inset-bottom));
+    display:grid;
+    grid-template-columns:1fr auto auto auto;
+    align-items:center;
+    gap:10px;
+}
+
+.observation-detail-btn{
+    height:42px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.18);
+    background:rgba(255,255,255,0.06);
+    color:rgba(255,255,255,0.72);
+    display:flex;
+    align-items:center;
+    padding:0 15px;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+}
+
+.observation-mini-btn{
+    appearance:none;
+    -webkit-appearance:none;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.06);
+    color:#fff;
+    display:grid;
+    place-items:center;
+    font-size:16px;
+}
+
+.observation-tap-zone{
+    position:absolute;
+    top:90px;
+    bottom:90px;
+    width:50%;
+    z-index:2;
+    background:transparent;
+    border:0;
+}
+.observation-tap-zone.left{ left:0; }
+.observation-tap-zone.right{ right:0; }
+
+@media (max-width:900px){
+    .feed-panel[data-feed-panel="following"]{
+        min-height:620px;
+    }
+
+    #followingGrid.observation-map{
+        margin-bottom:8px !important;
+    }
+}
+
+@media (max-width:430px){
+    .observation-map{
+        min-height:590px !important;
+        padding:20px 16px 24px !important;
+        border-radius:24px !important;
+    }
+
+    .observation-space{ height:490px; }
+    .observation-planet-name{ font-size:12.5px; }
+    .observation-planet-time{ font-size:10.8px; }
+    .observation-legend{ transform:scale(.92); transform-origin:left bottom; }
+    .observation-viewer-title{ font-size:22px; }
+}
+
 </style>
 </head>
 
@@ -7577,6 +8084,35 @@ h4{
     </section>
 </div>
 
+
+<!-- 観測モード：フォロー中の新着投稿ビューア -->
+<section class="observation-viewer" id="observationViewer" aria-hidden="true">
+    <div class="observation-viewer-progress" id="observationViewerProgress"></div>
+
+    <div class="observation-viewer-top">
+        <div class="observation-viewer-user" id="observationViewerUser"></div>
+        <button type="button" class="observation-close" onclick="closeObservationViewer()" aria-label="閉じる">×</button>
+    </div>
+
+    <button type="button" class="observation-tap-zone left" onclick="prevObservationPost()" aria-label="前の投稿へ"></button>
+    <button type="button" class="observation-tap-zone right" onclick="nextObservationPost()" aria-label="次の投稿へ"></button>
+
+    <div class="observation-viewer-body">
+        <div class="observation-viewer-cover" id="observationViewerCover"></div>
+        <h2 class="observation-viewer-title" id="observationViewerTitle"></h2>
+        <div class="observation-viewer-artist" id="observationViewerArtist"></div>
+        <p class="observation-viewer-text" id="observationViewerText"></p>
+        <div class="observation-viewer-meters" id="observationViewerMeters"></div>
+    </div>
+
+    <div class="observation-viewer-bottom">
+        <a class="observation-detail-btn" id="observationViewerDetail" href="#">投稿を詳しく見る</a>
+        <button type="button" class="observation-mini-btn" id="observationViewerLike" onclick="toggleObservationCurrentLike()" aria-label="いいね">♡</button>
+        <button type="button" class="observation-mini-btn" id="observationViewerShare" onclick="shareObservationCurrentPost()" aria-label="共有">↗</button>
+        <button type="button" class="observation-mini-btn" id="observationViewerListen" onclick="listenObservationCurrentPost()" aria-label="聴く">▶</button>
+    </div>
+</section>
+
 <div class="share-sheet" id="shareSheet" onclick="closeShareMenu()">
     <div class="share-panel" onclick="event.stopPropagation();">
         <div class="share-panel-title">共有</div>
@@ -7684,6 +8220,10 @@ let allLikes = [];
 let allComments = [];
 let unsubscribeMyLikes = null;
 const userProfileCache = new Map();
+
+let observationGroups = [];
+let activeObservationGroupIndex = 0;
+let activeObservationPostIndex = 0;
 
 onAuthStateChanged(auth, async (user) => {
     updateMobileMyPageTab(user);
@@ -10333,6 +10873,428 @@ document.addEventListener("keydown", (event) => {
 
 updateSortMenuUI();
 
+
+function getObservationDetailUrl(item){
+    if(item?.kind === "list"){
+        return getListDetailUrl(item.id);
+    }
+
+    return `detail.html?id=${encodeURIComponent(item.id)}`;
+}
+
+function getObservationCoverUrl(item){
+    const data = item?.data || {};
+
+    if(item?.kind === "list"){
+        const covers = Array.isArray(data.coverImages) ? data.coverImages.filter(Boolean) : [];
+        return covers[0] || "";
+    }
+
+    return data.cover || data.imageUrl || data.jacketUrl || "";
+}
+
+function getObservationTitle(item){
+    const data = item?.data || {};
+    return data.title || (item?.kind === "list" ? "Untitled List" : "Untitled");
+}
+
+function getObservationArtist(item){
+    const data = item?.data || {};
+
+    if(item?.kind === "list"){
+        const count = Number(data.itemCount || 0);
+        return `${getListTypeLabel(data)}${count ? ` / ${count}曲入り` : ""}`;
+    }
+
+    return data.artist || "";
+}
+
+function getObservationText(item){
+    const data = item?.data || {};
+    return data.description || data.desc || data.review || data.comment || data.memo || "";
+}
+
+function getObservationAgeInfo(item){
+    const postTime = getPostTime(item?.data?.createdAt || item?.data?.updatedAt);
+
+    if(!postTime){
+        return { postTime:0, diffHours:999999, label:"" };
+    }
+
+    const diffHours = Math.max(0, (Date.now() - postTime) / 3600000);
+    return {
+        postTime,
+        diffHours,
+        label:formatPostDate(item.data.createdAt || item.data.updatedAt)
+    };
+}
+
+function getObservationSignalState(group){
+    const latest = group?.latestDiffHours ?? 999999;
+    const recentCount = group?.recentCount || 0;
+
+    if(recentCount >= 2){
+        return { className:"multiple", color:"#a970ff", label:String(recentCount) };
+    }
+
+    if(latest <= 6){
+        return { className:"new", color:"#a970ff", label:"" };
+    }
+
+    if(latest <= 24){
+        return { className:"recent", color:"#6ed8ff", label:"" };
+    }
+
+    return { className:"old", color:"#788194", label:"" };
+}
+
+function getObservationPlanetStyle(index){
+    const styles = [
+        { x:"48%", y:"18%", size:"74px", bg:"radial-gradient(circle at 34% 28%, #bc79ff, transparent 20%), radial-gradient(circle at 62% 64%, #321256, #080616 70%)", glow:"rgba(176,108,255,0.82)" },
+        { x:"22%", y:"32%", size:"72px", bg:"radial-gradient(circle at 34% 30%, #ff725f, transparent 21%), radial-gradient(circle at 64% 66%, #521206, #090305 70%)", glow:"rgba(255,108,85,0.62)" },
+        { x:"82%", y:"36%", size:"70px", bg:"radial-gradient(circle at 34% 30%, #73f2ff, transparent 22%), radial-gradient(circle at 63% 66%, #0a5060, #03151e 70%)", glow:"rgba(120,217,255,0.65)" },
+        { x:"22%", y:"55%", size:"64px", bg:"radial-gradient(circle at 34% 30%, #609cff, transparent 22%), radial-gradient(circle at 64% 66%, #132a5b, #050a18 70%)", glow:"rgba(89,145,255,0.42)" },
+        { x:"54%", y:"58%", size:"82px", bg:"radial-gradient(circle at 32% 28%, #74c7ff, transparent 20%), radial-gradient(circle at 44% 50%, #2a854d, transparent 18%), radial-gradient(circle at 62% 66%, #0f3769, #061227 70%)", glow:"rgba(105,180,255,0.72)" },
+        { x:"78%", y:"68%", size:"68px", bg:"radial-gradient(circle at 34% 28%, #ffc06b, transparent 22%), radial-gradient(circle at 63% 66%, #5b3614, #100802 70%)", glow:"rgba(255,190,107,0.55)" },
+        { x:"51%", y:"84%", size:"68px", bg:"radial-gradient(circle at 32% 28%, #a85cff, transparent 22%), radial-gradient(circle at 62% 66%, #1e0d3c, #05030d 70%)", glow:"rgba(176,108,255,0.50)" }
+    ];
+
+    return styles[index % styles.length];
+}
+
+function getObservationFeedItems(){
+    if(!currentUser){
+        return [];
+    }
+
+    const albumItems = getFollowingAlbums().map(item => ({ ...item, kind:"album" }));
+    const listItems = getFollowingLists().map(item => ({ ...item, kind:"list" }));
+
+    return [...albumItems, ...listItems]
+        .sort((a, b) => getPostTime(b.data.createdAt || b.data.updatedAt) - getPostTime(a.data.createdAt || a.data.updatedAt));
+}
+
+async function buildObservationGroups(){
+    const items = getObservationFeedItems();
+    const groupMap = new Map();
+
+    for(const item of items){
+        const userId = item?.data?.userId || "unknown";
+        const age = getObservationAgeInfo(item);
+        const profile = await getPosterProfileForAlbum(item.data);
+
+        if(!groupMap.has(userId)){
+            groupMap.set(userId, {
+                userId,
+                profile,
+                items:[],
+                latestTime:0,
+                latestDiffHours:999999,
+                recentCount:0
+            });
+        }
+
+        const group = groupMap.get(userId);
+        group.items.push(item);
+        group.latestTime = Math.max(group.latestTime, age.postTime);
+        group.latestDiffHours = Math.min(group.latestDiffHours, age.diffHours);
+
+        if(age.diffHours <= 24){
+            group.recentCount += 1;
+        }
+    }
+
+    return [...groupMap.values()]
+        .filter(group => group.items.length > 0)
+        .sort((a, b) => b.latestTime - a.latestTime)
+        .slice(0, 7);
+}
+
+function observationPlanetHTML(group, index){
+    const style = getObservationPlanetStyle(index);
+    const signal = getObservationSignalState(group);
+    const latestItem = group.items[0];
+    const timeLabel = formatPostDate(latestItem?.data?.createdAt || latestItem?.data?.updatedAt) || "";
+    const name = group.profile?.name || "匿名ユーザー";
+
+    return `
+        <article class="observation-planet-wrap" style="--x:${style.x};--y:${style.y};--size:${style.size};--planet-bg:${style.bg};--planet-glow:${style.glow};--signal-color:${signal.color};">
+            <button type="button" class="observation-planet" onclick="openObservationGroup(${index}, 0)" aria-label="${escapeHTML(name)}の新着投稿を開く">
+                <span class="observation-signal-dot ${signal.className}">${escapeHTML(signal.label)}</span>
+            </button>
+            <div class="observation-planet-name">${escapeHTML(name)}</div>
+            <div class="observation-planet-time">${escapeHTML(timeLabel)}</div>
+        </article>
+    `;
+}
+
+async function renderObservationPanel(){
+    if(!followingGrid){
+        return;
+    }
+
+    followingGrid.className = "observation-map";
+
+    if(!currentUser){
+        followingGrid.innerHTML = `
+            <div class="observation-empty">
+                <div>ログインすると、フォロー中ユーザーの新しい投稿を観測できます。</div>
+            </div>
+        `;
+        return;
+    }
+
+    observationGroups = await buildObservationGroups();
+
+    if(observationGroups.length === 0){
+        followingGrid.innerHTML = `
+            <div class="observation-empty">
+                <div>フォロー中の新しい投稿はまだありません。<br>気になるユーザーをフォローすると、ここに惑星として表示されます。</div>
+            </div>
+        `;
+        return;
+    }
+
+    const newSignalCount = observationGroups.reduce((sum, group) => sum + (group.recentCount || 0), 0);
+
+    followingGrid.innerHTML = `
+        <div class="observation-head">
+            <div>
+                <h2 class="observation-title">観測中の惑星たち</h2>
+                <p class="observation-subtitle">フォロー中の新しい信号を観測できます</p>
+            </div>
+            <button type="button" class="observation-new-btn" onclick="openObservationNewest()">新しい信号 ${newSignalCount}件 ⟶</button>
+        </div>
+
+        <div class="observation-space">
+            <div class="observation-orbit o1"></div>
+            <div class="observation-orbit o2"></div>
+            <div class="observation-orbit o3"></div>
+            ${observationGroups.map((group, index) => observationPlanetHTML(group, index)).join("")}
+
+            <div class="observation-legend">
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>新しい信号あり</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>24時間以内</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>1日以上前</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>複数の信号</div>
+            </div>
+        </div>
+    `;
+}
+
+function renderObservationProgress(group){
+    const progress = document.getElementById("observationViewerProgress");
+    if(!progress){ return; }
+
+    progress.innerHTML = group.items.map((_, index) => {
+        const className = index < activeObservationPostIndex ? "done" : (index === activeObservationPostIndex ? "active" : "");
+        return `<div class="observation-progress-seg ${className}"><span></span></div>`;
+    }).join("");
+}
+
+function observationAvatarHTML(profile){
+    const iconUrl = profile?.iconUrl || "";
+    const name = profile?.name || "匿名ユーザー";
+
+    if(iconUrl){
+        return `<img class="observation-viewer-avatar" src="${escapeHTML(iconUrl)}" alt="${escapeHTML(name)}">`;
+    }
+
+    return `<span class="observation-viewer-avatar-fallback">${escapeHTML(getInitialLetter(name))}</span>`;
+}
+
+function renderObservationViewer(){
+    const viewer = document.getElementById("observationViewer");
+    const group = observationGroups[activeObservationGroupIndex];
+    const item = group?.items?.[activeObservationPostIndex];
+
+    if(!viewer || !group || !item){
+        return;
+    }
+
+    const userBox = document.getElementById("observationViewerUser");
+    const coverBox = document.getElementById("observationViewerCover");
+    const titleEl = document.getElementById("observationViewerTitle");
+    const artistEl = document.getElementById("observationViewerArtist");
+    const textEl = document.getElementById("observationViewerText");
+    const metersEl = document.getElementById("observationViewerMeters");
+    const detailEl = document.getElementById("observationViewerDetail");
+    const likeBtn = document.getElementById("observationViewerLike");
+    const listenBtn = document.getElementById("observationViewerListen");
+
+    const timeLabel = formatPostDate(item.data.createdAt || item.data.updatedAt) || "";
+    const coverUrl = getObservationCoverUrl(item);
+
+    if(userBox){
+        userBox.innerHTML = `
+            ${observationAvatarHTML(group.profile)}
+            <div style="min-width:0;">
+                <div class="observation-viewer-name">${escapeHTML(group.profile?.name || "匿名ユーザー")}</div>
+                <div class="observation-viewer-time">${escapeHTML(timeLabel)}</div>
+            </div>
+        `;
+    }
+
+    if(coverBox){
+        coverBox.innerHTML = coverUrl
+            ? `<img src="${escapeHTML(coverUrl)}" alt="">`
+            : `<div style="width:100%;height:100%;display:grid;place-items:center;color:rgba(255,255,255,.58);font-size:38px;">♪</div>`;
+    }
+
+    if(titleEl){ titleEl.textContent = getObservationTitle(item); }
+    if(artistEl){ artistEl.textContent = getObservationArtist(item); }
+    if(textEl){ textEl.textContent = getObservationText(item); }
+
+    if(metersEl){
+        if(item.kind === "list"){
+            metersEl.innerHTML = "";
+        }else{
+            const a = item.data || {};
+            metersEl.innerHTML = `
+                ${meter("暗い", "明るい", a.darkness)}
+                ${meter("静か", "激しい", a.intense)}
+                ${meter("シンプル", "複雑", a.complex)}
+                ${meter("絶望", "希望", a.hope)}
+                ${meter("個人", "世界", a.world)}
+            `;
+        }
+    }
+
+    if(detailEl){
+        detailEl.href = getObservationDetailUrl(item);
+    }
+
+    if(likeBtn){
+        if(item.kind === "list"){
+            likeBtn.style.display = "grid";
+            likeBtn.classList.toggle("liked", isListLikedByMe(item.id));
+            likeBtn.textContent = isListLikedByMe(item.id) ? "♥" : "♡";
+        }else{
+            likeBtn.style.display = "grid";
+            likeBtn.classList.toggle("liked", isLikedByMe(item.id));
+            likeBtn.textContent = isLikedByMe(item.id) ? "♥" : "♡";
+        }
+    }
+
+    if(listenBtn){
+        listenBtn.style.display = item.kind === "list" ? "none" : "grid";
+    }
+
+    renderObservationProgress(group);
+}
+
+function openObservationGroup(groupIndex = 0, postIndex = 0){
+    const viewer = document.getElementById("observationViewer");
+
+    if(!viewer || observationGroups.length === 0){
+        return;
+    }
+
+    activeObservationGroupIndex = Math.max(0, Math.min(observationGroups.length - 1, Number(groupIndex) || 0));
+    const group = observationGroups[activeObservationGroupIndex];
+    activeObservationPostIndex = Math.max(0, Math.min(group.items.length - 1, Number(postIndex) || 0));
+
+    renderObservationViewer();
+    viewer.classList.add("open");
+    viewer.setAttribute("aria-hidden", "false");
+}
+
+function openObservationNewest(){
+    if(observationGroups.length === 0){
+        return;
+    }
+
+    openObservationGroup(0, 0);
+}
+
+function closeObservationViewer(){
+    const viewer = document.getElementById("observationViewer");
+    if(!viewer){ return; }
+    viewer.classList.remove("open");
+    viewer.setAttribute("aria-hidden", "true");
+}
+
+function nextObservationPost(){
+    const group = observationGroups[activeObservationGroupIndex];
+    if(!group){ return; }
+
+    if(activeObservationPostIndex < group.items.length - 1){
+        activeObservationPostIndex += 1;
+    }else if(activeObservationGroupIndex < observationGroups.length - 1){
+        activeObservationGroupIndex += 1;
+        activeObservationPostIndex = 0;
+    }else{
+        activeObservationGroupIndex = 0;
+        activeObservationPostIndex = 0;
+    }
+
+    renderObservationViewer();
+}
+
+function prevObservationPost(){
+    if(activeObservationPostIndex > 0){
+        activeObservationPostIndex -= 1;
+    }else if(activeObservationGroupIndex > 0){
+        activeObservationGroupIndex -= 1;
+        const group = observationGroups[activeObservationGroupIndex];
+        activeObservationPostIndex = Math.max(0, group.items.length - 1);
+    }else{
+        activeObservationGroupIndex = observationGroups.length - 1;
+        const group = observationGroups[activeObservationGroupIndex];
+        activeObservationPostIndex = Math.max(0, group.items.length - 1);
+    }
+
+    renderObservationViewer();
+}
+
+async function toggleObservationCurrentLike(){
+    const group = observationGroups[activeObservationGroupIndex];
+    const item = group?.items?.[activeObservationPostIndex];
+
+    if(!item){ return; }
+
+    if(item.kind === "list"){
+        await toggleListLike(item.id);
+    }else{
+        await toggleLike(item.id);
+    }
+
+    renderObservationViewer();
+}
+
+function shareObservationCurrentPost(){
+    const group = observationGroups[activeObservationGroupIndex];
+    const item = group?.items?.[activeObservationPostIndex];
+
+    if(!item){ return; }
+
+    if(item.kind === "list"){
+        openShareMenu("list", item.id);
+    }else{
+        openShareMenu(item.id);
+    }
+}
+
+function listenObservationCurrentPost(){
+    const group = observationGroups[activeObservationGroupIndex];
+    const item = group?.items?.[activeObservationPostIndex];
+
+    if(!item || item.kind === "list"){
+        return;
+    }
+
+    openListenMenu(item.id);
+}
+
+window.openObservationGroup = openObservationGroup;
+window.openObservationNewest = openObservationNewest;
+window.closeObservationViewer = closeObservationViewer;
+window.nextObservationPost = nextObservationPost;
+window.prevObservationPost = prevObservationPost;
+window.toggleObservationCurrentLike = toggleObservationCurrentLike;
+window.shareObservationCurrentPost = shareObservationCurrentPost;
+window.listenObservationCurrentPost = listenObservationCurrentPost;
+
 async function renderAlbumGrid(targetGrid, items, emptyHTML){
     if(!targetGrid){ return; }
     if(items.length === 0){
@@ -10371,12 +11333,15 @@ async function renderFeedGrid(targetGrid, items, emptyHTML){
 async function renderAlbums(){
     updateFeedTabs();
     await renderAlbumGrid(recommendGrid, getRecommendAlbums(), `<div class="empty">保存されたアルバムがありません</div>`);
-    await renderFeedGrid(followingGrid, getFollowingFeedItems(), currentUser ? `<div class="empty">フォロー中の投稿がまだありません</div>` : `<div class="empty">ログインするとフォロー中TLを表示できます</div>`);
+
+    // 観測タブは通常のフォロー中TLではなく、フォロー中ユーザーの新着投稿を惑星マップとして表示する
+    await renderObservationPanel();
 
     await renderListGrid();
 
     updateLikeDisplays();
     updateCommentDisplays();
+    updateListLikeDisplays();
 }
 
 onSnapshot(listQuery, async (snapshot) => {
