@@ -8573,6 +8573,113 @@ body::after{
 
 /* END PATCH OBSERVATION V6 */
 
+
+/* ============================================================
+   PATCH FINAL STICKY HEADER + METEOR 2026-06-12
+   - スクロールしても Album Collection ロゴ / 並び替えボタンを固定
+   - おすすめ / 観測 / リスト タブはロゴ下に固定
+   - 今日の流れ星バナーもタブ下に固定
+============================================================ */
+@media (max-width:900px){
+    :root{
+        --ac-sticky-topbar-height:88px;
+        --ac-sticky-feed-tabs-height:58px;
+        --ac-sticky-total-height:146px;
+    }
+
+    .topbar{
+        position:sticky !important;
+        top:0 !important;
+        z-index:13000 !important;
+        order:1 !important;
+        margin:0 -16px 0 !important;
+        background:linear-gradient(180deg, rgba(2,8,20,0.92), rgba(2,8,20,0.72)) !important;
+        border-bottom:1px solid rgba(196,215,255,0.08) !important;
+        box-shadow:0 14px 34px rgba(0,0,0,0.20) !important;
+        backdrop-filter:blur(22px) saturate(1.16) !important;
+        -webkit-backdrop-filter:blur(22px) saturate(1.16) !important;
+    }
+
+    .page-title{
+        flex:1 1 auto !important;
+        min-width:0 !important;
+        white-space:nowrap !important;
+    }
+
+    .home-sortbar{
+        position:relative !important;
+        z-index:13020 !important;
+        flex:0 0 auto !important;
+    }
+
+    .sort-filter-wrap,
+    .sort-filter-btn{
+        position:relative !important;
+        z-index:13030 !important;
+    }
+
+    .sort-filter-menu{
+        z-index:13040 !important;
+    }
+
+    .mobile-feed-tabs{
+        position:sticky !important;
+        top:var(--ac-sticky-topbar-height) !important;
+        z-index:12900 !important;
+        order:2 !important;
+        margin:0 -16px 14px !important;
+        background:linear-gradient(180deg, rgba(2,8,20,0.86), rgba(2,8,20,0.66)) !important;
+        border-bottom:1px solid rgba(159,205,217,0.12) !important;
+        box-shadow:0 14px 32px rgba(0,0,0,0.16) !important;
+        backdrop-filter:blur(22px) saturate(1.14) !important;
+        -webkit-backdrop-filter:blur(22px) saturate(1.14) !important;
+    }
+
+    .daily-meteor-box{
+        position:sticky !important;
+        top:calc(var(--ac-sticky-topbar-height) + var(--ac-sticky-feed-tabs-height)) !important;
+        z-index:12800 !important;
+        margin:0 0 12px !important;
+        padding:8px 0 10px !important;
+        background:linear-gradient(180deg, rgba(2,8,20,0.78), rgba(2,8,20,0.22)) !important;
+        backdrop-filter:blur(18px) saturate(1.12) !important;
+        -webkit-backdrop-filter:blur(18px) saturate(1.12) !important;
+    }
+
+    .daily-meteor-card{
+        box-shadow:
+            0 0 0 1px rgba(255,255,255,0.03) inset,
+            0 12px 32px rgba(0,0,0,0.30),
+            0 0 24px rgba(146,112,255,0.16) !important;
+    }
+
+    .feed-swipe{
+        order:3 !important;
+    }
+}
+
+@media (max-width:430px){
+    :root{
+        --ac-sticky-topbar-height:86px;
+        --ac-sticky-feed-tabs-height:58px;
+        --ac-sticky-total-height:144px;
+    }
+
+    .topbar{
+        padding-top:18px !important;
+    }
+
+    .mobile-feed-tabs{
+        top:var(--ac-sticky-topbar-height) !important;
+    }
+
+    .daily-meteor-box{
+        top:calc(var(--ac-sticky-topbar-height) + var(--ac-sticky-feed-tabs-height)) !important;
+    }
+}
+
+/* END PATCH FINAL STICKY HEADER + METEOR 2026-06-12 */
+
 </style>
 </head>
 
@@ -11688,15 +11795,12 @@ async function renderObservationPanel(){
         return;
     }
 
-    const newSignalCount = observationGroups.reduce((sum, group) => sum + (group.recentCount || 0), 0);
-
     followingGrid.innerHTML = `
         <div class="observation-head">
             <div>
                 <h2 class="observation-title">観測中の惑星たち</h2>
                 <p class="observation-subtitle">フォロー中の新しい投稿を観測できます</p>
             </div>
-            <button type="button" class="observation-new-btn" onclick="openObservationNewest()">新しい信号 ${newSignalCount}件 ⟶</button>
         </div>
 
         <div class="observation-space">
