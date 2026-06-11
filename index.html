@@ -8039,6 +8039,201 @@ body::after{
     }
 }
 
+
+
+/* ============================================================
+   PATCH OBSERVATION V4 2026-06-11
+   - 観測タブの横スクロール/スワイプ切替を停止
+   - 観測画面は1画面内に収める
+   - 観測の惑星を謎の球体ではなくユーザーアイコン表示に変更
+============================================================ */
+
+/* 観測惑星：生成した球体ではなく、ユーザーアイコンを中に表示 */
+.observation-planet{
+    overflow:visible !important;
+    padding:0 !important;
+    background:rgba(4,8,18,0.68) !important;
+    border:1px solid rgba(213,168,255,0.42) !important;
+    box-shadow:
+        0 0 18px var(--planet-glow),
+        0 0 34px rgba(176,108,255,0.14),
+        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
+}
+
+.observation-planet::before{
+    display:none !important;
+    content:none !important;
+}
+
+.observation-planet::after{
+    content:"" !important;
+    position:absolute !important;
+    inset:-5px !important;
+    border-radius:50% !important;
+    border:1px solid rgba(213,168,255,0.18) !important;
+    box-shadow:0 0 18px rgba(176,108,255,0.20) !important;
+    pointer-events:none !important;
+    z-index:0 !important;
+}
+
+.observation-planet-core{
+    position:absolute !important;
+    inset:5px !important;
+    z-index:1 !important;
+    display:grid !important;
+    place-items:center !important;
+    border-radius:50% !important;
+    overflow:hidden !important;
+    background:
+        radial-gradient(circle at 34% 24%, rgba(255,255,255,0.18), transparent 28%),
+        rgba(8,12,26,0.88) !important;
+    box-shadow:
+        inset -10px -12px 20px rgba(0,0,0,0.42),
+        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
+}
+
+.observation-planet-avatar{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    display:block !important;
+    border-radius:50% !important;
+}
+
+.observation-planet-avatar-fallback{
+    color:rgba(255,255,255,0.86) !important;
+    font-size:22px !important;
+    font-weight:600 !important;
+    letter-spacing:-0.05em !important;
+}
+
+.observation-signal-dot{
+    z-index:4 !important;
+}
+
+/* 観測/リスト切替は横スクロールではなく、タブ押下だけで切り替える */
+@media (max-width:900px){
+    .feed-swipe{
+        display:block !important;
+        width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+        overflow:visible !important;
+        overflow-x:hidden !important;
+        scroll-snap-type:none !important;
+        scroll-behavior:auto !important;
+        touch-action:pan-y !important;
+    }
+
+    .feed-panel{
+        display:none !important;
+        width:100% !important;
+        min-width:0 !important;
+        flex:none !important;
+        padding:0 !important;
+        opacity:1 !important;
+        transform:none !important;
+        scroll-snap-align:none !important;
+    }
+
+    .feed-panel.is-visible{
+        display:block !important;
+    }
+
+    .feed-panel[data-feed-panel="following"]{
+        min-height:0 !important;
+    }
+
+    #followingGrid.observation-map{
+        height:calc(100dvh - 214px) !important;
+        min-height:0 !important;
+        max-height:none !important;
+        margin-bottom:0 !important;
+        overflow:hidden !important;
+    }
+
+    .observation-map{
+        padding:18px 16px 18px !important;
+        border-radius:22px !important;
+    }
+
+    .observation-head{
+        min-height:52px !important;
+    }
+
+    .observation-title{
+        font-size:18px !important;
+    }
+
+    .observation-subtitle{
+        font-size:11.5px !important;
+    }
+
+    .observation-new-btn{
+        padding:8px 10px !important;
+        font-size:11.5px !important;
+    }
+
+    .observation-space{
+        height:calc(100% - 62px) !important;
+        margin-top:8px !important;
+    }
+
+    .observation-orbit.o1{ width:430px !important; height:162px !important; left:-76px !important; top:16% !important; }
+    .observation-orbit.o2{ width:342px !important; height:146px !important; left:2px !important; top:38% !important; }
+    .observation-orbit.o3{ width:420px !important; height:168px !important; left:-58px !important; top:61% !important; }
+
+    .observation-legend{
+        left:10px !important;
+        bottom:10px !important;
+        width:132px !important;
+        padding:10px 10px !important;
+        border-radius:16px !important;
+    }
+
+    .observation-legend-row{
+        font-size:10px !important;
+        gap:7px !important;
+        margin-bottom:8px !important;
+    }
+}
+
+@media (max-width:430px){
+    #followingGrid.observation-map{
+        height:calc(100dvh - 206px) !important;
+        min-height:0 !important;
+    }
+
+    .observation-space{
+        height:calc(100% - 58px) !important;
+    }
+
+    .observation-planet-wrap{
+        transform:translate(-50%,-50%) scale(0.92) !important;
+    }
+
+    .observation-planet-avatar-fallback{
+        font-size:20px !important;
+    }
+
+    .observation-legend{
+        transform:scale(0.86) !important;
+        transform-origin:left bottom !important;
+    }
+}
+
+@media (max-height:720px) and (max-width:900px){
+    #followingGrid.observation-map{
+        height:calc(100dvh - 196px) !important;
+    }
+
+    .observation-legend{
+        display:none !important;
+    }
+}
+
+/* END PATCH OBSERVATION V4 */
+
 </style>
 </head>
 
@@ -11087,6 +11282,24 @@ async function buildObservationGroups(){
         .slice(0, 7);
 }
 
+function observationPlanetIconHTML(profile, name){
+    const iconUrl = profile?.iconUrl || "";
+
+    if(iconUrl){
+        return `
+            <span class="observation-planet-core">
+                <img class="observation-planet-avatar" src="${escapeHTML(iconUrl)}" alt="${escapeHTML(name)}">
+            </span>
+        `;
+    }
+
+    return `
+        <span class="observation-planet-core observation-planet-avatar-fallback">
+            ${escapeHTML(getInitialLetter(name))}
+        </span>
+    `;
+}
+
 function observationPlanetHTML(group, index){
     const style = getObservationPlanetStyle(index);
     const signal = getObservationSignalState(group);
@@ -11097,6 +11310,7 @@ function observationPlanetHTML(group, index){
     return `
         <article class="observation-planet-wrap" style="--x:${style.x};--y:${style.y};--size:${style.size};--planet-bg:${style.bg};--planet-glow:${style.glow};--signal-color:${signal.color};">
             <button type="button" class="observation-planet" onclick="openObservationGroup(${index}, 0)" aria-label="${escapeHTML(name)}の新着投稿を開く">
+                ${observationPlanetIconHTML(group.profile, name)}
                 <span class="observation-signal-dot ${signal.className}">${escapeHTML(signal.label)}</span>
             </button>
             <div class="observation-planet-name">${escapeHTML(name)}</div>
@@ -11645,6 +11859,46 @@ document.addEventListener("DOMContentLoaded", () => {
         requestAnimationFrame(tick);
     });
 })();
+
+
+/* ============================================================
+   PATCH OBSERVATION V4 JS
+   - モバイルの天の川/観測/リストを横スクロールさせず、タブ押下で即時切替
+============================================================ */
+function getFeedProgress(){
+    if(currentFeedMode === "list") return 2;
+    if(currentFeedMode === "following") return 1;
+    return 0;
+}
+
+function scrollFeedTo(mode){
+    if(mode !== "recommend" && mode !== "following" && mode !== "list"){
+        return;
+    }
+
+    currentFeedMode = mode;
+    const panelIndex = mode === "list" ? 2 : (mode === "following" ? 1 : 0);
+    updateFeedTabs(panelIndex);
+
+    if(feedSwipe && window.innerWidth <= 900){
+        feedSwipe.scrollLeft = 0;
+    }
+}
+
+function resetFeedToRecommendOnOpen(){
+    if(window.innerWidth > 900){
+        return;
+    }
+
+    currentFeedMode = "recommend";
+    if(feedSwipe){
+        feedSwipe.scrollLeft = 0;
+    }
+    updateFeedTabs(0);
+}
+
+/* END PATCH OBSERVATION V4 JS */
+
 </script>
 
 
