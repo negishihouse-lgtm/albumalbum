@@ -6478,6 +6478,104 @@ h4{
 
 /* END PATCH FINAL MORE SQUARE POST CARD 2026-06-11 */
 
+
+/* ============================================================
+   PATCH FINAL DESCENDER FIX 2026-06-11
+   - g / y / j / q など下に伸びる文字が切れないようにする
+   - 曲名・アーティスト名の行高と見出しブロック高さを調整
+============================================================ */
+
+.album-card.story-layout-card .album-heading-block,
+.story-layout-card .album-heading-block{
+    overflow:visible !important;
+}
+
+.album-card.story-layout-card .story-title,
+.story-layout-card .story-title,
+.album-card.story-layout-card .title,
+.story-layout-card .title{
+    overflow:visible !important;
+    line-height:1.22 !important;
+    padding-bottom:2px !important;
+    margin-bottom:2px !important;
+}
+
+.album-card.story-layout-card .story-artist,
+.story-layout-card .story-artist,
+.album-card.story-layout-card .artist,
+.story-layout-card .artist{
+    overflow:visible !important;
+    line-height:1.28 !important;
+    padding-bottom:2px !important;
+    margin-bottom:0 !important;
+    text-overflow:ellipsis !important;
+}
+
+/* スマホカード内：見出しブロックの高さを少し増やす */
+@media (max-width:900px){
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex:0 0 43px !important;
+        height:43px !important;
+        max-height:43px !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-title,
+    .story-layout-card .story-title,
+    .album-card.story-layout-card .title,
+    .story-layout-card .title{
+        line-height:1.20 !important;
+        padding-bottom:1px !important;
+        margin-bottom:1px !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-artist,
+    .story-layout-card .story-artist,
+    .album-card.story-layout-card .artist,
+    .story-layout-card .artist{
+        line-height:1.26 !important;
+        padding-bottom:2px !important;
+        overflow:visible !important;
+    }
+
+    /* 見出しが伸びた分、メーター側を少しだけ下げる */
+    .album-card.story-layout-card .album-right-stack,
+    .story-layout-card .album-right-stack{
+        justify-content:flex-start !important;
+        gap:3px !important;
+    }
+}
+
+@media (max-width:430px){
+    .album-card.story-layout-card .album-heading-block,
+    .story-layout-card .album-heading-block{
+        flex-basis:41px !important;
+        height:41px !important;
+        max-height:41px !important;
+        overflow:visible !important;
+    }
+
+    .album-card.story-layout-card .story-title,
+    .story-layout-card .story-title,
+    .album-card.story-layout-card .title,
+    .story-layout-card .title{
+        line-height:1.18 !important;
+        padding-bottom:1px !important;
+    }
+
+    .album-card.story-layout-card .story-artist,
+    .story-layout-card .story-artist,
+    .album-card.story-layout-card .artist,
+    .story-layout-card .artist{
+        line-height:1.25 !important;
+        padding-bottom:2px !important;
+    }
+}
+
+/* END PATCH FINAL DESCENDER FIX 2026-06-11 */
+
 </style>
 </head>
 
