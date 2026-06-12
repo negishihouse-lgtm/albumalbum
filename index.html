@@ -66,11 +66,6 @@
         <span class="label">検索</span>
     </a>
 
-    <a href="observation.html">
-        <span class="icon">⌕</span>
-        <span class="label">観測</span>
-    </a>
-
     <a href="editor.html">
         <span class="icon">＋</span>
         <span class="label">発信</span>
@@ -85,6 +80,7 @@
 <a href="editor.html" class="fab">＋</a>
 
 <!-- スマホ用：おすすめ / リスト タブ -->
+
 <div class="mobile-feed-tabs" id="mobileFeedTabs">
     <button type="button" class="feed-tab active" id="recommendTab">おすすめ</button>
     <button type="button" class="feed-tab" id="listTab">リスト</button>
@@ -136,34 +132,6 @@
     </section>
 </div>
 
-
-<!-- 観測モード：フォロー中の新着投稿ビューア -->
-<section class="observation-viewer" id="observationViewer" aria-hidden="true">
-    <div class="observation-viewer-progress" id="observationViewerProgress"></div>
-
-    <div class="observation-viewer-top">
-        <div class="observation-viewer-user" id="observationViewerUser"></div>
-        <button type="button" class="observation-close" onclick="closeObservationViewer()" aria-label="閉じる">×</button>
-    </div>
-
-    <button type="button" class="observation-tap-zone left" onclick="prevObservationPost()" aria-label="前の投稿へ"></button>
-    <button type="button" class="observation-tap-zone right" onclick="nextObservationPost()" aria-label="次の投稿へ"></button>
-
-    <div class="observation-viewer-body">
-        <div class="observation-viewer-cover" id="observationViewerCover"></div>
-        <h2 class="observation-viewer-title" id="observationViewerTitle"></h2>
-        <div class="observation-viewer-artist" id="observationViewerArtist"></div>
-        <p class="observation-viewer-text" id="observationViewerText"></p>
-        <div class="observation-viewer-meters" id="observationViewerMeters"></div>
-    </div>
-
-    <div class="observation-viewer-bottom">
-        <a class="observation-detail-btn" id="observationViewerDetail" href="#">投稿を詳しく見る</a>
-        <button type="button" class="observation-mini-btn" id="observationViewerLike" onclick="toggleObservationCurrentLike()" aria-label="いいね">♡</button>
-        <button type="button" class="observation-mini-btn" id="observationViewerShare" onclick="shareObservationCurrentPost()" aria-label="共有">↗</button>
-        <button type="button" class="observation-mini-btn" id="observationViewerListen" onclick="listenObservationCurrentPost()" aria-label="聴く">▶</button>
-    </div>
-</section>
 
 <div class="share-sheet" id="shareSheet" onclick="closeShareMenu()">
     <div class="share-panel" onclick="event.stopPropagation();">
@@ -2636,7 +2604,7 @@ function getPostTime(value){
    - 起動時に勝手におすすめへ戻さない
    - 横スワイプとタップを両方サポート
 ============================================================ */
-const FEED_MODES = ["recommend", "following", "list"];
+const FEED_MODES = ["recommend", "list"];
 const IS_OBSERVATION_PAGE = location.pathname.split("/").pop() === "observation.html";
 let feedScrollTicking = false;
 let feedTouchStartX = 0;
@@ -2644,19 +2612,16 @@ let feedTouchStartY = 0;
 let feedTouchMode = null;
 
 function normalizeFeedMode(mode){
-    if(IS_OBSERVATION_PAGE){ return "following"; }
     if(mode === "list"){ return "list"; }
     return "recommend";
 }
 
 function feedModeToIndex(mode){
-    if(IS_OBSERVATION_PAGE){ return 0; }
     if(mode === "list"){ return 1; }
     return 0;
 }
 
 function feedIndexToMode(index){
-    if(IS_OBSERVATION_PAGE){ return "following"; }
     return index >= 0.5 ? "list" : "recommend";
 }
 
@@ -2665,7 +2630,7 @@ function getFeedProgress(){
         return feedModeToIndex(currentFeedMode);
     }
 
-    return Math.max(0, Math.min(2, feedSwipe.scrollLeft / Math.max(1, feedSwipe.clientWidth)));
+    return Math.max(0, Math.min(1, feedSwipe.scrollLeft / Math.max(1, feedSwipe.clientWidth)));
 }
 
 function applyFeedMode(mode, progress = null){
@@ -3034,7 +2999,7 @@ function getObservationPlanetStyle(index){
         { x:"22%", y:"55%", size:"64px", bg:"radial-gradient(circle at 34% 30%, #609cff, transparent 22%), radial-gradient(circle at 64% 66%, #132a5b, #050a18 70%)", glow:"rgba(89,145,255,0.42)" },
         { x:"54%", y:"58%", size:"82px", bg:"radial-gradient(circle at 32% 28%, #74c7ff, transparent 20%), radial-gradient(circle at 44% 50%, #2a854d, transparent 18%), radial-gradient(circle at 62% 66%, #0f3769, #061227 70%)", glow:"rgba(105,180,255,0.72)" },
         { x:"78%", y:"68%", size:"68px", bg:"radial-gradient(circle at 34% 28%, #ffc06b, transparent 22%), radial-gradient(circle at 63% 66%, #5b3614, #100802 70%)", glow:"rgba(255,190,107,0.55)" },
-        { x:"50%", y:"71%", size:"68px", bg:"radial-gradient(circle at 32% 28%, #a85cff, transparent 22%), radial-gradient(circle at 62% 66%, #1e0d3c, #05030d 70%)", glow:"rgba(176,108,255,0.50)" }
+        { x:"50%", y:"76%", size:"68px", bg:"radial-gradient(circle at 32% 28%, #a85cff, transparent 22%), radial-gradient(circle at 62% 66%, #1e0d3c, #05030d 70%)", glow:"rgba(176,108,255,0.50)" }
     ];
 
     return styles[index % styles.length];
@@ -3562,11 +3527,7 @@ async function renderAlbums(){
     updateFeedTabs();
     await renderAlbumGrid(recommendGrid, getRecommendAlbums(), `<div class="empty">保存されたアルバムがありません</div>`);
     await renderDailyMeteor();
-
-    // 観測タブは通常のフォロー中TLではなく、フォロー中ユーザーの新着投稿を惑星マップとして表示する
-    await renderObservationPanel();
-
-    await renderListGrid();
+await renderListGrid();
 
     updateLikeDisplays();
     updateCommentDisplays();
