@@ -15,6 +15,12 @@
 
 <body data-feed-mode="recommend">
 
+<div id="acGalaxyMotionBg" aria-hidden="true">
+    <div class="ac-galaxy-layer ac-galaxy-image-layer"></div>
+    <div class="ac-galaxy-layer ac-galaxy-star-layer"></div>
+</div>
+
+
 <!-- メンテナンス用パスワード制限 -->
 <script>
 (function(){
@@ -3755,17 +3761,8 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 </script>
 
-<script>
-/* 背景アニメーションはCSS側で管理する。JSの1分前後のループ更新は停止。 */
-(function(){
-    document.documentElement.style.setProperty("--galaxy-loop-y", "0px");
-    document.documentElement.style.setProperty("--galaxy-loop-x", "0px");
-})();
 
 
-
-
-</script>
 
 
 
@@ -3778,50 +3775,69 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 /* ============================================================
-   Album Collection 背景モーション
-   - CSSアニメーションではなく requestAnimationFrame でCSS変数だけ更新
-   - 背景画像URLは変更しないので再読み込みされない
-   - sin波の往復移動なのでループの継ぎ目が出ない
+   Album Collection 背景モーション 強制版
+   - 疑似要素ではなく実DOMの背景レイヤーを動かす
+   - 画像URLは固定なので再読み込みされない
+   - requestAnimationFrameでtransformだけ更新
+   - PC / スマホ両対応
 ============================================================ */
 (function(){
-    const reduceMotion = window.matchMedia &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const bg = document.getElementById("acGalaxyMotionBg");
 
-    if(reduceMotion){
+    if(!bg){
         return;
     }
 
-    const root = document.documentElement;
-    let startTime = null;
+    const imageLayer = bg.querySelector(".ac-galaxy-image-layer");
+    const starLayer = bg.querySelector(".ac-galaxy-star-layer");
 
-    function animateGalaxyBackground(timestamp){
+    if(!imageLayer || !starLayer){
+        return;
+    }
+
+    let startTime = null;
+    let viewportWidth = window.innerWidth || 390;
+
+    window.addEventListener("resize", () => {
+        viewportWidth = window.innerWidth || viewportWidth;
+    }, { passive:true });
+
+    function animate(timestamp){
         if(startTime === null){
             startTime = timestamp;
         }
 
         const elapsed = timestamp - startTime;
+        const isMobile = viewportWidth <= 900;
 
         /*
-          1周90秒。
-          上下の往復なので、最後にカクッと戻らない。
-          動きが弱く見える場合は galaxyRange を 42 → 58 くらいに上げる。
+          動いていることが目視できるように、スマホでもやや大きめに動かす。
+          落ち着かせる場合は imageRange を 72 → 36 にする。
         */
-        const galaxyDuration = 90000;
-        const starDuration = 120000;
+        const imageRange = isMobile ? 72 : 92;
+        const imageXRange = isMobile ? 8 : 12;
+        const starRange = isMobile ? 18 : 26;
 
-        const galaxyRange = window.innerWidth <= 900 ? 36 : 52;
-        const starRange = window.innerWidth <= 900 ? 12 : 18;
+        const imageDuration = 52000;
+        const starDuration = 76000;
 
-        const galaxyY = Math.sin((elapsed / galaxyDuration) * Math.PI * 2) * galaxyRange;
-        const starY = Math.sin((elapsed / starDuration) * Math.PI * 2 + 1.4) * starRange;
+        const p1 = (elapsed / imageDuration) * Math.PI * 2;
+        const p2 = (elapsed / starDuration) * Math.PI * 2;
 
-        root.style.setProperty("--ac-galaxy-shift-y", galaxyY.toFixed(2) + "px");
-        root.style.setProperty("--ac-star-shift-y", starY.toFixed(2) + "px");
+        const imageY = Math.sin(p1) * imageRange;
+        const imageX = Math.sin(p1 * 0.62 + 0.8) * imageXRange;
+        const starY = Math.sin(p2 + 1.2) * starRange;
 
-        requestAnimationFrame(animateGalaxyBackground);
+        imageLayer.style.transform =
+            "translate3d(" + imageX.toFixed(2) + "px, " + imageY.toFixed(2) + "px, 0) scale(" + (isMobile ? "1.10" : "1.08") + ")";
+
+        starLayer.style.transform =
+            "translate3d(0, " + starY.toFixed(2) + "px, 0)";
+
+        requestAnimationFrame(animate);
     }
 
-    requestAnimationFrame(animateGalaxyBackground);
+    requestAnimationFrame(animate);
 })();
 </script>
 
