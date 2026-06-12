@@ -1,6 +1,6 @@
 /* ============================================================
    Album Collection index.html
-   CSS整理版あ
+   CSS整理版
    - 既存の多重 <style> を1つに統合
    - 同一セレクタ内の重複プロパティは最後の指定だけ残す
    - SVGアイコン + Pale Ice + 銀河背景の最終デザインを維持
@@ -9920,5 +9920,131 @@ body[data-feed-mode="following"] .observation-planet-core.observation-planet-ava
         top:-10% !important;
         width:120% !important;
         height:120% !important;
+    }
+}
+
+
+/* ============================================================
+   FINAL ALIGN FIX 2026-06-13
+   - 惑星アイコンの中心ズレを解消
+   - 画像を丸の中心に戻す
+   - 白リングだけ外側に出して、内側の黒余白を作らない
+============================================================ */
+body[data-feed-mode="following"] .observation-map{
+    max-width:none !important;
+    width:100% !important;
+}
+
+body[data-feed-mode="following"] .observation-space{
+    overflow:visible !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-wrap{
+    transform:translate(-50%,-50%) scale(1) !important;
+    width:var(--size) !important;
+    text-align:center !important;
+}
+
+body[data-feed-mode="following"] .observation-planet{
+    position:relative !important;
+    width:var(--size) !important;
+    height:var(--size) !important;
+    margin:0 auto !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:50% !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    overflow:visible !important;
+}
+
+body[data-feed-mode="following"] .observation-planet::before,
+body[data-feed-mode="following"] .observation-planet::after{
+    display:none !important;
+    content:none !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-core{
+    position:absolute !important;
+    left:0 !important;
+    top:0 !important;
+    right:auto !important;
+    bottom:auto !important;
+    inset:auto !important;
+    width:100% !important;
+    height:100% !important;
+    transform:none !important;
+    border-radius:50% !important;
+    overflow:hidden !important;
+    padding:0 !important;
+    border:0 !important;
+    background:rgba(8,12,26,0.96) !important;
+    box-shadow:
+        0 0 0 2px rgba(244,248,255,0.92),
+        0 0 0 5px rgba(13,16,30,0.46),
+        0 0 18px color-mix(in srgb, var(--signal-color) 56%, transparent),
+        0 0 38px color-mix(in srgb, var(--signal-color) 24%, transparent) !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-avatar{
+    position:absolute !important;
+    left:0 !important;
+    top:0 !important;
+    right:auto !important;
+    bottom:auto !important;
+    inset:auto !important;
+    width:100% !important;
+    height:100% !important;
+    min-width:100% !important;
+    min-height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    display:block !important;
+    object-fit:cover !important;
+    object-position:center center !important;
+    border-radius:50% !important;
+    transform:none !important;
+    transform-origin:center center !important;
+    background:transparent !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
+    left:0 !important;
+    top:0 !important;
+    width:100% !important;
+    height:100% !important;
+    display:grid !important;
+    place-items:center !important;
+    color:rgba(255,255,255,0.96) !important;
+    background:radial-gradient(circle at 50% 42%, rgba(13,17,34,0.96), rgba(4,6,15,0.96)) !important;
+    font-size:22px !important;
+    font-weight:800 !important;
+    line-height:1 !important;
+    text-align:center !important;
+    padding:0 !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-name{
+    margin-top:8px !important;
+    text-align:center !important;
+    transform:none !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-time{
+    text-align:center !important;
+    transform:none !important;
+}
+
+@media (max-width:430px){
+    body[data-feed-mode="following"] .observation-planet-wrap{
+        transform:translate(-50%,-50%) scale(0.92) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-core{
+        box-shadow:
+            0 0 0 2px rgba(244,248,255,0.92),
+            0 0 0 4px rgba(13,16,30,0.42),
+            0 0 16px color-mix(in srgb, var(--signal-color) 54%, transparent),
+            0 0 32px color-mix(in srgb, var(--signal-color) 22%, transparent) !important;
     }
 }
