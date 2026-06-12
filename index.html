@@ -13,7 +13,7 @@
 <style>
 /* ============================================================
    Album Collection index.html
-   CSS整理版あ
+   CSS整理版
    - 既存の多重 <style> を1つに統合
    - 同一セレクタ内の重複プロパティは最後の指定だけ残す
    - SVGアイコン + Pale Ice + 銀河背景の最終デザインを維持
@@ -8679,6 +8679,184 @@ body::after{
 }
 
 /* END PATCH FINAL STICKY HEADER + METEOR 2026-06-12 */
+
+
+
+/* ============================================================
+   PATCH V10: fixed black header + observation avatar center + meteor sticky
+   - 上部バー/ロゴ/タブを半透明ではなく黒に固定
+   - ステータスバーとロゴの間の微妙な隙間を消す
+   - 観測アイコンをリング中央に再固定
+   - 流れ星バナーをヘッダー直下に固定し、スクロールについてくるようにする
+============================================================ */
+
+@media (max-width:900px){
+
+    html,
+    body{
+        background:#02050b !important;
+    }
+
+    /* ロゴ行：黒固定 */
+    .topbar{
+        position:sticky !important;
+        top:0 !important;
+        z-index:9800 !important;
+        margin:0 -16px 0 !important;
+        padding:calc(env(safe-area-inset-top) + 18px) 30px 14px !important;
+        background:#02050b !important;
+        background-image:none !important;
+        border-bottom:1px solid rgba(255,255,255,0.08) !important;
+        backdrop-filter:none !important;
+        -webkit-backdrop-filter:none !important;
+        box-shadow:none !important;
+    }
+
+    .page-title{
+        margin-top:0 !important;
+    }
+
+    /* おすすめ/観測/リスト：黒固定 */
+    .mobile-feed-tabs{
+        position:sticky !important;
+        top:calc(env(safe-area-inset-top) + 82px) !important;
+        z-index:9700 !important;
+        margin:0 -16px 0 !important;
+        height:62px !important;
+        padding:0 26px !important;
+        background:#02050b !important;
+        background-image:none !important;
+        border-top:none !important;
+        border-bottom:1px solid rgba(255,255,255,0.10) !important;
+        backdrop-filter:none !important;
+        -webkit-backdrop-filter:none !important;
+        box-shadow:none !important;
+    }
+
+    /* 流れ星：タブのすぐ下に固定。おすすめ以外では非表示のまま */
+    .daily-meteor-box{
+        position:sticky !important;
+        top:calc(env(safe-area-inset-top) + 144px) !important;
+        z-index:9600 !important;
+        margin:0 -16px 12px !important;
+        padding:10px 16px 8px !important;
+        background:#02050b !important;
+        background-image:none !important;
+        border-bottom:1px solid rgba(255,255,255,0.08) !important;
+        backdrop-filter:none !important;
+        -webkit-backdrop-filter:none !important;
+    }
+
+    /* 観測/リスト表示時に空の流れ星スペースが残らないようにする */
+    .feed-panel:not(.is-visible) .daily-meteor-box,
+    .feed-panel[data-feed-panel="following"] .daily-meteor-box,
+    .feed-panel[data-feed-panel="list"] .daily-meteor-box{
+        display:none !important;
+    }
+
+    .observation-space,
+    .observation-planet,
+    .observation-planet button{
+        -webkit-user-select:none !important;
+        user-select:none !important;
+        touch-action:manipulation !important;
+    }
+}
+
+/* 観測リングとアイコンの中心ズレを根本的に補正 */
+.observation-planet-button,
+.observation-planet-btn,
+.observation-planet-core,
+.observation-planet button,
+.observation-planet-circle{
+    position:relative !important;
+    display:grid !important;
+    place-items:center !important;
+    box-sizing:border-box !important;
+    padding:0 !important;
+    margin:0 auto !important;
+    overflow:visible !important;
+}
+
+/* 中のアイコンはリングより少し小さくして中央へ */
+.observation-planet-avatar,
+.observation-avatar,
+.observation-planet-icon{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    width:64% !important;
+    height:64% !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    border-radius:50% !important;
+    overflow:hidden !important;
+    transform:translate(-50%, -50%) !important;
+    display:grid !important;
+    place-items:center !important;
+    box-sizing:border-box !important;
+    z-index:2 !important;
+}
+
+.observation-planet-avatar img,
+.observation-avatar img,
+.observation-planet-icon img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center center !important;
+    display:block !important;
+    border-radius:50% !important;
+    transform:none !important;
+}
+
+.observation-avatar-fallback,
+.observation-planet-fallback{
+    width:100% !important;
+    height:100% !important;
+    min-width:100% !important;
+    min-height:100% !important;
+    border-radius:50% !important;
+    display:grid !important;
+    place-items:center !important;
+    text-align:center !important;
+    line-height:1 !important;
+    transform:none !important;
+    margin:0 !important;
+    padding:0 !important;
+}
+
+/* バッジはリングの外側右上へ */
+.observation-count-badge,
+.observation-planet-badge,
+.observation-signal-badge{
+    position:absolute !important;
+    right:1px !important;
+    top:1px !important;
+    transform:translate(34%, -34%) !important;
+    z-index:6 !important;
+}
+
+/* 名前と日付をリング中心の真下へ */
+.observation-planet-name,
+.observation-planet-time{
+    text-align:center !important;
+    width:max-content !important;
+    max-width:120px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+}
+
+/* 流れ星バナーは黒ヘッダー上でも浮きすぎないように少し小さく */
+@media (max-width:900px){
+    .daily-meteor-card{
+        min-height:66px !important;
+        border-radius:999px !important;
+    }
+}
+
+/* END PATCH V10 */
+
 
 </style>
 </head>
