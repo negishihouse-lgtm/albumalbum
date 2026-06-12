@@ -1,0 +1,3829 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>観測 - Album Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="./style.css">
+</head>
+
+<body data-feed-mode="following">
+
+<!-- メンテナンス用パスワード制限 -->
+<script>
+(function(){
+    const MAINTENANCE_MODE = true;
+    const MAINTENANCE_PASS_KEY = "album_collection_maintenance_pass_ok";
+
+    if(!MAINTENANCE_MODE){
+        return;
+    }
+
+    if(sessionStorage.getItem(MAINTENANCE_PASS_KEY) === "true"){
+        return;
+    }
+
+    const currentPath = location.pathname.split("/").pop() || "index.html";
+
+    if(currentPath !== "maintenance.html"){
+        const nextUrl = "maintenance.html?redirect=" + encodeURIComponent(location.href);
+        location.replace(nextUrl);
+    }
+})();
+
+
+</script>
+
+<!-- PC用サイドバー -->
+<nav class="sidebar">
+    <div class="logo">Album<br>Collection</div>
+
+    <a href="index.html" class="active">おすすめ</a>
+    <a href="search.html">検索</a>
+    <a href="editor.html">投稿する</a>
+    <a href="notifications.html">通知</a>
+    <button type="button" class="tutorial-reopen-btn" onclick="openTutorial()">使い方</button>
+    <a id="myPageLink" href="login.html">マイページ</a>
+    <a href="profile-edit.html">プロフィール編集</a>
+    <a href="login.html">ログイン</a>
+</nav>
+
+<!-- スマホ用下部タブバー -->
+<nav class="mobile-tabbar">
+    <a href="index.html">
+        <span class="icon">⌂</span>
+        <span class="label">おすすめ</span>
+    </a>
+
+    <a href="observation.html" class="active">
+        <span class="icon">⌕</span>
+        <span class="label">観測</span>
+    </a>
+
+    <a href="editor.html">
+        <span class="icon">＋</span>
+        <span class="label">発信</span>
+    </a>
+
+    <a href="notifications.html">
+        <span class="icon">♡</span>
+        <span class="label">通知</span>
+    </a>
+
+    <a id="mobileMyPageLink" href="login.html">
+        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
+        <span class="label">惑星</span>
+    </a>
+</nav>
+
+<a href="editor.html" class="fab">＋</a>
+
+<!-- スマホ用：おすすめ / 観測 / リスト タブ -->
+<div class="mobile-feed-tabs" id="mobileFeedTabs">
+    <button type="button" class="feed-tab" id="recommendTab" onclick="location.href='index.html'">おすすめ</button>
+    <button type="button" class="feed-tab active" id="followingTab">観測</button>
+    <button type="button" class="feed-tab" id="listTab" onclick="location.href='index.html'">リスト</button>
+</div>
+
+<div class="topbar">
+    <h1 class="page-title">Album Collection</h1>
+
+    <div class="home-sortbar">
+        <div class="sort-filter-wrap">
+            <button
+                type="button"
+                id="sortFilterButton"
+                class="sort-filter-btn"
+                aria-label="並び替えを開く"
+                aria-expanded="false"
+                title="並び替え"
+            >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 6h16l-6.2 7.2v4.6l-3.6 1.9v-6.5L4 6Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <div class="sort-filter-menu" id="sortFilterMenu">
+                <div class="sort-filter-current" id="sortFilterCurrentLabel">現在：おすすめ順</div>
+                <button type="button" class="sort-option-btn active" data-sort-option data-sort-mode="recommend">おすすめ順</button>
+                <button type="button" class="sort-option-btn" data-sort-option data-sort-mode="new">新着順</button>
+                <button type="button" class="sort-option-btn" data-sort-option data-sort-mode="popular_24h">人気順：24時間</button>
+                <button type="button" class="sort-option-btn" data-sort-option data-sort-mode="popular_7d">人気順：7日間</button>
+                <button type="button" class="sort-option-btn" data-sort-option data-sort-mode="popular_all">人気順：全期間</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="daily-meteor-box" id="dailyMeteorBox" aria-label="今日の流れ星"></section>
+
+<div class="feed-swipe" id="feedSwipe">
+    <section class="feed-panel" data-feed-panel="recommend">
+        <div class="album-grid" id="recommendGrid"></div>
+    </section>
+    <section class="feed-panel" data-feed-panel="following">
+        <div class="album-grid" id="followingGrid"></div>
+    </section>
+    <section class="feed-panel" data-feed-panel="list">
+        <div class="album-grid" id="listGrid"></div>
+    </section>
+</div>
+
+
+<!-- 観測モード：フォロー中の新着投稿ビューア -->
+<section class="observation-viewer" id="observationViewer" aria-hidden="true">
+    <div class="observation-viewer-progress" id="observationViewerProgress"></div>
+
+    <div class="observation-viewer-top">
+        <div class="observation-viewer-user" id="observationViewerUser"></div>
+        <button type="button" class="observation-close" onclick="closeObservationViewer()" aria-label="閉じる">×</button>
+    </div>
+
+    <button type="button" class="observation-tap-zone left" onclick="prevObservationPost()" aria-label="前の投稿へ"></button>
+    <button type="button" class="observation-tap-zone right" onclick="nextObservationPost()" aria-label="次の投稿へ"></button>
+
+    <div class="observation-viewer-body">
+        <div class="observation-viewer-cover" id="observationViewerCover"></div>
+        <h2 class="observation-viewer-title" id="observationViewerTitle"></h2>
+        <div class="observation-viewer-artist" id="observationViewerArtist"></div>
+        <p class="observation-viewer-text" id="observationViewerText"></p>
+        <div class="observation-viewer-meters" id="observationViewerMeters"></div>
+    </div>
+
+    <div class="observation-viewer-bottom">
+        <a class="observation-detail-btn" id="observationViewerDetail" href="#">投稿を詳しく見る</a>
+        <button type="button" class="observation-mini-btn" id="observationViewerLike" onclick="toggleObservationCurrentLike()" aria-label="いいね">♡</button>
+        <button type="button" class="observation-mini-btn" id="observationViewerShare" onclick="shareObservationCurrentPost()" aria-label="共有">↗</button>
+        <button type="button" class="observation-mini-btn" id="observationViewerListen" onclick="listenObservationCurrentPost()" aria-label="聴く">▶</button>
+    </div>
+</section>
+
+<div class="share-sheet" id="shareSheet" onclick="closeShareMenu()">
+    <div class="share-panel" onclick="event.stopPropagation();">
+        <div class="share-panel-title">共有</div>
+        <div class="share-panel-subtitle" id="sharePanelSubtitle">この投稿を共有します</div>
+
+        <div class="share-actions">
+            <button type="button" class="share-action-btn" onclick="copyShareLink()">リンクをコピー</button>
+            <button type="button" class="share-action-btn" onclick="openNativeShare()">端末の共有メニューを開く</button>
+            <button type="button" class="share-action-btn" id="shareStoryAction" onclick="generateInstagramStoryImage()">ストーリー用画像を生成</button>
+        </div>
+
+        <button type="button" class="share-close-btn" onclick="closeShareMenu()">閉じる</button>
+    </div>
+</div>
+
+<div class="listen-sheet" id="listenSheet" onclick="closeListenMenu()">
+    <div class="listen-panel" onclick="event.stopPropagation();">
+        <div class="listen-panel-title">どこで聴きますか？</div>
+        <div class="listen-panel-subtitle" id="listenPanelSubtitle">利用できるサービスを取得しています</div>
+        <div class="listen-actions" id="listenActions"></div>
+        <button type="button" class="listen-close-btn" onclick="closeListenMenu()">閉じる</button>
+    </div>
+</div>
+
+<div class="share-toast" id="shareToast">コピーしました</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+    initializeFirestore,
+    collection,
+    onSnapshot,
+    query,
+    where,
+    doc,
+    getDoc,
+    addDoc,
+    setDoc,
+    deleteDoc,
+    updateDoc,
+    limit,
+    increment,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBfXg4W8MLV6sL1I-g1OOv-6znxJztL1Yc",
+    authDomain: "album-49b3e.firebaseapp.com",
+    projectId: "album-49b3e",
+    storageBucket: "album-49b3e.firebasestorage.app",
+    messagingSenderId: "448724897117",
+    appId: "1:448724897117:web:e124ab546bc69aeea7ecb4",
+    measurementId: "G-3QFX3GDEXN"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = initializeFirestore(app, {
+    experimentalAutoDetectLongPolling: true
+});
+
+const auth = getAuth(app);
+
+const feedSwipe = document.getElementById("feedSwipe");
+const recommendGrid = document.getElementById("recommendGrid");
+const dailyMeteorBox = document.getElementById("dailyMeteorBox");
+const followingGrid = document.getElementById("followingGrid");
+const listGrid = document.getElementById("listGrid");
+const myPageLink = document.getElementById("myPageLink");
+const mobileMyPageLink = document.getElementById("mobileMyPageLink");
+const mobileMyPageAvatar = document.getElementById("mobileMyPageAvatar");
+const mobileMyPageFallback = document.getElementById("mobileMyPageFallback");
+const recommendTab = document.getElementById("recommendTab");
+const followingTab = document.getElementById("followingTab");
+const listTab = document.getElementById("listTab");
+const shareSheet = document.getElementById("shareSheet");
+const sharePanelSubtitle = document.getElementById("sharePanelSubtitle");
+const shareStoryAction = document.getElementById("shareStoryAction");
+const shareToast = document.getElementById("shareToast");
+const listenSheet = document.getElementById("listenSheet");
+const listenPanelSubtitle = document.getElementById("listenPanelSubtitle");
+const listenActions = document.getElementById("listenActions");
+const sortFilterButton = document.getElementById("sortFilterButton");
+const sortFilterMenu = document.getElementById("sortFilterMenu");
+const sortFilterCurrentLabel = document.getElementById("sortFilterCurrentLabel");
+
+let currentFeedMode = "following";
+let allAlbums = [];
+let allLists = [];
+let followingIds = new Set();
+let unsubscribeFollowing = null;
+let touchStartX = 0;
+let touchStartY = 0;
+
+let currentUser = null;
+let currentUserProfile = null;
+let currentSortMode = "recommend";
+let allLikes = [];
+let allComments = [];
+let unsubscribeMyLikes = null;
+const userProfileCache = new Map();
+
+let observationGroups = [];
+let activeObservationGroupIndex = 0;
+let activeObservationPostIndex = 0;
+let dailyMeteorItem = null;
+
+onAuthStateChanged(auth, async (user) => {
+    updateMobileMyPageTab(user);
+    currentUser = user;
+    currentUserProfile = await getCurrentUserProfile(user);
+    setupFollowingListener(user);
+    setupMyLikesListener(user);
+
+    const url = user ? `profile.html?uid=${encodeURIComponent(user.uid)}` : "login.html";
+
+    if(myPageLink){
+        myPageLink.href = url;
+    }
+
+    if(mobileMyPageLink){
+        mobileMyPageLink.href = url;
+    }
+
+    renderAlbums();
+    updateLikeDisplays();
+    updateCommentDisplays();
+});
+function getUserIconUrl(data){
+    return (
+        data?.photoURL ||
+        data?.iconURL ||
+        data?.iconUrl ||
+        data?.avatar ||
+        data?.avatarUrl ||
+        data?.profileImage ||
+        data?.profileImageUrl ||
+        data?.imageUrl ||
+        data?.icon ||
+        ""
+    );
+}
+
+function getUserDisplayNameFromData(data){
+    if(!data){
+        return "";
+    }
+
+    return (
+        data.displayName ||
+        data.nickname ||
+        data.nickName ||
+        data.userName ||
+        data.name ||
+        ""
+    );
+}
+
+async function getCurrentUserProfile(user){
+    if(!user){
+        return null;
+    }
+
+    try{
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
+
+        if(userSnap.exists()){
+            return userSnap.data();
+        }
+    }catch(error){
+        console.warn("自分のプロフィール取得に失敗しました", error);
+    }
+
+    return null;
+}
+
+async function getPosterProfileForAlbum(album){
+    const uid = album?.userId || "";
+
+    if(uid && userProfileCache.has(uid)){
+        return userProfileCache.get(uid);
+    }
+
+    const fallbackProfile = {
+        name: album?.userName || album?.displayName || album?.nickname || "匿名ユーザー",
+        iconUrl: album?.userIconUrl || album?.userPhotoURL || album?.photoURL || album?.avatarUrl || ""
+    };
+
+    if(uid){
+        try{
+            const userSnap = await getDoc(doc(db, "publicUsers", uid));
+
+            if(userSnap.exists()){
+                const userData = userSnap.data();
+                const profile = {
+                    name: getUserDisplayNameFromData(userData) || fallbackProfile.name,
+                    iconUrl: getUserIconUrl(userData) || fallbackProfile.iconUrl
+                };
+
+                userProfileCache.set(uid, profile);
+                return profile;
+            }
+        }catch(error){
+            console.warn("投稿者プロフィールの取得に失敗しました", error);
+        }
+    }
+
+    if(uid){
+        userProfileCache.set(uid, fallbackProfile);
+    }
+
+    return fallbackProfile;
+}
+
+function getInitialLetter(name){
+    const text = String(name || "匿名ユーザー").trim();
+
+    if(!text){
+        return "匿";
+    }
+
+    return Array.from(text)[0];
+}
+
+function creatorAvatarHTML(profile){
+    const iconUrl = profile?.iconUrl || "";
+    const initialLetter = getInitialLetter(profile?.name);
+
+    if(iconUrl){
+        return `<img class="creator-avatar" src="${escapeHTML(iconUrl)}" alt="${escapeHTML(initialLetter)}">`;
+    }
+
+    return `<span class="creator-avatar-fallback">${escapeHTML(initialLetter)}</span>`;
+}
+
+async function updateMobileMyPageTab(user){
+    if(!mobileMyPageLink){
+        return;
+    }
+
+    if(!user){
+        mobileMyPageLink.href = "login.html";
+
+        if(mobileMyPageAvatar){
+            mobileMyPageAvatar.style.display = "none";
+            mobileMyPageAvatar.src = "";
+        }
+
+        if(mobileMyPageFallback){
+            mobileMyPageFallback.style.display = "flex";
+        }
+
+        return;
+    }
+
+    mobileMyPageLink.href = `profile.html?uid=${encodeURIComponent(user.uid)}`;
+
+    try{
+        const userSnap = await getDoc(doc(db, "publicUsers", user.uid));
+
+        if(!userSnap.exists()){
+            return;
+        }
+
+        const iconUrl = getUserIconUrl(userSnap.data());
+
+        if(iconUrl && mobileMyPageAvatar && mobileMyPageFallback){
+            mobileMyPageAvatar.src = iconUrl;
+            mobileMyPageAvatar.style.display = "block";
+            mobileMyPageFallback.style.display = "none";
+
+            mobileMyPageAvatar.onerror = () => {
+                mobileMyPageAvatar.style.display = "none";
+                mobileMyPageFallback.style.display = "flex";
+            };
+        }
+    }catch(error){
+        console.warn("マイページアイコンの取得に失敗しました", error);
+    }
+}
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function getAlbumItemById(albumId){
+    return allAlbums.find(item => item.id === albumId) || null;
+}
+
+function canManageAlbum(album){
+    return !!(currentUser && album && album.userId === currentUser.uid);
+}
+
+function editAlbum(albumId){
+    if(!albumId){
+        return;
+    }
+
+    location.href = `editor.html?id=${encodeURIComponent(albumId)}`;
+}
+
+async function deleteAlbumPost(albumId){
+    if(!currentUser || !albumId){
+        return;
+    }
+
+    const item = getAlbumItemById(albumId);
+    const album = item?.data || {};
+
+    if(album.userId !== currentUser.uid){
+        alert("自分の投稿だけ削除できます");
+        return;
+    }
+
+    const ok = confirm("この投稿を削除しますか？");
+
+    if(!ok){
+        return;
+    }
+
+    try{
+        await deleteDoc(doc(db, "albums", albumId));
+        showShareToast("投稿を削除しました");
+    }catch(error){
+        console.error("投稿の削除に失敗しました", error);
+        alert("投稿の削除に失敗しました：" + (error?.message || error));
+    }
+}
+
+window.editAlbum = editAlbum;
+window.deleteAlbumPost = deleteAlbumPost;
+
+function closeAllPostMoreMenus(){
+    document.querySelectorAll("[data-post-more-menu].open").forEach((menu) => {
+        menu.classList.remove("open");
+    });
+
+    document.querySelectorAll("[data-post-more-button]").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+    });
+}
+
+function togglePostMoreMenu(albumId){
+    const menuList = Array.from(document.querySelectorAll("[data-post-more-menu]"));
+    const targetMenu = menuList.find(menu => menu.dataset.postMoreMenu === albumId);
+
+    if(!targetMenu){
+        return;
+    }
+
+    const isOpen = targetMenu.classList.contains("open");
+
+    closeAllPostMoreMenus();
+
+    if(!isOpen){
+        targetMenu.classList.add("open");
+
+        const button = document.querySelector(`[data-post-more-button="${CSS.escape(albumId)}"]`);
+        if(button){
+            button.setAttribute("aria-expanded", "true");
+        }
+    }
+}
+
+document.addEventListener("click", (event) => {
+    if(event.target.closest(".post-more-wrap")){
+        return;
+    }
+
+    closeAllPostMoreMenus();
+});
+
+document.addEventListener("keydown", (event) => {
+    if(event.key === "Escape"){
+        closeAllPostMoreMenus();
+    }
+});
+
+window.togglePostMoreMenu = togglePostMoreMenu;
+window.closeAllPostMoreMenus = closeAllPostMoreMenus;
+
+function getListItemById(listId){
+    return allLists.find(item => item.id === listId) || null;
+}
+
+function getShareUrl(targetTypeOrId, maybeTargetId){
+    const targetType = maybeTargetId ? String(targetTypeOrId || "album") : "album";
+    const targetId = maybeTargetId || targetTypeOrId;
+    const pageName = targetType === "list" ? "list-detail.html" : "detail.html";
+    const url = new URL(pageName, location.href);
+    url.searchParams.set("id", targetId);
+    return url.href;
+}
+
+function getShareText(targetTypeOrId, maybeTargetId){
+    const targetType = maybeTargetId ? String(targetTypeOrId || "album") : "album";
+    const targetId = maybeTargetId || targetTypeOrId;
+
+    if(targetType === "list"){
+        const item = getListItemById(targetId);
+        const list = item?.data || {};
+        const title = list.title || "Album Collectionのリスト";
+        const itemCount = Number(list.itemCount || 0);
+        const suffix = itemCount > 0 ? ` / ${itemCount}曲入り` : "";
+        return `${title}${suffix}`;
+    }
+
+    const item = getAlbumItemById(targetId);
+    const album = item?.data || {};
+    const title = album.title || "Album Collectionの投稿";
+    const artist = album.artist ? ` / ${album.artist}` : "";
+    return `${title}${artist}`;
+}
+
+function isHttpUrl(value){
+    if(!value || typeof value !== "string"){
+        return false;
+    }
+
+    try{
+        const url = new URL(value);
+        return url.protocol === "https:" || url.protocol === "http:";
+    }catch(error){
+        return false;
+    }
+}
+
+function normalizeSpotifyType(value){
+    const type = String(value || "").toLowerCase();
+
+    if(type === "album"){
+        return "album";
+    }
+
+    if(type === "playlist"){
+        return "playlist";
+    }
+
+    if(type === "artist"){
+        return "artist";
+    }
+
+    return "track";
+}
+
+function getSpotifyUrlFromId(album){
+    const id = album?.spotifyId || album?.spotifyTrackId || album?.spotifyAlbumId || "";
+
+    if(!id){
+        return "";
+    }
+
+    const type = normalizeSpotifyType(album?.spotifyType || album?.type);
+    return `https://open.spotify.com/${type}/${encodeURIComponent(id)}`;
+}
+
+function getSpotifyUrlFromUri(album){
+    const uri =
+        album?.spotifyUri ||
+        album?.spotifyURI ||
+        album?.spotifyTrackUri ||
+        album?.spotifyAlbumUri ||
+        "";
+
+    if(!uri || typeof uri !== "string"){
+        return "";
+    }
+
+    const parts = uri.split(":");
+
+    if(parts.length < 3 || parts[0] !== "spotify"){
+        return "";
+    }
+
+    const type = normalizeSpotifyType(parts[1]);
+    const id = parts[2];
+
+    if(!id){
+        return "";
+    }
+
+    return `https://open.spotify.com/${type}/${encodeURIComponent(id)}`;
+}
+
+function getDirectMusicUrlForAlbum(album){
+    const candidates = [
+        album?.spotifyUrl,
+        album?.spotifyURL,
+        album?.spotifyLink,
+        album?.spotifyTrackUrl,
+        album?.spotifyTrackURL,
+        album?.spotifyAlbumUrl,
+        album?.spotifyAlbumURL,
+        album?.appleMusicUrl,
+        album?.appleMusicURL,
+        album?.youtubeMusicUrl,
+        album?.youtubeMusicURL,
+        album?.musicUrl,
+        album?.musicURL
+    ];
+
+    const directUrl = candidates.find(isHttpUrl);
+
+    if(directUrl){
+        return directUrl;
+    }
+
+    return getSpotifyUrlFromId(album) || getSpotifyUrlFromUri(album);
+}
+
+function getSpotifySearchUrlForAlbum(album){
+    const queryText = [album?.title, album?.artist]
+        .filter(Boolean)
+        .join(" ");
+
+    if(!queryText){
+        return "https://open.spotify.com/search";
+    }
+
+    return `https://open.spotify.com/search/${encodeURIComponent(queryText)}`;
+}
+
+function getListenTitle(album){
+    const title = album?.title || "この音楽";
+    const artist = album?.artist ? ` / ${album.artist}` : "";
+    return `${title}${artist}`;
+}
+
+const listenServiceLabels = [
+    { key:"spotify", name:"Spotify", icon:"▶" },
+    { key:"appleMusic", name:"Apple Music", icon:"♫" },
+    { key:"lineMusic", name:"LINE MUSIC", icon:"♪" },
+    { key:"youtubeMusic", name:"YouTube Music", icon:"▶" },
+    { key:"amazonMusic", name:"Amazon Music", icon:"a" },
+    { key:"awa", name:"AWA", icon:"A" },
+    { key:"deezer", name:"Deezer", icon:"D" },
+    { key:"tidal", name:"TIDAL", icon:"T" },
+    { key:"soundcloud", name:"SoundCloud", icon:"☁" }
+];
+
+const priorityListenKeys = [
+    "spotify",
+    "appleMusic",
+    "lineMusic",
+    "youtubeMusic",
+    "amazonMusic",
+    "awa"
+];
+
+function getListenSearchQuery(album){
+    return [album?.title, album?.artist]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+}
+
+function buildServiceSearchUrl(serviceKey, queryText){
+    const q = encodeURIComponent(queryText || "");
+
+    if(!q){
+        return "";
+    }
+
+    if(serviceKey === "appleMusic"){
+        return `https://music.apple.com/search?term=${q}`;
+    }
+
+    if(serviceKey === "lineMusic"){
+        return `https://music.line.me/webapp/search?query=${q}`;
+    }
+
+    if(serviceKey === "youtubeMusic"){
+        return `https://music.youtube.com/search?q=${q}`;
+    }
+
+    if(serviceKey === "amazonMusic"){
+        return `https://music.amazon.co.jp/search/${q}`;
+    }
+
+    if(serviceKey === "awa"){
+        return `https://s.awa.fm/search?q=${q}`;
+    }
+
+    if(serviceKey === "spotify"){
+        return `https://open.spotify.com/search/${q}`;
+    }
+
+    return "";
+}
+
+function getServiceLabelByKey(key){
+    return listenServiceLabels.find(service => service.key === key) || null;
+}
+
+function createSearchFallbackServices(album, existingKeys = new Set()){
+    const queryText = getListenSearchQuery(album);
+
+    if(!queryText){
+        return [];
+    }
+
+    return priorityListenKeys
+        .filter(key => !existingKeys.has(key))
+        .map((key) => {
+            const label = getServiceLabelByKey(key);
+            const url = buildServiceSearchUrl(key, queryText);
+
+            if(!label || !url){
+                return null;
+            }
+
+            return {
+                key,
+                name:`${label.name}で検索`,
+                icon:label.icon,
+                url
+            };
+        })
+        .filter(Boolean);
+}
+
+function mergeUniqueServices(services){
+    const seen = new Set();
+    const result = [];
+
+    services.forEach((service) => {
+        if(!service?.url){
+            return;
+        }
+
+        const uniqueKey = service.key || service.url;
+
+        if(seen.has(uniqueKey)){
+            return;
+        }
+
+        seen.add(uniqueKey);
+        result.push(service);
+    });
+
+    return result;
+}
+
+function openUrlBlank(url){
+    if(!url){
+        return;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function setListenLoading(album){
+    if(listenPanelSubtitle){
+        listenPanelSubtitle.textContent = getListenTitle(album);
+    }
+
+    if(listenActions){
+        listenActions.innerHTML = `
+            <button type="button" class="listen-action-btn" disabled>
+                <span class="listen-action-name">
+                    <span class="listen-action-icon">…</span>
+                    サービスを取得中
+                </span>
+            </button>
+        `;
+    }
+}
+
+function renderListenActions(services){
+    if(!listenActions){
+        return;
+    }
+
+    if(!services || services.length === 0){
+        listenActions.innerHTML = `
+            <button type="button" class="listen-action-btn" disabled>
+                <span class="listen-action-name">
+                    <span class="listen-action-icon">!</span>
+                    利用できるリンクが見つかりませんでした
+                </span>
+            </button>
+        `;
+        return;
+    }
+
+    listenActions.innerHTML = services.map((service, index) => `
+        <button
+            type="button"
+            class="listen-action-btn"
+            data-listen-url="${escapeHTML(service.url)}"
+            onclick="event.stopPropagation(); openListenService(${index});"
+        >
+            <span class="listen-action-name">
+                <span class="listen-action-icon">${escapeHTML(service.icon || "♪")}</span>
+                ${escapeHTML(service.name)}
+            </span>
+            <span class="listen-action-arrow">↗</span>
+        </button>
+    `).join("");
+
+    window.currentListenServices = services;
+}
+
+function closeListenMenu(){
+    if(listenSheet){
+        listenSheet.classList.remove("open");
+    }
+}
+
+function openListenService(index){
+    const services = window.currentListenServices || [];
+    const service = services[index];
+
+    if(!service?.url){
+        return;
+    }
+
+    openUrlBlank(service.url);
+    closeListenMenu();
+}
+
+async function openListenMenu(albumId){
+    const item = getAlbumItemById(albumId);
+
+    if(!item){
+        return;
+    }
+
+    const album = item.data || {};
+    const directUrl = getDirectMusicUrlForAlbum(album);
+    const fallbackSpotifySearchUrl = getSpotifySearchUrlForAlbum(album);
+
+    if(listenSheet){
+        listenSheet.classList.add("open");
+    }
+
+    if(listenPanelSubtitle){
+        listenPanelSubtitle.textContent = getListenTitle(album);
+    }
+
+    const existingKeys = new Set();
+    const services = [];
+
+    if(directUrl){
+        existingKeys.add("spotify");
+
+        services.push({
+            key:"spotify",
+            name:"Spotifyで開く",
+            icon:"▶",
+            url:directUrl
+        });
+    }
+
+    const fallbackServices = createSearchFallbackServices(album, existingKeys);
+
+    services.push(...fallbackServices);
+
+    if(!directUrl && fallbackServices.length === 0){
+        services.push({
+            key:"spotifyFallback",
+            name:"Spotifyで検索",
+            icon:"▶",
+            url:fallbackSpotifySearchUrl
+        });
+    }
+
+    renderListenActions(mergeUniqueServices(services));
+}
+
+function openSpotifyTrack(albumId){
+    openListenMenu(albumId);
+}
+
+function showShareToast(message){
+    if(!shareToast){
+        return;
+    }
+
+    shareToast.textContent = message;
+    shareToast.classList.add("show");
+
+    clearTimeout(showShareToast.timer);
+    showShareToast.timer = setTimeout(() => {
+        shareToast.classList.remove("show");
+    }, 1800);
+}
+
+let selectedShareTargetType = "album";
+let selectedShareTargetId = "";
+
+function openShareMenu(targetTypeOrId, maybeTargetId){
+    selectedShareTargetType = maybeTargetId ? String(targetTypeOrId || "album") : "album";
+    selectedShareTargetId = maybeTargetId || targetTypeOrId || "";
+
+    if(sharePanelSubtitle){
+        sharePanelSubtitle.textContent = getShareText(selectedShareTargetType, selectedShareTargetId);
+    }
+
+    if(shareStoryAction){
+        shareStoryAction.style.display = selectedShareTargetType === "album" ? "block" : "none";
+    }
+
+    if(shareSheet){
+        shareSheet.classList.add("open");
+    }
+}
+
+function closeShareMenu(){
+    if(shareSheet){
+        shareSheet.classList.remove("open");
+    }
+}
+
+async function copyShareLink(){
+    if(!selectedShareTargetId){
+        return;
+    }
+
+    const shareUrl = getShareUrl(selectedShareTargetType, selectedShareTargetId);
+
+    try{
+        await navigator.clipboard.writeText(shareUrl);
+        showShareToast("リンクをコピーしました");
+        closeShareMenu();
+    }catch(error){
+        console.warn("リンクコピーに失敗しました", error);
+        prompt("このリンクをコピーしてください", shareUrl);
+    }
+}
+
+async function openNativeShare(){
+    if(!selectedShareTargetId){
+        return;
+    }
+
+    const shareUrl = getShareUrl(selectedShareTargetType, selectedShareTargetId);
+    const title = getShareText(selectedShareTargetType, selectedShareTargetId);
+
+    if(navigator.share){
+        try{
+            await navigator.share({
+                title,
+                text:title,
+                url:shareUrl
+            });
+            closeShareMenu();
+            return;
+        }catch(error){
+            if(error?.name !== "AbortError"){
+                console.warn("共有メニューを開けませんでした", error);
+            }
+        }
+    }
+
+    await copyShareLink();
+}
+
+function loadImageForCanvas(src){
+    return new Promise((resolve) => {
+        if(!src){
+            resolve(null);
+            return;
+        }
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+    });
+}
+
+function roundRect(ctx, x, y, width, height, radius){
+    const r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + width, y, x + width, y + height, r);
+    ctx.arcTo(x + width, y + height, x, y + height, r);
+    ctx.arcTo(x, y + height, x, y, r);
+    ctx.arcTo(x, y, x + width, y, r);
+    ctx.closePath();
+}
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines){
+    const chars = Array.from(String(text || ""));
+    let line = "";
+    let lines = [];
+
+    for(const char of chars){
+        const testLine = line + char;
+        if(ctx.measureText(testLine).width > maxWidth && line){
+            lines.push(line);
+            line = char;
+        }else{
+            line = testLine;
+        }
+    }
+
+    if(line){
+        lines.push(line);
+    }
+
+    lines = lines.slice(0, maxLines);
+
+    lines.forEach((lineText, index) => {
+        const isLast = index === maxLines - 1 && lines.length === maxLines;
+        let output = lineText;
+
+        if(isLast && ctx.measureText(output).width > maxWidth){
+            while(output.length > 0 && ctx.measureText(output + "…").width > maxWidth){
+                output = output.slice(0, -1);
+            }
+            output += "…";
+        }
+
+        ctx.fillText(output, x, y + (index * lineHeight));
+    });
+}
+
+function canvasToBlob(canvas){
+    return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), "image/png", 0.95);
+    });
+}
+
+async function generateInstagramStoryImage(){
+    if(selectedShareTargetType !== "album"){
+        showShareToast("リストはリンク共有のみ対応しています");
+        return;
+    }
+
+    if(!selectedShareTargetId){
+        return;
+    }
+
+    const item = getAlbumItemById(selectedShareTargetId);
+    if(!item){
+        showShareToast("投稿データを取得できませんでした");
+        return;
+    }
+
+    const album = item.data || {};
+    const posterProfile = await getPosterProfileForAlbum(album);
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1920;
+
+    const ctx = canvas.getContext("2d");
+
+    function fillRoundRect(x, y, width, height, radius, color){
+        ctx.save();
+        roundRect(ctx, x, y, width, height, radius);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function strokeRoundRect(x, y, width, height, radius, color, lineWidth = 1){
+        ctx.save();
+        roundRect(ctx, x, y, width, height, radius);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function splitWrappedLines(textValue, maxWidth, maxLines){
+        const chars = Array.from(String(textValue || ""));
+        let line = "";
+        let lines = [];
+
+        for(const char of chars){
+            const testLine = line + char;
+            if(ctx.measureText(testLine).width > maxWidth && line){
+                lines.push(line);
+                line = char;
+            }else{
+                line = testLine;
+            }
+        }
+
+        if(line){
+            lines.push(line);
+        }
+
+        if(lines.length > maxLines){
+            lines = lines.slice(0, maxLines);
+            let lastLine = lines[maxLines - 1];
+            while(lastLine.length > 0 && ctx.measureText(lastLine + "…").width > maxWidth){
+                lastLine = lastLine.slice(0, -1);
+            }
+            lines[maxLines - 1] = lastLine + "…";
+        }
+
+        return lines;
+    }
+
+    function drawCenteredWrappedText(textValue, centerX, topY, maxWidth, lineHeight, maxLines){
+        const lines = splitWrappedLines(textValue, maxWidth, maxLines);
+        lines.forEach((lineText, index) => {
+            const width = ctx.measureText(lineText).width;
+            ctx.fillText(lineText, centerX - (width / 2), topY + (index * lineHeight));
+        });
+        return lines.length;
+    }
+
+    function drawMeterRow(y, leftIcon, leftLabel, rightIcon, rightLabel, value){
+        const safeValue = Math.max(1, Math.min(5, Number(value) || 3));
+        const leftIconCenterX = 110;
+        const leftLabelX = 144;
+        const lineLeft = 272;
+        const lineRight = 820;
+        const rightIconCenterX = 876;
+        const rightAreaRight = 980;
+        const step = (lineRight - lineLeft) / 4;
+        const selectedX = lineLeft + ((safeValue - 1) * step);
+
+        ctx.save();
+        ctx.fillStyle = "#f0d6a8";
+        ctx.font = "700 34px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(leftIcon, leftIconCenterX, y);
+
+        ctx.font = "700 30px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(rightIcon, rightIconCenterX, y);
+        ctx.restore();
+
+        ctx.fillStyle = "rgba(255,245,228,0.96)";
+        ctx.font = "700 24px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        ctx.fillText(leftLabel, leftLabelX, y + 10);
+
+        const rightWidth = ctx.measureText(rightLabel).width;
+        ctx.fillText(rightLabel, rightAreaRight - rightWidth, y + 10);
+
+        const lineGradient = ctx.createLinearGradient(lineLeft, y, lineRight, y);
+        lineGradient.addColorStop(0, "rgba(102,136,186,0.82)");
+        lineGradient.addColorStop(0.5, "rgba(205,208,215,0.74)");
+        lineGradient.addColorStop(1, "rgba(246,155,107,0.90)");
+        ctx.strokeStyle = lineGradient;
+        ctx.lineWidth = 4;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(lineLeft, y);
+        ctx.lineTo(lineRight, y);
+        ctx.stroke();
+
+        ctx.save();
+        ctx.shadowColor = "rgba(255,255,255,0.42)";
+        ctx.shadowBlur = 18;
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(selectedX, y, 15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawKeywordChip(textValue, x, y){
+        const label = `#${String(textValue || "").replace(/^#+/, "")}`;
+        ctx.font = "600 21px -apple-system, BlinkMacSystemFont, sans-serif";
+        const width = Math.ceil(ctx.measureText(label).width) + 44;
+        fillRoundRect(x, y, width, 54, 27, "rgba(20,22,25,0.42)");
+        strokeRoundRect(x, y, width, 54, 27, "rgba(255,255,255,0.18)", 1.6);
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.fillText(label, x + 22, y + 34);
+        return width;
+    }
+
+    function getDisplayDescription(){
+        return (
+            album.desc ||
+            album.description ||
+            album.comment ||
+            album.review ||
+            "この音楽の魅力を、Album Collectionで記録しよう。"
+        );
+    }
+
+    function getKeywordList(){
+        return normalizeKeywords(album.keywords ?? []).filter(Boolean).slice(0, 4);
+    }
+
+    const coverImage = await loadImageForCanvas(album.cover || "");
+
+    if(coverImage){
+        try{
+            ctx.save();
+            ctx.filter = "blur(34px)";
+            ctx.globalAlpha = 0.58;
+            const scale = Math.max(canvas.width / coverImage.width, canvas.height / coverImage.height);
+            const drawW = coverImage.width * scale;
+            const drawH = coverImage.height * scale;
+            const drawX = (canvas.width - drawW) / 2;
+            const drawY = (canvas.height - drawH) / 2;
+            ctx.drawImage(coverImage, drawX, drawY, drawW, drawH);
+            ctx.restore();
+        }catch(error){
+            console.warn("背景画像の描画に失敗しました", error);
+        }
+    }
+
+    const bgGradient = ctx.createLinearGradient(0, 0, 0, 1920);
+    bgGradient.addColorStop(0, "rgba(40,30,18,0.16)");
+    bgGradient.addColorStop(0.26, "rgba(15,18,24,0.30)");
+    bgGradient.addColorStop(0.60, "rgba(9,12,17,0.60)");
+    bgGradient.addColorStop(1, "rgba(5,7,10,0.92)");
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    const darkGradient = ctx.createLinearGradient(0, 220, 0, 1920);
+    darkGradient.addColorStop(0, "rgba(255,255,255,0.00)");
+    darkGradient.addColorStop(0.38, "rgba(8,11,16,0.24)");
+    darkGradient.addColorStop(1, "rgba(5,7,10,0.72)");
+    ctx.fillStyle = darkGradient;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    ctx.fillStyle = "rgba(255,255,255,0.34)";
+    ctx.beginPath();
+    ctx.arc(120, 84, 2.5, 0, Math.PI * 2);
+    ctx.arc(212, 66, 1.8, 0, Math.PI * 2);
+    ctx.arc(932, 145, 3.0, 0, Math.PI * 2);
+    ctx.arc(845, 110, 2.0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const coverSize = 540;
+    const coverX = (1080 - coverSize) / 2;
+    const coverY = 108;
+
+    fillRoundRect(coverX - 6, coverY + 14, coverSize + 12, coverSize + 12, 36, "rgba(0,0,0,0.16)");
+
+    ctx.save();
+    roundRect(ctx, coverX, coverY, coverSize, coverSize, 34);
+    ctx.clip();
+    ctx.fillStyle = "rgba(255,255,255,0.94)";
+    ctx.fillRect(coverX, coverY, coverSize, coverSize);
+
+    if(coverImage){
+        try{
+            const sourceSize = Math.min(coverImage.width, coverImage.height);
+            const sx = (coverImage.width - sourceSize) / 2;
+            const sy = (coverImage.height - sourceSize) / 2;
+            ctx.drawImage(coverImage, sx, sy, sourceSize, sourceSize, coverX, coverY, coverSize, coverSize);
+        }catch(error){
+            console.warn("ジャケット画像の描画に失敗しました", error);
+            ctx.fillStyle = "#f5f1eb";
+            ctx.fillRect(coverX, coverY, coverSize, coverSize);
+        }
+    }
+
+    ctx.restore();
+    strokeRoundRect(coverX, coverY, coverSize, coverSize, 34, "rgba(255,255,255,0.70)", 2.2);
+
+    const centerX = 540;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 76px -apple-system, BlinkMacSystemFont, sans-serif";
+    const titleTop = 760;
+    const titleLineCount = drawCenteredWrappedText(album.title || "Untitled", centerX, titleTop, 770, 84, 2);
+
+    const artistTop = titleTop + (titleLineCount * 84) + 12;
+    ctx.fillStyle = "#f1d39b";
+    ctx.font = "800 38px -apple-system, BlinkMacSystemFont, sans-serif";
+    drawCenteredWrappedText(album.artist || "Unknown Artist", centerX, artistTop, 760, 48, 2);
+
+    drawMeterRow(960, "☾", "暗い", "☼", "明るい", album.darkness);
+    drawMeterRow(1032, "♪", "静か", "✹", "激しい", album.intense);
+    drawMeterRow(1104, "◯", "シンプル", "◈", "複雑", album.complex);
+    drawMeterRow(1176, "✩", "絶望", "✦", "希望", album.hope);
+    drawMeterRow(1248, "◉", "個人", "◎", "世界", album.world);
+
+    const description = getDisplayDescription();
+    ctx.font = "500 25px -apple-system, BlinkMacSystemFont, sans-serif";
+    const descLines = splitWrappedLines(description, 730, 4);
+    const reviewBoxX = 92;
+    const reviewBoxY = 1308;
+    const reviewBoxW = 896;
+    const reviewBoxH = Math.max(166, 62 + (descLines.length * 44));
+
+    fillRoundRect(reviewBoxX, reviewBoxY, reviewBoxW, reviewBoxH, 32, "rgba(18,20,24,0.46)");
+    strokeRoundRect(reviewBoxX, reviewBoxY, reviewBoxW, reviewBoxH, 32, "rgba(255,255,255,0.12)", 1.8);
+
+    ctx.fillStyle = "rgba(255,255,255,0.96)";
+    ctx.font = "500 25px -apple-system, BlinkMacSystemFont, sans-serif";
+    descLines.forEach((lineText, index) => {
+        ctx.fillText(lineText, 132, reviewBoxY + 62 + (index * 44));
+    });
+
+    const keywords = getKeywordList();
+    let avatarY;
+
+    if(keywords.length > 0){
+        let chipX = 128;
+        const chipY = reviewBoxY + reviewBoxH + 28;
+        keywords.forEach((keyword) => {
+            const width = drawKeywordChip(keyword, chipX, chipY);
+            chipX += width + 16;
+        });
+        avatarY = chipY + 96;
+    }else{
+        avatarY = reviewBoxY + reviewBoxH + 38;
+    }
+
+    const avatarX = 188;
+    const avatarSize = 70;
+    const avatarImage = posterProfile?.iconUrl ? await loadImageForCanvas(posterProfile.iconUrl) : null;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(avatarX + (avatarSize / 2), avatarY + (avatarSize / 2), avatarSize / 2, 0, Math.PI * 2);
+    ctx.clip();
+
+    if(avatarImage){
+        try{
+            ctx.drawImage(avatarImage, avatarX, avatarY, avatarSize, avatarSize);
+        }catch(error){
+            console.warn("アバター描画に失敗しました", error);
+            fillRoundRect(avatarX, avatarY, avatarSize, avatarSize, 35, "rgba(255,255,255,0.88)");
+        }
+    }else{
+        fillRoundRect(avatarX, avatarY, avatarSize, avatarSize, 35, "rgba(255,255,255,0.88)");
+        ctx.fillStyle = "#1d2430";
+        ctx.font = "800 28px -apple-system, BlinkMacSystemFont, sans-serif";
+        const initial = getInitialLetter(posterProfile?.name || "匿");
+        const initialWidth = ctx.measureText(initial).width;
+        ctx.fillText(initial, avatarX + (avatarSize / 2) - (initialWidth / 2), avatarY + 44);
+    }
+
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.25)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(avatarX + (avatarSize / 2), avatarY + (avatarSize / 2), (avatarSize / 2) - 1, 0, Math.PI * 2);
+    ctx.stroke();
+
+    const displayName = posterProfile?.name || "music_lover";
+    const handleBase = String(displayName)
+        .trim()
+        .replace(/^@+/, "")
+        .replace(/\s+/g, "_")
+        .replace(/[^a-zA-Z0-9_ぁ-んァ-ヶ一-龠]/g, "") || "music_lover";
+
+    ctx.fillStyle = "rgba(255,255,255,0.98)";
+    ctx.font = "500 27px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText(`by @${handleBase}`, 280, avatarY + 43);
+
+    const logoCenterY = Math.min(avatarY + 154, 1852);
+    ctx.strokeStyle = "rgba(255,255,255,0.95)";
+    ctx.lineWidth = 6;
+    ctx.lineCap = "round";
+    const logoBaseX = 340;
+    [24, 52, 78, 52, 24].forEach((height, index) => {
+        const x = logoBaseX + (index * 18);
+        ctx.beginPath();
+        ctx.moveTo(x, logoCenterY - (height / 2));
+        ctx.lineTo(x, logoCenterY + (height / 2));
+        ctx.stroke();
+    });
+
+    ctx.fillStyle = "rgba(255,255,255,0.98)";
+    ctx.font = "500 38px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText("Album Collection", 438, logoCenterY + 8);
+
+    const blob = await canvasToBlob(canvas);
+
+    if(!blob){
+        showShareToast("画像生成に失敗しました");
+        return;
+    }
+
+    const fileName = `album-collection-story-${selectedShareTargetId}.png`;
+    const file = new File([blob], fileName, { type:"image/png" });
+
+    if(navigator.canShare && navigator.canShare({ files:[file] }) && navigator.share){
+        try{
+            await navigator.share({
+                files:[file],
+                title:"Album Collection",
+                text:"ストーリー用画像"
+            });
+            closeShareMenu();
+            return;
+        }catch(error){
+            if(error?.name !== "AbortError"){
+                console.warn("画像共有に失敗しました", error);
+            }
+        }
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(objectUrl);
+
+    showShareToast("ストーリー用画像を生成しました");
+    closeShareMenu();
+}
+
+window.openShareMenu = openShareMenu;
+window.closeShareMenu = closeShareMenu;
+window.copyShareLink = copyShareLink;
+window.openNativeShare = openNativeShare;
+window.generateInstagramStoryImage = generateInstagramStoryImage;
+window.openListenMenu = openListenMenu;
+window.closeListenMenu = closeListenMenu;
+window.openListenService = openListenService;
+window.openSpotifyTrack = openSpotifyTrack;
+
+async function getCurrentUserName(db, currentUser){
+    if(!currentUser){
+        return "匿名ユーザー";
+    }
+
+    try{
+        const meSnap = await getDoc(doc(db, "publicUsers", currentUser.uid));
+        if(meSnap.exists()){
+            return getUserDisplayNameFromData(meSnap.data()) || "匿名ユーザー";
+        }
+    }catch(error){
+        console.warn("自分のユーザー名取得に失敗しました", error);
+    }
+
+    return currentUser.displayName || "匿名ユーザー";
+}
+
+async function createNotification(db, {
+    toUserId,
+    fromUserId,
+    fromUserName,
+    type,
+    albumId = "",
+    albumTitle = "",
+    commentText = ""
+}){
+    if(!toUserId || !fromUserId || toUserId === fromUserId){
+        return;
+    }
+
+    await addDoc(collection(db, "notifications"), {
+        toUserId,
+        fromUserId,
+        fromUserName,
+        type,
+        albumId,
+        albumTitle,
+        commentText,
+        read: false,
+        createdAt: serverTimestamp()
+    });
+}
+
+async function notifyLike(db, currentUser, albumId){
+    if(!currentUser || !albumId) return;
+    const albumSnap = await getDoc(doc(db, "albums", albumId));
+    if(!albumSnap.exists()) return;
+    const albumData = albumSnap.data();
+    const fromUserName = await getCurrentUserName(db, currentUser);
+    await createNotification(db, {
+        toUserId: albumData.userId,
+        fromUserId: currentUser.uid,
+        fromUserName,
+        type: "like",
+        albumId,
+        albumTitle: albumData.title || ""
+    });
+}
+
+function formatPostDate(value){
+    if(!value){
+        return "";
+    }
+
+    let date = null;
+
+    if(typeof value.toDate === "function"){
+        date = value.toDate();
+    } else if(value instanceof Date){
+        date = value;
+    } else if(typeof value === "number"){
+        date = new Date(value);
+    } else if(typeof value === "string"){
+        const parsed = new Date(value);
+        if(!Number.isNaN(parsed.getTime())){
+            date = parsed;
+        }
+    }
+
+    if(!date || Number.isNaN(date.getTime())){
+        return "";
+    }
+
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMinutes = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if(diffMinutes < 1){
+        return "今";
+    }
+
+    if(diffMinutes < 60){
+        return `${diffMinutes}分前`;
+    }
+
+    if(diffHours < 24){
+        return `${diffHours}時間前`;
+    }
+
+    if(diffDays < 7){
+        return `${diffDays}日前`;
+    }
+
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+}
+
+function meter(left, right, value){
+    value = Number(value) || 0;
+    value = Math.max(0, Math.min(5, value));
+
+    const fillPercent = value <= 1 ? 0 : ((value - 1) / 4) * 100;
+
+    let graphicHTML = "";
+
+    for(let i = 1; i <= 5; i++){
+        graphicHTML += `
+            <div class="dot level-${i} ${i <= value ? "active" : ""} ${i === value ? "selected" : ""}"></div>
+        `;
+
+        if(i < 5){
+            graphicHTML += `
+                <div class="connector level-${i} ${i < value ? "active" : ""}"></div>
+            `;
+        }
+    }
+
+    return `
+        <div class="meter">
+            <div class="meter-label">${escapeHTML(left)}</div>
+            <div class="meter-graphic meter-value-${value}" style="--meter-fill:${fillPercent}%;">${graphicHTML}</div>
+            <div class="meter-label right-label">${escapeHTML(right)}</div>
+        </div>
+    `;
+}
+
+function getLikeId(userId, albumId){
+    return `${userId}_${albumId}`;
+}
+
+function getAlbumCountValue(albumId, fieldNames){
+    const item = getAlbumItemById(albumId);
+    const album = item?.data || {};
+
+    for(const fieldName of fieldNames){
+        const value = album[fieldName];
+
+        if(typeof value === "number"){
+            return Math.max(0, value);
+        }
+    }
+
+    return 0;
+}
+
+function getLikeCount(albumId){
+    return getAlbumCountValue(albumId, ["likeCount", "likesCount"]);
+}
+
+function isLikedByMe(albumId){
+    if(!currentUser) return false;
+
+    return allLikes.some(like =>
+        like.albumId === albumId &&
+        like.userId === currentUser.uid
+    );
+}
+
+function setupMyLikesListener(user){
+    if(unsubscribeMyLikes){
+        unsubscribeMyLikes();
+        unsubscribeMyLikes = null;
+    }
+
+    allLikes = [];
+
+    if(!user){
+        updateLikeDisplays();
+        return;
+    }
+
+    const myLikesQuery = query(
+        collection(db, "likes"),
+        where("userId", "==", user.uid)
+    );
+
+    unsubscribeMyLikes = onSnapshot(myLikesQuery, (snapshot) => {
+        allLikes = [];
+
+        snapshot.forEach((docSnap) => {
+            allLikes.push(docSnap.data());
+        });
+
+        updateLikeDisplays();
+    }, (error) => {
+        console.warn("自分のいいね情報の取得に失敗しました", error);
+        allLikes = [];
+        updateLikeDisplays();
+    });
+}
+
+async function toggleLike(albumId){
+    if(!currentUser){
+        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
+        return;
+    }
+
+    const likeId = getLikeId(currentUser.uid, albumId);
+    const likeRef = doc(db, "likes", likeId);
+    const albumRef = doc(db, "albums", albumId);
+
+    if(isLikedByMe(albumId)){
+        await deleteDoc(likeRef);
+        await updateDoc(albumRef, {
+            likeCount: increment(-1)
+        });
+    } else {
+        await setDoc(likeRef, {
+            userId: currentUser.uid,
+            albumId: albumId,
+            createdAt: serverTimestamp()
+        });
+
+        await updateDoc(albumRef, {
+            likeCount: increment(1)
+        });
+
+        await notifyLike(db, currentUser, albumId);
+    }
+}
+
+window.toggleLike = toggleLike;
+
+function updateLikeDisplays(){
+    const likeAreas = document.querySelectorAll("[data-like-area]");
+
+    likeAreas.forEach((area) => {
+        const albumId = area.dataset.albumId;
+        const countSpan = area.querySelector(".like-count");
+        const button = area.querySelector(".like-btn");
+
+        if(!countSpan || !button) return;
+
+        const count = getLikeCount(albumId);
+        const liked = isLikedByMe(albumId);
+
+        countSpan.textContent = count;
+        button.textContent = liked ? "♥" : "♡";
+
+        if(liked){
+            button.classList.add("liked");
+        } else {
+            button.classList.remove("liked");
+        }
+    });
+
+    updateListLikeDisplays();
+}
+
+function getCommentCount(albumId){
+    return getAlbumCountValue(albumId, ["commentCount", "commentsCount"]);
+}
+
+function updateCommentDisplays(){
+    const commentCounts = document.querySelectorAll("[data-comment-count]");
+
+    commentCounts.forEach((countEl) => {
+        const albumId = countEl.dataset.albumId;
+        const count = getCommentCount(albumId);
+        const numberEl = countEl.querySelector(".comment-count-number");
+
+        if(numberEl){
+            numberEl.textContent = count;
+        }else{
+            countEl.textContent = count;
+        }
+
+        countEl.setAttribute("aria-label", `コメント ${count}件`);
+        countEl.setAttribute("title", `コメント ${count}件`);
+    });
+}
+
+const q = query(
+    collection(db, "albums"),
+    where("isPublic", "==", true),
+    limit(50)
+);
+
+const listQuery = query(
+    collection(db, "lists"),
+    where("isPublic", "==", true),
+    limit(50)
+);
+
+function setupFollowingListener(user){
+    if(unsubscribeFollowing){
+        unsubscribeFollowing();
+        unsubscribeFollowing = null;
+    }
+
+    followingIds = new Set();
+
+    if(!user){
+        renderAlbums();
+        return;
+    }
+
+    const followQuery = query(
+        collection(db, "follows"),
+        where("followerId", "==", user.uid)
+    );
+
+    unsubscribeFollowing = onSnapshot(followQuery, (snapshot) => {
+        followingIds = new Set();
+
+        snapshot.forEach((docSnap) => {
+            const follow = docSnap.data();
+            if(follow.followingId){
+                followingIds.add(follow.followingId);
+            }
+        });
+
+        renderAlbums();
+    }, (error) => {
+        console.warn("フォロー情報の取得に失敗しました", error);
+        followingIds = new Set();
+        renderAlbums();
+    });
+}
+
+function normalizeKeywords(value){
+    if(Array.isArray(value)){
+        return value
+            .map(keyword => String(keyword ?? "").trim())
+            .filter(Boolean);
+    }
+
+    if(typeof value === "string"){
+        return value
+            .split(/[\s,、#]+/)
+            .map(keyword => keyword.trim())
+            .filter(Boolean);
+    }
+
+    return [];
+}
+
+function renderKeywordTags(value){
+    const keywords = normalizeKeywords(value);
+
+    if(keywords.length === 0){
+        return "";
+    }
+
+    return keywords.map((keyword) => {
+        const safeKeyword = escapeHTML(keyword);
+        const encodedKeyword = encodeURIComponent(keyword);
+
+        return `
+            <button
+                type="button"
+                class="keyword-tag"
+                data-keyword="${encodedKeyword}"
+            >#${safeKeyword}</button>
+        `;
+    }).join("");
+}
+
+document.addEventListener("click", (event) => {
+    const keywordButton = event.target.closest(".keyword-tag");
+
+    if(!keywordButton){
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const keyword = decodeURIComponent(keywordButton.dataset.keyword || "").trim();
+
+    if(!keyword){
+        return;
+    }
+
+    location.href = `./search.html?q=${encodeURIComponent(keyword)}`;
+}, true);
+
+function albumCardHTML(item, posterProfile){
+    const a = item.data;
+    const albumId = item.id;
+    const canManage = canManageAlbum(a);
+    const postDate = formatPostDate(a.createdAt || a.updatedAt);
+    const keywordTagsHTML = renderKeywordTags(a.keywords);
+    const keywordBoxHTML = keywordTagsHTML
+        ? `
+            <div class="keyword-box story-keyword-box">
+                <div class="keyword-title">キーワード</div>
+                <div class="keyword-tags">${keywordTagsHTML}</div>
+            </div>
+        `
+        : "";
+
+    const moreMenuActions = canManage
+        ? `
+            <button
+                type="button"
+                class="post-more-action"
+                onclick="event.stopPropagation(); closeAllPostMoreMenus(); openShareMenu('${escapeHTML(albumId)}')"
+            >
+                <span class="post-more-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.5 6.5L12 3l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 12.5v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                共有
+            </button>
+            <button
+                type="button"
+                class="post-more-action"
+                onclick="event.stopPropagation(); closeAllPostMoreMenus(); editAlbum('${escapeHTML(albumId)}')"
+            >
+                <span class="post-more-icon" aria-hidden="true">✎</span>
+                編集
+            </button>
+            <button
+                type="button"
+                class="post-more-action delete"
+                onclick="event.stopPropagation(); closeAllPostMoreMenus(); deleteAlbumPost('${escapeHTML(albumId)}')"
+            >
+                <span class="post-more-icon" aria-hidden="true">⌫</span>
+                削除
+            </button>
+        `
+        : `
+            <button
+                type="button"
+                class="post-more-action"
+                onclick="event.stopPropagation(); closeAllPostMoreMenus(); openShareMenu('${escapeHTML(albumId)}')"
+            >
+                <span class="post-more-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.5 6.5L12 3l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 12.5v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                共有
+            </button>
+        `;
+
+    return `
+<div class="album-card story-layout-card"
+     onclick="location.href='detail.html?id=${escapeHTML(albumId)}'">
+
+    <div class="post-more-wrap" onclick="event.stopPropagation();">
+        <button
+            type="button"
+            class="post-more-btn"
+            data-post-more-button="${escapeHTML(albumId)}"
+            onclick="event.stopPropagation(); togglePostMoreMenu('${escapeHTML(albumId)}')"
+            aria-label="投稿メニューを開く"
+            aria-expanded="false"
+            title="メニュー"
+        >⋯</button>
+
+        <div class="post-more-menu" data-post-more-menu="${escapeHTML(albumId)}">
+            ${moreMenuActions}
+        </div>
+    </div>
+
+    <div class="album-card-header story-card-header">
+        <a href="profile.html?uid=${escapeHTML(a.userId || '')}" class="creator-link story-creator-link" onclick="event.stopPropagation();">
+            ${creatorAvatarHTML(posterProfile)}
+            <span class="story-creator-meta">
+                <span class="story-creator-line1">
+                    <span class="story-creator-name">${escapeHTML(posterProfile?.name || '匿名ユーザー')}</span>
+                    <span class="story-creator-from">から受信</span><span class="receive-mini-icon" aria-hidden="true">
+                        <span class="receive-mini-core"></span>
+                    </span>
+                </span>
+                <span class="story-creator-line2">${escapeHTML(postDate || '')}</span>
+            </span>
+        </a>
+    </div>
+
+    <div class="album-content-row">
+        <img class="cover story-cover" src="${escapeHTML(a.cover || '')}" alt="">
+
+        <div class="album-right-stack">
+            <div class="album-heading-block">
+                <div class="title story-title">${escapeHTML(a.title || '')}</div>
+                <div class="artist story-artist">${escapeHTML(a.artist || '')}</div>
+                <div class="meta story-meta">${escapeHTML([a.year, a.country, a.genre].filter(Boolean).join(' / ') || a.year || '')}</div>
+            </div>
+
+            <div class="album-analysis story-analysis">
+                <div class="meter-list">
+                    ${meter('暗い', '明るい', a.darkness)}
+                    ${meter('静か', '激しい', a.intense)}
+                    ${meter('シンプル', '複雑', a.complex)}
+                    ${meter('絶望', '希望', a.hope)}
+                    ${meter('個人', '世界', a.world)}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    ${keywordBoxHTML}
+
+    <div class="reaction-row story-reaction-row">
+        <div class="reaction-left-group">
+            <div class="like-area" data-like-area data-album-id="${escapeHTML(albumId)}">
+                <button class="like-btn" onclick="event.stopPropagation(); toggleLike('${escapeHTML(albumId)}')">♡</button>
+                <span class="like-count">0</span>
+            </div>
+
+            <button
+                class="comment-count comment-icon-wrap"
+                type="button"
+                data-comment-count
+                data-album-id="${escapeHTML(albumId)}"
+                onclick="event.stopPropagation(); location.href='detail.html?id=${escapeHTML(albumId)}#comments';"
+                aria-label="コメントを見る"
+                title="コメントを見る"
+            >
+                <span class="comment-icon-clean" aria-hidden="true">
+                    <svg viewBox="-2 -2 28 28" fill="none" aria-hidden="true">
+                        <path d="M7.2 18.2c1.3.7 2.9 1.1 4.8 1.1 4.6 0 8-2.7 8-6.5s-3.4-6.5-8-6.5-8 2.7-8 6.5c0 1.6.6 3 1.7 4.1l-.7 3.1 2.2-1.8Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="comment-count-number">0</span>
+            </button>
+
+            <div class="spotify-area">
+                <button
+                    class="icon-action-btn spotify-btn story-play-btn"
+                    type="button"
+                    onclick="event.stopPropagation(); openListenMenu('${escapeHTML(albumId)}')"
+                    aria-label="聴く"
+                    title="聴く"
+                ></button>
+            </div>
+        </div>
+
+        <div class="reaction-center-group" aria-hidden="true"></div>
+
+        <div class="reaction-right-group">
+            <button
+                type="button"
+                class="story-share-btn"
+                onclick="event.stopPropagation(); openShareMenu('${escapeHTML(albumId)}')"
+                aria-label="共有"
+                title="共有"
+            >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.5 6.5L12 3l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5 12.5v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>`;
+}
+
+function listCoverGridHTML(coverImages){
+    const covers = Array.isArray(coverImages)
+        ? coverImages.filter(Boolean).slice(0, 3)
+        : [];
+
+    if(covers.length === 0){
+        return `
+            <div class="list-cover-stack is-empty">
+                <div class="list-stack-card front placeholder">♪</div>
+                <div class="list-stack-card middle placeholder"></div>
+                <div class="list-stack-card back placeholder"></div>
+            </div>
+        `;
+    }
+
+    const layerMap = [];
+
+    if(covers.length >= 3){
+        layerMap.push({ className:"back", url:covers[2] });
+    }
+
+    if(covers.length >= 2){
+        layerMap.push({ className:"middle", url:covers[1] });
+    }
+
+    layerMap.push({ className:"front", url:covers[0] });
+
+    return `
+        <div class="list-cover-stack ${covers.length === 1 ? "single" : ""}">
+            ${layerMap.map((layer) => `
+                <div class="list-stack-card ${layer.className}">
+                    <img src="${escapeHTML(layer.url)}" alt="">
+                </div>
+            `).join("")}
+        </div>
+    `;
+}
+
+function getListTypeLabel(list){
+    if(list?.hasTier || list?.listType === "tier"){
+        return "Tierリスト";
+    }
+
+    return "リスト";
+}
+
+function getListDetailUrl(listId){
+    return `list-detail.html?id=${encodeURIComponent(listId)}`;
+}
+
+function getListCountValue(list, fieldNames){
+    for(const fieldName of fieldNames){
+        const value = list?.[fieldName];
+
+        if(typeof value === "number"){
+            return Math.max(0, value);
+        }
+    }
+
+    return 0;
+}
+
+function getListLikeCount(list){
+    return getListCountValue(list, ["likeCount", "likesCount"]);
+}
+
+function getListCommentCount(list){
+    return getListCountValue(list, ["commentCount", "commentsCount"]);
+}
+
+function getListPopularityScore(item){
+    const list = item?.data || item || {};
+    return getListLikeCount(list) + (getListCommentCount(list) * 2);
+}
+
+function isListLikedByMe(listId){
+    if(!currentUser) return false;
+
+    return allLikes.some((like) => {
+        return like.listId === listId || (like.targetType === "list" && like.targetId === listId);
+    });
+}
+
+async function toggleListLike(listId){
+    if(!currentUser){
+        location.href = `login.html?redirect=${encodeURIComponent(location.href)}`;
+        return;
+    }
+
+    const likeId = `list_${currentUser.uid}_${listId}`;
+    const likeRef = doc(db, "likes", likeId);
+    const listRef = doc(db, "lists", listId);
+
+    if(isListLikedByMe(listId)){
+        await deleteDoc(likeRef);
+        await updateDoc(listRef, {
+            likeCount: increment(-1)
+        });
+    }else{
+        await setDoc(likeRef, {
+            userId: currentUser.uid,
+            listId,
+            targetType: "list",
+            targetId: listId,
+            createdAt: serverTimestamp()
+        });
+
+        await updateDoc(listRef, {
+            likeCount: increment(1)
+        });
+    }
+}
+
+window.toggleListLike = toggleListLike;
+
+function updateListLikeDisplays(){
+    const likeAreas = document.querySelectorAll("[data-list-like-area]");
+
+    likeAreas.forEach((area) => {
+        const listId = area.dataset.listId;
+        const countSpan = area.querySelector(".list-reaction-number");
+        const button = area.querySelector(".list-like-btn");
+        const item = getListItemById(listId);
+        const list = item?.data || {};
+        const count = getListLikeCount(list);
+        const liked = isListLikedByMe(listId);
+
+        if(countSpan){
+            countSpan.textContent = count;
+        }
+
+        if(button){
+            button.classList.toggle("liked", liked);
+            button.textContent = liked ? "♥" : "♡";
+            button.setAttribute("aria-label", liked ? "いいねを取り消す" : "いいねする");
+            button.setAttribute("title", liked ? "いいねを取り消す" : "いいねする");
+        }
+    });
+}
+
+function getListSortScore(item){
+    const listItem = item?.data ? item : { data:item };
+
+    if(currentSortMode === "new"){
+        return 0;
+    }
+
+    if(currentSortMode.startsWith("popular_")){
+        return getListPopularityScore(listItem);
+    }
+
+    return (getListPopularityScore(listItem) * 4) + getFreshnessScore(listItem);
+}
+
+function listCardHTML(item, posterProfile){
+    const list = item.data || {};
+    const listId = item.id;
+    const itemCount = Number(list.itemCount || 0);
+    const likeCount = getListLikeCount(list);
+    const commentCount = getListCommentCount(list);
+    const detailUrl = getListDetailUrl(listId);
+    const liked = isListLikedByMe(listId);
+
+    return `
+<div class="list-card"
+     onclick="location.href='${escapeHTML(detailUrl)}'">
+    <div class="list-card-main">
+        <div class="list-visual-wrap">
+            ${listCoverGridHTML(list.coverImages)}
+        </div>
+
+        <div class="list-info">
+            <div class="list-header-top">
+                <div class="list-type-label">${escapeHTML(getListTypeLabel(list))}</div>
+                <div class="list-card-date">${escapeHTML(formatPostDate(list.createdAt || list.updatedAt))}</div>
+            </div>
+
+            <div class="list-title">${escapeHTML(list.title || "Untitled List")}</div>
+            <div class="list-desc">${escapeHTML(list.desc || "説明はまだありません。")}</div>
+            <div class="list-meta">${escapeHTML(itemCount)}曲入り</div>
+
+            <div class="list-bottom-row">
+                <div class="list-reaction-row" aria-label="リストの反応数">
+                    <div class="list-reaction-item list-like-wrap" data-list-like-area data-list-id="${escapeHTML(listId)}">
+                        <button
+                            type="button"
+                            class="list-like-btn ${liked ? "liked" : ""}"
+                            onclick="event.stopPropagation(); toggleListLike('${escapeHTML(listId)}')"
+                            aria-label="${liked ? "いいねを取り消す" : "いいねする"}"
+                            title="${liked ? "いいねを取り消す" : "いいねする"}"
+                        >${liked ? "♥" : "♡"}</button>
+                        <span class="list-reaction-number">${escapeHTML(likeCount)}</span>
+                    </div>
+
+                    <a
+                        class="list-reaction-item"
+                        href="${escapeHTML(detailUrl)}#comments"
+                        onclick="event.stopPropagation();"
+                        title="コメント ${escapeHTML(commentCount)}件"
+                    >
+                        <span class="list-reaction-icon" aria-hidden="true">
+                            <svg viewBox="-2 -2 28 28" fill="none" aria-hidden="true">
+                                <path d="M7.2 18.2c1.3.7 2.9 1.1 4.8 1.1 4.6 0 8-2.7 8-6.5s-3.4-6.5-8-6.5-8 2.7-8 6.5c0 1.6.6 3 1.7 4.1l-.7 3.1 2.2-1.8Z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="list-reaction-number">${escapeHTML(commentCount)}</span>
+                    </a>
+
+                    <button
+                        type="button"
+                        class="share-btn share-pill-btn list-share-btn"
+                        onclick="event.stopPropagation(); openShareMenu('list', '${escapeHTML(listId)}')"
+                        aria-label="共有"
+                        title="共有"
+                    >
+                        <span class="share-pill-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8.5 6.5L12 3l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M5 12.5v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="share-pill-label">共有</span>
+                    </button>
+                </div>
+
+                <div class="creator creator-highlight list-creator-row">
+                    <a href="profile.html?uid=${escapeHTML(list.userId || "")}" class="creator-link" onclick="event.stopPropagation();">
+                        ${creatorAvatarHTML(posterProfile)}
+                        <span class="creator-text">
+                            <span class="creator-prefix">作成者：</span><span class="creator-name">${escapeHTML(posterProfile?.name || "匿名ユーザー")}</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="list-open-hint">リストを見る →</div>
+        </div>
+    </div>
+</div>`;
+}
+
+function getSortedLists(){
+    const items = [...allLists];
+
+    if(currentSortMode === "new"){
+        return items.sort((a, b) => getPostTime(b.data.createdAt || b.data.updatedAt) - getPostTime(a.data.createdAt || a.data.updatedAt));
+    }
+
+    if(currentSortMode.startsWith("popular_")){
+        const period = currentSortMode.replace("popular_", "");
+        return items
+            .filter(item => isWithinPopularPeriod(item, period))
+            .sort((a, b) => {
+                const scoreDiff = getListPopularityScore(b) - getListPopularityScore(a);
+                if(scoreDiff !== 0){
+                    return scoreDiff;
+                }
+                return getPostTime(b.data.createdAt || b.data.updatedAt) - getPostTime(a.data.createdAt || a.data.updatedAt);
+            });
+    }
+
+    return items.sort((a, b) => {
+        const scoreDiff = getListSortScore(b) - getListSortScore(a);
+        if(scoreDiff !== 0){
+            return scoreDiff;
+        }
+        return getPostTime(b.data.createdAt || b.data.updatedAt) - getPostTime(a.data.createdAt || a.data.updatedAt);
+    });
+}
+
+async function renderListGrid(){
+    if(!listGrid){
+        return;
+    }
+
+    const lists = getSortedLists();
+
+    if(lists.length === 0){
+        listGrid.innerHTML = `<div class="empty">リスト投稿はまだありません</div>`;
+        return;
+    }
+
+    const cards = [];
+
+    for(const item of lists){
+        const posterProfile = await getPosterProfileForAlbum(item.data);
+        cards.push(listCardHTML(item, posterProfile));
+    }
+
+    listGrid.innerHTML = cards.join("");
+}
+
+function normalizeTextForScore(value){
+    return String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replace(/[　・･\-_/／｜|]+/g, "");
+}
+
+function getFavoriteArtistNames(profile){
+    if(!profile){
+        return [];
+    }
+
+    const fromStrings = Array.isArray(profile.favoriteArtists)
+        ? profile.favoriteArtists
+        : [];
+
+    const fromObjects = Array.isArray(profile.favoriteArtistObjects)
+        ? profile.favoriteArtistObjects
+            .map(artist => artist?.name || artist?.artistName || artist?.label || "")
+        : [];
+
+    return [...fromStrings, ...fromObjects]
+        .map(name => String(name ?? "").trim())
+        .filter(Boolean);
+}
+
+function getFavoriteTags(profile){
+    if(!profile || !Array.isArray(profile.favoriteTags)){
+        return [];
+    }
+
+    return profile.favoriteTags
+        .map(tag => String(tag ?? "").trim())
+        .filter(Boolean);
+}
+
+function getPopularScore(item){
+    const albumId = item.id;
+    const likeCount = getLikeCount(albumId);
+    const commentCount = getCommentCount(albumId);
+
+    // コメントは行動コストが高いので、いいねより少し重くする
+    return likeCount + (commentCount * 2);
+}
+
+function getFreshnessScore(item){
+    const postTime = getPostTime(item.data.createdAt || item.data.updatedAt);
+
+    if(!postTime){
+        return 0;
+    }
+
+    const ageHours = Math.max(0, (Date.now() - postTime) / 3600000);
+
+    if(ageHours <= 24){
+        return 18;
+    }
+
+    if(ageHours <= 72){
+        return 10;
+    }
+
+    if(ageHours <= 168){
+        return 5;
+    }
+
+    return 0;
+}
+
+function getRecommendScore(item){
+    const album = item.data || {};
+    let score = 0;
+
+    const postArtist = normalizeTextForScore(album.artist || "");
+    const postKeywords = normalizeKeywords(album.keywords)
+        .map(keyword => normalizeTextForScore(keyword));
+
+    const favoriteArtists = getFavoriteArtistNames(currentUserProfile)
+        .map(name => normalizeTextForScore(name))
+        .filter(Boolean);
+
+    const favoriteTags = getFavoriteTags(currentUserProfile)
+        .map(tag => normalizeTextForScore(tag))
+        .filter(Boolean);
+
+    favoriteArtists.forEach((artistName) => {
+        if(postArtist && artistName && (postArtist.includes(artistName) || artistName.includes(postArtist))){
+            score += 60;
+        }
+    });
+
+    favoriteTags.forEach((tag) => {
+        if(postKeywords.includes(tag)){
+            score += 25;
+        }
+    });
+
+    score += getPopularScore(item) * 4;
+    score += getFreshnessScore(item);
+
+    // おすすめ順では、自分の投稿が好み一致で上に来すぎないように少し下げる
+    // 非表示にはせず、人気や新しさがあればある程度は上がれる
+    if(currentUser && album.userId === currentUser.uid){
+        score -= 180;
+    }
+
+    return score;
+}
+
+function isWithinPopularPeriod(item, period){
+    if(period === "all"){
+        return true;
+    }
+
+    const postTime = getPostTime(item.data.createdAt || item.data.updatedAt);
+
+    if(!postTime){
+        return false;
+    }
+
+    const diff = Date.now() - postTime;
+
+    if(period === "24h"){
+        return diff <= 24 * 60 * 60 * 1000;
+    }
+
+    if(period === "7d"){
+        return diff <= 7 * 24 * 60 * 60 * 1000;
+    }
+
+    return true;
+}
+
+function getSortedAlbums(baseItems = allAlbums){
+    const items = [...baseItems];
+
+    if(currentSortMode === "new"){
+        return items.sort((a, b) => {
+            const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
+            const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
+            return bTime - aTime;
+        });
+    }
+
+    if(currentSortMode.startsWith("popular_")){
+        const period = currentSortMode.replace("popular_", "");
+
+        return items
+            .filter(item => isWithinPopularPeriod(item, period))
+            .sort((a, b) => {
+                const scoreDiff = getPopularScore(b) - getPopularScore(a);
+
+                if(scoreDiff !== 0){
+                    return scoreDiff;
+                }
+
+                const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
+                const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
+                return bTime - aTime;
+            });
+    }
+
+    return items.sort((a, b) => {
+        const scoreDiff = getRecommendScore(b) - getRecommendScore(a);
+
+        if(scoreDiff !== 0){
+            return scoreDiff;
+        }
+
+        const aTime = getPostTime(a.data.createdAt || a.data.updatedAt);
+        const bTime = getPostTime(b.data.createdAt || b.data.updatedAt);
+        return bTime - aTime;
+    });
+}
+
+function getRecommendAlbums(){
+    return getSortedAlbums(allAlbums);
+}
+
+function getFollowingAlbums(){
+    if(!currentUser){
+        return [];
+    }
+
+    const followingAlbums = allAlbums.filter((album) => {
+        const userId = album.data.userId || "";
+        return userId !== currentUser.uid && followingIds.has(userId);
+    });
+
+    return getSortedAlbums(followingAlbums);
+}
+
+function getFollowingLists(){
+    if(!currentUser){
+        return [];
+    }
+
+    return allLists.filter((list) => {
+        const userId = list.data.userId || "";
+        return userId !== currentUser.uid && followingIds.has(userId);
+    });
+}
+
+function getFeedItemPopularScore(item){
+    if(item.kind === "list"){
+        return getListPopularityScore(item);
+    }
+
+    return getPopularScore(item);
+}
+
+function getFeedItemRecommendScore(item){
+    if(item.kind === "list"){
+        return (getFeedItemPopularScore(item) * 4) + getFreshnessScore(item);
+    }
+
+    return getRecommendScore(item);
+}
+
+function isFeedItemWithinPopularPeriod(item, period){
+    return isWithinPopularPeriod(item, period);
+}
+
+function sortFeedItems(items){
+    const cloned = [...items];
+
+    if(currentSortMode === "new"){
+        return cloned.sort((a, b) => getPostTime(b.data.createdAt || b.data.updatedAt) - getPostTime(a.data.createdAt || a.data.updatedAt));
+    }
+
+    if(currentSortMode.startsWith("popular_")){
+        const period = currentSortMode.replace("popular_", "");
+        return cloned
+            .filter(item => isFeedItemWithinPopularPeriod(item, period))
+            .sort((a, b) => {
+                const scoreDiff = getFeedItemPopularScore(b) - getFeedItemPopularScore(a);
+                if(scoreDiff !== 0){
+                    return scoreDiff;
+                }
+                return getPostTime(b.data.createdAt || b.data.updatedAt) - getPostTime(a.data.createdAt || a.data.updatedAt);
+            });
+    }
+
+    return cloned.sort((a, b) => {
+        const scoreDiff = getFeedItemRecommendScore(b) - getFeedItemRecommendScore(a);
+        if(scoreDiff !== 0){
+            return scoreDiff;
+        }
+        return getPostTime(b.data.createdAt || b.data.updatedAt) - getPostTime(a.data.createdAt || a.data.updatedAt);
+    });
+}
+
+function getFollowingFeedItems(){
+    if(!currentUser){
+        return [];
+    }
+
+    const albumItems = getFollowingAlbums().map(item => ({ ...item, kind:"album" }));
+    const listItems = getFollowingLists().map(item => ({ ...item, kind:"list" }));
+    return sortFeedItems([...albumItems, ...listItems]);
+}
+
+function getPostTime(value){
+    if(!value){ return 0; }
+    if(typeof value.toDate === "function"){ return value.toDate().getTime(); }
+    if(value instanceof Date){ return value.getTime(); }
+    if(typeof value === "number"){ return value; }
+    if(typeof value === "string"){
+        const parsed = new Date(value);
+        if(!Number.isNaN(parsed.getTime())){ return parsed.getTime(); }
+    }
+    return 0;
+}
+
+
+/* ============================================================
+   FEED TAB CONTROLLER 2026-06-12
+   - おすすめ / 観測 / リストの切替をここだけで管理
+   - 起動時に勝手におすすめへ戻さない
+   - 横スワイプとタップを両方サポート
+============================================================ */
+const FEED_MODES = ["recommend", "following", "list"];
+const IS_OBSERVATION_PAGE = location.pathname.split("/").pop() === "observation.html";
+let feedScrollTicking = false;
+let feedTouchStartX = 0;
+let feedTouchStartY = 0;
+let feedTouchMode = null;
+
+function normalizeFeedMode(mode){
+    return FEED_MODES.includes(mode) ? mode : "recommend";
+}
+
+function feedModeToIndex(mode){
+    if(mode === "list"){ return 2; }
+    if(mode === "following"){ return 1; }
+    return 0;
+}
+
+function feedIndexToMode(index){
+    if(index >= 1.5){ return "list"; }
+    if(index >= 0.5){ return "following"; }
+    return "recommend";
+}
+
+function getFeedProgress(){
+    if(!feedSwipe || window.innerWidth > 900){
+        return feedModeToIndex(currentFeedMode);
+    }
+
+    return Math.max(0, Math.min(2, feedSwipe.scrollLeft / Math.max(1, feedSwipe.clientWidth)));
+}
+
+function applyFeedMode(mode, progress = null){
+    const nextMode = normalizeFeedMode(mode);
+    currentFeedMode = nextMode;
+
+    if(document.body){
+        document.body.dataset.feedMode = nextMode;
+    }
+
+    const activeIndex = feedModeToIndex(nextMode);
+    const underlineIndex = activeIndex;
+    const tabs = document.getElementById("mobileFeedTabs");
+
+    if(recommendTab){
+        recommendTab.classList.toggle("active", nextMode === "recommend");
+        recommendTab.setAttribute("aria-selected", nextMode === "recommend" ? "true" : "false");
+    }
+
+    if(followingTab){
+        followingTab.classList.toggle("active", nextMode === "following");
+        followingTab.setAttribute("aria-selected", nextMode === "following" ? "true" : "false");
+    }
+
+    if(listTab){
+        listTab.classList.toggle("active", nextMode === "list");
+        listTab.setAttribute("aria-selected", nextMode === "list" ? "true" : "false");
+    }
+
+    if(tabs){
+        tabs.dataset.activeFeed = nextMode;
+        tabs.style.setProperty("--feed-progress", underlineIndex.toFixed(4));
+        tabs.style.setProperty("--recommend-tab-opacity", nextMode === "recommend" ? "1" : "0.58");
+        tabs.style.setProperty("--following-tab-opacity", nextMode === "following" ? "1" : "0.58");
+        tabs.style.setProperty("--list-tab-opacity", nextMode === "list" ? "1" : "0.58");
+    }
+}
+
+function updateFeedTabs(progress = null){
+    if(typeof progress === "number"){
+        applyFeedMode(feedIndexToMode(progress), progress);
+        return;
+    }
+
+    applyFeedMode(feedIndexToMode(getFeedProgress()), getFeedProgress());
+}
+
+function resetPageTopForFeed(){
+    window.scrollTo({ top:0, left:0, behavior:"auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    document.body.classList.remove("mobile-head-hidden");
+}
+
+function scrollFeedTo(mode, options = {}){
+    const nextMode = normalizeFeedMode(mode);
+
+    if(nextMode === "following" && !IS_OBSERVATION_PAGE){
+        location.href = "observation.html";
+        return;
+    }
+
+    if(nextMode !== "following" && IS_OBSERVATION_PAGE){
+        location.href = "index.html";
+        return;
+    }
+
+    const index = feedModeToIndex(nextMode);
+    const smooth = options.smooth !== false;
+    const resetTop = options.resetTop !== false;
+
+    applyFeedMode(nextMode, index);
+
+    if(resetTop && window.innerWidth <= 900){
+        resetPageTopForFeed();
+    }
+
+    if(feedSwipe && window.innerWidth <= 900){
+        feedSwipe.scrollTo({
+            left:feedSwipe.clientWidth * index,
+            behavior:smooth ? "smooth" : "auto"
+        });
+    }
+}
+
+window.scrollFeedTo = scrollFeedTo;
+window.updateFeedTabs = updateFeedTabs;
+window.resetFeedToRecommendOnOpen = function(){
+    applyFeedMode(currentFeedMode, feedModeToIndex(currentFeedMode));
+};
+
+if(recommendTab){
+    recommendTab.addEventListener("click", (event) => {
+        event.preventDefault();
+        scrollFeedTo("recommend");
+    });
+}
+
+if(followingTab){
+    followingTab.addEventListener("click", (event) => {
+        event.preventDefault();
+        scrollFeedTo("following");
+    });
+}
+
+if(listTab){
+    listTab.addEventListener("click", (event) => {
+        event.preventDefault();
+        scrollFeedTo("list");
+    });
+}
+
+if(feedSwipe){
+    feedSwipe.addEventListener("touchstart", (event) => {
+        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
+            return;
+        }
+
+        feedTouchStartX = event.touches[0].clientX;
+        feedTouchStartY = event.touches[0].clientY;
+        feedTouchMode = null;
+    }, { passive:true });
+
+    feedSwipe.addEventListener("touchmove", (event) => {
+        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
+            return;
+        }
+
+        const mode = document.body?.dataset?.feedMode || currentFeedMode;
+        const dx = event.touches[0].clientX - feedTouchStartX;
+        const dy = event.touches[0].clientY - feedTouchStartY;
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+
+        if(!feedTouchMode && Math.max(absX, absY) > 8){
+            feedTouchMode = absX >= absY ? "horizontal" : "vertical";
+        }
+
+        if(mode === "following" && feedTouchMode === "vertical"){
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }, { passive:false });
+
+    feedSwipe.addEventListener("scroll", () => {
+        if(window.innerWidth > 900 || feedScrollTicking){
+            return;
+        }
+
+        feedScrollTicking = true;
+        requestAnimationFrame(() => {
+            const progress = getFeedProgress();
+            applyFeedMode(feedIndexToMode(progress), progress);
+            feedScrollTicking = false;
+        });
+    }, { passive:true });
+}
+
+window.addEventListener("scroll", () => {
+    if(window.innerWidth > 900){
+        return;
+    }
+
+    if((document.body?.dataset?.feedMode || currentFeedMode) === "following"){
+        document.body.classList.remove("mobile-head-hidden");
+        return;
+    }
+
+    const currentY = window.scrollY || document.documentElement.scrollTop || 0;
+    const previousY = Number(document.body.dataset.lastScrollY || 0);
+
+    if(currentY > previousY && currentY > 2){
+        document.body.classList.add("mobile-head-hidden");
+    }else if(currentY < previousY){
+        document.body.classList.remove("mobile-head-hidden");
+    }
+
+    document.body.dataset.lastScrollY = String(currentY);
+}, { passive:true });
+
+window.addEventListener("resize", () => {
+    if(feedSwipe && window.innerWidth <= 900){
+        feedSwipe.scrollTo({
+            left:feedSwipe.clientWidth * feedModeToIndex(currentFeedMode),
+            behavior:"auto"
+        });
+    }
+    updateFeedTabs(feedModeToIndex(currentFeedMode));
+});
+
+applyFeedMode(currentFeedMode, feedModeToIndex(currentFeedMode));
+
+const sortModeLabels = {
+    recommend: "おすすめ順",
+    new: "新着順",
+    popular_24h: "人気順：24時間",
+    popular_7d: "人気順：7日間",
+    popular_all: "人気順：全期間"
+};
+
+function getSortModeLabel(mode){
+    return sortModeLabels[mode] || sortModeLabels.recommend;
+}
+
+function openSortMenu(){
+    if(!sortFilterMenu || !sortFilterButton){
+        return;
+    }
+
+    sortFilterMenu.classList.add("open");
+    sortFilterButton.setAttribute("aria-expanded", "true");
+}
+
+function closeSortMenu(){
+    if(!sortFilterMenu || !sortFilterButton){
+        return;
+    }
+
+    sortFilterMenu.classList.remove("open");
+    sortFilterButton.setAttribute("aria-expanded", "false");
+}
+
+function toggleSortMenu(){
+    if(!sortFilterMenu){
+        return;
+    }
+
+    if(sortFilterMenu.classList.contains("open")){
+        closeSortMenu();
+    }else{
+        openSortMenu();
+    }
+}
+
+function updateSortMenuUI(){
+    if(sortFilterCurrentLabel){
+        sortFilterCurrentLabel.textContent = `現在：${getSortModeLabel(currentSortMode)}`;
+    }
+
+    document.querySelectorAll("[data-sort-option]").forEach((button) => {
+        const isActive = (button.dataset.sortMode || "") === currentSortMode;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
+}
+
+function selectSortMode(mode){
+    const nextMode = mode || "recommend";
+
+    if(currentSortMode === nextMode){
+        updateSortMenuUI();
+        closeSortMenu();
+        return;
+    }
+
+    currentSortMode = nextMode;
+    updateSortMenuUI();
+    closeSortMenu();
+    renderAlbums();
+}
+
+if(sortFilterButton){
+    sortFilterButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        toggleSortMenu();
+    });
+}
+
+document.querySelectorAll("[data-sort-option]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        selectSortMode(button.dataset.sortMode || "recommend");
+    });
+});
+
+document.addEventListener("click", (event) => {
+    if(!sortFilterMenu || !sortFilterButton){
+        return;
+    }
+
+    const target = event.target;
+
+    if(sortFilterMenu.contains(target) || sortFilterButton.contains(target)){
+        return;
+    }
+
+    closeSortMenu();
+});
+
+document.addEventListener("keydown", (event) => {
+    if(event.key === "Escape"){
+        closeSortMenu();
+    }
+});
+
+updateSortMenuUI();
+
+
+function getObservationDetailUrl(item){
+    if(item?.kind === "list"){
+        return getListDetailUrl(item.id);
+    }
+
+    return `detail.html?id=${encodeURIComponent(item.id)}`;
+}
+
+function getObservationCoverUrl(item){
+    const data = item?.data || {};
+
+    if(item?.kind === "list"){
+        const covers = Array.isArray(data.coverImages) ? data.coverImages.filter(Boolean) : [];
+        return covers[0] || "";
+    }
+
+    return data.cover || data.imageUrl || data.jacketUrl || "";
+}
+
+function getObservationTitle(item){
+    const data = item?.data || {};
+    return data.title || (item?.kind === "list" ? "Untitled List" : "Untitled");
+}
+
+function getObservationArtist(item){
+    const data = item?.data || {};
+
+    if(item?.kind === "list"){
+        const count = Number(data.itemCount || 0);
+        return `${getListTypeLabel(data)}${count ? ` / ${count}曲入り` : ""}`;
+    }
+
+    return data.artist || "";
+}
+
+function getObservationText(item){
+    const data = item?.data || {};
+    return data.description || data.desc || data.review || data.comment || data.memo || "";
+}
+
+function getObservationAgeInfo(item){
+    const postTime = getPostTime(item?.data?.createdAt || item?.data?.updatedAt);
+
+    if(!postTime){
+        return { postTime:0, diffHours:999999, label:"" };
+    }
+
+    const diffHours = Math.max(0, (Date.now() - postTime) / 3600000);
+    return {
+        postTime,
+        diffHours,
+        label:formatPostDate(item.data.createdAt || item.data.updatedAt)
+    };
+}
+
+function getObservationSignalState(group){
+    const latest = group?.latestDiffHours ?? 999999;
+    const recentCount = group?.recentCount || 0;
+
+    if(recentCount >= 2){
+        return { className:"multiple", color:"#a970ff", label:String(recentCount) };
+    }
+
+    if(latest <= 6){
+        return { className:"new", color:"#a970ff", label:"" };
+    }
+
+    if(latest <= 24){
+        return { className:"recent", color:"#6ed8ff", label:"" };
+    }
+
+    return { className:"old", color:"#788194", label:"" };
+}
+
+function getObservationPlanetStyle(index){
+    const styles = [
+        { x:"48%", y:"18%", size:"74px", bg:"radial-gradient(circle at 34% 28%, #bc79ff, transparent 20%), radial-gradient(circle at 62% 64%, #321256, #080616 70%)", glow:"rgba(176,108,255,0.82)" },
+        { x:"22%", y:"32%", size:"72px", bg:"radial-gradient(circle at 34% 30%, #ff725f, transparent 21%), radial-gradient(circle at 64% 66%, #521206, #090305 70%)", glow:"rgba(255,108,85,0.62)" },
+        { x:"82%", y:"36%", size:"70px", bg:"radial-gradient(circle at 34% 30%, #73f2ff, transparent 22%), radial-gradient(circle at 63% 66%, #0a5060, #03151e 70%)", glow:"rgba(120,217,255,0.65)" },
+        { x:"22%", y:"55%", size:"64px", bg:"radial-gradient(circle at 34% 30%, #609cff, transparent 22%), radial-gradient(circle at 64% 66%, #132a5b, #050a18 70%)", glow:"rgba(89,145,255,0.42)" },
+        { x:"54%", y:"58%", size:"82px", bg:"radial-gradient(circle at 32% 28%, #74c7ff, transparent 20%), radial-gradient(circle at 44% 50%, #2a854d, transparent 18%), radial-gradient(circle at 62% 66%, #0f3769, #061227 70%)", glow:"rgba(105,180,255,0.72)" },
+        { x:"78%", y:"68%", size:"68px", bg:"radial-gradient(circle at 34% 28%, #ffc06b, transparent 22%), radial-gradient(circle at 63% 66%, #5b3614, #100802 70%)", glow:"rgba(255,190,107,0.55)" },
+        { x:"51%", y:"84%", size:"68px", bg:"radial-gradient(circle at 32% 28%, #a85cff, transparent 22%), radial-gradient(circle at 62% 66%, #1e0d3c, #05030d 70%)", glow:"rgba(176,108,255,0.50)" }
+    ];
+
+    return styles[index % styles.length];
+}
+
+function getObservationFeedItems(){
+    if(!currentUser){
+        return [];
+    }
+
+    const albumItems = getFollowingAlbums().map(item => ({ ...item, kind:"album" }));
+    const listItems = getFollowingLists().map(item => ({ ...item, kind:"list" }));
+
+    return [...albumItems, ...listItems]
+        .sort((a, b) => getPostTime(b.data.createdAt || b.data.updatedAt) - getPostTime(a.data.createdAt || a.data.updatedAt));
+}
+
+async function buildObservationGroups(){
+    const items = getObservationFeedItems();
+    const groupMap = new Map();
+
+    for(const item of items){
+        const userId = item?.data?.userId || "unknown";
+        const age = getObservationAgeInfo(item);
+        const profile = await getPosterProfileForAlbum(item.data);
+
+        if(!groupMap.has(userId)){
+            groupMap.set(userId, {
+                userId,
+                profile,
+                items:[],
+                latestTime:0,
+                latestDiffHours:999999,
+                recentCount:0
+            });
+        }
+
+        const group = groupMap.get(userId);
+        group.items.push(item);
+        group.latestTime = Math.max(group.latestTime, age.postTime);
+        group.latestDiffHours = Math.min(group.latestDiffHours, age.diffHours);
+
+        if(age.diffHours <= 24){
+            group.recentCount += 1;
+        }
+    }
+
+    return [...groupMap.values()]
+        .filter(group => group.items.length > 0)
+        .sort((a, b) => b.latestTime - a.latestTime)
+        .slice(0, 7);
+}
+
+function observationPlanetIconHTML(profile, name){
+    const iconUrl = profile?.iconUrl || "";
+
+    if(iconUrl){
+        return `
+            <span class="observation-planet-core">
+                <img class="observation-planet-avatar" src="${escapeHTML(iconUrl)}" alt="${escapeHTML(name)}">
+            </span>
+        `;
+    }
+
+    return `
+        <span class="observation-planet-core observation-planet-avatar-fallback">
+            ${escapeHTML(getInitialLetter(name))}
+        </span>
+    `;
+}
+
+function observationPlanetHTML(group, index){
+    const style = getObservationPlanetStyle(index);
+    const signal = getObservationSignalState(group);
+    const latestItem = group.items[0];
+    const timeLabel = formatPostDate(latestItem?.data?.createdAt || latestItem?.data?.updatedAt) || "";
+    const name = group.profile?.name || "匿名ユーザー";
+
+    return `
+        <article class="observation-planet-wrap ${signal.className}" data-signal="${signal.className}" style="--x:${style.x};--y:${style.y};--size:${style.size};--planet-bg:${style.bg};--planet-glow:${style.glow};--signal-color:${signal.color};">
+            <button type="button" class="observation-planet" onclick="openObservationGroup(${index}, 0)" aria-label="${escapeHTML(name)}の新着投稿を開く">
+                ${observationPlanetIconHTML(group.profile, name)}
+                <span class="observation-signal-dot ${signal.className}">${escapeHTML(signal.label)}</span>
+            </button>
+            <div class="observation-planet-name">${escapeHTML(name)}</div>
+            <div class="observation-planet-time">${escapeHTML(timeLabel)}</div>
+        </article>
+    `;
+}
+
+async function renderObservationPanel(){
+    if(!followingGrid){
+        return;
+    }
+
+    followingGrid.className = "observation-map";
+
+    if(!currentUser){
+        followingGrid.innerHTML = `
+            <div class="observation-empty">
+                <div>ログインすると、フォロー中ユーザーの新しい投稿を観測できます。</div>
+            </div>
+        `;
+        return;
+    }
+
+    observationGroups = await buildObservationGroups();
+
+    if(observationGroups.length === 0){
+        followingGrid.innerHTML = `
+            <div class="observation-empty">
+                <div>フォロー中の新しい投稿はまだありません。<br>気になるユーザーをフォローすると、ここに惑星として表示されます。</div>
+            </div>
+        `;
+        return;
+    }
+
+    followingGrid.innerHTML = `
+        <div class="observation-head">
+            <div>
+                <h2 class="observation-title">観測中の惑星たち</h2>
+                <p class="observation-subtitle">フォロー中の新しい投稿を観測できます</p>
+            </div>
+        </div>
+
+        <div class="observation-space">
+            <div class="observation-orbit o1"></div>
+            <div class="observation-orbit o2"></div>
+            <div class="observation-orbit o3"></div>
+            ${observationGroups.map((group, index) => observationPlanetHTML(group, index)).join("")}
+
+            <div class="observation-legend" aria-label="投稿時間の説明">
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>6時間以内</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>24時間以内</div>
+                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>1日以上前</div>
+            </div>
+        </div>
+    `;
+}
+
+function renderObservationProgress(group){
+    const progress = document.getElementById("observationViewerProgress");
+    if(!progress){ return; }
+
+    progress.innerHTML = group.items.map((_, index) => {
+        const className = index < activeObservationPostIndex ? "done" : (index === activeObservationPostIndex ? "active" : "");
+        return `<div class="observation-progress-seg ${className}"><span></span></div>`;
+    }).join("");
+}
+
+function observationAvatarHTML(profile){
+    const iconUrl = profile?.iconUrl || "";
+    const name = profile?.name || "匿名ユーザー";
+
+    if(iconUrl){
+        return `<img class="observation-viewer-avatar" src="${escapeHTML(iconUrl)}" alt="${escapeHTML(name)}">`;
+    }
+
+    return `<span class="observation-viewer-avatar-fallback">${escapeHTML(getInitialLetter(name))}</span>`;
+}
+
+function renderObservationViewer(){
+    const viewer = document.getElementById("observationViewer");
+    const group = observationGroups[activeObservationGroupIndex];
+    const item = group?.items?.[activeObservationPostIndex];
+
+    if(!viewer || !group || !item){
+        return;
+    }
+
+    const userBox = document.getElementById("observationViewerUser");
+    const coverBox = document.getElementById("observationViewerCover");
+    const titleEl = document.getElementById("observationViewerTitle");
+    const artistEl = document.getElementById("observationViewerArtist");
+    const textEl = document.getElementById("observationViewerText");
+    const metersEl = document.getElementById("observationViewerMeters");
+    const detailEl = document.getElementById("observationViewerDetail");
+    const likeBtn = document.getElementById("observationViewerLike");
+    const listenBtn = document.getElementById("observationViewerListen");
+
+    const timeLabel = formatPostDate(item.data.createdAt || item.data.updatedAt) || "";
+    const coverUrl = getObservationCoverUrl(item);
+
+    if(userBox){
+        userBox.innerHTML = `
+            ${observationAvatarHTML(group.profile)}
+            <div style="min-width:0;">
+                <div class="observation-viewer-name">${escapeHTML(group.profile?.name || "匿名ユーザー")}</div>
+                <div class="observation-viewer-time">${escapeHTML(timeLabel)}</div>
+            </div>
+        `;
+    }
+
+    if(coverBox){
+        coverBox.innerHTML = coverUrl
+            ? `<img src="${escapeHTML(coverUrl)}" alt="">`
+            : `<div style="width:100%;height:100%;display:grid;place-items:center;color:rgba(255,255,255,.58);font-size:38px;">♪</div>`;
+    }
+
+    if(titleEl){ titleEl.textContent = getObservationTitle(item); }
+    if(artistEl){ artistEl.textContent = getObservationArtist(item); }
+    if(textEl){ textEl.textContent = getObservationText(item); }
+
+    if(metersEl){
+        if(item.kind === "list"){
+            metersEl.innerHTML = "";
+        }else{
+            const a = item.data || {};
+            metersEl.innerHTML = `
+                ${meter("暗い", "明るい", a.darkness)}
+                ${meter("静か", "激しい", a.intense)}
+                ${meter("シンプル", "複雑", a.complex)}
+                ${meter("絶望", "希望", a.hope)}
+                ${meter("個人", "世界", a.world)}
+            `;
+        }
+    }
+
+    if(detailEl){
+        detailEl.href = getObservationDetailUrl(item);
+    }
+
+    if(likeBtn){
+        if(item.kind === "list"){
+            likeBtn.style.display = "grid";
+            likeBtn.classList.toggle("liked", isListLikedByMe(item.id));
+            likeBtn.textContent = isListLikedByMe(item.id) ? "♥" : "♡";
+        }else{
+            likeBtn.style.display = "grid";
+            likeBtn.classList.toggle("liked", isLikedByMe(item.id));
+            likeBtn.textContent = isLikedByMe(item.id) ? "♥" : "♡";
+        }
+    }
+
+    if(listenBtn){
+        listenBtn.style.display = item.kind === "list" ? "none" : "grid";
+    }
+
+    renderObservationProgress(group);
+}
+
+function openObservationGroup(groupIndex = 0, postIndex = 0){
+    const viewer = document.getElementById("observationViewer");
+
+    if(!viewer || observationGroups.length === 0){
+        return;
+    }
+
+    activeObservationGroupIndex = Math.max(0, Math.min(observationGroups.length - 1, Number(groupIndex) || 0));
+    const group = observationGroups[activeObservationGroupIndex];
+    activeObservationPostIndex = Math.max(0, Math.min(group.items.length - 1, Number(postIndex) || 0));
+
+    renderObservationViewer();
+    viewer.classList.add("open");
+    viewer.setAttribute("aria-hidden", "false");
+}
+
+function openObservationNewest(){
+    if(observationGroups.length === 0){
+        return;
+    }
+
+    openObservationGroup(0, 0);
+}
+
+function closeObservationViewer(){
+    const viewer = document.getElementById("observationViewer");
+    if(!viewer){ return; }
+    viewer.classList.remove("open");
+    viewer.setAttribute("aria-hidden", "true");
+}
+
+function nextObservationPost(){
+    const group = observationGroups[activeObservationGroupIndex];
+    if(!group){ return; }
+
+    if(activeObservationPostIndex < group.items.length - 1){
+        activeObservationPostIndex += 1;
+    }else if(activeObservationGroupIndex < observationGroups.length - 1){
+        activeObservationGroupIndex += 1;
+        activeObservationPostIndex = 0;
+    }else{
+        activeObservationGroupIndex = 0;
+        activeObservationPostIndex = 0;
+    }
+
+    renderObservationViewer();
+}
+
+function prevObservationPost(){
+    if(activeObservationPostIndex > 0){
+        activeObservationPostIndex -= 1;
+    }else if(activeObservationGroupIndex > 0){
+        activeObservationGroupIndex -= 1;
+        const group = observationGroups[activeObservationGroupIndex];
+        activeObservationPostIndex = Math.max(0, group.items.length - 1);
+    }else{
+        activeObservationGroupIndex = observationGroups.length - 1;
+        const group = observationGroups[activeObservationGroupIndex];
+        activeObservationPostIndex = Math.max(0, group.items.length - 1);
+    }
+
+    renderObservationViewer();
+}
+
+async function toggleObservationCurrentLike(){
+    const group = observationGroups[activeObservationGroupIndex];
+    const item = group?.items?.[activeObservationPostIndex];
+
+    if(!item){ return; }
+
+    if(item.kind === "list"){
+        await toggleListLike(item.id);
+    }else{
+        await toggleLike(item.id);
+    }
+
+    renderObservationViewer();
+}
+
+function shareObservationCurrentPost(){
+    const group = observationGroups[activeObservationGroupIndex];
+    const item = group?.items?.[activeObservationPostIndex];
+
+    if(!item){ return; }
+
+    if(item.kind === "list"){
+        openShareMenu("list", item.id);
+    }else{
+        openShareMenu(item.id);
+    }
+}
+
+function listenObservationCurrentPost(){
+    const group = observationGroups[activeObservationGroupIndex];
+    const item = group?.items?.[activeObservationPostIndex];
+
+    if(!item || item.kind === "list"){
+        return;
+    }
+
+    openListenMenu(item.id);
+}
+
+window.openObservationGroup = openObservationGroup;
+window.openObservationNewest = openObservationNewest;
+window.closeObservationViewer = closeObservationViewer;
+window.nextObservationPost = nextObservationPost;
+window.prevObservationPost = prevObservationPost;
+window.toggleObservationCurrentLike = toggleObservationCurrentLike;
+window.shareObservationCurrentPost = shareObservationCurrentPost;
+window.listenObservationCurrentPost = listenObservationCurrentPost;
+
+async function renderAlbumGrid(targetGrid, items, emptyHTML){
+    if(!targetGrid){ return; }
+    if(items.length === 0){
+        targetGrid.innerHTML = emptyHTML;
+        return;
+    }
+
+    const cards = [];
+    for(const item of items){
+        const posterProfile = await getPosterProfileForAlbum(item.data);
+        cards.push(albumCardHTML(item, posterProfile));
+    }
+    targetGrid.innerHTML = cards.join("");
+}
+
+async function renderFeedGrid(targetGrid, items, emptyHTML){
+    if(!targetGrid){ return; }
+    if(items.length === 0){
+        targetGrid.innerHTML = emptyHTML;
+        return;
+    }
+
+    const cards = [];
+    for(const item of items){
+        const posterProfile = await getPosterProfileForAlbum(item.data);
+        if(item.kind === "list"){
+            cards.push(listCardHTML(item, posterProfile));
+        }else{
+            cards.push(albumCardHTML(item, posterProfile));
+        }
+    }
+
+    targetGrid.innerHTML = cards.join("");
+}
+
+
+
+/* ============================================================
+   DAILY METEOR V1 2026-06-11
+   - ホームに「知らない人の投稿が毎日1件届く」機能を追加
+   - 新規投稿形式は増やさず、既存の albums / lists から1件選ぶ
+============================================================ */
+
+function getDailyMeteorDateKey(){
+    try{
+        return new Intl.DateTimeFormat("sv-SE", { timeZone:"Asia/Tokyo", year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date());
+    }catch(error){
+        return new Date().toISOString().slice(0, 10);
+    }
+}
+
+function hashDailyMeteorSeed(text){
+    let hash = 2166136261;
+    const source = String(text || "");
+    for(let i = 0; i < source.length; i++){
+        hash ^= source.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
+    return Math.abs(hash >>> 0);
+}
+
+function getDailyMeteorCandidates(){
+    const albumItems = (allAlbums || []).map(item => ({ ...item, kind:"album" }));
+    const listItems = (allLists || []).map(item => ({ ...item, kind:"list" }));
+
+    return [...albumItems, ...listItems]
+        .filter(item => {
+            const userId = item?.data?.userId || "";
+            if(!userId){ return false; }
+            if(currentUser && userId === currentUser.uid){ return false; }
+            if(followingIds && followingIds.has(userId)){ return false; }
+            return true;
+        })
+        .sort((a, b) => {
+            const timeA = getPostTime(a.data.createdAt || a.data.updatedAt);
+            const timeB = getPostTime(b.data.createdAt || b.data.updatedAt);
+            return timeB - timeA;
+        })
+        .slice(0, 80);
+}
+
+function selectDailyMeteorItem(candidates){
+    if(!candidates.length){ return null; }
+
+    const dateKey = getDailyMeteorDateKey();
+    const userKey = currentUser?.uid || "guest";
+    const storageKey = `albumCollectionDailyMeteor:${userKey}`;
+
+    try{
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+        if(saved?.dateKey === dateKey){
+            const savedItem = candidates.find(item => item.kind === saved.kind && item.id === saved.id);
+            if(savedItem){ return savedItem; }
+        }
+    }catch(error){
+        // localStorageが使えない環境では、その場で日付ベース選定に戻す
+    }
+
+    const seed = `${dateKey}:${userKey}:${candidates.map(item => `${item.kind}:${item.id}`).join("|")}`;
+    const selected = candidates[hashDailyMeteorSeed(seed) % candidates.length];
+
+    try{
+        localStorage.setItem(storageKey, JSON.stringify({
+            dateKey,
+            kind:selected.kind,
+            id:selected.id
+        }));
+    }catch(error){
+        // 保存できなくても表示自体は続ける
+    }
+
+    return selected;
+}
+
+function getDailyMeteorSnippet(item){
+    const text = getObservationText(item);
+    if(text){ return text; }
+    return "知らない誰かの音楽ログが、1日1件だけ届きます。";
+}
+
+function dailyMeteorCoverHTML(item){
+    const coverUrl = getObservationCoverUrl(item);
+    if(coverUrl){
+        return `<img src="${escapeHTML(coverUrl)}" alt="">`;
+    }
+    return `<div class="daily-meteor-cover-fallback">✦</div>`;
+}
+
+async function renderDailyMeteor(){
+    if(!dailyMeteorBox){ return; }
+
+    const candidates = getDailyMeteorCandidates();
+    const item = selectDailyMeteorItem(candidates);
+    dailyMeteorItem = item;
+
+    if(!item){
+        dailyMeteorBox.innerHTML = "";
+        return;
+    }
+
+    const profile = await getPosterProfileForAlbum(item.data);
+    const name = profile?.name || "知らないユーザー";
+    const title = getObservationTitle(item);
+    const artist = getObservationArtist(item);
+    const ariaText = ["今日の流れ星を開く", name, title, artist].filter(Boolean).join(" / ");
+
+    dailyMeteorBox.innerHTML = `
+        <button type="button" class="daily-meteor-card" onclick="openDailyMeteorPost()" aria-label="${escapeHTML(ariaText)}" title="${escapeHTML([name, title, artist].filter(Boolean).join(" ・ "))}">
+            <span class="daily-meteor-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 20v-8"/><path d="M8 20h8"/><path d="M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M7 9a5 5 0 0 1 10 0"/><path d="M4 9a8 8 0 0 1 16 0"/></svg>
+            </span>
+            <span class="daily-meteor-copy">
+                <span class="daily-meteor-title">流れ星が観測されました</span>
+                <span class="daily-meteor-sub">タップして受信する</span>
+            </span>
+            <span class="daily-meteor-arrow" aria-hidden="true">›</span>
+        </button>
+    `;
+}
+
+function openDailyMeteorPost(){
+    if(!dailyMeteorItem){ return; }
+    location.href = getObservationDetailUrl(dailyMeteorItem);
+}
+
+window.openDailyMeteorPost = openDailyMeteorPost;
+
+/* END DAILY METEOR V1 */
+
+async function renderAlbums(){
+    updateFeedTabs();
+    await renderAlbumGrid(recommendGrid, getRecommendAlbums(), `<div class="empty">保存されたアルバムがありません</div>`);
+    await renderDailyMeteor();
+
+    // 観測タブは通常のフォロー中TLではなく、フォロー中ユーザーの新着投稿を惑星マップとして表示する
+    await renderObservationPanel();
+
+    await renderListGrid();
+
+    updateLikeDisplays();
+    updateCommentDisplays();
+    updateListLikeDisplays();
+}
+
+onSnapshot(listQuery, async (snapshot) => {
+    allLists = [];
+
+    snapshot.forEach((docSnap) => {
+        allLists.push({
+            id: docSnap.id,
+            data: docSnap.data()
+        });
+    });
+
+    await renderListGrid();
+}, (error) => {
+    if(listGrid){
+        listGrid.innerHTML = `<div class="empty">リスト読み込みエラー：${escapeHTML(error.message)}</div>`;
+    }
+});
+
+onSnapshot(q, async (snapshot)=>{
+    allAlbums = [];
+    snapshot.forEach((docSnap) => {
+        allAlbums.push({ id: docSnap.id, data: docSnap.data() });
+    });
+    await renderAlbums();
+}, (error) => {
+    console.error("albumsの読み込みに失敗しました", error);
+    if(recommendGrid){ recommendGrid.innerHTML = `<div class="empty">投稿読み込みエラー：${escapeHTML(error.message)}</div>`; }
+    if(followingGrid){ followingGrid.innerHTML = `<div class="empty">投稿読み込みエラー：${escapeHTML(error.message)}</div>`; }
+});
+
+</script>
+
+<!-- 初回チュートリアル -->
+<div class="tutorial-overlay" id="tutorialOverlay">
+    <div class="tutorial-card">
+        <button class="tutorial-close" type="button" onclick="closeTutorial(true)">×</button>
+
+        <div class="tutorial-icon" id="tutorialIcon">🎧</div>
+
+        <div class="tutorial-title" id="tutorialTitle">
+            ようこそ Album Collection（仮）へ
+        </div>
+
+        <div class="tutorial-text" id="tutorialText">
+            Album Collection（仮）は、聴いた音楽を記録して、感想や気分を共有できるサービスです。
+        </div>
+
+        <div class="tutorial-dots" id="tutorialDots"></div>
+
+        <div class="tutorial-actions">
+            <button class="tutorial-btn back" type="button" id="tutorialBackBtn" onclick="prevTutorialSlide()">
+                戻る
+            </button>
+
+            <button class="tutorial-btn next" type="button" id="tutorialNextBtn" onclick="nextTutorialSlide()">
+                次へ
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+const tutorialSlides = [
+    {
+        icon:"🎧",
+        title:"ようこそ Album Collection（仮）へ",
+        text:"Album Collection（仮）は、聴いた音楽を記録して、感想や気分を共有できるサービスです。"
+    },
+    {
+        icon:"🏠",
+        title:"投稿を見てみよう",
+        text:"ホームでは、みんなの音楽投稿が流れてきます。気になる投稿を押すと、詳しい感想を見られます。"
+    },
+    {
+        icon:"🔍",
+        title:"検索して探そう",
+        text:"曲名・アーティスト名・キーワードから投稿を探せます。"
+    },
+    {
+        icon:"✍️",
+        title:"自分でも投稿しよう",
+        text:"好きな音楽について、感想・気分メーター・キーワードをつけて記録できます。"
+    },
+    {
+        icon:"👤",
+        title:"マイページを育てよう",
+        text:"自分の投稿を一覧で見たり、気になる人をフォローできます。"
+    }
+];
+
+let tutorialIndex = 0;
+
+function renderTutorial(){
+    const slide = tutorialSlides[tutorialIndex];
+
+    const iconEl = document.getElementById("tutorialIcon");
+    const titleEl = document.getElementById("tutorialTitle");
+    const textEl = document.getElementById("tutorialText");
+    const dotsEl = document.getElementById("tutorialDots");
+    const backBtn = document.getElementById("tutorialBackBtn");
+    const nextBtn = document.getElementById("tutorialNextBtn");
+
+    if(!iconEl || !titleEl || !textEl || !dotsEl || !backBtn || !nextBtn){
+        return;
+    }
+
+    iconEl.textContent = slide.icon;
+    titleEl.textContent = slide.title;
+    textEl.textContent = slide.text;
+
+    dotsEl.innerHTML = "";
+
+    tutorialSlides.forEach((_, index) => {
+        const dot = document.createElement("div");
+        dot.className = "tutorial-dot" + (index === tutorialIndex ? " active" : "");
+        dotsEl.appendChild(dot);
+    });
+
+    backBtn.style.visibility = tutorialIndex === 0 ? "hidden" : "visible";
+    nextBtn.textContent = tutorialIndex === tutorialSlides.length - 1 ? "はじめる" : "次へ";
+}
+
+function openTutorial(){
+    const overlay = document.getElementById("tutorialOverlay");
+
+    if(!overlay){
+        return;
+    }
+
+    tutorialIndex = 0;
+    renderTutorial();
+    overlay.classList.add("is-active");
+}
+
+function closeTutorial(saveSeen = false){
+    const overlay = document.getElementById("tutorialOverlay");
+
+    if(overlay){
+        overlay.classList.remove("is-active");
+    }
+
+    if(saveSeen){
+        localStorage.setItem("albumCollectionTutorialSeen", "true");
+    }
+}
+
+function nextTutorialSlide(){
+    if(tutorialIndex < tutorialSlides.length - 1){
+        tutorialIndex++;
+        renderTutorial();
+    }else{
+        closeTutorial(true);
+    }
+}
+
+function prevTutorialSlide(){
+    if(tutorialIndex > 0){
+        tutorialIndex--;
+        renderTutorial();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const seen = localStorage.getItem("albumCollectionTutorialSeen");
+
+    if(!seen){
+        openTutorial();
+    }
+});
+</script>
+
+<script>
+/* 背景画像を縦ループで自動アニメーションさせる。スクロール同期はしない */
+(function(){
+    const BG_SRC = "./milkyway_bg.png";
+    const BASE_SPEED = 14; // 背景画像そのものが流れる速度 px/秒。ページスクロールとは同期しない
+
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduceMotion){
+        return;
+    }
+
+    let loopHeight = Math.max(window.innerHeight * 1.4, 900);
+    let lastTime = performance.now();
+    let autoY = 0;
+    let elapsed = 0;
+    let imageRatio = 1.45;
+
+    function setLoopHeight(){
+        const naturalHeight = Math.max(window.innerWidth * imageRatio, window.innerHeight * 1.35);
+        loopHeight = Math.ceil(naturalHeight);
+        document.documentElement.style.setProperty("--galaxy-loop-height", `${loopHeight}px`);
+    }
+
+    function loadBackgroundRatio(){
+        const img = new Image();
+        img.onload = () => {
+            if(img.naturalWidth && img.naturalHeight){
+                imageRatio = img.naturalHeight / img.naturalWidth;
+                setLoopHeight();
+            }
+        };
+        img.src = BG_SRC;
+    }
+
+    function tick(now){
+        const dt = Math.min(64, now - lastTime) / 1000;
+        lastTime = now;
+        elapsed += dt;
+
+        autoY = (autoY + BASE_SPEED * dt) % loopHeight;
+        const driftX = Math.sin(elapsed * 0.055) * 18;
+        document.documentElement.style.setProperty("--galaxy-loop-y", `${-autoY}px`);
+        document.documentElement.style.setProperty("--galaxy-loop-x", `${driftX}px`);
+
+        requestAnimationFrame(tick);
+    }
+
+    window.addEventListener("resize", setLoopHeight, { passive:true });
+    window.addEventListener("orientationchange", () => {
+        setTimeout(setLoopHeight, 180);
+    }, { passive:true });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        setLoopHeight();
+        loadBackgroundRatio();
+        requestAnimationFrame(tick);
+    });
+})();
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
