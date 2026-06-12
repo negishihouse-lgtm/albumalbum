@@ -3775,5 +3775,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+<script>
+/* ============================================================
+   Album Collection 背景モーション
+   - CSSアニメーションではなく requestAnimationFrame でCSS変数だけ更新
+   - 背景画像URLは変更しないので再読み込みされない
+   - sin波の往復移動なのでループの継ぎ目が出ない
+============================================================ */
+(function(){
+    const reduceMotion = window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if(reduceMotion){
+        return;
+    }
+
+    const root = document.documentElement;
+    let startTime = null;
+
+    function animateGalaxyBackground(timestamp){
+        if(startTime === null){
+            startTime = timestamp;
+        }
+
+        const elapsed = timestamp - startTime;
+
+        /*
+          1周90秒。
+          上下の往復なので、最後にカクッと戻らない。
+          動きが弱く見える場合は galaxyRange を 42 → 58 くらいに上げる。
+        */
+        const galaxyDuration = 90000;
+        const starDuration = 120000;
+
+        const galaxyRange = window.innerWidth <= 900 ? 36 : 52;
+        const starRange = window.innerWidth <= 900 ? 12 : 18;
+
+        const galaxyY = Math.sin((elapsed / galaxyDuration) * Math.PI * 2) * galaxyRange;
+        const starY = Math.sin((elapsed / starDuration) * Math.PI * 2 + 1.4) * starRange;
+
+        root.style.setProperty("--ac-galaxy-shift-y", galaxyY.toFixed(2) + "px");
+        root.style.setProperty("--ac-star-shift-y", starY.toFixed(2) + "px");
+
+        requestAnimationFrame(animateGalaxyBackground);
+    }
+
+    requestAnimationFrame(animateGalaxyBackground);
+})();
+</script>
+
 </body>
 </html>
