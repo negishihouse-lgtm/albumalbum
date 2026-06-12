@@ -61,6 +61,11 @@
         <span class="label">おすすめ</span>
     </a>
 
+    <a href="search.html">
+        <span class="icon">⌕</span>
+        <span class="label">検索</span>
+    </a>
+
     <a href="observation.html" class="active">
         <span class="icon">⌕</span>
         <span class="label">観測</span>
@@ -85,17 +90,12 @@
 
 <a href="editor.html" class="fab">＋</a>
 
-<!-- スマホ用：おすすめ / 観測 / リスト タブ -->
-<div class="mobile-feed-tabs" id="mobileFeedTabs">
-    <button type="button" class="feed-tab" id="recommendTab" onclick="location.href='index.html'">おすすめ</button>
-    <button type="button" class="feed-tab active" id="followingTab">観測</button>
-    <button type="button" class="feed-tab" id="listTab" onclick="location.href='index.html'">リスト</button>
-</div>
+<!-- 観測は下部タブバーから開く独立ページ -->
 
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
 
-    <div class="home-sortbar">
+    <div class="home-sortbar" hidden>
         <div class="sort-filter-wrap">
             <button
                 type="button"
@@ -125,14 +125,8 @@
 <section class="daily-meteor-box" id="dailyMeteorBox" aria-label="今日の流れ星"></section>
 
 <div class="feed-swipe" id="feedSwipe">
-    <section class="feed-panel" data-feed-panel="recommend">
-        <div class="album-grid" id="recommendGrid"></div>
-    </section>
     <section class="feed-panel" data-feed-panel="following">
         <div class="album-grid" id="followingGrid"></div>
-    </section>
-    <section class="feed-panel" data-feed-panel="list">
-        <div class="album-grid" id="listGrid"></div>
     </section>
 </div>
 
@@ -2644,19 +2638,20 @@ let feedTouchStartY = 0;
 let feedTouchMode = null;
 
 function normalizeFeedMode(mode){
-    return FEED_MODES.includes(mode) ? mode : "recommend";
+    if(IS_OBSERVATION_PAGE){ return "following"; }
+    if(mode === "list"){ return "list"; }
+    return "recommend";
 }
 
 function feedModeToIndex(mode){
-    if(mode === "list"){ return 2; }
-    if(mode === "following"){ return 1; }
+    if(IS_OBSERVATION_PAGE){ return 0; }
+    if(mode === "list"){ return 1; }
     return 0;
 }
 
 function feedIndexToMode(index){
-    if(index >= 1.5){ return "list"; }
-    if(index >= 0.5){ return "following"; }
-    return "recommend";
+    if(IS_OBSERVATION_PAGE){ return "following"; }
+    return index >= 0.5 ? "list" : "recommend";
 }
 
 function getFeedProgress(){
@@ -2722,12 +2717,12 @@ function resetPageTopForFeed(){
 function scrollFeedTo(mode, options = {}){
     const nextMode = normalizeFeedMode(mode);
 
-    if(nextMode === "following" && !IS_OBSERVATION_PAGE){
+    if(mode === "following" && !IS_OBSERVATION_PAGE){
         location.href = "observation.html";
         return;
     }
 
-    if(nextMode !== "following" && IS_OBSERVATION_PAGE){
+    if(IS_OBSERVATION_PAGE && mode !== "following"){
         location.href = "index.html";
         return;
     }
