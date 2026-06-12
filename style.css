@@ -9392,3 +9392,158 @@ body::before{
         flex:0 0 12px !important;
     }
 }
+
+/* ============================================================
+   FINAL OBSERVATION FIX 2026-06-12
+   - 凡例が惑星アイコンと被らないように上側へ移動
+   - プロフィール画像の内側に黒い余白が出ないようにアイコンを全面表示
+============================================================ */
+@media (max-width:900px){
+    body[data-feed-mode="following"] #followingGrid.observation-map{
+        padding-bottom:16px !important;
+        overflow:hidden !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space{
+        position:relative !important;
+        overflow:visible !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend{
+        left:12px !important;
+        top:12px !important;
+        bottom:auto !important;
+        width:136px !important;
+        padding:10px 11px !important;
+        border-radius:16px !important;
+        background:rgba(8,11,25,0.66) !important;
+        border:1px solid rgba(169,112,255,0.26) !important;
+        box-shadow:0 10px 28px rgba(0,0,0,0.22), 0 0 18px rgba(169,112,255,0.10) !important;
+        backdrop-filter:blur(18px) saturate(1.1) !important;
+        -webkit-backdrop-filter:blur(18px) saturate(1.1) !important;
+        transform:none !important;
+        transform-origin:left top !important;
+        z-index:20 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-title{
+        display:block !important;
+        margin:0 0 9px !important;
+        color:rgba(255,255,255,0.92) !important;
+        font-size:11px !important;
+        font-weight:700 !important;
+        line-height:1 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-row{
+        margin:0 0 8px !important;
+        gap:8px !important;
+        color:rgba(255,255,255,0.72) !important;
+        font-size:10.5px !important;
+        line-height:1 !important;
+        font-weight:650 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-row:last-child{
+        margin-bottom:0 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-dot{
+        width:11px !important;
+        height:11px !important;
+        flex:0 0 11px !important;
+        border-radius:50% !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet{
+        padding:0 !important;
+        border:0 !important;
+        overflow:visible !important;
+        background:transparent !important;
+        box-shadow:none !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet::before,
+    body[data-feed-mode="following"] .observation-planet::after{
+        display:none !important;
+        content:none !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-core{
+        position:absolute !important;
+        inset:0 !important;
+        width:100% !important;
+        height:100% !important;
+        border:0 !important;
+        border-radius:50% !important;
+        overflow:hidden !important;
+        background:transparent !important;
+        box-shadow:
+            0 0 0 3px var(--signal-color),
+            0 0 0 7px rgba(8,11,25,0.82),
+            0 0 18px color-mix(in srgb, var(--signal-color) 52%, transparent),
+            0 0 36px color-mix(in srgb, var(--signal-color) 22%, transparent) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-avatar{
+        position:absolute !important;
+        inset:0 !important;
+        display:block !important;
+        width:100% !important;
+        height:100% !important;
+        min-width:100% !important;
+        min-height:100% !important;
+        max-width:100% !important;
+        max-height:100% !important;
+        object-fit:cover !important;
+        border-radius:50% !important;
+        transform:scale(1.045) !important;
+        background:transparent !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
+        display:grid !important;
+        place-items:center !important;
+        color:rgba(255,255,255,0.96) !important;
+        background:radial-gradient(circle at 50% 42%, rgba(14,18,36,0.98), rgba(5,8,18,0.98)) !important;
+        font-size:22px !important;
+        font-weight:760 !important;
+        line-height:1 !important;
+        text-align:center !important;
+        letter-spacing:0 !important;
+        padding:0 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-signal-dot{
+        right:-9px !important;
+        top:3px !important;
+        z-index:30 !important;
+    }
+}
+
+@media (max-width:430px){
+    body[data-feed-mode="following"] .observation-legend{
+        left:10px !important;
+        top:10px !important;
+        width:128px !important;
+        padding:9px 10px !important;
+        border-radius:15px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-title{
+        font-size:10.5px !important;
+        margin-bottom:8px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-row{
+        font-size:9.8px !important;
+        gap:7px !important;
+        margin-bottom:7px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-dot{
+        width:10px !important;
+        height:10px !important;
+        flex-basis:10px !important;
+    }
+}
