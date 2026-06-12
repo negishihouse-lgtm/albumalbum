@@ -10048,3 +10048,447 @@ body[data-feed-mode="following"] .observation-planet-time{
             0 0 32px color-mix(in srgb, var(--signal-color) 22%, transparent) !important;
     }
 }
+
+
+/* ============================================================
+   OBSERVATION REDESIGN 2026-06-13
+   - 右画像の方向性に寄せた大幅刷新
+============================================================ */
+body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
+    padding-left:10px !important;
+    padding-right:10px !important;
+}
+
+body[data-feed-mode="following"] .observation-map{
+    width:100% !important;
+    min-height:920px !important;
+    padding:22px 20px 24px !important;
+    border-radius:30px !important;
+    overflow:hidden !important;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255,242,218,0.90) 0 4px, rgba(255,220,170,0.34) 5px, transparent 12px),
+        radial-gradient(ellipse at 50% 50%, rgba(255,167,215,0.22) 0%, rgba(155,105,255,0.20) 20%, rgba(41,13,92,0.16) 34%, transparent 48%),
+        radial-gradient(circle at 28% 30%, rgba(137,92,255,0.14), transparent 26%),
+        radial-gradient(circle at 76% 34%, rgba(89,213,255,0.10), transparent 24%),
+        linear-gradient(180deg, rgba(2,6,18,0.14), rgba(2,6,18,0.38)) !important;
+    border:1px solid rgba(148,104,255,0.18) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 18px 52px rgba(0,0,0,0.26) !important;
+}
+
+body[data-feed-mode="following"] .observation-map::before{
+    opacity:.36 !important;
+}
+
+body[data-feed-mode="following"] .observation-head-modern{
+    position:relative !important;
+    z-index:5 !important;
+    display:flex !important;
+    align-items:flex-start !important;
+    justify-content:space-between !important;
+    gap:14px !important;
+    margin-bottom:10px !important;
+}
+
+body[data-feed-mode="following"] .observation-title{
+    font-size:22px !important;
+    line-height:1.1 !important;
+    letter-spacing:-0.04em !important;
+    color:rgba(255,255,255,0.98) !important;
+}
+
+body[data-feed-mode="following"] .observation-subtitle{
+    margin-top:7px !important;
+    font-size:13.5px !important;
+    line-height:1.35 !important;
+    color:rgba(228,236,255,0.62) !important;
+}
+
+body[data-feed-mode="following"] .observation-new-btn-modern{
+    flex:0 0 auto !important;
+    min-height:48px !important;
+    padding:12px 16px !important;
+    border-radius:999px !important;
+    border:1px solid rgba(155,105,255,0.34) !important;
+    background:linear-gradient(180deg, rgba(67,34,122,0.42), rgba(35,19,70,0.38)) !important;
+    color:#c998ff !important;
+    font-size:14px !important;
+    font-weight:800 !important;
+    box-shadow:0 0 24px rgba(157,100,255,0.15), inset 0 0 18px rgba(173,124,255,0.10) !important;
+    gap:8px !important;
+}
+
+body[data-feed-mode="following"] .observation-new-btn-icon{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:18px !important;
+    height:18px !important;
+    font-size:16px !important;
+}
+
+body[data-feed-mode="following"] .observation-space-modern{
+    position:relative !important;
+    z-index:2 !important;
+    height:770px !important;
+    min-height:770px !important;
+    margin-top:10px !important;
+}
+
+body[data-feed-mode="following"] .observation-core-galaxy{
+    position:absolute !important;
+    left:50% !important;
+    top:49% !important;
+    width:280px !important;
+    height:280px !important;
+    transform:translate(-50%,-50%) !important;
+    pointer-events:none !important;
+    border-radius:50% !important;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255,244,214,0.95) 0 2px, rgba(255,211,170,0.48) 4px, transparent 11px),
+        radial-gradient(ellipse at 50% 52%, rgba(255,192,226,0.18) 0%, rgba(166,109,255,0.16) 22%, transparent 46%),
+        conic-gradient(from 0deg, transparent 0deg 18deg, rgba(255,210,235,0.16) 20deg 44deg, transparent 46deg 80deg, rgba(145,106,255,0.12) 82deg 118deg, transparent 120deg 200deg, rgba(100,208,255,0.10) 202deg 236deg, transparent 238deg 360deg) !important;
+    filter:blur(0.2px) drop-shadow(0 0 24px rgba(255,195,228,0.16)) !important;
+    opacity:.95 !important;
+}
+
+body[data-feed-mode="following"] .observation-orbit{
+    border:1px dashed rgba(208,215,255,0.18) !important;
+    filter:drop-shadow(0 0 8px rgba(155,105,255,0.10)) !important;
+}
+
+body[data-feed-mode="following"] .observation-orbit.o1{ width:105%; height:280px; left:-2.5%; top:128px; transform:rotate(-8deg); }
+body[data-feed-mode="following"] .observation-orbit.o2{ width:88%; height:350px; left:6%; top:206px; transform:rotate(12deg); }
+body[data-feed-mode="following"] .observation-orbit.o3{ width:108%; height:350px; left:-4%; top:414px; transform:rotate(-14deg); }
+body[data-feed-mode="following"] .observation-orbit.o4{ width:80%; height:520px; left:10%; top:140px; transform:rotate(8deg); }
+
+body[data-feed-mode="following"] .observation-self-planet-wrap{
+    position:absolute !important;
+    left:50% !important;
+    top:54% !important;
+    width:130px !important;
+    transform:translate(-50%,-50%) !important;
+    text-align:center !important;
+    z-index:4 !important;
+}
+
+body[data-feed-mode="following"] .observation-self-signal{
+    position:absolute !important;
+    left:50% !important;
+    top:-22px !important;
+    transform:translateX(-50%) !important;
+    color:#b77cff !important;
+    font-size:28px !important;
+    line-height:1 !important;
+    text-shadow:0 0 16px rgba(183,124,255,0.55) !important;
+}
+
+body[data-feed-mode="following"] .observation-self-planet{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    position:relative !important;
+    width:118px !important;
+    height:118px !important;
+    margin:0 auto !important;
+    border:none !important;
+    background:transparent !important;
+    border-radius:50% !important;
+    overflow:visible !important;
+}
+
+body[data-feed-mode="following"] .observation-self-ring{
+    position:absolute !important;
+    left:-16px !important;
+    right:-16px !important;
+    top:48px !important;
+    height:22px !important;
+    border-top:2px solid rgba(228,230,255,0.62) !important;
+    border-bottom:2px solid rgba(171,178,232,0.34) !important;
+    border-radius:50% !important;
+    transform:rotate(18deg) !important;
+    box-shadow:0 0 14px rgba(196,205,255,0.14) !important;
+}
+
+body[data-feed-mode="following"] .observation-self-core{
+    position:absolute !important;
+    inset:0 !important;
+    border-radius:50% !important;
+    background:
+        radial-gradient(circle at 36% 30%, rgba(160,202,255,0.95), rgba(160,202,255,0.18) 24%, transparent 26%),
+        radial-gradient(circle at 64% 70%, rgba(21,55,126,0.95), rgba(8,24,64,0.35) 34%, transparent 36%),
+        radial-gradient(circle at 50% 44%, rgba(74,117,212,0.90), rgba(15,34,82,0.98) 70%) !important;
+    box-shadow:
+        0 0 0 2px rgba(244,248,255,0.92),
+        0 0 0 8px rgba(16,23,46,0.28),
+        0 0 26px rgba(123,176,255,0.34),
+        0 0 58px rgba(123,176,255,0.16) !important;
+}
+
+body[data-feed-mode="following"] .observation-self-name{
+    margin-top:14px !important;
+    color:rgba(255,255,255,0.98) !important;
+    font-size:18px !important;
+    line-height:1.1 !important;
+    font-weight:800 !important;
+    text-shadow:0 2px 12px rgba(0,0,0,0.65) !important;
+}
+
+body[data-feed-mode="following"] .observation-self-time{
+    margin-top:4px !important;
+    color:rgba(255,255,255,0.76) !important;
+    font-size:13px !important;
+    line-height:1.15 !important;
+    font-weight:600 !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-wrap{
+    z-index:3 !important;
+}
+
+body[data-feed-mode="following"] .observation-planet{
+    overflow:visible !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-core{
+    box-shadow:
+        0 0 0 2px rgba(244,248,255,0.94),
+        0 0 0 6px rgba(13,16,30,0.38),
+        0 0 18px color-mix(in srgb, var(--signal-color) 56%, transparent),
+        0 0 38px color-mix(in srgb, var(--signal-color) 22%, transparent) !important;
+}
+
+body[data-feed-mode="following"] .observation-signal-dot{
+    right:-4px !important;
+    top:-4px !important;
+    min-width:28px !important;
+    height:28px !important;
+    padding:0 8px !important;
+    border-radius:999px !important;
+    background:#aa78ff !important;
+    color:#26113f !important;
+    font-size:15px !important;
+    font-weight:900 !important;
+    box-shadow:0 0 18px rgba(170,120,255,0.54) !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-name{
+    margin-top:10px !important;
+    font-size:16px !important;
+    line-height:1.12 !important;
+    font-weight:800 !important;
+    color:rgba(255,255,255,0.97) !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-time{
+    margin-top:6px !important;
+    font-size:12px !important;
+    line-height:1.15 !important;
+    color:rgba(255,255,255,0.78) !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-modern{
+    position:absolute !important;
+    left:10px !important;
+    bottom:18px !important;
+    width:250px !important;
+    padding:14px 14px 12px !important;
+    border-radius:18px !important;
+    border:1px solid rgba(255,255,255,0.08) !important;
+    background:rgba(7,11,24,0.58) !important;
+    backdrop-filter:blur(18px) !important;
+    -webkit-backdrop-filter:blur(18px) !important;
+    display:block !important;
+    box-shadow:0 14px 28px rgba(0,0,0,0.18) !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-modern .observation-legend-row{
+    display:flex !important;
+    align-items:center !important;
+    gap:9px !important;
+    margin-bottom:10px !important;
+    font-size:11px !important;
+    line-height:1.1 !important;
+    color:rgba(255,255,255,0.78) !important;
+    font-weight:700 !important;
+    white-space:nowrap !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-modern .observation-legend-row:last-child{
+    margin-bottom:0 !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-modern .observation-legend-dot{
+    width:18px !important;
+    height:18px !important;
+    flex:0 0 18px !important;
+    border-radius:50% !important;
+    background:var(--legend-color) !important;
+    box-shadow:0 0 14px color-mix(in srgb, var(--legend-color) 80%, transparent) !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-modern .observation-legend-dot.number{
+    display:grid !important;
+    place-items:center !important;
+    color:#23113a !important;
+    font-size:11px !important;
+    font-weight:900 !important;
+}
+
+body[data-feed-mode="following"] .observation-tools{
+    position:absolute !important;
+    right:8px !important;
+    bottom:16px !important;
+    display:flex !important;
+    gap:12px !important;
+    z-index:5 !important;
+}
+
+body[data-feed-mode="following"] .observation-tool-btn{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    width:60px !important;
+    height:60px !important;
+    border-radius:50% !important;
+    border:1px solid rgba(255,255,255,0.08) !important;
+    background:rgba(11,15,31,0.56) !important;
+    color:rgba(255,255,255,0.90) !important;
+    font-size:28px !important;
+    line-height:1 !important;
+    box-shadow:0 14px 28px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+    backdrop-filter:blur(16px) !important;
+    -webkit-backdrop-filter:blur(16px) !important;
+}
+
+@media (max-width:430px){
+    body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
+        padding-left:8px !important;
+        padding-right:8px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-map{
+        min-height:840px !important;
+        padding:18px 14px 20px !important;
+        border-radius:26px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-title{
+        font-size:18px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-subtitle{
+        font-size:11px !important;
+        margin-top:6px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-head-modern{
+        align-items:flex-start !important;
+        gap:10px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-new-btn-modern{
+        padding:10px 12px !important;
+        min-height:42px !important;
+        font-size:12.5px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space-modern{
+        height:710px !important;
+        min-height:710px !important;
+        margin-top:8px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-core-galaxy{
+        width:220px !important;
+        height:220px !important;
+        top:48% !important;
+    }
+
+    body[data-feed-mode="following"] .observation-orbit.o1{ width:118%; height:240px; left:-9%; top:128px; }
+    body[data-feed-mode="following"] .observation-orbit.o2{ width:94%; height:320px; left:3%; top:214px; }
+    body[data-feed-mode="following"] .observation-orbit.o3{ width:122%; height:330px; left:-11%; top:412px; }
+    body[data-feed-mode="following"] .observation-orbit.o4{ width:88%; height:470px; left:6%; top:136px; }
+
+    body[data-feed-mode="following"] .observation-self-planet-wrap{
+        top:53% !important;
+        width:110px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-self-planet{
+        width:100px !important;
+        height:100px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-self-ring{
+        left:-14px !important;
+        right:-14px !important;
+        top:40px !important;
+        height:18px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-self-signal{
+        top:-18px !important;
+        font-size:24px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-self-name{
+        font-size:15px !important;
+        margin-top:12px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-self-time{
+        font-size:11px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-wrap{
+        transform:translate(-50%,-50%) scale(0.90) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-name{
+        font-size:14px !important;
+        margin-top:8px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-time{
+        font-size:11px !important;
+        margin-top:4px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-signal-dot{
+        min-width:24px !important;
+        height:24px !important;
+        font-size:13px !important;
+        right:-2px !important;
+        top:-2px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-modern{
+        width:200px !important;
+        left:2px !important;
+        bottom:18px !important;
+        padding:12px 12px 10px !important;
+        border-radius:16px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-modern .observation-legend-row{
+        gap:8px !important;
+        margin-bottom:9px !important;
+        font-size:10px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-modern .observation-legend-dot{
+        width:16px !important;
+        height:16px !important;
+        flex-basis:16px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-tools{
+        right:0 !important;
+        bottom:12px !important;
+        gap:10px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-tool-btn{
+        width:52px !important;
+        height:52px !important;
+        font-size:24px !important;
+    }
+}
