@@ -9143,3 +9143,60 @@ body::before{
         box-shadow:0 0 12px var(--legend-color) !important;
     }
 }
+
+/* FINAL CUT-OFF FIX / MOVING BACKGROUND 2026-06-13 */
+@property --ac-bg-y {
+    syntax:"<length>";
+    inherits:false;
+    initial-value:0px;
+}
+
+@keyframes acGalaxyPositionFloat{
+    0%{ --ac-bg-y:0px; }
+    100%{ --ac-bg-y:-220px; }
+}
+
+body::before{
+    transform:translate3d(0,0,0) !important;
+    background-image:
+        linear-gradient(180deg, rgba(3,8,20,0.14) 0%, rgba(3,8,20,0.28) 44%, rgba(3,8,20,0.66) 100%),
+        url("./milkyway_bg.png") !important;
+    background-size:
+        100% 100%,
+        100% auto !important;
+    background-repeat:no-repeat, repeat-y !important;
+    background-position:
+        center center,
+        center var(--ac-bg-y) !important;
+    animation:acGalaxyPositionFloat 180s ease-in-out infinite alternate !important;
+    will-change:background-position !important;
+}
+
+@media (max-width:900px){
+    body[data-feed-mode="following"] .feed-swipe{
+        margin-top:calc(var(--ac-topbar-h) + env(safe-area-inset-top) + 6px) !important;
+        height:calc(100svh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 34px) !important;
+        max-height:calc(100svh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 34px) !important;
+        padding:0 14px !important;
+        overflow:visible !important;
+        box-sizing:border-box !important;
+    }
+
+    body[data-feed-mode="following"] #followingGrid.observation-map{
+        height:100% !important;
+        max-height:100% !important;
+        min-height:0 !important;
+        overflow:hidden !important;
+        padding:18px 18px 18px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space{
+        height:calc(100% - 52px) !important;
+        padding-bottom:112px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend{
+        bottom:18px !important;
+        display:block !important;
+    }
+}
