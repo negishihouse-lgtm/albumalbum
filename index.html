@@ -8306,7 +8306,6 @@ body::after{
         height:100dvh !important;
         overflow:hidden !important;
         overscroll-behavior:none !important;
-        touch-action:none !important;
     }
 
     body[data-feed-mode="following"] .feed-swipe{
@@ -8541,7 +8540,7 @@ body::after{
         padding:10px 12px 12px !important;
         margin-bottom:0 !important;
         border-radius:20px !important;
-        touch-action:none !important;
+        touch-action:pan-x !important;
         overscroll-behavior:none !important;
     }
 
@@ -11285,140 +11284,140 @@ function getPostTime(value){
     return 0;
 }
 
+
+/* ============================================================
+   FEED TAB CONTROLLER 2026-06-12
+   - おすすめ / 観測 / リストの切替をここだけで管理
+   - 起動時に勝手におすすめへ戻さない
+   - 横スワイプとタップを両方サポート
+============================================================ */
+const FEED_MODES = ["recommend", "following", "list"];
+let feedScrollTicking = false;
+let feedTouchStartX = 0;
+let feedTouchStartY = 0;
+let feedTouchMode = null;
+
+function normalizeFeedMode(mode){
+    return FEED_MODES.includes(mode) ? mode : "recommend";
+}
+
+function feedModeToIndex(mode){
+    if(mode === "list"){ return 2; }
+    if(mode === "following"){ return 1; }
+    return 0;
+}
+
+function feedIndexToMode(index){
+    if(index >= 1.5){ return "list"; }
+    if(index >= 0.5){ return "following"; }
+    return "recommend";
+}
+
 function getFeedProgress(){
     if(!feedSwipe || window.innerWidth > 900){
-        if(currentFeedMode === "list") return 2;
-        if(currentFeedMode === "following") return 1;
-        return 0;
+        return feedModeToIndex(currentFeedMode);
     }
 
     return Math.max(0, Math.min(2, feedSwipe.scrollLeft / Math.max(1, feedSwipe.clientWidth)));
 }
 
-function updateFeedTabs(progress = null){
-    if(!recommendTab || !followingTab || !listTab){
-        return;
-    }
-
-    if(progress === null){
-        progress = getFeedProgress();
-    }
-
-    progress = Math.max(0, Math.min(2, progress));
-
-    let nextMode = "recommend";
-    if(progress >= 1.5){
-        nextMode = "list";
-    }else if(progress >= 0.5){
-        nextMode = "following";
-    }
-
+function applyFeedMode(mode, progress = null){
+    const nextMode = normalizeFeedMode(mode);
     currentFeedMode = nextMode;
-    if(document.body){ document.body.dataset.feedMode = nextMode; }
 
-    recommendTab.classList.toggle("active", nextMode === "recommend");
-    followingTab.classList.toggle("active", nextMode === "following");
-    listTab.classList.toggle("active", nextMode === "list");
+    if(document.body){
+        document.body.dataset.feedMode = nextMode;
+    }
 
+    const activeIndex = feedModeToIndex(nextMode);
+    const underlineIndex = activeIndex;
     const tabs = document.getElementById("mobileFeedTabs");
 
+    if(recommendTab){
+        recommendTab.classList.toggle("active", nextMode === "recommend");
+        recommendTab.setAttribute("aria-selected", nextMode === "recommend" ? "true" : "false");
+    }
+
+    if(followingTab){
+        followingTab.classList.toggle("active", nextMode === "following");
+        followingTab.setAttribute("aria-selected", nextMode === "following" ? "true" : "false");
+    }
+
+    if(listTab){
+        listTab.classList.toggle("active", nextMode === "list");
+        listTab.setAttribute("aria-selected", nextMode === "list" ? "true" : "false");
+    }
+
     if(tabs){
-        tabs.style.setProperty("--feed-progress", progress.toFixed(4));
-        tabs.style.setProperty("--recommend-tab-opacity", String(1 - (Math.min(progress, 1) * 0.42)));
-        tabs.style.setProperty("--following-tab-opacity", String(0.58 + ((1 - Math.min(1, Math.abs(progress - 1))) * 0.42)));
-        tabs.style.setProperty("--list-tab-opacity", String(0.58 + (Math.max(0, progress - 1) * 0.42)));
-    }
-
-    const recommendPanel = document.querySelector('[data-feed-panel="recommend"]');
-    const followingPanel = document.querySelector('[data-feed-panel="following"]');
-    const listPanel = document.querySelector('[data-feed-panel="list"]');
-
-    if(recommendPanel){
-        recommendPanel.classList.toggle("is-visible", nextMode === "recommend");
-    }
-
-    if(followingPanel){
-        followingPanel.classList.toggle("is-visible", nextMode === "following");
-    }
-
-    if(listPanel){
-        listPanel.classList.toggle("is-visible", nextMode === "list");
+        tabs.dataset.activeFeed = nextMode;
+        tabs.style.setProperty("--feed-progress", underlineIndex.toFixed(4));
+        tabs.style.setProperty("--recommend-tab-opacity", nextMode === "recommend" ? "1" : "0.58");
+        tabs.style.setProperty("--following-tab-opacity", nextMode === "following" ? "1" : "0.58");
+        tabs.style.setProperty("--list-tab-opacity", nextMode === "list" ? "1" : "0.58");
     }
 }
 
-function scrollFeedTo(mode){
-    if(mode !== "recommend" && mode !== "following" && mode !== "list"){
+function updateFeedTabs(progress = null){
+    if(typeof progress === "number"){
+        applyFeedMode(feedIndexToMode(progress), progress);
         return;
     }
 
-    const panelIndex = mode === "list" ? 2 : (mode === "following" ? 1 : 0);
+    applyFeedMode(feedIndexToMode(getFeedProgress()), getFeedProgress());
+}
 
-    currentFeedMode = mode;
-    updateFeedTabs(panelIndex);
+function resetPageTopForFeed(){
+    window.scrollTo({ top:0, left:0, behavior:"auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    document.body.classList.remove("mobile-head-hidden");
+}
+
+function scrollFeedTo(mode, options = {}){
+    const nextMode = normalizeFeedMode(mode);
+    const index = feedModeToIndex(nextMode);
+    const smooth = options.smooth !== false;
+    const resetTop = options.resetTop !== false;
+
+    applyFeedMode(nextMode, index);
+
+    if(resetTop && window.innerWidth <= 900){
+        resetPageTopForFeed();
+    }
 
     if(feedSwipe && window.innerWidth <= 900){
         feedSwipe.scrollTo({
-            left: feedSwipe.clientWidth * panelIndex,
-            behavior:"smooth"
+            left:feedSwipe.clientWidth * index,
+            behavior:smooth ? "smooth" : "auto"
         });
     }
 }
 
+window.scrollFeedTo = scrollFeedTo;
+window.updateFeedTabs = updateFeedTabs;
+window.resetFeedToRecommendOnOpen = function(){
+    applyFeedMode(currentFeedMode, feedModeToIndex(currentFeedMode));
+};
+
 if(recommendTab){
-    recommendTab.addEventListener("click", () => scrollFeedTo("recommend"));
+    recommendTab.addEventListener("click", (event) => {
+        event.preventDefault();
+        scrollFeedTo("recommend");
+    });
 }
 
 if(followingTab){
-    followingTab.addEventListener("click", () => scrollFeedTo("following"));
+    followingTab.addEventListener("click", (event) => {
+        event.preventDefault();
+        scrollFeedTo("following");
+    });
 }
 
 if(listTab){
-    listTab.addEventListener("click", () => scrollFeedTo("list"));
-}
-
-function resetFeedToRecommendOnOpen(){
-    if(!feedSwipe || window.innerWidth > 900){
-        return;
-    }
-
-    currentFeedMode = "recommend";
-    feedSwipe.scrollLeft = 0;
-    updateFeedTabs(0);
-}
-
-window.addEventListener("pageshow", () => {
-    requestAnimationFrame(resetFeedToRecommendOnOpen);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    requestAnimationFrame(resetFeedToRecommendOnOpen);
-});
-
-let feedScrollTicking = false;
-let feedTouchStartX = 0;
-let feedTouchStartY = 0;
-let feedGestureDirection = null;
-let unlockVerticalGestureTimer = null;
-
-function lockFeedForVerticalGesture(){
-    if(!feedSwipe){
-        return;
-    }
-
-    feedSwipe.classList.add("vertical-gesture");
-}
-
-function unlockFeedGestureSoon(){
-    if(!feedSwipe){
-        return;
-    }
-
-    clearTimeout(unlockVerticalGestureTimer);
-
-    unlockVerticalGestureTimer = setTimeout(() => {
-        feedSwipe.classList.remove("vertical-gesture");
-        feedGestureDirection = null;
-    }, 180);
+    listTab.addEventListener("click", (event) => {
+        event.preventDefault();
+        scrollFeedTo("list");
+    });
 }
 
 if(feedSwipe){
@@ -11427,12 +11426,9 @@ if(feedSwipe){
             return;
         }
 
-        clearTimeout(unlockVerticalGestureTimer);
-        feedSwipe.classList.remove("vertical-gesture");
-
         feedTouchStartX = event.touches[0].clientX;
         feedTouchStartY = event.touches[0].clientY;
-        feedGestureDirection = null;
+        feedTouchMode = null;
     }, { passive:true });
 
     feedSwipe.addEventListener("touchmove", (event) => {
@@ -11440,44 +11436,69 @@ if(feedSwipe){
             return;
         }
 
+        const mode = document.body?.dataset?.feedMode || currentFeedMode;
         const dx = event.touches[0].clientX - feedTouchStartX;
         const dy = event.touches[0].clientY - feedTouchStartY;
         const absX = Math.abs(dx);
         const absY = Math.abs(dy);
 
-        if(!feedGestureDirection && Math.max(absX, absY) > 8){
-            feedGestureDirection = absY > absX + 6 ? "vertical" : "horizontal";
-
-            if(feedGestureDirection === "vertical"){
-                lockFeedForVerticalGesture();
-            }
+        if(!feedTouchMode && Math.max(absX, absY) > 8){
+            feedTouchMode = absX >= absY ? "horizontal" : "vertical";
         }
-    }, { passive:true });
 
-    feedSwipe.addEventListener("touchend", unlockFeedGestureSoon, { passive:true });
-    feedSwipe.addEventListener("touchcancel", unlockFeedGestureSoon, { passive:true });
+        if(mode === "following" && feedTouchMode === "vertical"){
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }, { passive:false });
 
     feedSwipe.addEventListener("scroll", () => {
-        if(window.innerWidth > 900){
-            return;
-        }
-
-        if(feedScrollTicking){
+        if(window.innerWidth > 900 || feedScrollTicking){
             return;
         }
 
         feedScrollTicking = true;
-
         requestAnimationFrame(() => {
-            updateFeedTabs(getFeedProgress());
+            const progress = getFeedProgress();
+            applyFeedMode(feedIndexToMode(progress), progress);
             feedScrollTicking = false;
         });
     }, { passive:true });
 }
 
+window.addEventListener("scroll", () => {
+    if(window.innerWidth > 900){
+        return;
+    }
+
+    if((document.body?.dataset?.feedMode || currentFeedMode) === "following"){
+        document.body.classList.remove("mobile-head-hidden");
+        return;
+    }
+
+    const currentY = window.scrollY || document.documentElement.scrollTop || 0;
+    const previousY = Number(document.body.dataset.lastScrollY || 0);
+
+    if(currentY > previousY && currentY > 2){
+        document.body.classList.add("mobile-head-hidden");
+    }else if(currentY < previousY){
+        document.body.classList.remove("mobile-head-hidden");
+    }
+
+    document.body.dataset.lastScrollY = String(currentY);
+}, { passive:true });
+
 window.addEventListener("resize", () => {
-    updateFeedTabs();
+    if(feedSwipe && window.innerWidth <= 900){
+        feedSwipe.scrollTo({
+            left:feedSwipe.clientWidth * feedModeToIndex(currentFeedMode),
+            behavior:"auto"
+        });
+    }
+    updateFeedTabs(feedModeToIndex(currentFeedMode));
 });
+
+applyFeedMode(currentFeedMode, feedModeToIndex(currentFeedMode));
 
 const sortModeLabels = {
     recommend: "おすすめ順",
@@ -12379,7 +12400,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /* 背景画像を縦ループで自動アニメーションさせる。スクロール同期はしない */
 (function(){
     const BG_SRC = "./milkyway_bg.png";
-    const BASE_SPEED = 140; // 背景画像そのものが流れる速度 px/秒。ページスクロールとは同期しない
+    const BASE_SPEED = 14; // 背景画像そのものが流れる速度 px/秒。ページスクロールとは同期しない
 
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if(reduceMotion){
@@ -12436,158 +12457,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-/* FINAL MOBILE FEED CLEAN JS 2026-06-12 */
-(function(){
-    const modes = ["recommend", "following", "list"];
-    const swipe = document.getElementById("feedSwipe");
-    const tabs = document.getElementById("mobileFeedTabs");
-    const buttons = {
-        recommend:document.getElementById("recommendTab"),
-        following:document.getElementById("followingTab"),
-        list:document.getElementById("listTab")
-    };
-    let activeMode = document.body?.dataset?.feedMode || "recommend";
-    let lastScrollY = window.scrollY || 0;
-    let ignoreSwipeUntil = 0;
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    function clampMode(mode){ return modes.includes(mode) ? mode : "recommend"; }
-    function modeToIndex(mode){ return mode === "list" ? 2 : (mode === "following" ? 1 : 0); }
-    function indexToMode(index){ return index >= 1.5 ? "list" : (index >= 0.5 ? "following" : "recommend"); }
-
-    function setMode(mode, progress){
-        activeMode = clampMode(mode);
-        window.currentFeedMode = activeMode;
-        document.body.dataset.feedMode = activeMode;
-        const underline = modeToIndex(activeMode);
-
-        Object.entries(buttons).forEach(([key, button]) => {
-            if(!button){ return; }
-            const active = key === activeMode;
-            button.classList.toggle("active", active);
-            button.setAttribute("aria-selected", active ? "true" : "false");
-        });
-
-        if(tabs){
-            tabs.dataset.activeFeed = activeMode;
-            tabs.style.setProperty("--feed-progress", underline.toFixed(4));
-            tabs.style.setProperty("--recommend-tab-opacity", activeMode === "recommend" ? "1" : "0.58");
-            tabs.style.setProperty("--following-tab-opacity", activeMode === "following" ? "1" : "0.58");
-            tabs.style.setProperty("--list-tab-opacity", activeMode === "list" ? "1" : "0.58");
-        }
-    }
-
-    function pageTop(){
-        window.scrollTo({ top:0, left:0, behavior:"auto" });
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-        lastScrollY = 0;
-        document.body.classList.remove("mobile-head-hidden");
-    }
-
-    function moveTo(mode, smooth){
-        mode = clampMode(mode);
-        setMode(mode);
-        pageTop();
-        if(swipe && window.innerWidth <= 900){
-            ignoreSwipeUntil = Date.now() + 320;
-            swipe.scrollTo({ left:swipe.clientWidth * modeToIndex(mode), behavior:smooth ? "smooth" : "auto" });
-        }
-    }
-
-    window.scrollFeedTo = function(mode){ moveTo(mode, true); };
-    window.resetFeedToRecommendOnOpen = function(){ setMode(activeMode); };
-    window.updateFeedTabs = function(progress){
-        if(typeof progress === "number"){
-            setMode(indexToMode(progress), progress);
-            return;
-        }
-        if(!swipe || window.innerWidth > 900){
-            setMode(activeMode);
-            return;
-        }
-        const p = Math.max(0, Math.min(2, swipe.scrollLeft / Math.max(1, swipe.clientWidth)));
-        setMode(indexToMode(p), p);
-    };
-
-    Object.entries(buttons).forEach(([mode, button]) => {
-        if(!button){ return; }
-        button.addEventListener("click", (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            moveTo(mode, true);
-        }, true);
-    });
-
-    if(swipe){
-        let ticking = false;
-        swipe.addEventListener("scroll", () => {
-            if(window.innerWidth > 900 || ticking || Date.now() < ignoreSwipeUntil){ return; }
-            ticking = true;
-            requestAnimationFrame(() => {
-                const p = Math.max(0, Math.min(2, swipe.scrollLeft / Math.max(1, swipe.clientWidth)));
-                setMode(indexToMode(p), p);
-                ticking = false;
-            });
-        }, { passive:true });
-    }
-
-    window.addEventListener("scroll", () => {
-        if(window.innerWidth > 900){ return; }
-        if((document.body.dataset.feedMode || activeMode) === "following"){
-            lastScrollY = 0;
-            document.body.classList.remove("mobile-head-hidden");
-            return;
-        }
-        const y = window.scrollY || document.documentElement.scrollTop || 0;
-        if(y > lastScrollY && y > 2){
-            document.body.classList.add("mobile-head-hidden");
-        }else if(y < lastScrollY){
-            document.body.classList.remove("mobile-head-hidden");
-        }
-        lastScrollY = y;
-    }, { passive:true });
-
-    document.addEventListener("touchstart", (event) => {
-        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
-            return;
-        }
-
-        touchStartX = event.touches[0].clientX;
-        touchStartY = event.touches[0].clientY;
-    }, { passive:true, capture:true });
-
-    document.addEventListener("touchmove", (event) => {
-        if(window.innerWidth > 900 || !event.touches || event.touches.length !== 1){
-            return;
-        }
-
-        if((document.body.dataset.feedMode || activeMode) !== "following"){
-            return;
-        }
-
-        const dx = event.touches[0].clientX - touchStartX;
-        const dy = event.touches[0].clientY - touchStartY;
-
-        if(Math.abs(dy) >= Math.abs(dx)){
-            event.preventDefault();
-            event.stopPropagation();
-        }
-    }, { passive:false, capture:true });
-
-    function boot(){
-        setMode(activeMode);
-        if(swipe && window.innerWidth <= 900){
-            swipe.scrollTo({ left:swipe.clientWidth * modeToIndex(activeMode), behavior:"auto" });
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", boot);
-    window.addEventListener("pageshow", boot);
-    window.addEventListener("resize", boot);
-    boot();
-})();
 
 </script>
 
