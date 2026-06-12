@@ -8888,6 +8888,240 @@ body::after{
 }
 
 
+
+
+/* ============================================================
+   PATCH UI TUNE 2026-06-12
+   - 観測惑星を「黒い円の中にアイコン＋外周色リング」に調整
+   - 惑星のアイコンずれ補正
+   - モバイル上部ロゴ領域を圧縮
+   - 並び替えを流れ星バナー右下へ移動
+============================================================ */
+
+/* 観測惑星：外周リングを投稿時間で色分けし、中央に黒い円＋アイコン */
+.observation-planet-wrap{
+    z-index:4 !important;
+}
+
+.observation-planet{
+    position:relative !important;
+    display:grid !important;
+    place-items:center !important;
+    width:var(--size) !important;
+    height:var(--size) !important;
+    border-radius:50% !important;
+    padding:0 !important;
+    margin:0 auto !important;
+    overflow:visible !important;
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+}
+
+.observation-planet::before{
+    display:none !important;
+    content:none !important;
+}
+
+.observation-planet::after{
+    content:"" !important;
+    position:absolute !important;
+    inset:-2px !important;
+    border-radius:50% !important;
+    border:4px solid var(--signal-color) !important;
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,0.08) inset,
+        0 0 14px var(--signal-color),
+        0 0 28px var(--signal-color) !important;
+    opacity:.88 !important;
+    pointer-events:none !important;
+    z-index:1 !important;
+}
+
+.observation-planet-core{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    width:72% !important;
+    height:72% !important;
+    transform:translate(-50%,-50%) !important;
+    display:grid !important;
+    place-items:center !important;
+    border-radius:50% !important;
+    overflow:hidden !important;
+    background:
+        radial-gradient(circle at 34% 28%, rgba(255,255,255,0.10), transparent 34%),
+        linear-gradient(180deg, rgba(9,14,29,0.98), rgba(3,7,16,0.98)) !important;
+    box-shadow:
+        inset 0 0 0 1.5px rgba(255,255,255,0.10),
+        inset 0 -8px 14px rgba(0,0,0,0.44),
+        0 0 0 1px rgba(255,255,255,0.06) !important;
+    box-sizing:border-box !important;
+    z-index:2 !important;
+}
+
+.observation-planet-core .observation-planet-avatar,
+.observation-planet-avatar{
+    position:relative !important;
+    inset:auto !important;
+    left:auto !important;
+    top:auto !important;
+    width:74% !important;
+    height:74% !important;
+    min-width:74% !important;
+    min-height:74% !important;
+    max-width:74% !important;
+    max-height:74% !important;
+    border-radius:50% !important;
+    object-fit:cover !important;
+    object-position:center center !important;
+    display:block !important;
+    transform:none !important;
+    margin:0 !important;
+    z-index:3 !important;
+}
+
+.observation-planet-core.observation-planet-avatar-fallback{
+    color:rgba(255,255,255,0.92) !important;
+    font-size:22px !important;
+    font-weight:700 !important;
+    line-height:1 !important;
+    letter-spacing:-0.04em !important;
+    text-align:center !important;
+}
+
+.observation-signal-dot{
+    position:absolute !important;
+    right:0 !important;
+    top:0 !important;
+    transform:translate(38%, -38%) !important;
+    min-width:18px !important;
+    height:18px !important;
+    padding:0 5px !important;
+    z-index:5 !important;
+}
+
+.observation-planet-name,
+.observation-planet-time{
+    position:relative !important;
+    z-index:5 !important;
+}
+
+@media (max-width:900px){
+    :root{
+        --ac-topbar-h:124px !important;
+        --ac-feed-tabs-h:58px !important;
+        --ac-meteor-h:78px !important;
+    }
+
+    .topbar{
+        height:var(--ac-topbar-h) !important;
+        padding:0 22px 16px !important;
+        align-items:flex-end !important;
+        justify-content:flex-start !important;
+        gap:0 !important;
+    }
+
+    .page-title{
+        font-size:32px !important;
+        line-height:1.04 !important;
+        letter-spacing:-0.04em !important;
+    }
+
+    .topbar .home-sortbar{
+        position:fixed !important;
+        top:calc(var(--ac-fixed-head-h) + var(--ac-meteor-h) - 18px) !important;
+        right:18px !important;
+        z-index:12150 !important;
+        margin:0 !important;
+        padding:0 !important;
+        display:none !important;
+        align-items:center !important;
+        justify-content:center !important;
+    }
+
+    body[data-feed-mode="recommend"] .topbar .home-sortbar{
+        display:flex !important;
+    }
+
+    body:not([data-feed-mode="recommend"]) .topbar .home-sortbar{
+        display:none !important;
+    }
+
+    .topbar .sort-filter-wrap{
+        position:relative !important;
+    }
+
+    .topbar .sort-filter-btn{
+        width:42px !important;
+        height:42px !important;
+        border-radius:50% !important;
+        border:1px solid rgba(178,136,255,0.36) !important;
+        background:linear-gradient(180deg, rgba(11,16,34,0.96), rgba(8,12,26,0.92)) !important;
+        box-shadow:
+            0 10px 24px rgba(0,0,0,0.34),
+            0 0 18px rgba(169,112,255,0.22) !important;
+    }
+
+    .topbar .sort-filter-btn svg{
+        width:18px !important;
+        height:18px !important;
+    }
+
+    .topbar .sort-filter-menu{
+        top:auto !important;
+        bottom:calc(100% + 10px) !important;
+        right:0 !important;
+        min-width:220px !important;
+    }
+
+    .daily-meteor-box{
+        padding:8px 16px 14px !important;
+    }
+
+    .daily-meteor-card{
+        width:min(100%, 396px) !important;
+        min-height:62px !important;
+        padding:12px 16px !important;
+    }
+
+    body[data-feed-mode="recommend"] #recommendGrid{
+        padding-top:calc(var(--ac-meteor-h) + 14px) !important;
+    }
+}
+
+@media (max-width:430px){
+    :root{
+        --ac-topbar-h:116px !important;
+        --ac-feed-tabs-h:56px !important;
+        --ac-meteor-h:74px !important;
+    }
+
+    .topbar{
+        padding:0 18px 14px !important;
+    }
+
+    .page-title{
+        font-size:29px !important;
+    }
+
+    .topbar .home-sortbar{
+        right:14px !important;
+        top:calc(var(--ac-fixed-head-h) + var(--ac-meteor-h) - 16px) !important;
+    }
+
+    .daily-meteor-box{
+        padding:8px 12px 12px !important;
+    }
+
+    .daily-meteor-card{
+        min-height:60px !important;
+        padding:11px 14px !important;
+    }
+}
+
+/* END PATCH UI TUNE */
+
 </style>
 </head>
 
