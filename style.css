@@ -10492,3 +10492,261 @@ body[data-feed-mode="following"] .observation-tool-btn{
         font-size:24px !important;
     }
 }
+
+
+/* ============================================================
+   OBSERVATION REFINEMENT 2026-06-13
+   - 自分の惑星を削除
+   - 凡例を左下固定
+   - 惑星配置を外側に再設計
+   - 左右余白を極小化
+============================================================ */
+body[data-feed-mode="following"] .feed-swipe,
+body[data-feed-mode="following"] .feed-panel,
+body[data-feed-mode="following"] #followingGrid{
+    width:100% !important;
+    max-width:none !important;
+}
+
+body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
+    padding-left:4px !important;
+    padding-right:4px !important;
+}
+
+body[data-feed-mode="following"] .observation-map{
+    min-height:830px !important;
+    padding:18px 10px 20px !important;
+    border-radius:26px !important;
+    margin:0 !important;
+}
+
+body[data-feed-mode="following"] .observation-head-modern{
+    gap:10px !important;
+    margin-bottom:8px !important;
+}
+
+body[data-feed-mode="following"] .observation-head-text{
+    min-width:0 !important;
+    flex:1 1 auto !important;
+}
+
+body[data-feed-mode="following"] .observation-title{
+    font-size:20px !important;
+}
+
+body[data-feed-mode="following"] .observation-subtitle{
+    margin-top:5px !important;
+    font-size:12px !important;
+    line-height:1.28 !important;
+}
+
+body[data-feed-mode="following"] .observation-new-btn-modern{
+    padding:10px 14px !important;
+    min-height:42px !important;
+    font-size:13px !important;
+    white-space:nowrap !important;
+}
+
+body[data-feed-mode="following"] .observation-space-modern{
+    position:relative !important;
+    height:700px !important;
+    min-height:700px !important;
+    margin-top:6px !important;
+    overflow:hidden !important;
+}
+
+body[data-feed-mode="following"] .observation-core-galaxy{
+    width:230px !important;
+    height:230px !important;
+    left:50% !important;
+    top:48% !important;
+    opacity:.95 !important;
+}
+
+body[data-feed-mode="following"] .observation-core-radio{
+    position:absolute !important;
+    left:50% !important;
+    top:48% !important;
+    transform:translate(-50%,-50%) !important;
+    z-index:2 !important;
+    color:#b77cff !important;
+    font-size:30px !important;
+    line-height:1 !important;
+    text-shadow:0 0 16px rgba(183,124,255,0.48) !important;
+    pointer-events:none !important;
+}
+
+body[data-feed-mode="following"] .observation-orbit{
+    z-index:1 !important;
+}
+
+body[data-feed-mode="following"] .observation-orbit.o1{ width:118% !important; height:220px !important; left:-9% !important; top:118px !important; transform:rotate(-8deg) !important; }
+body[data-feed-mode="following"] .observation-orbit.o2{ width:92% !important; height:310px !important; left:4% !important; top:190px !important; transform:rotate(12deg) !important; }
+body[data-feed-mode="following"] .observation-orbit.o3{ width:124% !important; height:300px !important; left:-12% !important; top:388px !important; transform:rotate(-14deg) !important; }
+body[data-feed-mode="following"] .observation-orbit.o4{ width:92% !important; height:470px !important; left:4% !important; top:118px !important; transform:rotate(7deg) !important; }
+
+body[data-feed-mode="following"] .observation-self-planet-wrap,
+body[data-feed-mode="following"] .observation-tools{
+    display:none !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-wrap{
+    z-index:3 !important;
+    transform:translate(-50%,-50%) scale(0.92) !important;
+}
+
+body[data-feed-mode="following"] .observation-planet{
+    position:relative !important;
+    width:var(--size) !important;
+    height:var(--size) !important;
+    margin:0 auto !important;
+    overflow:visible !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-core{
+    box-shadow:
+        0 0 0 2px rgba(244,248,255,0.94),
+        0 0 0 5px rgba(13,16,30,0.32),
+        0 0 16px color-mix(in srgb, var(--signal-color) 54%, transparent),
+        0 0 32px color-mix(in srgb, var(--signal-color) 18%, transparent) !important;
+}
+
+body[data-feed-mode="following"] .observation-signal-dot{
+    right:-3px !important;
+    top:-4px !important;
+    min-width:26px !important;
+    height:26px !important;
+    padding:0 8px !important;
+    font-size:14px !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-name{
+    margin-top:8px !important;
+    font-size:15px !important;
+    line-height:1.1 !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-time{
+    margin-top:4px !important;
+    font-size:11px !important;
+    line-height:1.1 !important;
+}
+
+body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern{
+    position:absolute !important;
+    left:6px !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:8px !important;
+    width:190px !important;
+    padding:12px 12px 10px !important;
+    border-radius:16px !important;
+    background:rgba(7,11,24,0.68) !important;
+    display:block !important;
+    z-index:4 !important;
+}
+
+body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern .observation-legend-row{
+    gap:8px !important;
+    margin-bottom:8px !important;
+    font-size:10px !important;
+    line-height:1.1 !important;
+    white-space:nowrap !important;
+}
+
+body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern .observation-legend-dot{
+    width:15px !important;
+    height:15px !important;
+    flex-basis:15px !important;
+}
+
+@media (max-width:430px){
+    body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
+        padding-left:2px !important;
+        padding-right:2px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-map{
+        min-height:810px !important;
+        padding:16px 8px 18px !important;
+        border-radius:24px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-title{
+        font-size:17px !important;
+        line-height:1.12 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-subtitle{
+        font-size:10.5px !important;
+        line-height:1.22 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-new-btn-modern{
+        padding:9px 12px !important;
+        min-height:38px !important;
+        font-size:12px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space-modern{
+        height:688px !important;
+        min-height:688px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-core-galaxy{
+        width:210px !important;
+        height:210px !important;
+        top:47% !important;
+    }
+
+    body[data-feed-mode="following"] .observation-core-radio{
+        top:47% !important;
+        font-size:26px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-orbit.o1{ width:124% !important; height:205px !important; left:-12% !important; top:118px !important; }
+    body[data-feed-mode="following"] .observation-orbit.o2{ width:98% !important; height:298px !important; left:1% !important; top:194px !important; }
+    body[data-feed-mode="following"] .observation-orbit.o3{ width:128% !important; height:286px !important; left:-14% !important; top:390px !important; }
+    body[data-feed-mode="following"] .observation-orbit.o4{ width:96% !important; height:458px !important; left:2% !important; top:120px !important; }
+
+    body[data-feed-mode="following"] .observation-planet-wrap{
+        transform:translate(-50%,-50%) scale(0.88) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-name{
+        font-size:13px !important;
+        margin-top:7px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-time{
+        font-size:10px !important;
+        margin-top:3px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-signal-dot{
+        min-width:23px !important;
+        height:23px !important;
+        font-size:12px !important;
+        padding:0 6px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern{
+        left:4px !important;
+        bottom:8px !important;
+        width:176px !important;
+        padding:11px 11px 9px !important;
+        border-radius:15px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern .observation-legend-row{
+        gap:7px !important;
+        margin-bottom:7px !important;
+        font-size:9.4px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern .observation-legend-dot{
+        width:14px !important;
+        height:14px !important;
+        flex-basis:14px !important;
+    }
+}
