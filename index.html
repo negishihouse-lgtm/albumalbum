@@ -3117,7 +3117,7 @@ function observationPlanetHTML(group, index){
         <article class="observation-planet-wrap ${signal.className}" data-signal="${signal.className}" style="--x:${style.x};--y:${style.y};--size:${style.size};--planet-bg:${style.bg};--planet-glow:${style.glow};--signal-color:${signal.color};">
             <button type="button" class="observation-planet" onclick="openObservationGroup(${index}, 0)" aria-label="${escapeHTML(name)}の新着投稿を開く">
                 ${observationPlanetIconHTML(group.profile, name)}
-                <span class="observation-signal-dot ${signal.className}">${escapeHTML(signal.label)}</span>
+                ${signal.label ? `<span class="observation-signal-dot ${signal.className}">${escapeHTML(signal.label)}</span>` : ""}
             </button>
             <div class="observation-planet-name">${escapeHTML(name)}</div>
             <div class="observation-planet-time">${escapeHTML(timeLabel)}</div>
@@ -3167,6 +3167,7 @@ async function renderObservationPanel(){
             ${observationGroups.map((group, index) => observationPlanetHTML(group, index)).join("")}
 
             <div class="observation-legend" aria-label="投稿時間の説明">
+                <div class="observation-legend-title">色の説明</div>
                 <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>6時間以内</div>
                 <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>24時間以内</div>
                 <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>1日以上前</div>
@@ -3743,62 +3744,36 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script>
-/* 背景画像を縦ループで自動アニメーションさせる。スクロール同期はしない */
+/* 流れ星バナーだけをスクロールに合わせて自然にフェードさせる */
 (function(){
-    const BG_SRC = "./milkyway_bg.png";
-    const BASE_SPEED = 14; // 背景画像そのものが流れる速度 px/秒。ページスクロールとは同期しない
+    let ticking = false;
 
-    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if(reduceMotion){
-        return;
+    function updateMeteorFade(){
+        const y = window.scrollY || document.documentElement.scrollTop || 0;
+        const opacity = Math.max(0, Math.min(1, 1 - (y / 118)));
+        const offset = Math.min(18, y * 0.10);
+
+        document.documentElement.style.setProperty("--daily-meteor-opacity", opacity.toFixed(3));
+        document.documentElement.style.setProperty("--daily-meteor-offset", `${offset.toFixed(1)}px`);
+        document.body.dataset.meteorHidden = opacity < 0.08 ? "true" : "false";
+        ticking = false;
     }
 
-    let loopHeight = Math.max(window.innerHeight * 1.4, 900);
-    let lastTime = performance.now();
-    let autoY = 0;
-    let elapsed = 0;
-    let imageRatio = 1.45;
-
-    function setLoopHeight(){
-        const naturalHeight = Math.max(window.innerWidth * imageRatio, window.innerHeight * 1.35);
-        loopHeight = Math.ceil(naturalHeight);
-        document.documentElement.style.setProperty("--galaxy-loop-height", `${loopHeight}px`);
-    }
-
-    function loadBackgroundRatio(){
-        const img = new Image();
-        img.onload = () => {
-            if(img.naturalWidth && img.naturalHeight){
-                imageRatio = img.naturalHeight / img.naturalWidth;
-                setLoopHeight();
-            }
-        };
-        img.src = BG_SRC;
-    }
-
-    function tick(now){
-        const dt = Math.min(64, now - lastTime) / 1000;
-        lastTime = now;
-        elapsed += dt;
-
-        autoY = (autoY + BASE_SPEED * dt) % loopHeight;
-        const driftX = Math.sin(elapsed * 0.055) * 18;
-        document.documentElement.style.setProperty("--galaxy-loop-y", `${-autoY}px`);
-        document.documentElement.style.setProperty("--galaxy-loop-x", `${driftX}px`);
-
-        requestAnimationFrame(tick);
-    }
-
-    window.addEventListener("resize", setLoopHeight, { passive:true });
-    window.addEventListener("orientationchange", () => {
-        setTimeout(setLoopHeight, 180);
+    window.addEventListener("scroll", () => {
+        if(ticking){ return; }
+        ticking = true;
+        requestAnimationFrame(updateMeteorFade);
     }, { passive:true });
 
-    document.addEventListener("DOMContentLoaded", () => {
-        setLoopHeight();
-        loadBackgroundRatio();
-        requestAnimationFrame(tick);
-    });
+    document.addEventListener("DOMContentLoaded", updateMeteorFade);
+})();
+</script>
+
+<script>
+/* 背景アニメーションはCSS側で管理する。JSの1分前後のループ更新は停止。 */
+(function(){
+    document.documentElement.style.setProperty("--galaxy-loop-y", "0px");
+    document.documentElement.style.setProperty("--galaxy-loop-x", "0px");
 })();
 
 
