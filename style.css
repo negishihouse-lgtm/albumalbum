@@ -9580,3 +9580,116 @@ body::after{
         animation-play-state:running !important;
     }
 }
+
+
+
+/* ============================================================
+   GALAXY BACKGROUND JS MOTION FIX 2026-06-13
+   - CSS animationが!importantに負ける問題を回避
+   - index.html の requestAnimationFrame がCSS変数だけを更新
+   - transform自体は!important固定、内部の変数だけJSで変える
+============================================================ */
+
+:root{
+    --ac-galaxy-shift-y:0px;
+    --ac-star-shift-y:0px;
+}
+
+html{
+    background:#030814 !important;
+}
+
+body{
+    background:#030814 !important;
+    overflow-x:hidden !important;
+}
+
+body::before{
+    content:"" !important;
+    position:fixed !important;
+    left:-6vw !important;
+    right:-6vw !important;
+    top:-18vh !important;
+    bottom:-18vh !important;
+    z-index:-3 !important;
+    pointer-events:none !important;
+
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(3,8,20,0.12) 0%,
+            rgba(3,8,20,0.24) 42%,
+            rgba(3,8,20,0.62) 100%
+        ),
+        url("./milkyway_bg.png") !important;
+
+    background-size:
+        100% 100%,
+        cover !important;
+
+    background-position:
+        center center,
+        center center !important;
+
+    background-repeat:
+        no-repeat,
+        no-repeat !important;
+
+    opacity:1 !important;
+    filter:saturate(1.04) brightness(0.92) contrast(1.06) !important;
+
+    transform:translate3d(0, var(--ac-galaxy-shift-y), 0) scale(1.06) !important;
+    transform-origin:center center !important;
+
+    animation:none !important;
+    will-change:transform !important;
+    backface-visibility:hidden !important;
+    -webkit-backface-visibility:hidden !important;
+}
+
+body::after{
+    content:"" !important;
+    position:fixed !important;
+    inset:0 !important;
+    z-index:-2 !important;
+    pointer-events:none !important;
+
+    background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.38) 0 1px, transparent 1.6px),
+        radial-gradient(circle at 28% 68%, rgba(159,205,217,0.32) 0 1px, transparent 1.6px),
+        radial-gradient(circle at 74% 24%, rgba(255,255,255,0.30) 0 1px, transparent 1.6px),
+        radial-gradient(circle at 88% 76%, rgba(159,205,217,0.26) 0 1px, transparent 1.6px),
+        linear-gradient(90deg, rgba(0,0,0,0.16), transparent 16%, transparent 84%, rgba(0,0,0,0.18)),
+        linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.16)) !important;
+
+    background-size:
+        240px 240px,
+        310px 310px,
+        380px 380px,
+        460px 460px,
+        100% 100%,
+        100% 100% !important;
+
+    opacity:.95 !important;
+    transform:translate3d(0, var(--ac-star-shift-y), 0) !important;
+    animation:none !important;
+    will-change:transform !important;
+}
+
+@media (max-width:900px){
+    body::before{
+        left:-9vw !important;
+        right:-9vw !important;
+        top:-16vh !important;
+        bottom:-16vh !important;
+        transform:translate3d(0, var(--ac-galaxy-shift-y), 0) scale(1.07) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    body::before,
+    body::after{
+        transform:none !important;
+        animation:none !important;
+    }
+}
