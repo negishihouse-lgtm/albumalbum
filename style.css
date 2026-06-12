@@ -7444,3085 +7444,103 @@ h4{
 
 
 /* ============================================================
-   OBSERVATION MODE V1 2026-06-11
-   - 「ストーリー投稿」ではなく、フォロー中の新着投稿を惑星として観測する
-   - followingGrid を観測マップ化
-   - 惑星タップで新着投稿ビューアを開く
-============================================================ */
-.observation-map{
-    width:100% !important;
-    min-height:620px !important;
-    position:relative !important;
-    display:block !important;
-    overflow:hidden !important;
-    border-radius:28px !important;
-    padding:22px 18px 26px !important;
-    background:
-        radial-gradient(circle at 50% 44%, rgba(255,210,178,0.72) 0 3px, rgba(255,190,145,0.30) 4px, transparent 9px),
-        radial-gradient(ellipse at 54% 44%, rgba(255,145,210,0.24) 0%, rgba(176,108,255,0.18) 23%, transparent 48%),
-        radial-gradient(circle at 24% 26%, rgba(176,108,255,0.16), transparent 20%),
-        radial-gradient(circle at 82% 36%, rgba(88,220,255,0.13), transparent 21%),
-        linear-gradient(180deg, rgba(2,6,17,0.18), rgba(2,6,17,0.44)) !important;
-    border:1px solid rgba(176,108,255,0.16) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 18px 52px rgba(0,0,0,0.22) !important;
-}
-
-.observation-map::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    background-image:
-        radial-gradient(circle, rgba(255,255,255,0.85) 0 1px, transparent 1.5px),
-        radial-gradient(circle, rgba(197,140,255,0.72) 0 1px, transparent 1.5px),
-        radial-gradient(circle, rgba(120,220,255,0.58) 0 1px, transparent 1.5px);
-    background-size:53px 53px, 91px 91px, 139px 139px;
-    background-position:0 0, 18px 24px, 40px 12px;
-    opacity:.34;
-}
-
-.observation-map::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    background:radial-gradient(ellipse at center, transparent 0 36%, rgba(0,0,0,0.18) 68%, rgba(0,0,0,0.52) 100%);
-}
-
-.observation-head{
-    position:relative;
-    z-index:3;
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:12px;
-}
-
-.observation-title{
-    margin:0;
-    font-size:20px;
-    line-height:1.2;
-    font-weight:700;
-    letter-spacing:-0.035em;
-    color:rgba(255,255,255,0.96);
-}
-
-.observation-subtitle{
-    margin:5px 0 0;
-    color:rgba(238,247,250,0.56);
-    font-size:12.5px;
-    line-height:1.35;
-    font-weight:500;
-}
-
-.observation-new-btn{
-    appearance:none;
-    -webkit-appearance:none;
-    flex:0 0 auto;
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
-    border-radius:999px;
-    border:1px solid rgba(176,108,255,0.42);
-    background:rgba(90,38,148,0.26);
-    color:#d9b7ff;
-    padding:9px 12px;
-    font-size:12.5px;
-    line-height:1;
-    font-weight:700;
-    box-shadow:0 0 18px rgba(176,108,255,0.18), inset 0 0 18px rgba(176,108,255,0.10);
-    white-space:nowrap;
-}
-
-.observation-space{
-    position:relative;
-    z-index:2;
-    height:510px;
-    margin-top:12px;
-}
-
-.observation-orbit{
-    position:absolute;
-    border:1px dashed rgba(203,210,255,0.15);
-    border-radius:50%;
-    pointer-events:none;
-    filter:drop-shadow(0 0 8px rgba(176,108,255,0.10));
-}
-
-.observation-orbit.o1{ width:480px; height:185px; left:-82px; top:82px; transform:rotate(-14deg); }
-.observation-orbit.o2{ width:390px; height:165px; left:-4px; top:210px; transform:rotate(5deg); }
-.observation-orbit.o3{ width:470px; height:190px; left:-60px; top:342px; transform:rotate(-8deg); }
-
-.observation-planet-wrap{
-    position:absolute;
-    left:var(--x);
-    top:var(--y);
-    width:var(--size);
-    transform:translate(-50%,-50%);
-    text-align:center;
-    z-index:3;
-}
-
-.observation-planet{
-    appearance:none;
-    -webkit-appearance:none;
-    position:relative;
-    display:block;
-    width:var(--size);
-    height:var(--size);
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,0.14);
-    background:var(--planet-bg);
-    box-shadow:
-        0 0 20px var(--planet-glow),
-        0 0 42px color-mix(in srgb, var(--planet-glow), transparent 58%),
-        inset -18px -20px 24px rgba(0,0,0,0.62),
-        inset 8px 8px 16px rgba(255,255,255,0.14);
-    margin:0 auto;
-    cursor:pointer;
-}
-
-.observation-planet::before{
-    content:"";
-    position:absolute;
-    left:-18%;
-    right:-18%;
-    top:47%;
-    height:10px;
-    border-top:1px solid rgba(195,210,255,0.15);
-    border-bottom:1px solid rgba(195,210,255,0.11);
-    border-left:1px solid transparent;
-    border-right:1px solid transparent;
-    border-radius:50%;
-    transform:rotate(-16deg);
-    pointer-events:none;
-}
-
-.observation-signal-dot{
-    position:absolute;
-    right:-8px;
-    top:7px;
-    min-width:18px;
-    height:18px;
-    padding:0 5px;
-    border-radius:999px;
-    display:grid;
-    place-items:center;
-    background:var(--signal-color);
-    color:#1b1133;
-    font-size:11px;
-    font-weight:800;
-    line-height:1;
-    box-shadow:0 0 15px var(--signal-color);
-    z-index:5;
-}
-
-.observation-planet-name{
-    margin-top:8px;
-    font-size:13.5px;
-    line-height:1.15;
-    font-weight:700;
-    color:rgba(255,255,255,0.94);
-    text-shadow:0 2px 12px rgba(0,0,0,0.85);
-    white-space:nowrap;
-}
-
-.observation-planet-time{
-    margin-top:2px;
-    color:rgba(255,255,255,0.52);
-    font-size:11.5px;
-    line-height:1.1;
-    font-weight:500;
-    white-space:nowrap;
-}
-
-.observation-legend{
-    position:absolute;
-    left:14px;
-    bottom:16px;
-    z-index:4;
-    width:142px;
-    padding:12px 12px;
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,0.08);
-    background:rgba(8,11,25,0.56);
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-}
-
-.observation-legend-row{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    margin:0 0 10px;
-    color:rgba(255,255,255,0.66);
-    font-size:10.8px;
-    line-height:1;
-    font-weight:600;
-    white-space:nowrap;
-}
-
-.observation-legend-row:last-child{ margin-bottom:0; }
-
-.observation-legend-dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:var(--legend-color);
-    box-shadow:0 0 10px var(--legend-color);
-    flex:0 0 auto;
-}
-
-.observation-empty{
-    position:relative;
-    z-index:5;
-    min-height:360px;
-    display:grid;
-    place-items:center;
-    text-align:center;
-    color:rgba(238,247,250,0.58);
-    font-size:14px;
-    line-height:1.7;
-    padding:40px 24px;
-}
-
-.observation-viewer{
-    position:fixed;
-    inset:0;
-    z-index:19000;
-    display:none;
-    background:
-        radial-gradient(circle at 50% 34%, rgba(176,108,255,0.32), transparent 34%),
-        radial-gradient(circle at 50% 56%, rgba(255,190,154,0.14), transparent 30%),
-        rgba(1,3,10,0.94);
-    backdrop-filter:blur(18px) saturate(1.05);
-    -webkit-backdrop-filter:blur(18px) saturate(1.05);
-}
-
-.observation-viewer.open{ display:block; }
-
-.observation-viewer-progress{
-    position:absolute;
-    left:18px;
-    right:18px;
-    top:calc(14px + env(safe-area-inset-top));
-    display:flex;
-    gap:5px;
-    z-index:3;
-}
-
-.observation-progress-seg{
-    height:3px;
-    flex:1;
-    border-radius:999px;
-    background:rgba(255,255,255,0.22);
-    overflow:hidden;
-}
-
-.observation-progress-seg span{
-    display:block;
-    width:0;
-    height:100%;
-    border-radius:inherit;
-    background:#fff;
-    box-shadow:0 0 12px rgba(255,255,255,0.7);
-}
-
-.observation-progress-seg.done span,
-.observation-progress-seg.active span{ width:100%; }
-
-.observation-viewer-top{
-    position:absolute;
-    top:calc(34px + env(safe-area-inset-top));
-    left:18px;
-    right:18px;
-    z-index:4;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-}
-
-.observation-viewer-user{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    min-width:0;
-}
-
-.observation-viewer-avatar,
-.observation-viewer-avatar-fallback{
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,0.14);
-    background:rgba(176,108,255,0.18);
-    object-fit:cover;
-    flex:0 0 36px;
-}
-
-.observation-viewer-avatar-fallback{
-    display:grid;
-    place-items:center;
-    color:#fff;
-    font-size:14px;
-    font-weight:700;
-}
-
-.observation-viewer-name{
-    color:rgba(255,255,255,0.94);
-    font-size:13px;
-    line-height:1.2;
-    font-weight:700;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.observation-viewer-time{
-    margin-top:2px;
-    color:rgba(255,255,255,0.52);
-    font-size:11px;
-    line-height:1.2;
-    font-weight:500;
-}
-
-.observation-close{
-    appearance:none;
-    -webkit-appearance:none;
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,0.12);
-    background:rgba(255,255,255,0.08);
-    color:#fff;
-    display:grid;
-    place-items:center;
-    font-size:24px;
-    line-height:1;
-}
-
-.observation-viewer-body{
-    position:absolute;
-    inset:calc(88px + env(safe-area-inset-top)) 18px calc(92px + env(safe-area-inset-bottom));
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-}
-
-.observation-viewer-cover{
-    width:min(238px,64vw);
-    height:min(238px,64vw);
-    border-radius:30px;
-    overflow:hidden;
-    background:linear-gradient(135deg, rgba(176,108,255,0.40), rgba(5,10,18,0.90));
-    border:1px solid rgba(255,255,255,0.16);
-    box-shadow:0 0 52px rgba(176,108,255,0.25), inset -32px -38px 42px rgba(0,0,0,0.36);
-}
-
-.observation-viewer-cover img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-}
-
-.observation-viewer-title{
-    margin:22px 0 0;
-    max-width:330px;
-    color:rgba(255,255,255,0.98);
-    font-size:24px;
-    line-height:1.16;
-    font-weight:700;
-    letter-spacing:-0.045em;
-}
-
-.observation-viewer-artist{
-    margin:5px 0 0;
-    color:rgba(238,247,250,0.62);
-    font-size:13px;
-    line-height:1.25;
-    font-weight:500;
-}
-
-.observation-viewer-text{
-    max-width:330px;
-    margin:16px 0 0;
-    color:rgba(255,255,255,0.76);
-    font-size:13px;
-    line-height:1.65;
-    font-weight:400;
-    display:-webkit-box;
-    -webkit-line-clamp:3;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-}
-
-.observation-viewer-meters{
-    width:100%;
-    max-width:330px;
-    margin-top:20px;
-    display:grid;
-    gap:9px;
-}
-
-.observation-viewer-meters .meter{
-    grid-template-columns:48px minmax(0,1fr) 48px !important;
-    gap:8px !important;
-    margin:0 !important;
-}
-
-.observation-viewer-bottom{
-    position:absolute;
-    left:18px;
-    right:18px;
-    bottom:calc(24px + env(safe-area-inset-bottom));
-    display:grid;
-    grid-template-columns:1fr auto auto auto;
-    align-items:center;
-    gap:10px;
-}
-
-.observation-detail-btn{
-    height:42px;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,0.18);
-    background:rgba(255,255,255,0.06);
-    color:rgba(255,255,255,0.72);
-    display:flex;
-    align-items:center;
-    padding:0 15px;
-    font-size:13px;
-    font-weight:700;
-    text-decoration:none;
-}
-
-.observation-mini-btn{
-    appearance:none;
-    -webkit-appearance:none;
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,0.14);
-    background:rgba(255,255,255,0.06);
-    color:#fff;
-    display:grid;
-    place-items:center;
-    font-size:16px;
-}
-
-.observation-tap-zone{
-    position:absolute;
-    top:90px;
-    bottom:90px;
-    width:50%;
-    z-index:2;
-    background:transparent;
-    border:0;
-}
-.observation-tap-zone.left{ left:0; }
-.observation-tap-zone.right{ right:0; }
-
-@media (max-width:900px){
-    .feed-panel[data-feed-panel="following"]{
-        min-height:620px;
-    }
-
-    #followingGrid.observation-map{
-        margin-bottom:8px !important;
-    }
-}
-
-@media (max-width:430px){
-    .observation-map{
-        min-height:590px !important;
-        padding:20px 16px 24px !important;
-        border-radius:24px !important;
-    }
-
-    .observation-space{ height:490px; }
-    .observation-planet-name{ font-size:12.5px; }
-    .observation-planet-time{ font-size:10.8px; }
-    .observation-legend{ transform:scale(.92); transform-origin:left bottom; }
-    .observation-viewer-title{ font-size:22px; }
-}
-
-
-/* ============================================================
-   PATCH 2026-06-11: 背景画像ループ + ぬるぬる移動
-   - milkyway_bg.png を2枚重ねて縦方向に連続ループ
-   - スクロール同期なしで自動アニメーションだけにする
-   - 既存の milkywayPan / --milkyway-shift を最後で無効化
-============================================================ */
-:root{
-    --galaxy-loop-y:0px;
-    --galaxy-loop-x:0px;
-    --galaxy-loop-height:140vh;
-}
-
-body::before{
-    content:"" !important;
-    position:fixed !important;
-    left:0 !important;
-    right:0 !important;
-    top:-12vh !important;
-    height:124vh !important;
-    z-index:-3 !important;
-    pointer-events:none !important;
-    display:block !important;
-    opacity:1 !important;
-    transform:translate3d(0,0,0) !important;
-    will-change:background-position !important;
-    backface-visibility:hidden !important;
-    background-image:
-        linear-gradient(180deg, rgba(3,8,20,0.12) 0%, rgba(3,8,20,0.28) 42%, rgba(3,8,20,0.64) 100%),
-        url("./milkyway_bg.png"),
-        url("./milkyway_bg.png") !important;
-    background-size:
-        100% 100%,
-        100% var(--galaxy-loop-height),
-        100% var(--galaxy-loop-height) !important;
-        background-position:
-            center center,
-            calc(50% + var(--galaxy-loop-x)) var(--galaxy-loop-y),
-            calc(50% + var(--galaxy-loop-x)) calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
-    background-repeat:
-        no-repeat,
-        no-repeat,
-        no-repeat !important;
-    background-attachment:scroll, scroll, scroll !important;
-    animation:none !important;
-    filter:saturate(1.08) brightness(0.94) contrast(1.08) !important;
-}
-
-body::after{
-    z-index:-2 !important;
-}
-
-@media (max-width:900px){
-    body::before{
-        top:-14vh !important;
-        height:128vh !important;
-        background-size:
-            100% 100%,
-            100% var(--galaxy-loop-height),
-            100% var(--galaxy-loop-height) !important;
-        background-position:
-            center center,
-            calc(50% + var(--galaxy-loop-x)) var(--galaxy-loop-y),
-            calc(50% + var(--galaxy-loop-x)) calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
-        background-repeat:no-repeat, no-repeat, no-repeat !important;
-        animation:none !important;
-    }
-}
-
-@media (prefers-reduced-motion: reduce){
-    body::before{
-        background-position:
-            center center,
-            center top,
-            center var(--galaxy-loop-height) !important;
-    }
-}
-
-
-
-
-
-
-
-
-
-/* ============================================================
-   PATCH OBSERVATION V6 2026-06-11
-   - 観測アイコンの周囲を投稿時間で色分け
-   - 色の説明を常時表示
-   - ホームに「今日の流れ星」を追加
+   Observation Page Clean Build
+   - observation関連CSSを1セットに整理
+   - 自分の惑星なし
+   - 凡例は左下
+   - 右上に新しい信号バッジ
+   - スマホSafariの下部UIとタブバーに被りにくい固定高さ設計
 ============================================================ */
 
-/* 観測：アイコンの周囲を投稿時間の色にする */
-.observation-planet{
-    border-color:color-mix(in srgb, var(--signal-color) 72%, rgba(255,255,255,0.32)) !important;
-    box-shadow:
-        0 0 18px color-mix(in srgb, var(--signal-color) 72%, transparent),
-        0 0 38px color-mix(in srgb, var(--signal-color) 34%, transparent),
-        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-}
-
-.observation-planet::after{
-    inset:-6px !important;
-    border-color:color-mix(in srgb, var(--signal-color) 70%, transparent) !important;
-    box-shadow:
-        0 0 0 1px color-mix(in srgb, var(--signal-color) 22%, transparent),
-        0 0 20px color-mix(in srgb, var(--signal-color) 48%, transparent),
-        0 0 40px color-mix(in srgb, var(--signal-color) 18%, transparent) !important;
-}
-
-.observation-planet-core{
-    border:2px solid color-mix(in srgb, var(--signal-color) 82%, rgba(255,255,255,0.26)) !important;
-    box-shadow:
-        0 0 0 3px rgba(2,8,20,0.72),
-        0 0 18px color-mix(in srgb, var(--signal-color) 52%, transparent),
-        inset -10px -12px 20px rgba(0,0,0,0.42),
-        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-}
-
-.observation-signal-dot{
-    border:1px solid rgba(255,255,255,0.32) !important;
-}
-
-.observation-legend{
-    width:158px !important;
-    display:block !important;
-}
-
-.observation-legend-title{
-    margin:0 0 9px !important;
-    color:rgba(255,255,255,0.88) !important;
-    font-size:11px !important;
-    font-weight:700 !important;
-    line-height:1 !important;
-}
-
-.observation-legend-dot.number{
-    width:16px !important;
-    height:16px !important;
-    display:grid !important;
-    place-items:center !important;
-    color:#1b1133 !important;
-    font-size:9px !important;
-    font-weight:800 !important;
-}
-
-@media (max-height:720px) and (max-width:900px){
-    .observation-legend{
-        display:block !important;
-        transform:scale(0.78) !important;
-        transform-origin:left bottom !important;
-    }
-}
-
-/* ホーム：今日の流れ星 */
-.daily-meteor-box{
-    display:flex !important;
-    justify-content:flex-end !important;
-    margin:0 0 14px !important;
-}
-
-.daily-meteor-box:empty{
-    display:none !important;
-}
-
-.daily-meteor-card{
-    position:relative !important;
-    display:grid !important;
-    grid-template-columns:auto minmax(0,1fr) auto !important;
-    gap:12px !important;
-    align-items:center !important;
-    width:min(100%, 360px) !important;
-    min-height:74px !important;
-    padding:14px 16px !important;
-    border-radius:999px !important;
-    border:1px solid rgba(154,120,255,0.42) !important;
-    background:
-        radial-gradient(circle at 14% 50%, rgba(148,110,255,0.22), transparent 24%),
-        radial-gradient(circle at 78% 12%, rgba(106,180,255,0.12), transparent 24%),
-        linear-gradient(145deg, rgba(10,14,32,0.92), rgba(6,10,24,0.84)) !important;
-    box-shadow:
-        0 0 0 1px rgba(255,255,255,0.03) inset,
-        0 14px 36px rgba(0,0,0,0.28),
-        0 0 24px rgba(146,112,255,0.16) !important;
-    overflow:hidden !important;
-    cursor:pointer !important;
-    text-align:left !important;
-    color:inherit !important;
-}
-
-.daily-meteor-card::before{
-    content:"" !important;
-    position:absolute !important;
-    inset:0 !important;
-    border-radius:inherit !important;
-    padding:1px !important;
-    background:linear-gradient(90deg, rgba(149,112,255,0.26), rgba(107,176,255,0.34), rgba(149,112,255,0.18)) !important;
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
-    -webkit-mask-composite:xor !important;
-            mask-composite:exclude !important;
-    pointer-events:none !important;
-}
-
-.daily-meteor-card::after{
-    content:"" !important;
-    position:absolute !important;
-    right:58px !important;
-    top:22px !important;
-    width:92px !important;
-    height:1px !important;
-    background:linear-gradient(90deg, rgba(164,124,255,0), rgba(164,124,255,0.58), rgba(255,255,255,0)) !important;
-    transform:rotate(-12deg) !important;
-    animation:dailyMeteorSweep 4.6s ease-in-out infinite !important;
-    opacity:.7 !important;
-    pointer-events:none !important;
-}
-
-@keyframes dailyMeteorSweep{
-    0%, 54%{ transform:translate3d(-18px,-6px,0) rotate(-12deg); opacity:0; }
-    64%{ opacity:.82; }
-    100%{ transform:translate3d(54px,12px,0) rotate(-12deg); opacity:0; }
-}
-
-.daily-meteor-icon{
-    width:34px !important;
-    height:34px !important;
-    border-radius:50% !important;
-    display:grid !important;
-    place-items:center !important;
-    color:#d8bcff !important;
-    background:radial-gradient(circle at 50% 50%, rgba(169,112,255,0.24), rgba(169,112,255,0.06)) !important;
-    box-shadow:0 0 18px rgba(164,124,255,0.20) !important;
-    position:relative !important;
-    z-index:1 !important;
-}
-
-.daily-meteor-icon svg{
-    width:20px !important;
-    height:20px !important;
-    stroke:currentColor !important;
-    stroke-width:1.9 !important;
-    fill:none !important;
-    stroke-linecap:round !important;
-    stroke-linejoin:round !important;
-}
-
-.daily-meteor-copy{
-    min-width:0 !important;
-    display:flex !important;
-    flex-direction:column !important;
-    position:relative !important;
-    z-index:1 !important;
-}
-
-.daily-meteor-title{
-    margin:0 !important;
-    color:rgba(244,247,255,0.96) !important;
-    font-size:17px !important;
-    line-height:1.12 !important;
-    font-weight:600 !important;
-    letter-spacing:-0.025em !important;
-}
-
-.daily-meteor-sub{
-    margin:5px 0 0 !important;
-    color:rgba(234,241,255,0.68) !important;
-    font-size:12px !important;
-    line-height:1.2 !important;
-    font-weight:500 !important;
-}
-
-.daily-meteor-arrow{
-    position:relative !important;
-    z-index:1 !important;
-    width:34px !important;
-    height:34px !important;
-    border-radius:50% !important;
-    display:grid !important;
-    place-items:center !important;
-    border:1px solid rgba(188,164,255,0.22) !important;
-    background:rgba(126,95,225,0.10) !important;
-    color:#dfcdff !important;
-    font-size:20px !important;
-    line-height:1 !important;
-}
-
-@media (max-width:900px){
-    .daily-meteor-box{
-        margin:0 0 12px !important;
-        justify-content:stretch !important;
-    }
-
-    .daily-meteor-card{
-        width:100% !important;
-        min-height:70px !important;
-        padding:13px 15px !important;
-        gap:11px !important;
-    }
-
-    .daily-meteor-title{
-        font-size:15px !important;
-    }
-
-    .daily-meteor-sub{
-        font-size:11px !important;
-    }
-
-    .daily-meteor-arrow{
-        width:30px !important;
-        height:30px !important;
-    }
-}
-
-/* END PATCH OBSERVATION V6 */
-
-
-
-
-
-/* ============================================================
-   FINAL MOBILE FEED CLEAN 2026-06-12
-   - 重複パッチを整理した最終モバイル調整
-   - 背景は既存の milkyway_bg.png のまま自動ループ
-   - タブは横スワイプで中央にスナップ
-============================================================ */
-@media (max-width:900px){
-    :root{
-        --ac-topbar-h:58px !important;
-        --ac-feed-tabs-h:48px !important;
-        --ac-fixed-head-h:calc(var(--ac-topbar-h) + var(--ac-feed-tabs-h)) !important;
-        --ac-mobile-tabbar-h:76px !important;
-    }
-
-    body{
-        padding-top:0 !important;
-        overflow-x:hidden !important;
-        background:#02050b !important;
-    }
-
-    body[data-feed-mode="following"]{
-        height:100dvh !important;
-        overflow:hidden !important;
-        overscroll-behavior:none !important;
-    }
-
-    body[data-feed-mode="following"] .feed-swipe{
-        touch-action:pan-x !important;
-        overscroll-behavior:none !important;
-    }
-
-    body::before{
-        position:fixed !important;
-        top:-14vh !important;
-        left:0 !important;
-        right:0 !important;
-        height:128vh !important;
-        background-image:
-            linear-gradient(180deg, rgba(3,8,20,0.10), rgba(3,8,20,0.54)),
-            url("./milkyway_bg.png"),
-            url("./milkyway_bg.png") !important;
-        background-size:
-            100% 100%,
-            100% var(--galaxy-loop-height),
-            100% var(--galaxy-loop-height) !important;
-        background-position:
-            center center,
-            calc(50% + var(--galaxy-loop-x)) var(--galaxy-loop-y),
-            calc(50% + var(--galaxy-loop-x)) calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
-        background-repeat:no-repeat, no-repeat, no-repeat !important;
-        background-attachment:scroll, scroll, scroll !important;
-        animation:none !important;
-        transform:translate3d(0,0,0) !important;
-        will-change:background-position !important;
-    }
-
-    .topbar{
-        position:fixed !important;
-        top:0 !important;
-        left:0 !important;
-        right:0 !important;
-        height:calc(var(--ac-topbar-h) + env(safe-area-inset-top)) !important;
-        margin:0 !important;
-        padding:calc(env(safe-area-inset-top) + 4px) 14px 8px !important;
-        display:flex !important;
-        align-items:flex-end !important;
-        justify-content:flex-start !important;
-        background:#02050b !important;
-        border-bottom:1px solid rgba(255,255,255,0.08) !important;
-        z-index:12000 !important;
-    }
-
-    .page-title{
-        margin:0 !important;
-        padding:0 !important;
-        max-width:calc(100vw - 32px) !important;
-        font-size:20px !important;
-        line-height:1.12 !important;
-        font-weight:500 !important;
-        letter-spacing:-0.01em !important;
-        white-space:nowrap !important;
-    }
-
-    .mobile-feed-tabs{
-        position:fixed !important;
-        top:calc(var(--ac-topbar-h) + env(safe-area-inset-top)) !important;
-        left:0 !important;
-        right:0 !important;
-        height:var(--ac-feed-tabs-h) !important;
-        margin:0 !important;
-        padding:0 12px !important;
-        display:grid !important;
-        grid-template-columns:repeat(3, 1fr) !important;
-        align-items:center !important;
-        background:#02050b !important;
-        border-bottom:1px solid rgba(255,255,255,0.10) !important;
-        z-index:11900 !important;
-    }
-
-    .feed-tab{
-        height:var(--ac-feed-tabs-h) !important;
-        display:flex !important;
-        align-items:center !important;
-        justify-content:center !important;
-        font-size:14px !important;
-        line-height:1 !important;
-        transform:none !important;
-    }
-
-    .mobile-feed-tabs .feed-tab::after{ display:none !important; }
-
-    .mobile-feed-tabs::after{
-        content:"" !important;
-        position:absolute !important;
-        left:calc((100% / 6) + ((100% / 3) * var(--feed-progress, 0))) !important;
-        bottom:0 !important;
-        width:76px !important;
-        height:3px !important;
-        transform:translateX(-50%) !important;
-        border-radius:999px !important;
-        background:linear-gradient(90deg,#a970ff,#d9b8ff) !important;
-        box-shadow:0 0 14px rgba(169,112,255,0.42) !important;
-        pointer-events:none !important;
-    }
-
-    .topbar,
-    .mobile-feed-tabs{
-        transition:transform .12s linear, opacity .12s linear !important;
-    }
-
-    body.mobile-head-hidden .topbar{
-        transform:translateY(calc(-1 * (var(--ac-topbar-h) + env(safe-area-inset-top)))) !important;
-        opacity:0 !important;
-        pointer-events:none !important;
-    }
-
-    body.mobile-head-hidden .mobile-feed-tabs{
-        transform:translateY(calc(-1 * (var(--ac-fixed-head-h) + env(safe-area-inset-top)))) !important;
-        opacity:0 !important;
-        pointer-events:none !important;
-    }
-
-    .feed-swipe,
-    .feed-swipe.vertical-gesture{
-        display:flex !important;
-        width:100% !important;
-        margin-left:0 !important;
-        margin-right:0 !important;
-        margin-top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top)) !important;
-        overflow-x:auto !important;
-        overflow-y:visible !important;
-        scroll-snap-type:x mandatory !important;
-        scroll-behavior:smooth !important;
-        -webkit-overflow-scrolling:touch !important;
-        scrollbar-width:none !important;
-        overscroll-behavior-x:contain !important;
-        touch-action:pan-x pan-y !important;
-        transform:none !important;
-    }
-
-    .feed-swipe::-webkit-scrollbar{ display:none !important; }
-
-    .feed-panel{
-        display:block !important;
-        flex:0 0 100% !important;
-        width:100% !important;
-        min-width:100% !important;
-        padding:0 !important;
-        opacity:1 !important;
-        transform:none !important;
-        scroll-snap-align:start !important;
-        scroll-snap-stop:always !important;
-        transition:none !important;
-    }
-
-    .topbar .home-sortbar,
-    body[data-feed-mode="recommend"] .topbar .home-sortbar,
-    body:not([data-feed-mode="recommend"]) .topbar .home-sortbar{
-        position:fixed !important;
-        right:16px !important;
-        bottom:calc(var(--ac-mobile-tabbar-h) + env(safe-area-inset-bottom) + 18px) !important;
-        top:auto !important;
-        display:flex !important;
-        margin:0 !important;
-        padding:0 !important;
-        z-index:12220 !important;
-        pointer-events:auto !important;
-    }
-
-    .topbar .sort-filter-btn{
-        width:46px !important;
-        height:46px !important;
-        border-radius:50% !important;
-        border:1px solid rgba(169,112,255,0.34) !important;
-        background:rgba(8,11,24,0.88) !important;
-        box-shadow:0 10px 28px rgba(0,0,0,0.38), 0 0 18px rgba(169,112,255,0.20) !important;
-    }
-
-    .topbar .sort-filter-menu{
-        top:auto !important;
-        bottom:calc(100% + 10px) !important;
-        right:0 !important;
-        min-width:218px !important;
-    }
-
-    .daily-meteor-box{
-        position:fixed !important;
-        top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top) + 10px) !important;
-        right:12px !important;
-        left:auto !important;
-        width:auto !important;
-        min-height:0 !important;
-        margin:0 !important;
-        padding:0 !important;
-        background:transparent !important;
-        border:0 !important;
-        box-shadow:none !important;
-        z-index:11880 !important;
-        transition:transform .12s linear, opacity .12s linear !important;
-    }
-
-    body[data-feed-mode="recommend"] .daily-meteor-box:not(:empty){ display:flex !important; }
-    body:not([data-feed-mode="recommend"]) .daily-meteor-box{ display:none !important; }
-    body.mobile-head-hidden .daily-meteor-box{
-        transform:translateY(calc(-1 * (var(--ac-fixed-head-h) + env(safe-area-inset-top) + 18px))) !important;
-        opacity:0 !important;
-        pointer-events:none !important;
-    }
-
-    .daily-meteor-card{
-        width:auto !important;
-        max-width:252px !important;
-        min-height:40px !important;
-        padding:7px 10px !important;
-        gap:7px !important;
-        border-radius:999px !important;
-    }
-
-    .daily-meteor-icon{ width:24px !important; height:24px !important; }
-    .daily-meteor-icon svg{ width:15px !important; height:15px !important; }
-    .daily-meteor-copy{ max-width:176px !important; }
-    .daily-meteor-title{ font-size:11.5px !important; line-height:1.1 !important; white-space:nowrap !important; overflow:visible !important; text-overflow:clip !important; }
-    .daily-meteor-sub{ display:none !important; }
-    .daily-meteor-arrow{ width:22px !important; height:22px !important; font-size:16px !important; }
-    .daily-meteor-card::after{ display:none !important; }
-
-    #followingGrid.observation-map{
-        height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
-        min-height:0 !important;
-        max-height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
-        overflow:hidden !important;
-        padding:10px 12px 12px !important;
-        margin-bottom:0 !important;
-        border-radius:20px !important;
-        touch-action:pan-x !important;
-        overscroll-behavior:none !important;
-    }
-
-    .observation-space{
-        height:calc(100% - 48px) !important;
-        min-height:0 !important;
-        margin-top:4px !important;
-        overflow:visible !important;
-    }
-
-    .observation-head{
-        min-height:40px !important;
-        gap:8px !important;
-    }
-
-    .observation-title{
-        font-size:15px !important;
-        line-height:1.12 !important;
-    }
-
-    .observation-subtitle{
-        margin-top:2px !important;
-        font-size:10px !important;
-        line-height:1.18 !important;
-    }
-
-    .observation-new-btn{
-        padding:6px 8px !important;
-        font-size:10px !important;
-    }
-
-    .observation-planet-wrap{
-        transform:translate(-50%,-50%) scale(0.78) !important;
-    }
-
-    .observation-planet-name,
-    .observation-planet-time{
-        overflow:visible !important;
-        line-height:1.25 !important;
-        padding-bottom:2px !important;
-    }
-
-    .observation-planet{
-        overflow:hidden !important;
-        border:3px solid var(--signal-color) !important;
-        background:rgba(5,8,18,0.94) !important;
-        box-shadow:0 0 16px color-mix(in srgb, var(--signal-color) 46%, transparent), 0 0 30px rgba(169,112,255,0.12) !important;
-    }
-
-    .observation-planet::before,
-    .observation-planet::after{ display:none !important; content:none !important; }
-
-    .observation-planet-core{
-        position:absolute !important;
-        inset:0 !important;
-        width:100% !important;
-        height:100% !important;
-        left:0 !important;
-        top:0 !important;
-        transform:none !important;
-        border:0 !important;
-        border-radius:50% !important;
-        overflow:hidden !important;
-        background:rgba(8,12,26,0.96) !important;
-        box-shadow:none !important;
-    }
-
-    .observation-planet-core.observation-planet-avatar-fallback{
-        display:grid !important;
-        place-items:center !important;
-        align-items:center !important;
-        justify-items:center !important;
-        color:rgba(255,255,255,0.94) !important;
-        font-size:22px !important;
-        font-weight:700 !important;
-        line-height:1 !important;
-        text-align:center !important;
-        letter-spacing:0 !important;
-        padding:0 !important;
-    }
-
-    .observation-legend{
-        display:block !important;
-        left:10px !important;
-        bottom:10px !important;
-        width:124px !important;
-        padding:8px 9px !important;
-        border-radius:14px !important;
-    }
-
-    .observation-legend-row{
-        font-size:9.5px !important;
-        gap:6px !important;
-        margin-bottom:6px !important;
-    }
-
-    .observation-planet-avatar{
-        position:absolute !important;
-        inset:0 !important;
-        width:100% !important;
-        height:100% !important;
-        min-width:100% !important;
-        min-height:100% !important;
-        max-width:100% !important;
-        max-height:100% !important;
-        object-fit:cover !important;
-        border-radius:50% !important;
-    }
-}
-
-@media (max-width:430px){
-    :root{
-        --ac-topbar-h:54px !important;
-        --ac-feed-tabs-h:46px !important;
-        --ac-fixed-head-h:calc(var(--ac-topbar-h) + var(--ac-feed-tabs-h)) !important;
-    }
-
-    .page-title{ font-size:19px !important; }
-    .mobile-feed-tabs::after{ width:70px !important; }
-    .observation-space{ height:500px !important; min-height:500px !important; }
-    .daily-meteor-card{ max-width:238px !important; }
-    .daily-meteor-copy{ max-width:164px !important; }
-}
-
-
-/* observation.html bottom-tab icon compatibility */
+/* 観測タブのアイコン */
 .mobile-tabbar a[href="observation.html"] .icon{
-    display:block !important;
-    width:27px !important;
-    height:27px !important;
-    min-width:27px !important;
-    min-height:27px !important;
-    margin:0 auto 3px !important;
-    transform:translateY(1px) !important;
-    color:currentColor !important;
-}
-
-
-/* FINAL NAV SPLIT 2026-06-12 */
-@media (max-width:900px){
-    .mobile-tabbar{
-        grid-template-columns:repeat(6, 1fr) !important;
-    }
-
-    .mobile-tabbar a{
-        font-size:10.5px !important;
-        min-width:0 !important;
-    }
-
-    .mobile-tabbar .icon,
-    .mobile-tabbar a[href="search.html"] .icon,
-    .mobile-tabbar a[href="observation.html"] .icon{
-        width:24px !important;
-        height:24px !important;
-        min-width:24px !important;
-        min-height:24px !important;
-        margin:0 auto 3px !important;
-    }
-
-    .mobile-feed-tabs{
-        grid-template-columns:repeat(2, 1fr) !important;
-    }
-
-    .mobile-feed-tabs::after{
-        left:calc(25% + (50% * var(--feed-progress, 0))) !important;
-        width:78px !important;
-    }
-
-    body[data-feed-mode="following"] .mobile-feed-tabs{
-        display:none !important;
-    }
-
-    body[data-feed-mode="following"] .topbar .home-sortbar{
-        display:none !important;
-    }
-
-    body[data-feed-mode="recommend"] .topbar .home-sortbar,
-    body[data-feed-mode="list"] .topbar .home-sortbar{
-        position:fixed !important;
-        right:16px !important;
-        bottom:calc(var(--ac-mobile-tabbar-h) + env(safe-area-inset-bottom) + 18px) !important;
-        top:auto !important;
-        display:flex !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        pointer-events:auto !important;
-        z-index:12220 !important;
-    }
-}
-
-/* FINAL HEADER / SORT / METEOR LAYOUT 2026-06-12 */
-@media (max-width:900px){
-    .mobile-tabbar{
-        grid-template-columns:repeat(5, 1fr) !important;
-    }
-
-    .topbar,
-    .mobile-feed-tabs{
-        transform:none !important;
-        opacity:1 !important;
-        pointer-events:auto !important;
-        transition:none !important;
-    }
-
-    body.mobile-head-hidden .topbar,
-    body.mobile-head-hidden .mobile-feed-tabs{
-        transform:none !important;
-        opacity:1 !important;
-        pointer-events:auto !important;
-    }
-
-    .mobile-top-mypage{
-        position:fixed !important;
-        top:calc(env(safe-area-inset-top) + 12px) !important;
-        right:14px !important;
-        width:42px !important;
-        height:42px !important;
-        min-width:42px !important;
-        min-height:42px !important;
-        max-width:42px !important;
-        max-height:42px !important;
-        display:block !important;
-        border-radius:50% !important;
-        border:1px solid rgba(185,142,255,0.50) !important;
-        background:rgba(7,10,22,0.76) !important;
-        box-shadow:0 0 18px rgba(169,112,255,0.22), 0 8px 24px rgba(0,0,0,0.34) !important;
-        overflow:hidden !important;
-        z-index:12310 !important;
-        text-decoration:none !important;
-        -webkit-tap-highlight-color:transparent !important;
-    }
-
-    .mobile-top-mypage .top-avatar{
-        width:100% !important;
-        height:100% !important;
-        border-radius:50% !important;
-        object-fit:cover !important;
-        overflow:hidden !important;
-        display:none;
-    }
-
-    .mobile-top-mypage .top-mypage-fallback{
-        width:100% !important;
-        height:100% !important;
-        display:flex;
-        align-items:center !important;
-        justify-content:center !important;
-        color:rgba(255,255,255,0.94) !important;
-        font-size:15px !important;
-        font-weight:700 !important;
-        line-height:1 !important;
-        background:rgba(14,18,34,0.94) !important;
-    }
-
-    .topbar .home-sortbar,
-    body[data-feed-mode="recommend"] .topbar .home-sortbar,
-    body[data-feed-mode="list"] .topbar .home-sortbar{
-        position:fixed !important;
-        right:16px !important;
-        bottom:calc(var(--ac-mobile-tabbar-h) + env(safe-area-inset-bottom) + 18px) !important;
-        top:auto !important;
-        left:auto !important;
-        width:auto !important;
-        height:auto !important;
-        display:flex !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        pointer-events:auto !important;
-        transform:none !important;
-        z-index:12400 !important;
-    }
-
-    body[data-feed-mode="following"] .topbar .home-sortbar{
-        display:none !important;
-    }
-
-    .topbar .sort-filter-btn{
-        display:grid !important;
-        place-items:center !important;
-        visibility:visible !important;
-        opacity:1 !important;
-        pointer-events:auto !important;
-    }
-
-    body[data-feed-mode="recommend"] .feed-swipe{
-        margin-top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top) + 62px) !important;
-    }
-
-    body[data-feed-mode="list"] .feed-swipe{
-        margin-top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top)) !important;
-    }
-
-    body.mobile-head-hidden .daily-meteor-box{
-        transform:none !important;
-        opacity:1 !important;
-        pointer-events:auto !important;
-    }
-}
-
-/* FINAL OBSERVATION / METEOR / BACKGROUND STABILITY 2026-06-13 */
-:root{
-    --daily-meteor-opacity:1;
-    --daily-meteor-offset:0px;
-}
-
-@keyframes acGalaxyImageFloat{
-    0%{
-        background-position:
-            center center,
-            center 0,
-            center 140vh;
-    }
-    100%{
-        background-position:
-            center center,
-            center -140vh,
-            center 0;
-    }
-}
-
-body::before{
-    background-image:
-        linear-gradient(180deg, rgba(3,8,20,0.12) 0%, rgba(3,8,20,0.30) 46%, rgba(3,8,20,0.66) 100%),
-        url("./milkyway_bg.png"),
-        url("./milkyway_bg.png") !important;
-    background-size:
-        100% 100%,
-        100% 140vh,
-        100% 140vh !important;
-    background-repeat:no-repeat, no-repeat, no-repeat !important;
-    background-attachment:scroll, scroll, scroll !important;
-    background-position:
-        center center,
-        center 0,
-        center 140vh !important;
-    animation:acGalaxyImageFloat 420s linear infinite !important;
-    transform:translate3d(0,0,0) !important;
-    will-change:background-position !important;
-}
-
-@media (prefers-reduced-motion: reduce){
-    body::before{
-        animation:none !important;
-    }
-}
-
-@media (max-width:900px){
-    .daily-meteor-box{
-        opacity:var(--daily-meteor-opacity) !important;
-        transform:translate3d(0, calc(-1 * var(--daily-meteor-offset)), 0) !important;
-        transition:opacity .08s linear, transform .08s linear !important;
-        pointer-events:auto !important;
-    }
-
-    body[data-meteor-hidden="true"] .daily-meteor-box{
-        pointer-events:none !important;
-    }
-
-    .mobile-top-mypage,
-    .mobile-top-mypage .top-avatar,
-    .mobile-top-mypage .top-mypage-fallback{
-        aspect-ratio:1 / 1 !important;
-        border-radius:50% !important;
-        clip-path:circle(50% at 50% 50%) !important;
-        flex:0 0 auto !important;
-    }
-
-    .mobile-top-mypage .top-avatar{
-        min-width:100% !important;
-        min-height:100% !important;
-        max-width:100% !important;
-        max-height:100% !important;
-        object-fit:cover !important;
-    }
-
-    .mobile-tabbar a[href="observation.html"] .icon{
-        position:relative !important;
-        background:transparent !important;
-        box-shadow:none !important;
-        border:0 !important;
-        overflow:visible !important;
-    }
-
-    .mobile-tabbar a[href="observation.html"] .icon::before,
-    .mobile-tabbar a[href="observation.html"] .icon::after{
-        display:none !important;
-        content:none !important;
-    }
-
-    body[data-feed-mode="following"] .feed-swipe{
-        margin-top:calc(var(--ac-topbar-h) + env(safe-area-inset-top) + 6px) !important;
-        height:calc(100svh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 14px) !important;
-        max-height:calc(100svh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 14px) !important;
-        overflow:hidden !important;
-    }
-
-    body[data-feed-mode="following"] #followingGrid.observation-map{
-        height:100% !important;
-        max-height:100% !important;
-        min-height:0 !important;
-        padding:10px 12px 8px !important;
-        border-radius:18px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space{
-        height:calc(100% - 50px) !important;
-        min-height:0 !important;
-        margin-top:2px !important;
-        padding-bottom:64px !important;
-        box-sizing:border-box !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-wrap{
-        transform:translate(-50%,-50%) scale(0.62) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-title{
-        font-size:16px !important;
-        line-height:1.1 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-subtitle{
-        font-size:10.5px !important;
-        line-height:1.15 !important;
-        margin-top:3px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend{
-        display:block !important;
-        left:10px !important;
-        bottom:8px !important;
-        width:122px !important;
-        padding:6px 7px !important;
-        border-radius:12px !important;
-        transform:none !important;
-        transform-origin:left bottom !important;
-        z-index:4 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-title{
-        margin:0 0 5px !important;
-        font-size:9.5px !important;
-        line-height:1 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row{
-        font-size:8.5px !important;
-        line-height:1.1 !important;
-        gap:5px !important;
-        margin-bottom:4px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row:last-child{
-        margin-bottom:0 !important;
-    }
-}
-
-/* FINAL OBSERVATION RESTORE / SAFE BACKGROUND MOTION 2026-06-13 */
-@keyframes acGalaxySafeFloat{
-    0%{ transform:translate3d(0,-7vh,0) scale(1.02); }
-    100%{ transform:translate3d(0,-21vh,0) scale(1.02); }
-}
-
-body::before{
-    top:-72vh !important;
-    height:244vh !important;
-    background-image:
-        linear-gradient(180deg, rgba(3,8,20,0.14) 0%, rgba(3,8,20,0.28) 44%, rgba(3,8,20,0.66) 100%),
-        url("./milkyway_bg.png") !important;
-    background-size:
-        100% 100%,
-        100% auto !important;
-    background-repeat:no-repeat, repeat-y !important;
-    background-position:center center, center top !important;
-    animation:acGalaxySafeFloat 160s ease-in-out infinite alternate !important;
-    will-change:transform !important;
-}
-
-@media (max-width:900px){
-    body[data-feed-mode="following"] .feed-swipe{
-        margin-top:calc(var(--ac-topbar-h) + env(safe-area-inset-top) + 6px) !important;
-        height:calc(100dvh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 10px) !important;
-        max-height:calc(100dvh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 10px) !important;
-        padding:0 14px !important;
-        box-sizing:border-box !important;
-        overflow:hidden !important;
-    }
-
-    body[data-feed-mode="following"] #followingGrid.observation-map{
-        height:100% !important;
-        max-height:100% !important;
-        min-height:0 !important;
-        padding:18px 18px 18px !important;
-        border-radius:24px !important;
-        overflow:hidden !important;
-    }
-
-    body[data-feed-mode="following"] .observation-head{
-        min-height:48px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-title{
-        font-size:20px !important;
-        line-height:1.16 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-subtitle{
-        margin-top:4px !important;
-        font-size:12px !important;
-        line-height:1.24 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space{
-        height:calc(100% - 52px) !important;
-        min-height:0 !important;
-        margin-top:4px !important;
-        padding-bottom:92px !important;
-        box-sizing:border-box !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-wrap{
-        transform:translate(-50%,-50%) scale(0.78) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet{
-        overflow:visible !important;
-        border-width:1px !important;
-        background:rgba(8,12,26,0.86) !important;
-        box-shadow:
-            0 0 18px color-mix(in srgb, var(--signal-color) 52%, transparent),
-            0 0 42px rgba(170,190,220,0.16),
-            inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet::before{
-        display:block !important;
-        content:"" !important;
-        left:-14% !important;
-        right:-14% !important;
-        top:48% !important;
-        height:9px !important;
-        border-top:1px solid rgba(205,215,238,0.34) !important;
-        border-bottom:1px solid rgba(205,215,238,0.18) !important;
-        opacity:.62 !important;
-        z-index:1 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet::after{
-        display:block !important;
-        content:"" !important;
-        position:absolute !important;
-        inset:-5px !important;
-        border-radius:50% !important;
-        border:1px solid color-mix(in srgb, var(--signal-color) 58%, rgba(210,222,240,0.38)) !important;
-        box-shadow:0 0 20px color-mix(in srgb, var(--signal-color) 46%, transparent) !important;
-        pointer-events:none !important;
-        z-index:0 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-core{
-        position:absolute !important;
-        inset:7px !important;
-        width:auto !important;
-        height:auto !important;
-        border-radius:50% !important;
-        overflow:hidden !important;
-        border:0 !important;
-        background:rgba(5,8,18,0.96) !important;
-        z-index:2 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-avatar{
-        position:absolute !important;
-        inset:0 !important;
-        width:100% !important;
-        height:100% !important;
-        object-fit:cover !important;
-        border-radius:50% !important;
-        z-index:2 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
-        display:grid !important;
-        place-items:center !important;
-        color:rgba(255,255,255,0.95) !important;
-        font-size:23px !important;
-        font-weight:800 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend{
-        display:block !important;
-        left:18px !important;
-        bottom:18px !important;
-        width:156px !important;
-        padding:10px 12px !important;
-        border-radius:16px !important;
-        background:rgba(5,8,18,0.70) !important;
-        border:1px solid rgba(176,108,255,0.18) !important;
-        box-shadow:0 10px 30px rgba(0,0,0,0.34) !important;
-        z-index:6 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-title{
-        display:none !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row{
-        font-size:11px !important;
-        line-height:1.15 !important;
-        gap:8px !important;
-        margin-bottom:8px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-dot{
-        width:14px !important;
-        height:14px !important;
-        box-shadow:0 0 12px var(--legend-color) !important;
-    }
-}
-
-/* FINAL CUT-OFF FIX / MOVING BACKGROUND 2026-06-13 */
-@property --ac-bg-y {
-    syntax:"<length>";
-    inherits:false;
-    initial-value:0px;
-}
-
-@keyframes acGalaxyPositionFloat{
-    0%{ --ac-bg-y:0px; }
-    100%{ --ac-bg-y:-220px; }
-}
-
-body::before{
-    transform:translate3d(0,0,0) !important;
-    background-image:
-        linear-gradient(180deg, rgba(3,8,20,0.14) 0%, rgba(3,8,20,0.28) 44%, rgba(3,8,20,0.66) 100%),
-        url("./milkyway_bg.png") !important;
-    background-size:
-        100% 100%,
-        100% auto !important;
-    background-repeat:no-repeat, repeat-y !important;
-    background-position:
-        center center,
-        center var(--ac-bg-y) !important;
-    animation:acGalaxyPositionFloat 180s ease-in-out infinite alternate !important;
-    will-change:background-position !important;
-}
-
-@media (max-width:900px){
-    body[data-feed-mode="following"] .feed-swipe{
-        margin-top:calc(var(--ac-topbar-h) + env(safe-area-inset-top) + 6px) !important;
-        height:calc(100svh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 34px) !important;
-        max-height:calc(100svh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 34px) !important;
-        padding:0 14px !important;
-        overflow:visible !important;
-        box-sizing:border-box !important;
-    }
-
-    body[data-feed-mode="following"] #followingGrid.observation-map{
-        height:100% !important;
-        max-height:100% !important;
-        min-height:0 !important;
-        overflow:hidden !important;
-        padding:18px 18px 18px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space{
-        height:calc(100% - 52px) !important;
-        padding-bottom:112px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend{
-        bottom:18px !important;
-        display:block !important;
-    }
-}
-
-/* ============================================================
-   FINAL OBSERVATION SAFE AREA FIX 2026-06-13
-   このブロックは style.css の最終行に置く
-   - iPhone Safariで観測マップ下部が下部タブバーに隠れる問題を修正
-   - 色の凡例を必ず表示
-   - 「色の説明」タイトルも表示
-============================================================ */
-@media (max-width:900px){
-    body[data-feed-mode="following"]{
-        height:auto !important;
-        min-height:100dvh !important;
-        overflow-x:hidden !important;
-        overflow-y:auto !important;
-        overscroll-behavior-y:auto !important;
-        padding-bottom:calc(var(--ac-mobile-tabbar-h, 76px) + env(safe-area-inset-bottom) + 28px) !important;
-    }
-
-    body[data-feed-mode="following"] .feed-swipe{
-        margin-top:calc(var(--ac-topbar-h, 58px) + env(safe-area-inset-top) + 6px) !important;
-        height:auto !important;
-        max-height:none !important;
-        min-height:0 !important;
-        padding:0 14px calc(var(--ac-mobile-tabbar-h, 76px) + env(safe-area-inset-bottom) + 34px) !important;
-        overflow:visible !important;
-        box-sizing:border-box !important;
-        scroll-snap-type:none !important;
-        overscroll-behavior-y:auto !important;
-        touch-action:pan-y !important;
-    }
-
-    body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
-        height:auto !important;
-        min-height:0 !important;
-        overflow:visible !important;
-    }
-
-    body[data-feed-mode="following"] #followingGrid.observation-map{
-        height:auto !important;
-        max-height:none !important;
-        min-height:calc(100svh - var(--ac-topbar-h, 58px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 28px) !important;
-        overflow:hidden !important;
-        padding:18px 18px 34px !important;
-        margin-bottom:0 !important;
-        border-radius:24px !important;
-        box-sizing:border-box !important;
-    }
-
-    body[data-feed-mode="following"] .observation-head{
-        min-height:auto !important;
-        padding-right:0 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-title{
-        font-size:20px !important;
-        line-height:1.16 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-subtitle{
-        margin-top:4px !important;
-        font-size:12px !important;
-        line-height:1.24 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space{
-        height:clamp(430px, calc(100svh - var(--ac-topbar-h, 58px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 112px), 510px) !important;
-        min-height:430px !important;
-        margin-top:6px !important;
-        padding-bottom:0 !important;
-        overflow:visible !important;
-        box-sizing:border-box !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-wrap{
-        transform:translate(-50%,-50%) scale(0.78) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet{
-        overflow:visible !important;
-        border-width:1px !important;
-        background:rgba(8,12,26,0.86) !important;
-        box-shadow:
-            0 0 18px color-mix(in srgb, var(--signal-color) 52%, transparent),
-            0 0 42px rgba(170,190,220,0.16),
-            inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet::before{
-        display:block !important;
-        content:"" !important;
-        left:-14% !important;
-        right:-14% !important;
-        top:48% !important;
-        height:9px !important;
-        border-top:1px solid rgba(205,215,238,0.34) !important;
-        border-bottom:1px solid rgba(205,215,238,0.18) !important;
-        opacity:.62 !important;
-        z-index:1 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet::after{
-        display:block !important;
-        content:"" !important;
-        position:absolute !important;
-        inset:-5px !important;
-        border-radius:50% !important;
-        border:1px solid color-mix(in srgb, var(--signal-color) 58%, rgba(210,222,240,0.38)) !important;
-        box-shadow:0 0 20px color-mix(in srgb, var(--signal-color) 46%, transparent) !important;
-        pointer-events:none !important;
-        z-index:0 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-core{
-        position:absolute !important;
-        inset:7px !important;
-        width:auto !important;
-        height:auto !important;
-        border-radius:50% !important;
-        overflow:hidden !important;
-        border:0 !important;
-        background:rgba(5,8,18,0.96) !important;
-        z-index:2 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-avatar{
-        position:absolute !important;
-        inset:0 !important;
-        width:100% !important;
-        height:100% !important;
-        object-fit:cover !important;
-        border-radius:50% !important;
-        z-index:2 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
-        display:grid !important;
-        place-items:center !important;
-        color:rgba(255,255,255,0.95) !important;
-        font-size:23px !important;
-        font-weight:800 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend{
-        display:block !important;
-        left:14px !important;
-        bottom:14px !important;
-        width:156px !important;
-        padding:10px 12px !important;
-        border-radius:16px !important;
-        background:rgba(5,8,18,0.78) !important;
-        border:1px solid rgba(176,108,255,0.24) !important;
-        box-shadow:0 10px 30px rgba(0,0,0,0.34), 0 0 20px rgba(169,112,255,0.10) !important;
-        z-index:30 !important;
-        transform:none !important;
-        opacity:1 !important;
-        visibility:visible !important;
-        pointer-events:none !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-title{
-        display:block !important;
-        margin:0 0 8px !important;
-        color:rgba(255,255,255,0.88) !important;
-        font-size:10.5px !important;
-        font-weight:700 !important;
-        line-height:1 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row{
-        display:flex !important;
-        align-items:center !important;
-        gap:8px !important;
-        margin:0 0 7px !important;
-        color:rgba(255,255,255,0.72) !important;
-        font-size:10.5px !important;
-        line-height:1.1 !important;
-        white-space:nowrap !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row:last-child{
-        margin-bottom:0 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-dot{
-        width:12px !important;
-        height:12px !important;
-        border-radius:50% !important;
-        background:var(--legend-color) !important;
-        box-shadow:0 0 12px var(--legend-color) !important;
-        flex:0 0 12px !important;
-    }
-}
-
-/* ============================================================
-   FINAL OBSERVATION FIX 2026-06-12
-   - 凡例が惑星アイコンと被らないように上側へ移動
-   - プロフィール画像の内側に黒い余白が出ないようにアイコンを全面表示
-============================================================ */
-@media (max-width:900px){
-    body[data-feed-mode="following"] #followingGrid.observation-map{
-        padding-bottom:16px !important;
-        overflow:hidden !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space{
-        position:relative !important;
-        overflow:visible !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend{
-        left:12px !important;
-        top:12px !important;
-        bottom:auto !important;
-        width:136px !important;
-        padding:10px 11px !important;
-        border-radius:16px !important;
-        background:rgba(8,11,25,0.66) !important;
-        border:1px solid rgba(169,112,255,0.26) !important;
-        box-shadow:0 10px 28px rgba(0,0,0,0.22), 0 0 18px rgba(169,112,255,0.10) !important;
-        backdrop-filter:blur(18px) saturate(1.1) !important;
-        -webkit-backdrop-filter:blur(18px) saturate(1.1) !important;
-        transform:none !important;
-        transform-origin:left top !important;
-        z-index:20 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-title{
-        display:block !important;
-        margin:0 0 9px !important;
-        color:rgba(255,255,255,0.92) !important;
-        font-size:11px !important;
-        font-weight:700 !important;
-        line-height:1 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row{
-        margin:0 0 8px !important;
-        gap:8px !important;
-        color:rgba(255,255,255,0.72) !important;
-        font-size:10.5px !important;
-        line-height:1 !important;
-        font-weight:650 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row:last-child{
-        margin-bottom:0 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-dot{
-        width:11px !important;
-        height:11px !important;
-        flex:0 0 11px !important;
-        border-radius:50% !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet{
-        padding:0 !important;
-        border:0 !important;
-        overflow:visible !important;
-        background:transparent !important;
-        box-shadow:none !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet::before,
-    body[data-feed-mode="following"] .observation-planet::after{
-        display:none !important;
-        content:none !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-core{
-        position:absolute !important;
-        inset:0 !important;
-        width:100% !important;
-        height:100% !important;
-        border:0 !important;
-        border-radius:50% !important;
-        overflow:hidden !important;
-        background:transparent !important;
-        box-shadow:
-            0 0 0 3px var(--signal-color),
-            0 0 0 7px rgba(8,11,25,0.82),
-            0 0 18px color-mix(in srgb, var(--signal-color) 52%, transparent),
-            0 0 36px color-mix(in srgb, var(--signal-color) 22%, transparent) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-avatar{
-        position:absolute !important;
-        inset:0 !important;
-        display:block !important;
-        width:100% !important;
-        height:100% !important;
-        min-width:100% !important;
-        min-height:100% !important;
-        max-width:100% !important;
-        max-height:100% !important;
-        object-fit:cover !important;
-        border-radius:50% !important;
-        transform:scale(1.045) !important;
-        background:transparent !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
-        display:grid !important;
-        place-items:center !important;
-        color:rgba(255,255,255,0.96) !important;
-        background:radial-gradient(circle at 50% 42%, rgba(14,18,36,0.98), rgba(5,8,18,0.98)) !important;
-        font-size:22px !important;
-        font-weight:760 !important;
-        line-height:1 !important;
-        text-align:center !important;
-        letter-spacing:0 !important;
-        padding:0 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-signal-dot{
-        right:-9px !important;
-        top:3px !important;
-        z-index:30 !important;
-    }
-}
-
-@media (max-width:430px){
-    body[data-feed-mode="following"] .observation-legend{
-        left:10px !important;
-        top:10px !important;
-        width:128px !important;
-        padding:9px 10px !important;
-        border-radius:15px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-title{
-        font-size:10.5px !important;
-        margin-bottom:8px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row{
-        font-size:9.8px !important;
-        gap:7px !important;
-        margin-bottom:7px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-dot{
-        width:10px !important;
-        height:10px !important;
-        flex-basis:10px !important;
-    }
-}
-
-
-/* ============================================================
-   FINAL HARD FIX 2026-06-13
-   - 凡例を惑星マップ上に重ねず、タイトル直下の横並びパネルにする
-   - 観測アイコンの黒い内側余白を消し、画像を円いっぱいに表示する
-============================================================ */
-body[data-feed-mode="following"] .observation-map{
-    overflow:hidden !important;
-}
-
-body[data-feed-mode="following"] .observation-head{
     position:relative !important;
-    z-index:40 !important;
-    margin-bottom:0 !important;
-}
-
-body[data-feed-mode="following"] .observation-head-text{
-    min-width:0 !important;
-}
-
-body[data-feed-mode="following"] .observation-legend{
-    position:relative !important;
-    left:auto !important;
-    right:auto !important;
-    top:auto !important;
-    bottom:auto !important;
-    z-index:42 !important;
-    width:max-content !important;
-    max-width:100% !important;
-    margin:12px 0 6px !important;
-    padding:8px 10px !important;
-    display:flex !important;
-    align-items:center !important;
-    gap:10px !important;
-    border-radius:999px !important;
-    background:rgba(5,8,18,0.68) !important;
-    border:1px solid rgba(169,112,255,0.22) !important;
-    box-shadow:0 10px 28px rgba(0,0,0,0.22), 0 0 18px rgba(169,112,255,0.08) !important;
-    backdrop-filter:blur(16px) saturate(1.12) !important;
-    -webkit-backdrop-filter:blur(16px) saturate(1.12) !important;
-    transform:none !important;
-    opacity:1 !important;
-    visibility:visible !important;
-    pointer-events:none !important;
-}
-
-body[data-feed-mode="following"] .observation-legend-title{
+    width:28px !important;
+    height:28px !important;
     display:block !important;
-    margin:0 2px 0 0 !important;
-    color:rgba(255,255,255,0.90) !important;
-    font-size:11px !important;
-    font-weight:800 !important;
+    font-size:0 !important;
     line-height:1 !important;
-    white-space:nowrap !important;
+    background:currentColor !important;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='15' cy='16' r='3.2'/%3E%3Cpath d='M15 6.5c5.4 0 9.8 4.2 10.6 9.5'/%3E%3Cpath d='M15 25.5c-5.4 0-9.8-4.2-10.6-9.5'/%3E%3Cpath d='M21.6 9.3l3.9-1.1-1.1 3.9'/%3E%3Cpath d='M8.4 22.7l-3.9 1.1 1.1-3.9'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat !important;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='15' cy='16' r='3.2'/%3E%3Cpath d='M15 6.5c5.4 0 9.8 4.2 10.6 9.5'/%3E%3Cpath d='M15 25.5c-5.4 0-9.8-4.2-10.6-9.5'/%3E%3Cpath d='M21.6 9.3l3.9-1.1-1.1 3.9'/%3E%3Cpath d='M8.4 22.7l-3.9 1.1 1.1-3.9'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat !important;
 }
 
-body[data-feed-mode="following"] .observation-legend-row{
-    display:flex !important;
-    align-items:center !important;
-    gap:5px !important;
-    margin:0 !important;
-    color:rgba(255,255,255,0.72) !important;
-    font-size:10.5px !important;
-    font-weight:700 !important;
-    line-height:1 !important;
-    white-space:nowrap !important;
-}
-
-body[data-feed-mode="following"] .observation-legend-dot{
-    width:10px !important;
-    height:10px !important;
-    flex:0 0 10px !important;
-    border-radius:50% !important;
-    background:var(--legend-color) !important;
-    box-shadow:0 0 12px color-mix(in srgb, var(--legend-color) 76%, transparent) !important;
-}
-
-body[data-feed-mode="following"] .observation-space{
-    margin-top:0 !important;
-    height:clamp(430px, calc(100svh - var(--ac-topbar-h, 58px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 164px), 500px) !important;
-    min-height:430px !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-wrap{
-    z-index:10 !important;
-}
-
-body[data-feed-mode="following"] .observation-planet{
-    padding:0 !important;
-    border:0 !important;
-    background:transparent !important;
-    box-shadow:none !important;
-    overflow:visible !important;
-}
-
-body[data-feed-mode="following"] .observation-planet::before,
-body[data-feed-mode="following"] .observation-planet::after{
+/* 観測ページでは通常フィードをマップとして使う */
+body[data-feed-mode="following"] .daily-meteor-box,
+body[data-feed-mode="following"] .mobile-feed-tabs{
     display:none !important;
-    content:none !important;
 }
 
-body[data-feed-mode="following"] .observation-planet-core{
-    position:absolute !important;
-    inset:-1px !important;
-    width:auto !important;
-    height:auto !important;
-    border-radius:50% !important;
+body[data-feed-mode="following"] .feed-swipe{
+    width:100% !important;
+    margin:0 !important;
+    overflow:visible !important;
+    display:block !important;
+}
+
+body[data-feed-mode="following"] .feed-panel{
+    width:100% !important;
+    min-height:0 !important;
+    padding:0 4px !important;
+    opacity:1 !important;
+    transform:none !important;
+}
+
+body[data-feed-mode="following"] #followingGrid.observation-map{
+    width:100% !important;
+    max-width:none !important;
+    margin:0 auto !important;
+    position:relative !important;
+    display:block !important;
     overflow:hidden !important;
-    border:0 !important;
-    padding:0 !important;
-    background:transparent !important;
+    min-height:760px !important;
+    border-radius:30px !important;
+    padding:24px 18px 20px !important;
+    border:1px solid rgba(150,100,255,0.20) !important;
+    background:
+        radial-gradient(circle at 50% 49%, rgba(255,230,190,0.92) 0 3px, rgba(255,196,148,0.36) 4px, transparent 12px),
+        radial-gradient(ellipse at 50% 50%, rgba(255,180,220,0.22) 0%, rgba(160,100,255,0.18) 19%, rgba(55,25,110,0.12) 35%, transparent 52%),
+        radial-gradient(circle at 26% 26%, rgba(110,150,255,0.18), transparent 26%),
+        radial-gradient(circle at 78% 34%, rgba(96,225,255,0.12), transparent 24%),
+        linear-gradient(180deg, rgba(3,7,18,0.22), rgba(2,5,15,0.52)) !important;
     box-shadow:
-        0 0 0 2px rgba(244,248,255,0.92),
-        0 0 0 5px rgba(12,15,30,0.56),
-        0 0 18px color-mix(in srgb, var(--signal-color) 58%, transparent),
-        0 0 42px color-mix(in srgb, var(--signal-color) 28%, transparent) !important;
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 18px 52px rgba(0,0,0,0.26) !important;
 }
 
-body[data-feed-mode="following"] .observation-planet-avatar{
+body[data-feed-mode="following"] #followingGrid.observation-map::before{
+    content:"" !important;
     position:absolute !important;
     inset:0 !important;
-    width:100% !important;
-    height:100% !important;
-    display:block !important;
-    object-fit:cover !important;
-    object-position:center !important;
-    border-radius:50% !important;
-    transform:scale(1.18) !important;
-    transform-origin:center !important;
-    background:transparent !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
-    inset:-1px !important;
-    display:grid !important;
-    place-items:center !important;
-    color:rgba(255,255,255,0.96) !important;
-    background:radial-gradient(circle at 50% 42%, rgba(13,17,34,0.95), rgba(4,6,15,0.95)) !important;
-    font-size:22px !important;
-    font-weight:800 !important;
-    line-height:1 !important;
-    text-align:center !important;
-    padding:0 !important;
-}
-
-@media (max-width:430px){
-    body[data-feed-mode="following"] .observation-legend{
-        width:100% !important;
-        justify-content:flex-start !important;
-        gap:8px !important;
-        padding:8px 9px !important;
-        border-radius:16px !important;
-        overflow-x:auto !important;
-        scrollbar-width:none !important;
-        pointer-events:auto !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend::-webkit-scrollbar{
-        display:none !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-title{
-        font-size:10px !important;
-        flex:0 0 auto !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row{
-        font-size:9.6px !important;
-        flex:0 0 auto !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-dot{
-        width:9px !important;
-        height:9px !important;
-        flex-basis:9px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space{
-        height:clamp(410px, calc(100svh - var(--ac-topbar-h, 58px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 168px), 480px) !important;
-        min-height:410px !important;
-    }
-}
-
-
-/* ============================================================
-   FINAL HARD FIX 02 2026-06-13
-   - 凡例を完全にマップ外へ分離
-   - モバイルで観測エリアの横幅を広く使用
-   - アイコン周囲の黒い空間をさらに削減
-============================================================ */
-body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
-    padding-left:10px !important;
-    padding-right:10px !important;
-}
-
-body[data-feed-mode="following"] .observation-map{
-    padding:18px 12px 16px !important;
-    border-radius:24px !important;
-}
-
-body[data-feed-mode="following"] .observation-top-row{
-    position:relative !important;
-    z-index:40 !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:flex-start !important;
-    gap:10px !important;
-    margin-bottom:10px !important;
-}
-
-body[data-feed-mode="following"] .observation-head{
-    width:100% !important;
-    margin:0 !important;
-}
-
-body[data-feed-mode="following"] .observation-head-text{
-    width:100% !important;
-}
-
-body[data-feed-mode="following"] .observation-legend{
-    position:relative !important;
-    inset:auto !important;
-    left:auto !important;
-    right:auto !important;
-    top:auto !important;
-    bottom:auto !important;
-    z-index:41 !important;
-    width:100% !important;
-    max-width:none !important;
-    margin:0 !important;
-    padding:10px 12px !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:flex-start !important;
-    gap:14px !important;
-    flex-wrap:wrap !important;
-    border-radius:18px !important;
-    background:rgba(5,8,18,0.68) !important;
-    border:1px solid rgba(169,112,255,0.22) !important;
-    box-shadow:0 10px 28px rgba(0,0,0,0.22), 0 0 18px rgba(169,112,255,0.08) !important;
-    backdrop-filter:blur(16px) saturate(1.12) !important;
-    -webkit-backdrop-filter:blur(16px) saturate(1.12) !important;
+    z-index:0 !important;
     pointer-events:none !important;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.82) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(190,130,255,0.62) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(120,220,255,0.50) 0 1px, transparent 1.5px);
+    background-size:54px 54px, 94px 94px, 142px 142px;
+    background-position:0 0, 18px 24px, 40px 12px;
+    opacity:.34 !important;
 }
 
-body[data-feed-mode="following"] .observation-space{
-    margin-top:0 !important;
-    height:clamp(430px, calc(100svh - var(--ac-topbar-h, 58px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 212px), 500px) !important;
-    min-height:430px !important;
-    margin-left:-2px !important;
-    margin-right:-2px !important;
-}
-
-body[data-feed-mode="following"] .observation-orbit.o1{ width:112% !important; left:-7% !important; top:84px !important; }
-body[data-feed-mode="following"] .observation-orbit.o2{ width:92% !important; left:4% !important; top:214px !important; }
-body[data-feed-mode="following"] .observation-orbit.o3{ width:110% !important; left:-5% !important; top:344px !important; }
-
-body[data-feed-mode="following"] .observation-planet-wrap{
-    z-index:10 !important;
-}
-
-body[data-feed-mode="following"] .observation-planet{
-    padding:0 !important;
-    border:0 !important;
-    background:transparent !important;
-    box-shadow:none !important;
-    overflow:visible !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-core{
+body[data-feed-mode="following"] #followingGrid.observation-map::after{
+    content:"" !important;
     position:absolute !important;
-    inset:-5px !important;
-    width:auto !important;
-    height:auto !important;
-    border-radius:50% !important;
-    overflow:hidden !important;
-    border:0 !important;
-    padding:0 !important;
-    background:transparent !important;
-    box-shadow:
-        0 0 0 2px rgba(244,248,255,0.92),
-        0 0 0 6px rgba(12,15,30,0.20),
-        0 0 18px color-mix(in srgb, var(--signal-color) 58%, transparent),
-        0 0 42px color-mix(in srgb, var(--signal-color) 28%, transparent) !important;
+    inset:0 !important;
+    z-index:0 !important;
+    pointer-events:none !important;
+    background:radial-gradient(ellipse at center, transparent 0 42%, rgba(0,0,0,0.18) 72%, rgba(0,0,0,0.55) 100%) !important;
 }
 
-body[data-feed-mode="following"] .observation-planet-avatar{
-    position:absolute !important;
-    left:-8% !important;
-    top:-8% !important;
-    width:116% !important;
-    height:116% !important;
-    display:block !important;
-    object-fit:cover !important;
-    object-position:center !important;
-    border-radius:50% !important;
-    transform:none !important;
-    transform-origin:center !important;
-    background:transparent !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
-    inset:-5px !important;
-}
-
-@media (max-width:430px){
-    body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
-        padding-left:8px !important;
-        padding-right:8px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-map{
-        padding:16px 10px 14px !important;
-        border-radius:22px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-title{
-        font-size:14px !important;
-        line-height:1.12 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-subtitle{
-        font-size:10px !important;
-        line-height:1.2 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend{
-        padding:9px 10px !important;
-        gap:10px !important;
-        border-radius:16px !important;
-        overflow:visible !important;
-        pointer-events:none !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-title{
-        font-size:10px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-row{
-        font-size:9.5px !important;
-        gap:5px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space{
-        height:clamp(410px, calc(100svh - var(--ac-topbar-h, 54px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 214px), 470px) !important;
-        min-height:410px !important;
-        margin-left:-4px !important;
-        margin-right:-4px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-wrap{
-        transform:translate(-50%,-50%) scale(0.82) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-orbit.o1{ width:116% !important; left:-9% !important; top:80px !important; }
-    body[data-feed-mode="following"] .observation-orbit.o2{ width:96% !important; left:2% !important; top:206px !important; }
-    body[data-feed-mode="following"] .observation-orbit.o3{ width:114% !important; left:-7% !important; top:334px !important; }
-
-    body[data-feed-mode="following"] .observation-planet-core{
-        inset:-6px !important;
-        box-shadow:
-            0 0 0 2px rgba(244,248,255,0.92),
-            0 0 0 5px rgba(12,15,30,0.16),
-            0 0 16px color-mix(in srgb, var(--signal-color) 56%, transparent),
-            0 0 34px color-mix(in srgb, var(--signal-color) 26%, transparent) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-avatar{
-        left:-10% !important;
-        top:-10% !important;
-        width:120% !important;
-        height:120% !important;
-    }
-}
-
-
-/* ============================================================
-   FINAL ALIGN FIX 2026-06-13
-   - 惑星アイコンの中心ズレを解消
-   - 画像を丸の中心に戻す
-   - 白リングだけ外側に出して、内側の黒余白を作らない
-============================================================ */
-body[data-feed-mode="following"] .observation-map{
-    max-width:none !important;
-    width:100% !important;
-}
-
-body[data-feed-mode="following"] .observation-space{
-    overflow:visible !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-wrap{
-    transform:translate(-50%,-50%) scale(1) !important;
-    width:var(--size) !important;
-    text-align:center !important;
-}
-
-body[data-feed-mode="following"] .observation-planet{
-    position:relative !important;
-    width:var(--size) !important;
-    height:var(--size) !important;
-    margin:0 auto !important;
-    padding:0 !important;
-    border:0 !important;
-    border-radius:50% !important;
-    background:transparent !important;
-    box-shadow:none !important;
-    overflow:visible !important;
-}
-
-body[data-feed-mode="following"] .observation-planet::before,
-body[data-feed-mode="following"] .observation-planet::after{
-    display:none !important;
-    content:none !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-core{
-    position:absolute !important;
-    left:0 !important;
-    top:0 !important;
-    right:auto !important;
-    bottom:auto !important;
-    inset:auto !important;
-    width:100% !important;
-    height:100% !important;
-    transform:none !important;
-    border-radius:50% !important;
-    overflow:hidden !important;
-    padding:0 !important;
-    border:0 !important;
-    background:rgba(8,12,26,0.96) !important;
-    box-shadow:
-        0 0 0 2px rgba(244,248,255,0.92),
-        0 0 0 5px rgba(13,16,30,0.46),
-        0 0 18px color-mix(in srgb, var(--signal-color) 56%, transparent),
-        0 0 38px color-mix(in srgb, var(--signal-color) 24%, transparent) !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-avatar{
-    position:absolute !important;
-    left:0 !important;
-    top:0 !important;
-    right:auto !important;
-    bottom:auto !important;
-    inset:auto !important;
-    width:100% !important;
-    height:100% !important;
-    min-width:100% !important;
-    min-height:100% !important;
-    max-width:none !important;
-    max-height:none !important;
-    display:block !important;
-    object-fit:cover !important;
-    object-position:center center !important;
-    border-radius:50% !important;
-    transform:none !important;
-    transform-origin:center center !important;
-    background:transparent !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
-    left:0 !important;
-    top:0 !important;
-    width:100% !important;
-    height:100% !important;
-    display:grid !important;
-    place-items:center !important;
-    color:rgba(255,255,255,0.96) !important;
-    background:radial-gradient(circle at 50% 42%, rgba(13,17,34,0.96), rgba(4,6,15,0.96)) !important;
-    font-size:22px !important;
-    font-weight:800 !important;
-    line-height:1 !important;
-    text-align:center !important;
-    padding:0 !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-name{
-    margin-top:8px !important;
-    text-align:center !important;
-    transform:none !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-time{
-    text-align:center !important;
-    transform:none !important;
-}
-
-@media (max-width:430px){
-    body[data-feed-mode="following"] .observation-planet-wrap{
-        transform:translate(-50%,-50%) scale(0.92) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-core{
-        box-shadow:
-            0 0 0 2px rgba(244,248,255,0.92),
-            0 0 0 4px rgba(13,16,30,0.42),
-            0 0 16px color-mix(in srgb, var(--signal-color) 54%, transparent),
-            0 0 32px color-mix(in srgb, var(--signal-color) 22%, transparent) !important;
-    }
-}
-
-
-/* ============================================================
-   OBSERVATION REDESIGN 2026-06-13
-   - 右画像の方向性に寄せた大幅刷新
-============================================================ */
-body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
-    padding-left:10px !important;
-    padding-right:10px !important;
-}
-
-body[data-feed-mode="following"] .observation-map{
-    width:100% !important;
-    min-height:920px !important;
-    padding:22px 20px 24px !important;
-    border-radius:30px !important;
-    overflow:hidden !important;
-    background:
-        radial-gradient(circle at 50% 50%, rgba(255,242,218,0.90) 0 4px, rgba(255,220,170,0.34) 5px, transparent 12px),
-        radial-gradient(ellipse at 50% 50%, rgba(255,167,215,0.22) 0%, rgba(155,105,255,0.20) 20%, rgba(41,13,92,0.16) 34%, transparent 48%),
-        radial-gradient(circle at 28% 30%, rgba(137,92,255,0.14), transparent 26%),
-        radial-gradient(circle at 76% 34%, rgba(89,213,255,0.10), transparent 24%),
-        linear-gradient(180deg, rgba(2,6,18,0.14), rgba(2,6,18,0.38)) !important;
-    border:1px solid rgba(148,104,255,0.18) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 18px 52px rgba(0,0,0,0.26) !important;
-}
-
-body[data-feed-mode="following"] .observation-map::before{
-    opacity:.36 !important;
-}
-
-body[data-feed-mode="following"] .observation-head-modern{
+/* header */
+body[data-feed-mode="following"] .observation-head{
     position:relative !important;
     z-index:5 !important;
     display:flex !important;
     align-items:flex-start !important;
     justify-content:space-between !important;
     gap:14px !important;
-    margin-bottom:10px !important;
-}
-
-body[data-feed-mode="following"] .observation-title{
-    font-size:22px !important;
-    line-height:1.1 !important;
-    letter-spacing:-0.04em !important;
-    color:rgba(255,255,255,0.98) !important;
-}
-
-body[data-feed-mode="following"] .observation-subtitle{
-    margin-top:7px !important;
-    font-size:13.5px !important;
-    line-height:1.35 !important;
-    color:rgba(228,236,255,0.62) !important;
-}
-
-body[data-feed-mode="following"] .observation-new-btn-modern{
-    flex:0 0 auto !important;
-    min-height:48px !important;
-    padding:12px 16px !important;
-    border-radius:999px !important;
-    border:1px solid rgba(155,105,255,0.34) !important;
-    background:linear-gradient(180deg, rgba(67,34,122,0.42), rgba(35,19,70,0.38)) !important;
-    color:#c998ff !important;
-    font-size:14px !important;
-    font-weight:800 !important;
-    box-shadow:0 0 24px rgba(157,100,255,0.15), inset 0 0 18px rgba(173,124,255,0.10) !important;
-    gap:8px !important;
-}
-
-body[data-feed-mode="following"] .observation-new-btn-icon{
-    display:inline-flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    width:18px !important;
-    height:18px !important;
-    font-size:16px !important;
-}
-
-body[data-feed-mode="following"] .observation-space-modern{
-    position:relative !important;
-    z-index:2 !important;
-    height:770px !important;
-    min-height:770px !important;
-    margin-top:10px !important;
-}
-
-body[data-feed-mode="following"] .observation-core-galaxy{
-    position:absolute !important;
-    left:50% !important;
-    top:49% !important;
-    width:280px !important;
-    height:280px !important;
-    transform:translate(-50%,-50%) !important;
-    pointer-events:none !important;
-    border-radius:50% !important;
-    background:
-        radial-gradient(circle at 50% 50%, rgba(255,244,214,0.95) 0 2px, rgba(255,211,170,0.48) 4px, transparent 11px),
-        radial-gradient(ellipse at 50% 52%, rgba(255,192,226,0.18) 0%, rgba(166,109,255,0.16) 22%, transparent 46%),
-        conic-gradient(from 0deg, transparent 0deg 18deg, rgba(255,210,235,0.16) 20deg 44deg, transparent 46deg 80deg, rgba(145,106,255,0.12) 82deg 118deg, transparent 120deg 200deg, rgba(100,208,255,0.10) 202deg 236deg, transparent 238deg 360deg) !important;
-    filter:blur(0.2px) drop-shadow(0 0 24px rgba(255,195,228,0.16)) !important;
-    opacity:.95 !important;
-}
-
-body[data-feed-mode="following"] .observation-orbit{
-    border:1px dashed rgba(208,215,255,0.18) !important;
-    filter:drop-shadow(0 0 8px rgba(155,105,255,0.10)) !important;
-}
-
-body[data-feed-mode="following"] .observation-orbit.o1{ width:105%; height:280px; left:-2.5%; top:128px; transform:rotate(-8deg); }
-body[data-feed-mode="following"] .observation-orbit.o2{ width:88%; height:350px; left:6%; top:206px; transform:rotate(12deg); }
-body[data-feed-mode="following"] .observation-orbit.o3{ width:108%; height:350px; left:-4%; top:414px; transform:rotate(-14deg); }
-body[data-feed-mode="following"] .observation-orbit.o4{ width:80%; height:520px; left:10%; top:140px; transform:rotate(8deg); }
-
-body[data-feed-mode="following"] .observation-self-planet-wrap{
-    position:absolute !important;
-    left:50% !important;
-    top:54% !important;
-    width:130px !important;
-    transform:translate(-50%,-50%) !important;
-    text-align:center !important;
-    z-index:4 !important;
-}
-
-body[data-feed-mode="following"] .observation-self-signal{
-    position:absolute !important;
-    left:50% !important;
-    top:-22px !important;
-    transform:translateX(-50%) !important;
-    color:#b77cff !important;
-    font-size:28px !important;
-    line-height:1 !important;
-    text-shadow:0 0 16px rgba(183,124,255,0.55) !important;
-}
-
-body[data-feed-mode="following"] .observation-self-planet{
-    appearance:none !important;
-    -webkit-appearance:none !important;
-    position:relative !important;
-    width:118px !important;
-    height:118px !important;
-    margin:0 auto !important;
-    border:none !important;
-    background:transparent !important;
-    border-radius:50% !important;
-    overflow:visible !important;
-}
-
-body[data-feed-mode="following"] .observation-self-ring{
-    position:absolute !important;
-    left:-16px !important;
-    right:-16px !important;
-    top:48px !important;
-    height:22px !important;
-    border-top:2px solid rgba(228,230,255,0.62) !important;
-    border-bottom:2px solid rgba(171,178,232,0.34) !important;
-    border-radius:50% !important;
-    transform:rotate(18deg) !important;
-    box-shadow:0 0 14px rgba(196,205,255,0.14) !important;
-}
-
-body[data-feed-mode="following"] .observation-self-core{
-    position:absolute !important;
-    inset:0 !important;
-    border-radius:50% !important;
-    background:
-        radial-gradient(circle at 36% 30%, rgba(160,202,255,0.95), rgba(160,202,255,0.18) 24%, transparent 26%),
-        radial-gradient(circle at 64% 70%, rgba(21,55,126,0.95), rgba(8,24,64,0.35) 34%, transparent 36%),
-        radial-gradient(circle at 50% 44%, rgba(74,117,212,0.90), rgba(15,34,82,0.98) 70%) !important;
-    box-shadow:
-        0 0 0 2px rgba(244,248,255,0.92),
-        0 0 0 8px rgba(16,23,46,0.28),
-        0 0 26px rgba(123,176,255,0.34),
-        0 0 58px rgba(123,176,255,0.16) !important;
-}
-
-body[data-feed-mode="following"] .observation-self-name{
-    margin-top:14px !important;
-    color:rgba(255,255,255,0.98) !important;
-    font-size:18px !important;
-    line-height:1.1 !important;
-    font-weight:800 !important;
-    text-shadow:0 2px 12px rgba(0,0,0,0.65) !important;
-}
-
-body[data-feed-mode="following"] .observation-self-time{
-    margin-top:4px !important;
-    color:rgba(255,255,255,0.76) !important;
-    font-size:13px !important;
-    line-height:1.15 !important;
-    font-weight:600 !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-wrap{
-    z-index:3 !important;
-}
-
-body[data-feed-mode="following"] .observation-planet{
-    overflow:visible !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-core{
-    box-shadow:
-        0 0 0 2px rgba(244,248,255,0.94),
-        0 0 0 6px rgba(13,16,30,0.38),
-        0 0 18px color-mix(in srgb, var(--signal-color) 56%, transparent),
-        0 0 38px color-mix(in srgb, var(--signal-color) 22%, transparent) !important;
-}
-
-body[data-feed-mode="following"] .observation-signal-dot{
-    right:-4px !important;
-    top:-4px !important;
-    min-width:28px !important;
-    height:28px !important;
-    padding:0 8px !important;
-    border-radius:999px !important;
-    background:#aa78ff !important;
-    color:#26113f !important;
-    font-size:15px !important;
-    font-weight:900 !important;
-    box-shadow:0 0 18px rgba(170,120,255,0.54) !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-name{
-    margin-top:10px !important;
-    font-size:16px !important;
-    line-height:1.12 !important;
-    font-weight:800 !important;
-    color:rgba(255,255,255,0.97) !important;
-}
-
-body[data-feed-mode="following"] .observation-planet-time{
-    margin-top:6px !important;
-    font-size:12px !important;
-    line-height:1.15 !important;
-    color:rgba(255,255,255,0.78) !important;
-}
-
-body[data-feed-mode="following"] .observation-legend-modern{
-    position:absolute !important;
-    left:10px !important;
-    bottom:18px !important;
-    width:250px !important;
-    padding:14px 14px 12px !important;
-    border-radius:18px !important;
-    border:1px solid rgba(255,255,255,0.08) !important;
-    background:rgba(7,11,24,0.58) !important;
-    backdrop-filter:blur(18px) !important;
-    -webkit-backdrop-filter:blur(18px) !important;
-    display:block !important;
-    box-shadow:0 14px 28px rgba(0,0,0,0.18) !important;
-}
-
-body[data-feed-mode="following"] .observation-legend-modern .observation-legend-row{
-    display:flex !important;
-    align-items:center !important;
-    gap:9px !important;
-    margin-bottom:10px !important;
-    font-size:11px !important;
-    line-height:1.1 !important;
-    color:rgba(255,255,255,0.78) !important;
-    font-weight:700 !important;
-    white-space:nowrap !important;
-}
-
-body[data-feed-mode="following"] .observation-legend-modern .observation-legend-row:last-child{
-    margin-bottom:0 !important;
-}
-
-body[data-feed-mode="following"] .observation-legend-modern .observation-legend-dot{
-    width:18px !important;
-    height:18px !important;
-    flex:0 0 18px !important;
-    border-radius:50% !important;
-    background:var(--legend-color) !important;
-    box-shadow:0 0 14px color-mix(in srgb, var(--legend-color) 80%, transparent) !important;
-}
-
-body[data-feed-mode="following"] .observation-legend-modern .observation-legend-dot.number{
-    display:grid !important;
-    place-items:center !important;
-    color:#23113a !important;
-    font-size:11px !important;
-    font-weight:900 !important;
-}
-
-body[data-feed-mode="following"] .observation-tools{
-    position:absolute !important;
-    right:8px !important;
-    bottom:16px !important;
-    display:flex !important;
-    gap:12px !important;
-    z-index:5 !important;
-}
-
-body[data-feed-mode="following"] .observation-tool-btn{
-    appearance:none !important;
-    -webkit-appearance:none !important;
-    width:60px !important;
-    height:60px !important;
-    border-radius:50% !important;
-    border:1px solid rgba(255,255,255,0.08) !important;
-    background:rgba(11,15,31,0.56) !important;
-    color:rgba(255,255,255,0.90) !important;
-    font-size:28px !important;
-    line-height:1 !important;
-    box-shadow:0 14px 28px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.05) !important;
-    backdrop-filter:blur(16px) !important;
-    -webkit-backdrop-filter:blur(16px) !important;
-}
-
-@media (max-width:430px){
-    body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
-        padding-left:8px !important;
-        padding-right:8px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-map{
-        min-height:840px !important;
-        padding:18px 14px 20px !important;
-        border-radius:26px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-title{
-        font-size:18px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-subtitle{
-        font-size:11px !important;
-        margin-top:6px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-head-modern{
-        align-items:flex-start !important;
-        gap:10px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-new-btn-modern{
-        padding:10px 12px !important;
-        min-height:42px !important;
-        font-size:12.5px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space-modern{
-        height:710px !important;
-        min-height:710px !important;
-        margin-top:8px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-core-galaxy{
-        width:220px !important;
-        height:220px !important;
-        top:48% !important;
-    }
-
-    body[data-feed-mode="following"] .observation-orbit.o1{ width:118%; height:240px; left:-9%; top:128px; }
-    body[data-feed-mode="following"] .observation-orbit.o2{ width:94%; height:320px; left:3%; top:214px; }
-    body[data-feed-mode="following"] .observation-orbit.o3{ width:122%; height:330px; left:-11%; top:412px; }
-    body[data-feed-mode="following"] .observation-orbit.o4{ width:88%; height:470px; left:6%; top:136px; }
-
-    body[data-feed-mode="following"] .observation-self-planet-wrap{
-        top:53% !important;
-        width:110px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-self-planet{
-        width:100px !important;
-        height:100px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-self-ring{
-        left:-14px !important;
-        right:-14px !important;
-        top:40px !important;
-        height:18px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-self-signal{
-        top:-18px !important;
-        font-size:24px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-self-name{
-        font-size:15px !important;
-        margin-top:12px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-self-time{
-        font-size:11px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-wrap{
-        transform:translate(-50%,-50%) scale(0.90) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-name{
-        font-size:14px !important;
-        margin-top:8px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-time{
-        font-size:11px !important;
-        margin-top:4px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-signal-dot{
-        min-width:24px !important;
-        height:24px !important;
-        font-size:13px !important;
-        right:-2px !important;
-        top:-2px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-modern{
-        width:200px !important;
-        left:2px !important;
-        bottom:18px !important;
-        padding:12px 12px 10px !important;
-        border-radius:16px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-modern .observation-legend-row{
-        gap:8px !important;
-        margin-bottom:9px !important;
-        font-size:10px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend-modern .observation-legend-dot{
-        width:16px !important;
-        height:16px !important;
-        flex-basis:16px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-tools{
-        right:0 !important;
-        bottom:12px !important;
-        gap:10px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-tool-btn{
-        width:52px !important;
-        height:52px !important;
-        font-size:24px !important;
-    }
-}
-
-
-/* ============================================================
-   OBSERVATION REFINEMENT 2026-06-13
-   - 自分の惑星を削除
-   - 凡例を左下固定
-   - 惑星配置を外側に再設計
-   - 左右余白を極小化
-============================================================ */
-body[data-feed-mode="following"] .feed-swipe,
-body[data-feed-mode="following"] .feed-panel,
-body[data-feed-mode="following"] #followingGrid{
-    width:100% !important;
-    max-width:none !important;
-}
-
-body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
-    padding-left:4px !important;
-    padding-right:4px !important;
-}
-
-body[data-feed-mode="following"] .observation-map{
-    min-height:830px !important;
-    padding:18px 10px 20px !important;
-    border-radius:26px !important;
-    margin:0 !important;
-}
-
-body[data-feed-mode="following"] .observation-head-modern{
-    gap:10px !important;
-    margin-bottom:8px !important;
+    margin:0 0 12px !important;
 }
 
 body[data-feed-mode="following"] .observation-head-text{
@@ -10531,79 +7549,142 @@ body[data-feed-mode="following"] .observation-head-text{
 }
 
 body[data-feed-mode="following"] .observation-title{
-    font-size:20px !important;
+    margin:0 !important;
+    color:rgba(255,255,255,0.98) !important;
+    font-size:22px !important;
+    line-height:1.1 !important;
+    font-weight:800 !important;
+    letter-spacing:-0.045em !important;
 }
 
 body[data-feed-mode="following"] .observation-subtitle{
-    margin-top:5px !important;
-    font-size:12px !important;
-    line-height:1.28 !important;
-}
-
-body[data-feed-mode="following"] .observation-new-btn-modern{
-    padding:10px 14px !important;
-    min-height:42px !important;
+    margin:7px 0 0 !important;
+    color:rgba(228,236,255,0.62) !important;
     font-size:13px !important;
-    white-space:nowrap !important;
+    line-height:1.34 !important;
+    font-weight:600 !important;
 }
 
-body[data-feed-mode="following"] .observation-space-modern{
+body[data-feed-mode="following"] .observation-new-btn{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    flex:0 0 auto !important;
+    min-height:46px !important;
+    border-radius:999px !important;
+    border:1px solid rgba(160,105,255,0.36) !important;
+    background:linear-gradient(180deg, rgba(72,36,132,0.44), rgba(36,20,78,0.38)) !important;
+    color:#d2a1ff !important;
+    padding:11px 16px !important;
+    font-family:inherit !important;
+    font-size:14px !important;
+    line-height:1 !important;
+    font-weight:850 !important;
+    white-space:nowrap !important;
+    box-shadow:0 0 24px rgba(157,100,255,0.16), inset 0 0 18px rgba(173,124,255,0.10) !important;
+}
+
+body[data-feed-mode="following"] .observation-new-btn-icon{
+    margin-left:7px !important;
+}
+
+/* space */
+body[data-feed-mode="following"] .observation-space{
     position:relative !important;
-    height:700px !important;
-    min-height:700px !important;
-    margin-top:6px !important;
-    overflow:hidden !important;
+    z-index:2 !important;
+    height:650px !important;
+    min-height:650px !important;
+    overflow:visible !important;
 }
 
 body[data-feed-mode="following"] .observation-core-galaxy{
-    width:230px !important;
-    height:230px !important;
+    position:absolute !important;
     left:50% !important;
     top:48% !important;
-    opacity:.95 !important;
+    width:230px !important;
+    height:230px !important;
+    transform:translate(-50%,-50%) !important;
+    z-index:1 !important;
+    pointer-events:none !important;
+    border-radius:50% !important;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255,244,214,0.95) 0 2px, rgba(255,211,170,0.50) 4px, transparent 12px),
+        radial-gradient(ellipse at 50% 52%, rgba(255,192,226,0.18) 0%, rgba(166,109,255,0.16) 22%, transparent 48%),
+        conic-gradient(from 0deg, transparent 0deg 18deg, rgba(255,210,235,0.16) 20deg 44deg, transparent 46deg 80deg, rgba(145,106,255,0.12) 82deg 118deg, transparent 120deg 200deg, rgba(100,208,255,0.10) 202deg 236deg, transparent 238deg 360deg) !important;
+    filter:drop-shadow(0 0 24px rgba(255,195,228,0.16)) !important;
+    opacity:.92 !important;
 }
 
 body[data-feed-mode="following"] .observation-core-radio{
     position:absolute !important;
     left:50% !important;
     top:48% !important;
-    transform:translate(-50%,-50%) !important;
     z-index:2 !important;
+    transform:translate(-50%,-50%) !important;
     color:#b77cff !important;
-    font-size:30px !important;
+    font-size:28px !important;
     line-height:1 !important;
-    text-shadow:0 0 16px rgba(183,124,255,0.48) !important;
     pointer-events:none !important;
+    text-shadow:0 0 16px rgba(183,124,255,0.48) !important;
 }
 
 body[data-feed-mode="following"] .observation-orbit{
+    position:absolute !important;
     z-index:1 !important;
+    border:1px dashed rgba(208,215,255,0.18) !important;
+    border-radius:50% !important;
+    pointer-events:none !important;
+    filter:drop-shadow(0 0 8px rgba(155,105,255,0.10)) !important;
 }
 
-body[data-feed-mode="following"] .observation-orbit.o1{ width:118% !important; height:220px !important; left:-9% !important; top:118px !important; transform:rotate(-8deg) !important; }
-body[data-feed-mode="following"] .observation-orbit.o2{ width:92% !important; height:310px !important; left:4% !important; top:190px !important; transform:rotate(12deg) !important; }
-body[data-feed-mode="following"] .observation-orbit.o3{ width:124% !important; height:300px !important; left:-12% !important; top:388px !important; transform:rotate(-14deg) !important; }
-body[data-feed-mode="following"] .observation-orbit.o4{ width:92% !important; height:470px !important; left:4% !important; top:118px !important; transform:rotate(7deg) !important; }
+body[data-feed-mode="following"] .observation-orbit.o1{ width:118% !important; height:210px !important; left:-9% !important; top:92px !important; transform:rotate(-8deg) !important; }
+body[data-feed-mode="following"] .observation-orbit.o2{ width:94% !important; height:300px !important; left:3% !important; top:164px !important; transform:rotate(12deg) !important; }
+body[data-feed-mode="following"] .observation-orbit.o3{ width:124% !important; height:292px !important; left:-12% !important; top:340px !important; transform:rotate(-14deg) !important; }
+body[data-feed-mode="following"] .observation-orbit.o4{ width:92% !important; height:440px !important; left:4% !important; top:96px !important; transform:rotate(7deg) !important; }
 
-body[data-feed-mode="following"] .observation-self-planet-wrap,
-body[data-feed-mode="following"] .observation-tools{
-    display:none !important;
-}
-
+/* planets */
 body[data-feed-mode="following"] .observation-planet-wrap{
+    position:absolute !important;
+    left:var(--x) !important;
+    top:var(--y) !important;
+    width:var(--size) !important;
+    text-align:center !important;
+    transform:translate(-50%,-50%) scale(.92) !important;
     z-index:3 !important;
-    transform:translate(-50%,-50%) scale(0.92) !important;
 }
 
 body[data-feed-mode="following"] .observation-planet{
+    appearance:none !important;
+    -webkit-appearance:none !important;
     position:relative !important;
+    display:block !important;
     width:var(--size) !important;
     height:var(--size) !important;
     margin:0 auto !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:50% !important;
+    background:transparent !important;
+    cursor:pointer !important;
     overflow:visible !important;
+    box-shadow:none !important;
+}
+
+body[data-feed-mode="following"] .observation-planet::before,
+body[data-feed-mode="following"] .observation-planet::after{
+    display:none !important;
+    content:none !important;
 }
 
 body[data-feed-mode="following"] .observation-planet-core{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    border-radius:50% !important;
+    overflow:hidden !important;
+    padding:0 !important;
+    border:0 !important;
+    background:rgba(8,12,26,0.96) !important;
     box-shadow:
         0 0 0 2px rgba(244,248,255,0.94),
         0 0 0 5px rgba(13,16,30,0.32),
@@ -10611,142 +7692,483 @@ body[data-feed-mode="following"] .observation-planet-core{
         0 0 32px color-mix(in srgb, var(--signal-color) 18%, transparent) !important;
 }
 
+body[data-feed-mode="following"] .observation-planet-avatar{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center center !important;
+    border-radius:50% !important;
+    display:block !important;
+    transform:none !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
+    display:grid !important;
+    place-items:center !important;
+    color:rgba(255,255,255,0.96) !important;
+    background:radial-gradient(circle at 50% 42%, rgba(13,17,34,0.96), rgba(4,6,15,0.96)) !important;
+    font-size:24px !important;
+    font-weight:850 !important;
+    line-height:1 !important;
+    text-align:center !important;
+}
+
 body[data-feed-mode="following"] .observation-signal-dot{
+    position:absolute !important;
     right:-3px !important;
     top:-4px !important;
-    min-width:26px !important;
-    height:26px !important;
-    padding:0 8px !important;
-    font-size:14px !important;
+    min-width:25px !important;
+    height:25px !important;
+    padding:0 7px !important;
+    border-radius:999px !important;
+    display:grid !important;
+    place-items:center !important;
+    background:#aa78ff !important;
+    color:#26113f !important;
+    font-size:13px !important;
+    font-weight:900 !important;
+    line-height:1 !important;
+    box-shadow:0 0 18px rgba(170,120,255,0.54) !important;
+    z-index:4 !important;
 }
 
 body[data-feed-mode="following"] .observation-planet-name{
     margin-top:8px !important;
+    color:rgba(255,255,255,0.97) !important;
     font-size:15px !important;
     line-height:1.1 !important;
+    font-weight:850 !important;
+    text-shadow:0 2px 12px rgba(0,0,0,0.75) !important;
+    white-space:nowrap !important;
 }
 
 body[data-feed-mode="following"] .observation-planet-time{
     margin-top:4px !important;
+    color:rgba(255,255,255,0.72) !important;
     font-size:11px !important;
     line-height:1.1 !important;
-}
-
-body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern{
-    position:absolute !important;
-    left:6px !important;
-    right:auto !important;
-    top:auto !important;
-    bottom:8px !important;
-    width:190px !important;
-    padding:12px 12px 10px !important;
-    border-radius:16px !important;
-    background:rgba(7,11,24,0.68) !important;
-    display:block !important;
-    z-index:4 !important;
-}
-
-body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern .observation-legend-row{
-    gap:8px !important;
-    margin-bottom:8px !important;
-    font-size:10px !important;
-    line-height:1.1 !important;
+    font-weight:650 !important;
+    text-shadow:0 2px 10px rgba(0,0,0,0.72) !important;
     white-space:nowrap !important;
 }
 
-body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern .observation-legend-dot{
+/* legend */
+body[data-feed-mode="following"] .observation-legend{
+    position:absolute !important;
+    left:8px !important;
+    bottom:10px !important;
+    z-index:5 !important;
+    width:190px !important;
+    padding:12px 12px 10px !important;
+    border-radius:16px !important;
+    border:1px solid rgba(255,255,255,0.08) !important;
+    background:rgba(7,11,24,0.68) !important;
+    backdrop-filter:blur(18px) !important;
+    -webkit-backdrop-filter:blur(18px) !important;
+    display:block !important;
+    box-shadow:0 14px 28px rgba(0,0,0,0.18) !important;
+    pointer-events:none !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-row{
+    display:flex !important;
+    align-items:center !important;
+    gap:8px !important;
+    margin:0 0 8px !important;
+    color:rgba(255,255,255,0.78) !important;
+    font-size:10px !important;
+    line-height:1.1 !important;
+    font-weight:750 !important;
+    white-space:nowrap !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-row:last-child{
+    margin-bottom:0 !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-dot{
     width:15px !important;
     height:15px !important;
-    flex-basis:15px !important;
+    flex:0 0 15px !important;
+    border-radius:50% !important;
+    display:grid !important;
+    place-items:center !important;
+    background:var(--legend-color) !important;
+    box-shadow:0 0 14px color-mix(in srgb, var(--legend-color) 80%, transparent) !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-dot.number{
+    color:#23113a !important;
+    font-size:10px !important;
+    font-weight:900 !important;
+}
+
+/* empty */
+body[data-feed-mode="following"] .observation-empty{
+    position:relative !important;
+    z-index:5 !important;
+    display:grid !important;
+    place-items:center !important;
+    min-height:360px !important;
+    color:rgba(255,255,255,0.72) !important;
+    text-align:center !important;
+    line-height:1.7 !important;
+}
+
+/* story viewer */
+.observation-viewer{
+    position:fixed !important;
+    inset:0 !important;
+    z-index:30000 !important;
+    display:none;
+    background:radial-gradient(circle at 50% 16%, rgba(70,42,120,0.56), transparent 36%), #02040a !important;
+    color:white !important;
+}
+
+.observation-viewer.open{
+    display:block !important;
+}
+
+.observation-viewer-progress{
+    position:absolute !important;
+    left:12px !important;
+    right:12px !important;
+    top:calc(12px + env(safe-area-inset-top)) !important;
+    display:flex !important;
+    gap:4px !important;
+    z-index:4 !important;
+}
+
+.observation-progress-seg{
+    flex:1 !important;
+    height:3px !important;
+    border-radius:999px !important;
+    overflow:hidden !important;
+    background:rgba(255,255,255,0.18) !important;
+}
+
+.observation-progress-seg span{
+    display:block !important;
+    width:0 !important;
+    height:100% !important;
+    background:white !important;
+}
+
+.observation-progress-seg.done span,
+.observation-progress-seg.active span{
+    width:100% !important;
+}
+
+.observation-viewer-top{
+    position:absolute !important;
+    left:16px !important;
+    right:16px !important;
+    top:calc(28px + env(safe-area-inset-top)) !important;
+    z-index:4 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+}
+
+.observation-viewer-user{
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+}
+
+.observation-viewer-avatar,
+.observation-viewer-avatar-fallback{
+    width:38px !important;
+    height:38px !important;
+    border-radius:50% !important;
+}
+
+.observation-viewer-avatar{
+    object-fit:cover !important;
+}
+
+.observation-viewer-avatar-fallback{
+    display:grid !important;
+    place-items:center !important;
+    background:rgba(255,255,255,0.14) !important;
+    font-weight:850 !important;
+}
+
+.observation-viewer-name{
+    font-size:14px !important;
+    font-weight:850 !important;
+}
+
+.observation-viewer-time{
+    margin-top:2px !important;
+    color:rgba(255,255,255,0.62) !important;
+    font-size:11px !important;
+}
+
+.observation-close{
+    width:34px !important;
+    height:34px !important;
+    border:none !important;
+    border-radius:50% !important;
+    background:rgba(0,0,0,0.28) !important;
+    color:white !important;
+    font-size:24px !important;
+}
+
+.observation-viewer-body{
+    position:absolute !important;
+    left:22px !important;
+    right:22px !important;
+    top:calc(86px + env(safe-area-inset-top)) !important;
+    bottom:120px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
+}
+
+.observation-viewer-cover{
+    width:min(62vw, 320px) !important;
+    aspect-ratio:1/1 !important;
+    border-radius:24px !important;
+    overflow:hidden !important;
+    background:#111 !important;
+    box-shadow:0 22px 80px rgba(0,0,0,0.48) !important;
+}
+
+.observation-viewer-cover img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+}
+
+.observation-viewer-title{
+    margin:22px 0 0 !important;
+    font-size:26px !important;
+    line-height:1.15 !important;
+    font-weight:900 !important;
+}
+
+.observation-viewer-artist{
+    margin-top:8px !important;
+    color:rgba(255,255,255,0.70) !important;
+    font-size:14px !important;
+    font-weight:700 !important;
+}
+
+.observation-viewer-text{
+    margin:18px auto 0 !important;
+    max-width:320px !important;
+    color:rgba(255,255,255,0.82) !important;
+    font-size:13px !important;
+    line-height:1.65 !important;
+}
+
+.observation-viewer-meters{
+    width:100% !important;
+    max-width:360px !important;
+    margin-top:20px !important;
+}
+
+.observation-viewer-meters .meter{
+    margin-bottom:10px !important;
+}
+
+.observation-viewer-bottom{
+    position:absolute !important;
+    left:16px !important;
+    right:16px !important;
+    bottom:calc(18px + env(safe-area-inset-bottom)) !important;
+    z-index:4 !important;
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+}
+
+.observation-detail-btn{
+    flex:1 !important;
+    height:46px !important;
+    border-radius:999px !important;
+    background:rgba(255,255,255,0.94) !important;
+    color:#080a10 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-decoration:none !important;
+    font-size:14px !important;
+    font-weight:900 !important;
+}
+
+.observation-mini-btn{
+    width:46px !important;
+    height:46px !important;
+    border:none !important;
+    border-radius:50% !important;
+    background:rgba(255,255,255,0.12) !important;
+    color:white !important;
+    font-size:19px !important;
+}
+
+.observation-tap-zone{
+    position:absolute !important;
+    top:82px !important;
+    bottom:86px !important;
+    width:50% !important;
+    z-index:3 !important;
+    border:none !important;
+    background:transparent !important;
+}
+
+.observation-tap-zone.left{ left:0 !important; }
+.observation-tap-zone.right{ right:0 !important; }
+
+@media (max-width:900px){
+    body[data-feed-mode="following"]{
+        padding-left:0 !important;
+        padding-right:0 !important;
+        padding-bottom:calc(92px + env(safe-area-inset-bottom)) !important;
+        overflow-x:hidden !important;
+    }
+
+    body[data-feed-mode="following"] .topbar{
+        margin-left:0 !important;
+        margin-right:0 !important;
+        padding-left:24px !important;
+        padding-right:24px !important;
+    }
+
+    body[data-feed-mode="following"] .feed-swipe{
+        width:100vw !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+    }
+
+    body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
+        padding-left:4px !important;
+        padding-right:4px !important;
+    }
+
+    body[data-feed-mode="following"] #followingGrid.observation-map{
+        min-height:760px !important;
+        border-radius:26px !important;
+        padding:18px 10px 20px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-title{
+        font-size:18px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-subtitle{
+        font-size:10.8px !important;
+        line-height:1.25 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-new-btn{
+        min-height:39px !important;
+        padding:9px 12px !important;
+        font-size:12px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space{
+        height:655px !important;
+        min-height:655px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-core-galaxy{
+        width:205px !important;
+        height:205px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-core-radio{
+        font-size:26px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-wrap{
+        transform:translate(-50%,-50%) scale(.88) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-name{
+        font-size:13px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-time{
+        font-size:10px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend{
+        left:6px !important;
+        bottom:8px !important;
+        width:176px !important;
+        padding:11px 11px 9px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-row{
+        font-size:9.4px !important;
+        gap:7px !important;
+        margin-bottom:7px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-dot{
+        width:14px !important;
+        height:14px !important;
+        flex-basis:14px !important;
+    }
 }
 
 @media (max-width:430px){
+    body[data-feed-mode="following"] .topbar{
+        padding-left:24px !important;
+        padding-right:24px !important;
+    }
+
     body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
         padding-left:2px !important;
         padding-right:2px !important;
     }
 
-    body[data-feed-mode="following"] .observation-map{
-        min-height:810px !important;
+    body[data-feed-mode="following"] #followingGrid.observation-map{
+        min-height:740px !important;
         padding:16px 8px 18px !important;
         border-radius:24px !important;
     }
 
+    body[data-feed-mode="following"] .observation-head{
+        gap:8px !important;
+        margin-bottom:8px !important;
+    }
+
     body[data-feed-mode="following"] .observation-title{
         font-size:17px !important;
-        line-height:1.12 !important;
     }
 
     body[data-feed-mode="following"] .observation-subtitle{
-        font-size:10.5px !important;
-        line-height:1.22 !important;
+        font-size:10px !important;
     }
 
-    body[data-feed-mode="following"] .observation-new-btn-modern{
-        padding:9px 12px !important;
-        min-height:38px !important;
-        font-size:12px !important;
+    body[data-feed-mode="following"] .observation-new-btn{
+        min-height:37px !important;
+        padding:9px 11px !important;
+        font-size:11.5px !important;
     }
 
-    body[data-feed-mode="following"] .observation-space-modern{
-        height:688px !important;
-        min-height:688px !important;
+    body[data-feed-mode="following"] .observation-space{
+        height:640px !important;
+        min-height:640px !important;
     }
 
-    body[data-feed-mode="following"] .observation-core-galaxy{
-        width:210px !important;
-        height:210px !important;
-        top:47% !important;
-    }
-
-    body[data-feed-mode="following"] .observation-core-radio{
-        top:47% !important;
-        font-size:26px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-orbit.o1{ width:124% !important; height:205px !important; left:-12% !important; top:118px !important; }
-    body[data-feed-mode="following"] .observation-orbit.o2{ width:98% !important; height:298px !important; left:1% !important; top:194px !important; }
-    body[data-feed-mode="following"] .observation-orbit.o3{ width:128% !important; height:286px !important; left:-14% !important; top:390px !important; }
-    body[data-feed-mode="following"] .observation-orbit.o4{ width:96% !important; height:458px !important; left:2% !important; top:120px !important; }
+    body[data-feed-mode="following"] .observation-orbit.o1{ width:124% !important; height:200px !important; left:-12% !important; top:90px !important; }
+    body[data-feed-mode="following"] .observation-orbit.o2{ width:98% !important; height:286px !important; left:1% !important; top:160px !important; }
+    body[data-feed-mode="following"] .observation-orbit.o3{ width:128% !important; height:280px !important; left:-14% !important; top:330px !important; }
+    body[data-feed-mode="following"] .observation-orbit.o4{ width:96% !important; height:425px !important; left:2% !important; top:94px !important; }
 
     body[data-feed-mode="following"] .observation-planet-wrap{
-        transform:translate(-50%,-50%) scale(0.88) !important;
+        transform:translate(-50%,-50%) scale(.84) !important;
     }
 
-    body[data-feed-mode="following"] .observation-planet-name{
-        font-size:13px !important;
-        margin-top:7px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-planet-time{
-        font-size:10px !important;
-        margin-top:3px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-signal-dot{
-        min-width:23px !important;
-        height:23px !important;
-        font-size:12px !important;
-        padding:0 6px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern{
-        left:4px !important;
-        bottom:8px !important;
-        width:176px !important;
-        padding:11px 11px 9px !important;
-        border-radius:15px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern .observation-legend-row{
-        gap:7px !important;
-        margin-bottom:7px !important;
-        font-size:9.4px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space-modern > .observation-legend-modern .observation-legend-dot{
-        width:14px !important;
-        height:14px !important;
-        flex-basis:14px !important;
+    body[data-feed-mode="following"] .observation-legend{
+        width:170px !important;
     }
 }
