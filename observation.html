@@ -3021,13 +3021,13 @@ function getObservationSignalState(group){
 
 function getObservationPlanetStyle(index){
     const styles = [
-        { x:"48%", y:"18%", size:"74px", bg:"radial-gradient(circle at 34% 28%, #bc79ff, transparent 20%), radial-gradient(circle at 62% 64%, #321256, #080616 70%)", glow:"rgba(176,108,255,0.82)" },
-        { x:"22%", y:"32%", size:"72px", bg:"radial-gradient(circle at 34% 30%, #ff725f, transparent 21%), radial-gradient(circle at 64% 66%, #521206, #090305 70%)", glow:"rgba(255,108,85,0.62)" },
-        { x:"82%", y:"36%", size:"70px", bg:"radial-gradient(circle at 34% 30%, #73f2ff, transparent 22%), radial-gradient(circle at 63% 66%, #0a5060, #03151e 70%)", glow:"rgba(120,217,255,0.65)" },
-        { x:"22%", y:"55%", size:"64px", bg:"radial-gradient(circle at 34% 30%, #609cff, transparent 22%), radial-gradient(circle at 64% 66%, #132a5b, #050a18 70%)", glow:"rgba(89,145,255,0.42)" },
-        { x:"54%", y:"58%", size:"82px", bg:"radial-gradient(circle at 32% 28%, #74c7ff, transparent 20%), radial-gradient(circle at 44% 50%, #2a854d, transparent 18%), radial-gradient(circle at 62% 66%, #0f3769, #061227 70%)", glow:"rgba(105,180,255,0.72)" },
-        { x:"78%", y:"68%", size:"68px", bg:"radial-gradient(circle at 34% 28%, #ffc06b, transparent 22%), radial-gradient(circle at 63% 66%, #5b3614, #100802 70%)", glow:"rgba(255,190,107,0.55)" },
-        { x:"51%", y:"84%", size:"68px", bg:"radial-gradient(circle at 32% 28%, #a85cff, transparent 22%), radial-gradient(circle at 62% 66%, #1e0d3c, #05030d 70%)", glow:"rgba(176,108,255,0.50)" }
+        { x:"48%", y:"17%", size:"68px", bg:"radial-gradient(circle at 34% 28%, #bc79ff, transparent 20%), radial-gradient(circle at 62% 64%, #321256, #080616 70%)", glow:"rgba(176,108,255,0.82)" },
+        { x:"23%", y:"31%", size:"66px", bg:"radial-gradient(circle at 34% 30%, #ff725f, transparent 21%), radial-gradient(circle at 64% 66%, #521206, #090305 70%)", glow:"rgba(255,108,85,0.62)" },
+        { x:"80%", y:"37%", size:"66px", bg:"radial-gradient(circle at 34% 30%, #73f2ff, transparent 22%), radial-gradient(circle at 63% 66%, #0a5060, #03151e 70%)", glow:"rgba(120,217,255,0.65)" },
+        { x:"24%", y:"55%", size:"60px", bg:"radial-gradient(circle at 34% 30%, #609cff, transparent 22%), radial-gradient(circle at 64% 66%, #132a5b, #050a18 70%)", glow:"rgba(89,145,255,0.42)" },
+        { x:"54%", y:"59%", size:"74px", bg:"radial-gradient(circle at 32% 28%, #74c7ff, transparent 20%), radial-gradient(circle at 44% 50%, #2a854d, transparent 18%), radial-gradient(circle at 62% 66%, #0f3769, #061227 70%)", glow:"rgba(105,180,255,0.72)" },
+        { x:"78%", y:"68%", size:"62px", bg:"radial-gradient(circle at 34% 28%, #ffc06b, transparent 22%), radial-gradient(circle at 63% 66%, #5b3614, #100802 70%)", glow:"rgba(255,190,107,0.55)" },
+        { x:"50%", y:"76%", size:"62px", bg:"radial-gradient(circle at 32% 28%, #a85cff, transparent 22%), radial-gradient(circle at 62% 66%, #1e0d3c, #05030d 70%)", glow:"rgba(176,108,255,0.50)" }
     ];
 
     return styles[index % styles.length];
@@ -3741,8 +3741,21 @@ document.addEventListener("DOMContentLoaded", () => {
 (function(){
     let ticking = false;
 
+    function getCurrentScrollY(){
+        const activePanel = document.querySelector(".feed-panel.is-visible") || document.querySelector(".feed-panel");
+        const values = [
+            window.scrollY || 0,
+            document.documentElement.scrollTop || 0,
+            document.body.scrollTop || 0,
+            document.getElementById("feedSwipe")?.scrollTop || 0,
+            activePanel?.scrollTop || 0,
+            document.getElementById("recommendGrid")?.scrollTop || 0
+        ];
+        return Math.max(...values);
+    }
+
     function updateMeteorFade(){
-        const y = window.scrollY || document.documentElement.scrollTop || 0;
+        const y = getCurrentScrollY();
         const opacity = Math.max(0, Math.min(1, 1 - (y / 118)));
         const offset = Math.min(18, y * 0.10);
 
@@ -3753,6 +3766,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     window.addEventListener("scroll", () => {
+        if(ticking){ return; }
+        ticking = true;
+        requestAnimationFrame(updateMeteorFade);
+    }, { passive:true });
+
+    document.addEventListener("scroll", () => {
+        if(ticking){ return; }
+        ticking = true;
+        requestAnimationFrame(updateMeteorFade);
+    }, { passive:true, capture:true });
+
+    document.addEventListener("touchmove", () => {
         if(ticking){ return; }
         ticking = true;
         requestAnimationFrame(updateMeteorFade);
