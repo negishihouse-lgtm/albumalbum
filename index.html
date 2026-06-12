@@ -7971,6 +7971,7 @@ h4{
 ============================================================ */
 :root{
     --galaxy-loop-y:0px;
+    --galaxy-loop-x:0px;
     --galaxy-loop-height:140vh;
 }
 
@@ -7996,10 +7997,10 @@ body::before{
         100% 100%,
         100% var(--galaxy-loop-height),
         100% var(--galaxy-loop-height) !important;
-    background-position:
-        center center,
-        center var(--galaxy-loop-y),
-        center calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
+        background-position:
+            center center,
+            calc(50% + var(--galaxy-loop-x)) var(--galaxy-loop-y),
+            calc(50% + var(--galaxy-loop-x)) calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
     background-repeat:
         no-repeat,
         no-repeat,
@@ -8023,8 +8024,8 @@ body::after{
             100% var(--galaxy-loop-height) !important;
         background-position:
             center center,
-            center var(--galaxy-loop-y),
-            center calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
+            calc(50% + var(--galaxy-loop-x)) var(--galaxy-loop-y),
+            calc(50% + var(--galaxy-loop-x)) calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
         background-repeat:no-repeat, no-repeat, no-repeat !important;
         animation:none !important;
     }
@@ -8041,305 +8042,9 @@ body::after{
 
 
 
-/* ============================================================
-   PATCH OBSERVATION V4 2026-06-11
-   - 観測タブの横スクロール/スワイプ切替を停止
-   - 観測画面は1画面内に収める
-   - 観測の惑星を謎の球体ではなくユーザーアイコン表示に変更
-============================================================ */
-
-/* 観測惑星：生成した球体ではなく、ユーザーアイコンを中に表示 */
-.observation-planet{
-    overflow:visible !important;
-    padding:0 !important;
-    background:rgba(4,8,18,0.68) !important;
-    border:1px solid rgba(213,168,255,0.42) !important;
-    box-shadow:
-        0 0 18px var(--planet-glow),
-        0 0 34px rgba(176,108,255,0.14),
-        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-}
-
-.observation-planet::before{
-    display:none !important;
-    content:none !important;
-}
-
-.observation-planet::after{
-    content:"" !important;
-    position:absolute !important;
-    inset:-5px !important;
-    border-radius:50% !important;
-    border:1px solid rgba(213,168,255,0.18) !important;
-    box-shadow:0 0 18px rgba(176,108,255,0.20) !important;
-    pointer-events:none !important;
-    z-index:0 !important;
-}
-
-.observation-planet-core{
-    position:absolute !important;
-    inset:5px !important;
-    z-index:1 !important;
-    display:grid !important;
-    place-items:center !important;
-    border-radius:50% !important;
-    overflow:hidden !important;
-    background:
-        radial-gradient(circle at 34% 24%, rgba(255,255,255,0.18), transparent 28%),
-        rgba(8,12,26,0.88) !important;
-    box-shadow:
-        inset -10px -12px 20px rgba(0,0,0,0.42),
-        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-}
-
-.observation-planet-avatar{
-    width:100% !important;
-    height:100% !important;
-    object-fit:cover !important;
-    display:block !important;
-    border-radius:50% !important;
-}
-
-.observation-planet-avatar-fallback{
-    color:rgba(255,255,255,0.86) !important;
-    font-size:22px !important;
-    font-weight:600 !important;
-    letter-spacing:-0.05em !important;
-}
-
-.observation-signal-dot{
-    z-index:4 !important;
-}
-
-/* 観測/リスト切替は横スクロールではなく、タブ押下だけで切り替える */
-@media (max-width:900px){
-    .feed-swipe{
-        display:block !important;
-        width:100% !important;
-        margin-left:0 !important;
-        margin-right:0 !important;
-        overflow:visible !important;
-        overflow-x:hidden !important;
-        scroll-snap-type:none !important;
-        scroll-behavior:auto !important;
-        touch-action:pan-y !important;
-    }
-
-    .feed-panel{
-        display:none !important;
-        width:100% !important;
-        min-width:0 !important;
-        flex:none !important;
-        padding:0 !important;
-        opacity:1 !important;
-        transform:none !important;
-        scroll-snap-align:none !important;
-    }
-
-    .feed-panel.is-visible{
-        display:block !important;
-    }
-
-    .feed-panel[data-feed-panel="following"]{
-        min-height:0 !important;
-    }
-
-    #followingGrid.observation-map{
-        height:calc(100dvh - 214px) !important;
-        min-height:0 !important;
-        max-height:none !important;
-        margin-bottom:0 !important;
-        overflow:hidden !important;
-    }
-
-    .observation-map{
-        padding:18px 16px 18px !important;
-        border-radius:22px !important;
-    }
-
-    .observation-head{
-        min-height:52px !important;
-    }
-
-    .observation-title{
-        font-size:18px !important;
-    }
-
-    .observation-subtitle{
-        font-size:11.5px !important;
-    }
-
-    .observation-new-btn{
-        padding:8px 10px !important;
-        font-size:11.5px !important;
-    }
-
-    .observation-space{
-        height:calc(100% - 62px) !important;
-        margin-top:8px !important;
-    }
-
-    .observation-orbit.o1{ width:430px !important; height:162px !important; left:-76px !important; top:16% !important; }
-    .observation-orbit.o2{ width:342px !important; height:146px !important; left:2px !important; top:38% !important; }
-    .observation-orbit.o3{ width:420px !important; height:168px !important; left:-58px !important; top:61% !important; }
-
-    .observation-legend{
-        left:10px !important;
-        bottom:10px !important;
-        width:132px !important;
-        padding:10px 10px !important;
-        border-radius:16px !important;
-    }
-
-    .observation-legend-row{
-        font-size:10px !important;
-        gap:7px !important;
-        margin-bottom:8px !important;
-    }
-}
-
-@media (max-width:430px){
-    #followingGrid.observation-map{
-        height:calc(100dvh - 206px) !important;
-        min-height:0 !important;
-    }
-
-    .observation-space{
-        height:calc(100% - 58px) !important;
-    }
-
-    .observation-planet-wrap{
-        transform:translate(-50%,-50%) scale(0.92) !important;
-    }
-
-    .observation-planet-avatar-fallback{
-        font-size:20px !important;
-    }
-
-    .observation-legend{
-        transform:scale(0.86) !important;
-        transform-origin:left bottom !important;
-    }
-}
-
-@media (max-height:720px) and (max-width:900px){
-    #followingGrid.observation-map{
-        height:calc(100dvh - 196px) !important;
-    }
-
-    .observation-legend{
-        display:none !important;
-    }
-}
-
-/* END PATCH OBSERVATION V4 */
 
 
 
-/* ============================================================
-   PATCH OBSERVATION V5 2026-06-11
-   - 「天の川」名称を「おすすめ」に変更済み
-   - モバイルの おすすめ / 観測 / リスト を横スクロールではなく完全タップ切替にする
-   - 観測画面で上スワイプしてもおすすめへ戻らないように固定
-   - 観測ビューア左右タップ時の拡大・誤ズームを抑制
-============================================================ */
-@media (max-width:900px){
-    .feed-swipe,
-    .feed-swipe.vertical-gesture{
-        display:block !important;
-        width:100% !important;
-        margin-left:0 !important;
-        margin-right:0 !important;
-        overflow:visible !important;
-        overflow-x:hidden !important;
-        overflow-y:visible !important;
-        scroll-snap-type:none !important;
-        scroll-behavior:auto !important;
-        touch-action:pan-y !important;
-        overscroll-behavior-x:none !important;
-        transform:none !important;
-    }
-
-    .feed-panel{
-        display:none !important;
-        flex:none !important;
-        width:100% !important;
-        min-width:0 !important;
-        padding-left:0 !important;
-        padding-right:0 !important;
-        opacity:1 !important;
-        transform:none !important;
-        scroll-snap-align:none !important;
-        transition:none !important;
-    }
-
-    .feed-panel.is-visible{
-        display:block !important;
-    }
-
-    .mobile-feed-tabs{
-        --recommend-tab-opacity:0.58;
-        --following-tab-opacity:0.58;
-        --list-tab-opacity:0.58;
-        touch-action:manipulation !important;
-    }
-
-    .mobile-feed-tabs[data-active-feed="recommend"]{
-        --feed-progress:0 !important;
-        --recommend-tab-opacity:1 !important;
-    }
-
-    .mobile-feed-tabs[data-active-feed="following"]{
-        --feed-progress:1 !important;
-        --following-tab-opacity:1 !important;
-    }
-
-    .mobile-feed-tabs[data-active-feed="list"]{
-        --feed-progress:2 !important;
-        --list-tab-opacity:1 !important;
-    }
-
-    #recommendTab,
-    #followingTab,
-    #listTab{
-        touch-action:manipulation !important;
-        user-select:none !important;
-        -webkit-user-select:none !important;
-    }
-
-    #followingGrid.observation-map{
-        overflow:hidden !important;
-        overscroll-behavior:contain !important;
-        touch-action:pan-y !important;
-    }
-}
-
-.observation-viewer,
-.observation-viewer *{
-    -webkit-tap-highlight-color:transparent !important;
-}
-
-.observation-viewer{
-    touch-action:manipulation !important;
-    overscroll-behavior:none !important;
-    user-select:none !important;
-    -webkit-user-select:none !important;
-}
-
-.observation-tap-zone{
-    touch-action:manipulation !important;
-    -webkit-user-select:none !important;
-    user-select:none !important;
-    outline:none !important;
-}
-
-.observation-tap-zone:focus,
-.observation-tap-zone:active{
-    outline:none !important;
-    background:transparent !important;
-}
-
-/* END PATCH OBSERVATION V5 */
 
 
 
@@ -8575,31 +8280,51 @@ body::after{
 
 
 
-/* ============================================================
-   PATCH FINAL CLEAN 2026-06-12
-   - 古い sticky / fixed meteor 系CSSを整理
-   - 流れ星バナーを feed-panel の transform から切り離して固定
-   - 観測の惑星アイコンと下タブ観測アイコンの中心ズレを補正
-============================================================ */
 
+
+/* ============================================================
+   FINAL MOBILE FEED CLEAN 2026-06-12
+   - 重複パッチを整理した最終モバイル調整
+   - 背景は既存の milkyway_bg.png のまま自動ループ
+   - タブは横スワイプで中央にスナップ
+============================================================ */
 @media (max-width:900px){
     :root{
-        --ac-topbar-h:168px;
-        --ac-feed-tabs-h:62px;
-        --ac-fixed-head-h:calc(var(--ac-topbar-h) + var(--ac-feed-tabs-h));
-        --ac-meteor-h:86px;
-        --ac-mobile-tabbar-h:76px;
-    }
-
-    html,
-    body{
-        background:#02050b !important;
-        background-color:#02050b !important;
-        overflow-x:hidden !important;
+        --ac-topbar-h:58px !important;
+        --ac-feed-tabs-h:48px !important;
+        --ac-fixed-head-h:calc(var(--ac-topbar-h) + var(--ac-feed-tabs-h)) !important;
+        --ac-mobile-tabbar-h:76px !important;
     }
 
     body{
         padding-top:0 !important;
+        overflow-x:hidden !important;
+        background:#02050b !important;
+    }
+
+    body::before{
+        position:fixed !important;
+        top:-14vh !important;
+        left:0 !important;
+        right:0 !important;
+        height:128vh !important;
+        background-image:
+            linear-gradient(180deg, rgba(3,8,20,0.10), rgba(3,8,20,0.54)),
+            url("./milkyway_bg.png"),
+            url("./milkyway_bg.png") !important;
+        background-size:
+            100% 100%,
+            100% var(--galaxy-loop-height),
+            100% var(--galaxy-loop-height) !important;
+        background-position:
+            center center,
+            calc(50% + var(--galaxy-loop-x)) var(--galaxy-loop-y),
+            calc(50% + var(--galaxy-loop-x)) calc(var(--galaxy-loop-y) + var(--galaxy-loop-height)) !important;
+        background-repeat:no-repeat, no-repeat, no-repeat !important;
+        background-attachment:scroll, scroll, scroll !important;
+        animation:none !important;
+        transform:translate3d(0,0,0) !important;
+        will-change:background-position !important;
     }
 
     .topbar{
@@ -8607,866 +8332,62 @@ body::after{
         top:0 !important;
         left:0 !important;
         right:0 !important;
-        height:var(--ac-topbar-h) !important;
-        z-index:12000 !important;
-        margin:0 !important;
-        padding:0 30px 25px !important;
-        display:flex !important;
-        align-items:flex-end !important;
-        justify-content:space-between !important;
-        gap:12px !important;
-        background:#02050b !important;
-        background-image:none !important;
-        border-bottom:1px solid rgba(255,255,255,0.08) !important;
-        backdrop-filter:none !important;
-        -webkit-backdrop-filter:none !important;
-        box-shadow:none !important;
-        order:1 !important;
-    }
-
-    .page-title{
-        margin:0 !important;
-        line-height:1.05 !important;
-    }
-
-    .home-sortbar{
-        margin:0 !important;
-        align-self:flex-end !important;
-        padding-bottom:3px !important;
-        z-index:12100 !important;
-    }
-
-    .mobile-feed-tabs{
-        position:fixed !important;
-        top:var(--ac-topbar-h) !important;
-        left:0 !important;
-        right:0 !important;
-        height:var(--ac-feed-tabs-h) !important;
-        z-index:11900 !important;
-        margin:0 !important;
-        padding:0 26px !important;
-        display:grid !important;
-        grid-template-columns:repeat(3,1fr) !important;
-        align-items:center !important;
-        background:#02050b !important;
-        background-image:none !important;
-        border-top:none !important;
-        border-bottom:1px solid rgba(255,255,255,0.10) !important;
-        backdrop-filter:none !important;
-        -webkit-backdrop-filter:none !important;
-        box-shadow:none !important;
-        order:2 !important;
-    }
-
-    .feed-tab{
-        height:var(--ac-feed-tabs-h) !important;
-    }
-
-    .mobile-feed-tabs::after{
-        bottom:0 !important;
-    }
-
-    .feed-swipe{
-        margin-top:var(--ac-fixed-head-h) !important;
-        order:3 !important;
-        transform:none !important;
-        will-change:auto !important;
-    }
-
-    .feed-panel{
-        display:none !important;
-        width:100% !important;
-        min-width:0 !important;
-        padding:0 !important;
-        opacity:1 !important;
-        transform:none !important;
-        transition:none !important;
-        will-change:auto !important;
-    }
-
-    .feed-panel.is-visible{
-        display:block !important;
-        opacity:1 !important;
-        transform:none !important;
-    }
-
-    .daily-meteor-box{
-        position:fixed !important;
-        top:var(--ac-fixed-head-h) !important;
-        left:0 !important;
-        right:0 !important;
-        z-index:11800 !important;
-        display:none !important;
-        justify-content:center !important;
-        align-items:center !important;
-        margin:0 !important;
-        padding:10px 16px 8px !important;
-        min-height:var(--ac-meteor-h) !important;
-        background:linear-gradient(180deg, #02050b 0%, rgba(2,5,11,0.98) 72%, rgba(2,5,11,0.88) 100%) !important;
-        background-image:none !important;
-        border-bottom:1px solid rgba(255,255,255,0.08) !important;
-        backdrop-filter:none !important;
-        -webkit-backdrop-filter:none !important;
-        pointer-events:auto !important;
-    }
-
-    body[data-feed-mode="recommend"] .daily-meteor-box:not(:empty){
-        display:flex !important;
-    }
-
-    body:not([data-feed-mode="recommend"]) .daily-meteor-box,
-    .daily-meteor-box:empty{
-        display:none !important;
-        min-height:0 !important;
-        padding:0 !important;
-        border-bottom:none !important;
-    }
-
-    body[data-feed-mode="recommend"] #recommendGrid{
-        padding-top:var(--ac-meteor-h) !important;
-    }
-
-    body:not([data-feed-mode="recommend"]) #recommendGrid{
-        padding-top:0 !important;
-    }
-
-    .daily-meteor-card{
-        width:min(100%, 392px) !important;
-        min-height:66px !important;
-        border-radius:999px !important;
-        box-shadow:
-            0 0 0 1px rgba(255,255,255,0.035) inset,
-            0 12px 32px rgba(0,0,0,0.32),
-            0 0 24px rgba(176,108,255,0.18) !important;
-    }
-
-    #followingGrid.observation-map{
-        height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h)) !important;
-        min-height:0 !important;
-        margin-bottom:0 !important;
-    }
-}
-
-@media (max-width:430px){
-    :root{
-        --ac-topbar-h:162px;
-        --ac-feed-tabs-h:60px;
-        --ac-meteor-h:82px;
-    }
-
-    .topbar{
-        padding:0 30px 24px !important;
-    }
-
-    .mobile-feed-tabs{
-        padding:0 24px !important;
-    }
-
-    .daily-meteor-box{
-        padding:9px 14px 7px !important;
-    }
-
-    .daily-meteor-card{
-        min-height:64px !important;
-    }
-}
-
-/* 観測マップの惑星アイコン：リングと画像の中心を完全一致 */
-.observation-planet{
-    position:relative !important;
-    display:grid !important;
-    place-items:center !important;
-    padding:0 !important;
-    margin:0 auto !important;
-    overflow:visible !important;
-    border-radius:50% !important;
-    background:rgba(5,8,18,0.94) !important;
-    border:1px solid rgba(213,168,255,0.42) !important;
-    box-shadow:
-        0 0 18px var(--planet-glow),
-        0 0 34px rgba(176,108,255,0.16),
-        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-}
-
-.observation-planet::before{
-    display:none !important;
-    content:none !important;
-}
-
-.observation-planet::after{
-    content:"" !important;
-    position:absolute !important;
-    inset:-5px !important;
-    border-radius:50% !important;
-    border:1px solid rgba(213,168,255,0.18) !important;
-    box-shadow:0 0 18px rgba(176,108,255,0.22) !important;
-    pointer-events:none !important;
-    z-index:0 !important;
-}
-
-.observation-planet-core{
-    position:absolute !important;
-    left:50% !important;
-    top:50% !important;
-    width:68% !important;
-    height:68% !important;
-    inset:auto !important;
-    transform:translate(-50%, -50%) !important;
-    z-index:2 !important;
-    display:grid !important;
-    place-items:center !important;
-    border-radius:50% !important;
-    overflow:hidden !important;
-    background:rgba(8,12,26,0.92) !important;
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,0.10),
-        0 0 14px rgba(255,255,255,0.08) !important;
-    box-sizing:border-box !important;
-}
-
-.observation-planet-core .observation-planet-avatar,
-.observation-planet-avatar{
-    position:absolute !important;
-    inset:0 !important;
-    left:0 !important;
-    top:0 !important;
-    width:100% !important;
-    height:100% !important;
-    min-width:100% !important;
-    min-height:100% !important;
-    max-width:100% !important;
-    max-height:100% !important;
-    transform:none !important;
-    object-fit:cover !important;
-    object-position:center center !important;
-    display:block !important;
-    border-radius:50% !important;
-    z-index:1 !important;
-}
-
-.observation-planet-core.observation-planet-avatar-fallback{
-    color:rgba(255,255,255,0.88) !important;
-    font-size:22px !important;
-    font-weight:600 !important;
-    line-height:1 !important;
-    letter-spacing:-0.05em !important;
-    text-align:center !important;
-}
-
-.observation-signal-dot{
-    position:absolute !important;
-    right:2px !important;
-    top:2px !important;
-    transform:translate(34%, -34%) !important;
-    z-index:6 !important;
-}
-
-/* 下タブの観測アイコン：視覚中心を補正 */
-.mobile-tabbar a[href="search.html"]{
-    align-items:center !important;
-    justify-content:center !important;
-}
-
-.mobile-tabbar a[href="search.html"] .icon{
-    display:block !important;
-    width:27px !important;
-    height:27px !important;
-    min-width:27px !important;
-    min-height:27px !important;
-    margin:0 auto 3px !important;
-    transform:translateY(1px) !important;
-    transform-origin:center center !important;
-    background:currentColor !important;
-    background-color:currentColor !important;
-    background-position:center center !important;
-    background-repeat:no-repeat !important;
-    background-size:contain !important;
-}
-
-.mobile-tabbar a[href="search.html"] .label{
-    line-height:1 !important;
-}
-
-
-
-
-/* ============================================================
-   PATCH UI TUNE 2026-06-12
-   - 観測惑星を「黒い円の中にアイコン＋外周色リング」に調整
-   - 惑星のアイコンずれ補正
-   - モバイル上部ロゴ領域を圧縮
-   - 並び替えを流れ星バナー右下へ移動
-============================================================ */
-
-/* 観測惑星：外周リングを投稿時間で色分けし、中央に黒い円＋アイコン */
-.observation-planet-wrap{
-    z-index:4 !important;
-}
-
-.observation-planet{
-    position:relative !important;
-    display:grid !important;
-    place-items:center !important;
-    width:var(--size) !important;
-    height:var(--size) !important;
-    border-radius:50% !important;
-    padding:0 !important;
-    margin:0 auto !important;
-    overflow:visible !important;
-    background:transparent !important;
-    border:none !important;
-    box-shadow:none !important;
-}
-
-.observation-planet::before{
-    display:none !important;
-    content:none !important;
-}
-
-.observation-planet::after{
-    content:"" !important;
-    position:absolute !important;
-    inset:-2px !important;
-    border-radius:50% !important;
-    border:4px solid var(--signal-color) !important;
-    box-shadow:
-        0 0 0 2px rgba(255,255,255,0.08) inset,
-        0 0 14px var(--signal-color),
-        0 0 28px var(--signal-color) !important;
-    opacity:.88 !important;
-    pointer-events:none !important;
-    z-index:1 !important;
-}
-
-.observation-planet-core{
-    position:absolute !important;
-    left:50% !important;
-    top:50% !important;
-    width:72% !important;
-    height:72% !important;
-    transform:translate(-50%,-50%) !important;
-    display:grid !important;
-    place-items:center !important;
-    border-radius:50% !important;
-    overflow:hidden !important;
-    background:
-        radial-gradient(circle at 34% 28%, rgba(255,255,255,0.10), transparent 34%),
-        linear-gradient(180deg, rgba(9,14,29,0.98), rgba(3,7,16,0.98)) !important;
-    box-shadow:
-        inset 0 0 0 1.5px rgba(255,255,255,0.10),
-        inset 0 -8px 14px rgba(0,0,0,0.44),
-        0 0 0 1px rgba(255,255,255,0.06) !important;
-    box-sizing:border-box !important;
-    z-index:2 !important;
-}
-
-.observation-planet-core .observation-planet-avatar,
-.observation-planet-avatar{
-    position:relative !important;
-    inset:auto !important;
-    left:auto !important;
-    top:auto !important;
-    width:74% !important;
-    height:74% !important;
-    min-width:74% !important;
-    min-height:74% !important;
-    max-width:74% !important;
-    max-height:74% !important;
-    border-radius:50% !important;
-    object-fit:cover !important;
-    object-position:center center !important;
-    display:block !important;
-    transform:none !important;
-    margin:0 !important;
-    z-index:3 !important;
-}
-
-.observation-planet-core.observation-planet-avatar-fallback{
-    color:rgba(255,255,255,0.92) !important;
-    font-size:22px !important;
-    font-weight:700 !important;
-    line-height:1 !important;
-    letter-spacing:-0.04em !important;
-    text-align:center !important;
-}
-
-.observation-signal-dot{
-    position:absolute !important;
-    right:0 !important;
-    top:0 !important;
-    transform:translate(38%, -38%) !important;
-    min-width:18px !important;
-    height:18px !important;
-    padding:0 5px !important;
-    z-index:5 !important;
-}
-
-.observation-planet-name,
-.observation-planet-time{
-    position:relative !important;
-    z-index:5 !important;
-}
-
-@media (max-width:900px){
-    :root{
-        --ac-topbar-h:124px !important;
-        --ac-feed-tabs-h:58px !important;
-        --ac-meteor-h:78px !important;
-    }
-
-    .topbar{
-        height:var(--ac-topbar-h) !important;
-        padding:0 22px 16px !important;
-        align-items:flex-end !important;
-        justify-content:flex-start !important;
-        gap:0 !important;
-    }
-
-    .page-title{
-        font-size:32px !important;
-        line-height:1.04 !important;
-        letter-spacing:-0.04em !important;
-    }
-
-    .topbar .home-sortbar{
-        position:fixed !important;
-        top:calc(var(--ac-fixed-head-h) + var(--ac-meteor-h) - 18px) !important;
-        right:18px !important;
-        z-index:12150 !important;
-        margin:0 !important;
-        padding:0 !important;
-        display:none !important;
-        align-items:center !important;
-        justify-content:center !important;
-    }
-
-    body[data-feed-mode="recommend"] .topbar .home-sortbar{
-        display:flex !important;
-    }
-
-    body:not([data-feed-mode="recommend"]) .topbar .home-sortbar{
-        display:none !important;
-    }
-
-    .topbar .sort-filter-wrap{
-        position:relative !important;
-    }
-
-    .topbar .sort-filter-btn{
-        width:42px !important;
-        height:42px !important;
-        border-radius:50% !important;
-        border:1px solid rgba(178,136,255,0.36) !important;
-        background:linear-gradient(180deg, rgba(11,16,34,0.96), rgba(8,12,26,0.92)) !important;
-        box-shadow:
-            0 10px 24px rgba(0,0,0,0.34),
-            0 0 18px rgba(169,112,255,0.22) !important;
-    }
-
-    .topbar .sort-filter-btn svg{
-        width:18px !important;
-        height:18px !important;
-    }
-
-    .topbar .sort-filter-menu{
-        top:auto !important;
-        bottom:calc(100% + 10px) !important;
-        right:0 !important;
-        min-width:220px !important;
-    }
-
-    .daily-meteor-box{
-        padding:8px 16px 14px !important;
-    }
-
-    .daily-meteor-card{
-        width:min(100%, 396px) !important;
-        min-height:62px !important;
-        padding:12px 16px !important;
-    }
-
-    body[data-feed-mode="recommend"] #recommendGrid{
-        padding-top:calc(var(--ac-meteor-h) + 14px) !important;
-    }
-}
-
-@media (max-width:430px){
-    :root{
-        --ac-topbar-h:116px !important;
-        --ac-feed-tabs-h:56px !important;
-        --ac-meteor-h:74px !important;
-    }
-
-    .topbar{
-        padding:0 18px 14px !important;
-    }
-
-    .page-title{
-        font-size:29px !important;
-    }
-
-    .topbar .home-sortbar{
-        right:14px !important;
-        top:calc(var(--ac-fixed-head-h) + var(--ac-meteor-h) - 16px) !important;
-    }
-
-    .daily-meteor-box{
-        padding:8px 12px 12px !important;
-    }
-
-    .daily-meteor-card{
-        min-height:60px !important;
-        padding:11px 14px !important;
-    }
-}
-
-/* ============================================================
-   PATCH LOGO SAFE 2026-06-12
-   - 上部ロゴの字面が詰まる・切れる問題を防止
-   - iPhone Safari の safe-area を考慮
-   - ロゴ周辺だけを調整し、既存機能には触れない
-============================================================ */
-
-.page-title,
-.logo{
-    font-family:
-        "Zen Kaku Gothic New",
-        "Hiragino Sans",
-        "Hiragino Kaku Gothic ProN",
-        "Noto Sans JP",
-        -apple-system,
-        BlinkMacSystemFont,
-        "Helvetica Neue",
-        sans-serif !important;
-    line-height:1.18 !important;
-    letter-spacing:-0.018em !important;
-    overflow:visible !important;
-    text-wrap:balance;
-}
-
-.page-title{
-    display:block !important;
-    max-width:min(72vw, 360px) !important;
-    padding:0.04em 0 0.08em !important;
-    white-space:normal !important;
-    word-break:keep-all !important;
-}
-
-.logo{
-    padding:0.04em 0 0.08em !important;
-}
-
-@media (max-width:900px){
-    .topbar{
         height:calc(var(--ac-topbar-h) + env(safe-area-inset-top)) !important;
-        padding-top:env(safe-area-inset-top) !important;
-        align-items:flex-end !important;
-    }
-
-    .mobile-feed-tabs{
-        top:calc(var(--ac-topbar-h) + env(safe-area-inset-top)) !important;
-    }
-
-    .feed-swipe{
-        margin-top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top)) !important;
-    }
-
-    .daily-meteor-box{
-        top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top)) !important;
-    }
-
-    .page-title{
-        font-size:30px !important;
-        line-height:1.16 !important;
-        max-width:calc(100vw - 110px) !important;
-        min-height:1.3em !important;
-    }
-}
-
-@media (max-width:430px){
-    .page-title{
-        font-size:27px !important;
-        max-width:calc(100vw - 92px) !important;
-    }
-}
-
-/* ============================================================
-   PATCH MOBILE HEADER COMPACT 2026-06-12
-   - 上部ロゴ領域を画像に近い低めの余白へ調整
-   - Album Collection の文字を小さくする
-   - 流れ星バナーを少し小さくする
-   - 並び替えボタンをバナーと重ならないロゴ行の右側へ戻す
-============================================================ */
-
-@media (max-width:900px){
-    :root{
-        --ac-topbar-h:88px !important;
-        --ac-feed-tabs-h:52px !important;
-        --ac-fixed-head-h:calc(var(--ac-topbar-h) + var(--ac-feed-tabs-h)) !important;
-        --ac-meteor-h:64px !important;
-    }
-
-    .topbar{
-        height:calc(var(--ac-topbar-h) + env(safe-area-inset-top)) !important;
-        padding:calc(env(safe-area-inset-top) + 6px) 18px 12px !important;
-        align-items:flex-end !important;
-        justify-content:space-between !important;
-        gap:14px !important;
-        background:#02050b !important;
-    }
-
-    .page-title{
-        flex:1 1 auto !important;
-        max-width:none !important;
-        min-height:0 !important;
-        padding:0 0 0.04em !important;
-        font-size:25px !important;
-        line-height:1.14 !important;
-        font-weight:500 !important;
-        letter-spacing:-0.018em !important;
-        white-space:nowrap !important;
-        overflow:visible !important;
-    }
-
-    .topbar .home-sortbar,
-    body[data-feed-mode="recommend"] .topbar .home-sortbar,
-    body:not([data-feed-mode="recommend"]) .topbar .home-sortbar{
-        position:relative !important;
-        top:auto !important;
-        right:auto !important;
-        display:flex !important;
-        flex:0 0 auto !important;
-        align-items:center !important;
-        justify-content:center !important;
-        margin:0 0 0 auto !important;
-        padding:0 !important;
-        z-index:12150 !important;
-    }
-
-    .topbar .sort-filter-btn{
-        width:42px !important;
-        height:42px !important;
-        border-radius:50% !important;
-        border:1px solid rgba(255,255,255,0.16) !important;
-        background:rgba(8,11,18,0.74) !important;
-        box-shadow:
-            0 0 0 1px rgba(255,255,255,0.04) inset,
-            0 10px 24px rgba(0,0,0,0.28) !important;
-    }
-
-    .topbar .sort-filter-btn svg{
-        width:18px !important;
-        height:18px !important;
-    }
-
-    .topbar .sort-filter-menu{
-        top:calc(100% + 10px) !important;
-        bottom:auto !important;
-        right:0 !important;
-        min-width:218px !important;
-    }
-
-    .mobile-feed-tabs{
-        top:calc(var(--ac-topbar-h) + env(safe-area-inset-top)) !important;
-        height:var(--ac-feed-tabs-h) !important;
-        padding:0 18px !important;
-    }
-
-    .feed-tab{
-        height:var(--ac-feed-tabs-h) !important;
-        font-size:14px !important;
-    }
-
-    .feed-swipe{
-        margin-top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top)) !important;
-    }
-
-    .daily-meteor-box{
-        top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top)) !important;
-        min-height:var(--ac-meteor-h) !important;
-        padding:7px 18px 8px !important;
-        background:linear-gradient(180deg, rgba(2,5,11,0.98) 0%, rgba(2,5,11,0.92) 100%) !important;
-    }
-
-    .daily-meteor-card{
-        width:min(100%, 370px) !important;
-        min-height:52px !important;
-        padding:9px 12px !important;
-        gap:10px !important;
-        border-radius:999px !important;
-    }
-
-    .daily-meteor-icon{
-        width:28px !important;
-        height:28px !important;
-    }
-
-    .daily-meteor-icon svg{
-        width:17px !important;
-        height:17px !important;
-    }
-
-    .daily-meteor-title{
-        font-size:14px !important;
-        line-height:1.12 !important;
-    }
-
-    .daily-meteor-sub{
-        margin-top:3px !important;
-        font-size:10px !important;
-        line-height:1.15 !important;
-    }
-
-    .daily-meteor-arrow{
-        width:28px !important;
-        height:28px !important;
-        font-size:18px !important;
-    }
-
-    .daily-meteor-card::after{
-        right:46px !important;
-        top:17px !important;
-        width:74px !important;
-    }
-
-    body[data-feed-mode="recommend"] #recommendGrid{
-        padding-top:calc(var(--ac-meteor-h) + 10px) !important;
-    }
-
-    #followingGrid.observation-map{
-        height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top)) !important;
-    }
-}
-
-@media (max-width:430px){
-    :root{
-        --ac-topbar-h:82px !important;
-        --ac-feed-tabs-h:50px !important;
-        --ac-fixed-head-h:calc(var(--ac-topbar-h) + var(--ac-feed-tabs-h)) !important;
-        --ac-meteor-h:60px !important;
-    }
-
-    .topbar{
-        padding:calc(env(safe-area-inset-top) + 6px) 16px 10px !important;
-        gap:12px !important;
-    }
-
-    .page-title{
-        font-size:23px !important;
-        line-height:1.14 !important;
-    }
-
-    .topbar .sort-filter-btn{
-        width:40px !important;
-        height:40px !important;
-    }
-
-    .mobile-feed-tabs{
-        padding:0 14px !important;
-    }
-
-    .daily-meteor-box{
-        padding:6px 16px 7px !important;
-    }
-
-    .daily-meteor-card{
-        min-height:50px !important;
-        padding:8px 11px !important;
-    }
-}
-
-/* ============================================================
-   PATCH MOBILE FEED NAV V2 2026-06-12
-   - ロゴ領域をさらに圧縮
-   - おすすめ/観測/リストは下スクロールで隠れ、上スクロールで再表示
-   - 流れ星通知を右上の小さな表示へ変更
-   - 並び替えボタンを右下固定へ変更
-   - 観測アイコンは二重円をやめ、1つの円の中にアイコン表示
-   - タブ下線を現在タブの真下へ配置
-   - モバイル左右スワイプを復活
-============================================================ */
-
-@media (max-width:900px){
-    :root{
-        --ac-topbar-h:58px !important;
-        --ac-feed-tabs-h:48px !important;
-        --ac-fixed-head-h:calc(var(--ac-topbar-h) + var(--ac-feed-tabs-h)) !important;
-        --ac-meteor-h:0px !important;
-        --ac-mobile-tabbar-h:76px !important;
-    }
-
-    .topbar{
-        height:calc(var(--ac-topbar-h) + env(safe-area-inset-top)) !important;
+        margin:0 !important;
         padding:calc(env(safe-area-inset-top) + 4px) 14px 8px !important;
+        display:flex !important;
         align-items:flex-end !important;
         justify-content:flex-start !important;
-        gap:0 !important;
-        transform:none !important;
-        transition:background .24s ease, border-color .24s ease !important;
-    }
-
-    body.mobile-head-hidden .topbar{
-        background:transparent !important;
-        border-bottom-color:transparent !important;
-        pointer-events:none !important;
+        background:#02050b !important;
+        border-bottom:1px solid rgba(255,255,255,0.08) !important;
+        z-index:12000 !important;
     }
 
     .page-title{
-        flex:0 1 auto !important;
-        max-width:calc(100vw - 30px) !important;
-        min-height:0 !important;
+        margin:0 !important;
         padding:0 !important;
+        max-width:calc(100vw - 32px) !important;
         font-size:20px !important;
         line-height:1.12 !important;
         font-weight:500 !important;
         letter-spacing:-0.01em !important;
         white-space:nowrap !important;
-        opacity:1 !important;
-        transition:opacity .18s ease !important;
-    }
-
-    body.mobile-head-hidden .page-title{
-        opacity:0 !important;
     }
 
     .mobile-feed-tabs{
+        position:fixed !important;
         top:calc(var(--ac-topbar-h) + env(safe-area-inset-top)) !important;
+        left:0 !important;
+        right:0 !important;
         height:var(--ac-feed-tabs-h) !important;
-        padding:0 16px !important;
+        margin:0 !important;
+        padding:0 12px !important;
         display:grid !important;
         grid-template-columns:repeat(3, 1fr) !important;
-        transform:translateY(0) !important;
-        transition:transform .24s ease, opacity .24s ease !important;
-        will-change:transform !important;
-    }
-
-    body.mobile-head-hidden .mobile-feed-tabs{
-        transform:translateY(calc(-1 * (var(--ac-topbar-h) + env(safe-area-inset-top)))) !important;
-        opacity:0 !important;
-        pointer-events:none !important;
+        align-items:center !important;
+        background:#02050b !important;
+        border-bottom:1px solid rgba(255,255,255,0.10) !important;
+        z-index:11900 !important;
     }
 
     .feed-tab{
         height:var(--ac-feed-tabs-h) !important;
-        font-size:14px !important;
-        line-height:1 !important;
         display:flex !important;
         align-items:center !important;
         justify-content:center !important;
+        font-size:14px !important;
+        line-height:1 !important;
         transform:none !important;
     }
 
-    .mobile-feed-tabs .feed-tab::after{
-        display:none !important;
-    }
+    .mobile-feed-tabs .feed-tab::after{ display:none !important; }
 
     .mobile-feed-tabs::after{
-        display:block !important;
         content:"" !important;
         position:absolute !important;
         left:calc((100% / 6) + ((100% / 3) * var(--feed-progress, 0))) !important;
         bottom:0 !important;
-        width:88px !important;
+        width:76px !important;
         height:3px !important;
         transform:translateX(-50%) !important;
         border-radius:999px !important;
@@ -9475,12 +8396,30 @@ body::after{
         pointer-events:none !important;
     }
 
+    .topbar,
+    .mobile-feed-tabs{
+        transition:transform .12s linear, opacity .12s linear !important;
+    }
+
+    body.mobile-head-hidden .topbar{
+        transform:translateY(calc(-1 * (var(--ac-topbar-h) + env(safe-area-inset-top)))) !important;
+        opacity:0 !important;
+        pointer-events:none !important;
+    }
+
+    body.mobile-head-hidden .mobile-feed-tabs{
+        transform:translateY(calc(-1 * (var(--ac-fixed-head-h) + env(safe-area-inset-top)))) !important;
+        opacity:0 !important;
+        pointer-events:none !important;
+    }
+
     .feed-swipe,
     .feed-swipe.vertical-gesture{
         display:flex !important;
-        width:100vw !important;
-        margin-left:-16px !important;
-        margin-right:-16px !important;
+        width:100% !important;
+        margin-left:0 !important;
+        margin-right:0 !important;
+        margin-top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top)) !important;
         overflow-x:auto !important;
         overflow-y:visible !important;
         scroll-snap-type:x mandatory !important;
@@ -9492,112 +8431,23 @@ body::after{
         transform:none !important;
     }
 
-    .feed-panel{
-        display:block !important;
-        flex:0 0 100vw !important;
-        width:100vw !important;
-        min-width:100vw !important;
-        padding:0 16px !important;
-        opacity:1 !important;
-        transform:none !important;
-        scroll-snap-align:start !important;
-        scroll-snap-stop:always !important;
-        transition:none !important;
-    }
-
-    .feed-panel.is-visible{
-        display:block !important;
-    }
-
-    .feed-swipe{
-        margin-top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top)) !important;
-    }
+    .feed-swipe::-webkit-scrollbar{ display:none !important; }
 
     body.mobile-head-hidden .feed-swipe{
         margin-top:0 !important;
     }
 
-    .daily-meteor-box{
-        position:fixed !important;
-        top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top) + 10px) !important;
-        right:12px !important;
-        left:auto !important;
-        width:auto !important;
-        min-height:0 !important;
-        margin:0 !important;
+    .feed-panel{
+        display:block !important;
+        flex:0 0 100% !important;
+        width:100% !important;
+        min-width:100% !important;
         padding:0 !important;
-        display:none !important;
-        justify-content:flex-end !important;
-        align-items:flex-start !important;
-        background:transparent !important;
-        border:0 !important;
-        box-shadow:none !important;
-        pointer-events:auto !important;
-        z-index:11880 !important;
-    }
-
-    body[data-feed-mode="recommend"] .daily-meteor-box:not(:empty){
-        display:flex !important;
-    }
-
-    body.mobile-head-hidden .daily-meteor-box{
-        top:12px !important;
-    }
-
-    .daily-meteor-card{
-        width:auto !important;
-        max-width:218px !important;
-        min-height:38px !important;
-        padding:7px 10px !important;
-        gap:7px !important;
-        border-radius:999px !important;
-        border:1px solid rgba(169,112,255,0.34) !important;
-        background:rgba(8,11,24,0.86) !important;
-        box-shadow:
-            0 10px 26px rgba(0,0,0,0.34),
-            0 0 18px rgba(169,112,255,0.20) !important;
-        backdrop-filter:blur(14px) !important;
-        -webkit-backdrop-filter:blur(14px) !important;
-    }
-
-    .daily-meteor-icon{
-        width:24px !important;
-        height:24px !important;
-    }
-
-    .daily-meteor-icon svg{
-        width:15px !important;
-        height:15px !important;
-    }
-
-    .daily-meteor-copy{
-        max-width:132px !important;
-    }
-
-    .daily-meteor-title{
-        font-size:11px !important;
-        line-height:1.08 !important;
-        white-space:nowrap !important;
-        overflow:hidden !important;
-        text-overflow:ellipsis !important;
-    }
-
-    .daily-meteor-sub{
-        display:none !important;
-    }
-
-    .daily-meteor-arrow{
-        width:22px !important;
-        height:22px !important;
-        font-size:16px !important;
-    }
-
-    .daily-meteor-card::after{
-        display:none !important;
-    }
-
-    body[data-feed-mode="recommend"] #recommendGrid{
-        padding-top:0 !important;
+        opacity:1 !important;
+        transform:none !important;
+        scroll-snap-align:start !important;
+        scroll-snap-stop:always !important;
+        transition:none !important;
     }
 
     .topbar .home-sortbar,
@@ -9620,11 +8470,7 @@ body::after{
         border-radius:50% !important;
         border:1px solid rgba(169,112,255,0.34) !important;
         background:rgba(8,11,24,0.88) !important;
-        box-shadow:
-            0 10px 28px rgba(0,0,0,0.38),
-            0 0 18px rgba(169,112,255,0.20) !important;
-        backdrop-filter:blur(14px) !important;
-        -webkit-backdrop-filter:blur(14px) !important;
+        box-shadow:0 10px 28px rgba(0,0,0,0.38), 0 0 18px rgba(169,112,255,0.20) !important;
     }
 
     .topbar .sort-filter-menu{
@@ -9634,20 +8480,77 @@ body::after{
         min-width:218px !important;
     }
 
+    .daily-meteor-box{
+        position:fixed !important;
+        top:calc(var(--ac-fixed-head-h) + env(safe-area-inset-top) + 10px) !important;
+        right:12px !important;
+        left:auto !important;
+        width:auto !important;
+        min-height:0 !important;
+        margin:0 !important;
+        padding:0 !important;
+        background:transparent !important;
+        border:0 !important;
+        box-shadow:none !important;
+        z-index:11880 !important;
+    }
+
+    body[data-feed-mode="recommend"] .daily-meteor-box:not(:empty){ display:flex !important; }
+    body:not([data-feed-mode="recommend"]) .daily-meteor-box{ display:none !important; }
+
+    .daily-meteor-card{
+        width:auto !important;
+        max-width:252px !important;
+        min-height:40px !important;
+        padding:7px 10px !important;
+        gap:7px !important;
+        border-radius:999px !important;
+    }
+
+    .daily-meteor-icon{ width:24px !important; height:24px !important; }
+    .daily-meteor-icon svg{ width:15px !important; height:15px !important; }
+    .daily-meteor-copy{ max-width:176px !important; }
+    .daily-meteor-title{ font-size:11.5px !important; line-height:1.1 !important; white-space:nowrap !important; overflow:visible !important; text-overflow:clip !important; }
+    .daily-meteor-sub{ display:none !important; }
+    .daily-meteor-arrow{ width:22px !important; height:22px !important; font-size:16px !important; }
+    .daily-meteor-card::after{ display:none !important; }
+
+    #followingGrid.observation-map{
+        height:auto !important;
+        min-height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8px) !important;
+        overflow:visible !important;
+        padding:14px 14px 30px !important;
+        margin-bottom:18px !important;
+        border-radius:20px !important;
+    }
+
+    .observation-space{
+        height:520px !important;
+        min-height:520px !important;
+        margin-top:8px !important;
+        overflow:visible !important;
+    }
+
+    .observation-planet-wrap{
+        transform:translate(-50%,-50%) scale(0.86) !important;
+    }
+
+    .observation-planet-name,
+    .observation-planet-time{
+        overflow:visible !important;
+        line-height:1.25 !important;
+        padding-bottom:2px !important;
+    }
+
     .observation-planet{
         overflow:hidden !important;
         border:3px solid var(--signal-color) !important;
         background:rgba(5,8,18,0.94) !important;
-        box-shadow:
-            0 0 16px color-mix(in srgb, var(--signal-color) 46%, transparent),
-            0 0 30px rgba(169,112,255,0.12) !important;
+        box-shadow:0 0 16px color-mix(in srgb, var(--signal-color) 46%, transparent), 0 0 30px rgba(169,112,255,0.12) !important;
     }
 
     .observation-planet::before,
-    .observation-planet::after{
-        display:none !important;
-        content:none !important;
-    }
+    .observation-planet::after{ display:none !important; content:none !important; }
 
     .observation-planet-core{
         position:absolute !important;
@@ -9676,18 +8579,6 @@ body::after{
         object-fit:cover !important;
         border-radius:50% !important;
     }
-
-    .observation-planet-core.observation-planet-avatar-fallback{
-        display:grid !important;
-        place-items:center !important;
-        font-size:22px !important;
-    }
-
-    .observation-signal-dot{
-        right:0 !important;
-        top:0 !important;
-        z-index:4 !important;
-    }
 }
 
 @media (max-width:430px){
@@ -9697,223 +8588,12 @@ body::after{
         --ac-fixed-head-h:calc(var(--ac-topbar-h) + var(--ac-feed-tabs-h)) !important;
     }
 
-    .topbar{
-        padding:calc(env(safe-area-inset-top) + 4px) 12px 7px !important;
-    }
-
-    .page-title{
-        font-size:19px !important;
-    }
-
-    .mobile-feed-tabs{
-        padding:0 12px !important;
-    }
-
-    .mobile-feed-tabs::after{
-        width:78px !important;
-    }
-
-    .daily-meteor-card{
-        max-width:198px !important;
-    }
+    .page-title{ font-size:19px !important; }
+    .mobile-feed-tabs::after{ width:70px !important; }
+    .observation-space{ height:500px !important; min-height:500px !important; }
+    .daily-meteor-card{ max-width:238px !important; }
+    .daily-meteor-copy{ max-width:164px !important; }
 }
-
-/* ============================================================
-   PATCH MOBILE FEED STABILITY V3 2026-06-12
-   - 上部タブをスクロールと同時に消す
-   - 観測タブは縦スクロールなしで一画面完結
-   - 背景を本文スクロールから完全に独立
-   - 流れ星通知の全文が見える幅へ調整
-============================================================ */
-
-body::before{
-    position:fixed !important;
-    inset:-8vh 0 auto 0 !important;
-    height:116vh !important;
-    z-index:-3 !important;
-    background-image:
-        radial-gradient(ellipse at 50% 18%, rgba(132,83,255,0.26) 0%, rgba(132,83,255,0.10) 24%, transparent 52%),
-        radial-gradient(ellipse at 38% 42%, rgba(86,142,255,0.20) 0%, transparent 48%),
-        radial-gradient(circle at 72% 24%, rgba(255,255,255,0.18) 0 1px, transparent 1.6px),
-        radial-gradient(circle at 22% 38%, rgba(197,140,255,0.34) 0 1px, transparent 1.7px),
-        radial-gradient(circle at 64% 66%, rgba(120,220,255,0.24) 0 1px, transparent 1.8px),
-        linear-gradient(180deg, #02040a 0%, #050815 48%, #02040a 100%) !important;
-    background-size:
-        120% 86%,
-        110% 92%,
-        72px 72px,
-        118px 118px,
-        164px 164px,
-        100% 100% !important;
-    background-position:
-        center 0,
-        center 22%,
-        0 0,
-        28px 18px,
-        52px 44px,
-        center center !important;
-    background-repeat:no-repeat, no-repeat, repeat, repeat, repeat, no-repeat !important;
-    background-attachment:fixed, fixed, fixed, fixed, fixed, fixed !important;
-    transform:none !important;
-    will-change:auto !important;
-    animation:acIndependentGalaxy 42s linear infinite !important;
-}
-
-@keyframes acIndependentGalaxy{
-    0%{
-        background-position:
-            center 0,
-            center 22%,
-            0 0,
-            28px 18px,
-            52px 44px,
-            center center;
-    }
-    100%{
-        background-position:
-            center 0,
-            center 22%,
-            -72px 72px,
-            146px -100px,
-            -112px 208px,
-            center center;
-    }
-}
-
-@media (max-width:900px){
-    body{
-        background:#02040a !important;
-        background-image:none !important;
-        background-attachment:fixed !important;
-    }
-
-    .topbar,
-    .mobile-feed-tabs{
-        transition:none !important;
-    }
-
-    body.mobile-head-hidden .topbar{
-        transform:translateY(calc(-1 * (var(--ac-topbar-h) + env(safe-area-inset-top)))) !important;
-        opacity:0 !important;
-    }
-
-    body.mobile-head-hidden .mobile-feed-tabs{
-        transform:translateY(calc(-1 * (var(--ac-fixed-head-h) + env(safe-area-inset-top)))) !important;
-        opacity:0 !important;
-    }
-
-    body.mobile-head-hidden .feed-swipe{
-        margin-top:0 !important;
-    }
-
-    body[data-feed-mode="following"],
-    body[data-feed-mode="list"]{
-        overscroll-behavior-y:none !important;
-    }
-
-    body[data-feed-mode="following"]{
-        overflow:hidden !important;
-        height:100dvh !important;
-    }
-
-    body[data-feed-mode="following"] .feed-swipe{
-        height:calc(100dvh - var(--ac-mobile-tabbar-h) - env(safe-area-inset-bottom)) !important;
-        overflow-y:hidden !important;
-    }
-
-    body[data-feed-mode="following"] .feed-panel{
-        height:100% !important;
-        overflow:hidden !important;
-    }
-
-    body[data-feed-mode="following"] #followingGrid.observation-map{
-        height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
-        min-height:0 !important;
-        max-height:none !important;
-        overflow:hidden !important;
-        margin:0 !important;
-        padding:12px 14px !important;
-        border-radius:0 !important;
-    }
-
-    body.mobile-head-hidden[data-feed-mode="following"] #followingGrid.observation-map{
-        height:calc(100dvh - var(--ac-mobile-tabbar-h) - env(safe-area-inset-bottom)) !important;
-    }
-
-    body[data-feed-mode="following"] .observation-head{
-        min-height:44px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-title{
-        font-size:16px !important;
-        line-height:1.16 !important;
-    }
-
-    body[data-feed-mode="following"] .observation-subtitle{
-        font-size:10.5px !important;
-        margin-top:3px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-new-btn{
-        padding:7px 9px !important;
-        font-size:10.5px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-space{
-        height:calc(100% - 50px) !important;
-        margin-top:4px !important;
-    }
-
-    body[data-feed-mode="following"] .observation-legend{
-        display:none !important;
-    }
-
-    .daily-meteor-card{
-        max-width:266px !important;
-        min-height:40px !important;
-        padding:7px 10px !important;
-    }
-
-    .daily-meteor-copy{
-        max-width:190px !important;
-    }
-
-    .daily-meteor-title{
-        max-width:190px !important;
-        font-size:11.5px !important;
-        overflow:visible !important;
-        text-overflow:clip !important;
-    }
-
-    body.mobile-head-hidden .topbar{
-        transform:none !important;
-        opacity:1 !important;
-        background:transparent !important;
-        border-bottom-color:transparent !important;
-        pointer-events:none !important;
-    }
-
-    body.mobile-head-hidden .page-title{
-        opacity:0 !important;
-    }
-
-    body.mobile-head-hidden .topbar .home-sortbar{
-        pointer-events:auto !important;
-    }
-}
-
-@media (max-width:430px){
-    .daily-meteor-card{
-        max-width:244px !important;
-    }
-
-    .daily-meteor-copy,
-    .daily-meteor-title{
-        max-width:172px !important;
-    }
-}
-
-/* END PATCH UI TUNE */
 
 </style>
 </head>
@@ -9941,6 +8621,8 @@ body::before{
         location.replace(nextUrl);
     }
 })();
+
+
 </script>
 
 <!-- PC用サイドバー -->
@@ -13626,7 +12308,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /* 背景画像を縦ループで自動アニメーションさせる。スクロール同期はしない */
 (function(){
     const BG_SRC = "./milkyway_bg.png";
-    const BASE_SPEED = 8; // 背景が流れる速度 px/秒。遅くしたいなら 5〜6、速くしたいなら 10〜12
+    const BASE_SPEED = 14; // 背景画像そのものが流れる速度 px/秒。ページスクロールとは同期しない
 
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if(reduceMotion){
@@ -13636,6 +12318,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let loopHeight = Math.max(window.innerHeight * 1.4, 900);
     let lastTime = performance.now();
     let autoY = 0;
+    let elapsed = 0;
     let imageRatio = 1.45;
 
     function setLoopHeight(){
@@ -13658,9 +12341,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function tick(now){
         const dt = Math.min(64, now - lastTime) / 1000;
         lastTime = now;
+        elapsed += dt;
 
         autoY = (autoY + BASE_SPEED * dt) % loopHeight;
+        const driftX = Math.sin(elapsed * 0.055) * 18;
         document.documentElement.style.setProperty("--galaxy-loop-y", `${-autoY}px`);
+        document.documentElement.style.setProperty("--galaxy-loop-x", `${driftX}px`);
 
         requestAnimationFrame(tick);
     }
@@ -13679,463 +12365,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-/* PATCH FINAL CLEAN JS GUARD 2026-06-12
-   - 既存の通常<script>側パッチが module 内の変数に触れて落ちないようにする */
-window.currentFeedMode = window.currentFeedMode || document.body?.dataset?.feedMode || "recommend";
-var feedSwipe = window.feedSwipe || document.getElementById("feedSwipe");
-var recommendTab = window.recommendTab || document.getElementById("recommendTab");
-var followingTab = window.followingTab || document.getElementById("followingTab");
-var listTab = window.listTab || document.getElementById("listTab");
-
-/* ============================================================
-   PATCH OBSERVATION V4 JS
-   - モバイルのおすすめ/観測/リストを横スクロールさせず、タブ押下で即時切替
-============================================================ */
-function getFeedProgress(){
-    if(currentFeedMode === "list") return 2;
-    if(currentFeedMode === "following") return 1;
-    return 0;
-}
-
-function scrollFeedTo(mode){
-    if(mode !== "recommend" && mode !== "following" && mode !== "list"){
-        return;
-    }
-
-    currentFeedMode = mode;
-    const panelIndex = mode === "list" ? 2 : (mode === "following" ? 1 : 0);
-    updateFeedTabs(panelIndex);
-
-    if(feedSwipe && window.innerWidth <= 900){
-        feedSwipe.scrollLeft = 0;
-    }
-}
-
-function resetFeedToRecommendOnOpen(){
-    if(window.innerWidth > 900){
-        return;
-    }
-
-    currentFeedMode = "recommend";
-    if(feedSwipe){
-        feedSwipe.scrollLeft = 0;
-    }
-    updateFeedTabs(0);
-}
-
-/* END PATCH OBSERVATION V4 JS */
-
-
-
-/* ============================================================
-   PATCH OBSERVATION V5 JS 2026-06-11
-   - 横スクロール型フィードを停止して、タップ切替だけにする
-   - 観測タブで縦スワイプしても「おすすめ」に戻らないようにする
-   - 観測ビューア左右タップのダブルタップ拡大を防ぐ
-============================================================ */
-(function(){
-    function feedModeToIndex(mode){
-        if(mode === "list") return 2;
-        if(mode === "following") return 1;
-        return 0;
-    }
-
-    function indexToFeedMode(index){
-        if(index >= 1.5) return "list";
-        if(index >= 0.5) return "following";
-        return "recommend";
-    }
-
-    window.getFeedProgress = function(){
-        return feedModeToIndex(currentFeedMode);
-    };
-
-    window.updateFeedTabs = function(progress = null){
-        if(!recommendTab || !followingTab || !listTab){
-            return;
-        }
-
-        let nextMode = currentFeedMode || "recommend";
-
-        if(typeof progress === "number"){
-            nextMode = indexToFeedMode(progress);
-        }
-
-        if(nextMode !== "recommend" && nextMode !== "following" && nextMode !== "list"){
-            nextMode = "recommend";
-        }
-
-        currentFeedMode = nextMode;
-        if(document.body){ document.body.dataset.feedMode = nextMode; }
-
-        const panelIndex = feedModeToIndex(nextMode);
-        const tabs = document.getElementById("mobileFeedTabs");
-
-        recommendTab.classList.toggle("active", nextMode === "recommend");
-        followingTab.classList.toggle("active", nextMode === "following");
-        listTab.classList.toggle("active", nextMode === "list");
-
-        if(tabs){
-            tabs.dataset.activeFeed = nextMode;
-            tabs.style.setProperty("--feed-progress", String(panelIndex));
-            tabs.style.setProperty("--recommend-tab-opacity", nextMode === "recommend" ? "1" : "0.58");
-            tabs.style.setProperty("--following-tab-opacity", nextMode === "following" ? "1" : "0.58");
-            tabs.style.setProperty("--list-tab-opacity", nextMode === "list" ? "1" : "0.58");
-        }
-
-        const recommendPanel = document.querySelector('[data-feed-panel="recommend"]');
-        const followingPanel = document.querySelector('[data-feed-panel="following"]');
-        const listPanel = document.querySelector('[data-feed-panel="list"]');
-
-        if(recommendPanel){
-            recommendPanel.classList.toggle("is-visible", nextMode === "recommend");
-        }
-
-        if(followingPanel){
-            followingPanel.classList.toggle("is-visible", nextMode === "following");
-        }
-
-        if(listPanel){
-            listPanel.classList.toggle("is-visible", nextMode === "list");
-        }
-
-        if(feedSwipe && window.innerWidth <= 900 && feedSwipe.scrollLeft !== 0){
-            feedSwipe.scrollLeft = 0;
-        }
-    };
-
-    window.scrollFeedTo = function(mode){
-        if(mode !== "recommend" && mode !== "following" && mode !== "list"){
-            return;
-        }
-
-        currentFeedMode = mode;
-
-        if(feedSwipe && window.innerWidth <= 900){
-            feedSwipe.classList.remove("vertical-gesture");
-            feedSwipe.scrollLeft = 0;
-        }
-
-        updateFeedTabs(feedModeToIndex(mode));
-    };
-
-    window.resetFeedToRecommendOnOpen = function(){
-        if(window.innerWidth > 900){
-            return;
-        }
-
-        currentFeedMode = "recommend";
-
-        if(feedSwipe){
-            feedSwipe.classList.remove("vertical-gesture");
-            feedSwipe.scrollLeft = 0;
-        }
-
-        updateFeedTabs(0);
-    };
-
-    function setupObservationTapZones(){
-        const viewer = document.getElementById("observationViewer");
-        const leftZone = document.getElementById("prevStory");
-        const rightZone = document.getElementById("nextStory");
-        const leftObservationZone = document.querySelector(".observation-tap-zone.left");
-        const rightObservationZone = document.querySelector(".observation-tap-zone.right");
-        const zones = [
-            { el:leftZone || leftObservationZone, fn:() => prevObservationPost() },
-            { el:rightZone || rightObservationZone, fn:() => nextObservationPost() }
-        ];
-
-        if(viewer){
-            viewer.addEventListener("dblclick", (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-            }, { passive:false });
-
-            viewer.addEventListener("gesturestart", (event) => {
-                event.preventDefault();
-            }, { passive:false });
-        }
-
-        zones.forEach(({el, fn}) => {
-            if(!el || el.dataset.observationTapFixed === "1"){
-                return;
-            }
-
-            el.dataset.observationTapFixed = "1";
-            el.removeAttribute("onclick");
-            el.onclick = null;
-
-            let lastTapAt = 0;
-
-            const handleTap = (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-
-                const now = Date.now();
-                if(now - lastTapAt < 110){
-                    return;
-                }
-                lastTapAt = now;
-
-                fn();
-            };
-
-            if("PointerEvent" in window){
-                el.addEventListener("pointerup", handleTap, { passive:false });
-            }else{
-                el.addEventListener("touchend", handleTap, { passive:false });
-                el.addEventListener("click", handleTap, { passive:false });
-            }
-        });
-    }
-
-    function setupTapOnlyFeedTabs(){
-        if(feedSwipe && window.innerWidth <= 900){
-            feedSwipe.classList.remove("vertical-gesture");
-            feedSwipe.scrollLeft = 0;
-        }
-
-        updateFeedTabs(feedModeToIndex(currentFeedMode || "recommend"));
-        setupObservationTapZones();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        requestAnimationFrame(setupTapOnlyFeedTabs);
-    });
-
-    window.addEventListener("pageshow", () => {
-        requestAnimationFrame(setupTapOnlyFeedTabs);
-    });
-
-    window.addEventListener("resize", () => {
-        requestAnimationFrame(setupTapOnlyFeedTabs);
-    });
-
-    setupTapOnlyFeedTabs();
-})();
-
-/* END PATCH OBSERVATION V5 JS */
-
-
-/* ============================================================
-   PATCH FINAL CLEAN JS 2026-06-12
-   - 流れ星バナーが feed-panel 内に戻っても body 直下へ逃がす
-   - 現在のタブ状態を body[data-feed-mode] に同期
-============================================================ */
-(function(){
-    function syncMeteorAndFeedMode(){
-        const box = document.getElementById("dailyMeteorBox");
-        const topbar = document.querySelector(".topbar");
-        const swipe = document.getElementById("feedSwipe");
-
-        if(box && box.parentElement && box.parentElement.closest(".feed-panel")){
-            if(swipe){
-                swipe.parentNode.insertBefore(box, swipe);
-            }else if(topbar && topbar.parentNode){
-                topbar.parentNode.insertBefore(box, topbar.nextSibling);
-            }else{
-                document.body.prepend(box);
-            }
-        }
-
-        const mode = (window.currentFeedMode || document.getElementById("mobileFeedTabs")?.dataset?.activeFeed || "recommend");
-        document.body.dataset.feedMode = mode;
-    }
-
-    const originalUpdateFeedTabs = window.updateFeedTabs;
-    if(typeof originalUpdateFeedTabs === "function"){
-        window.updateFeedTabs = function(){
-            const result = originalUpdateFeedTabs.apply(this, arguments);
-            syncMeteorAndFeedMode();
-            return result;
-        };
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        syncMeteorAndFeedMode();
-        requestAnimationFrame(syncMeteorAndFeedMode);
-    });
-
-    window.addEventListener("pageshow", () => requestAnimationFrame(syncMeteorAndFeedMode));
-    window.addEventListener("resize", () => requestAnimationFrame(syncMeteorAndFeedMode));
-})();
-
-/* ============================================================
-   PATCH MOBILE FEED NAV V2 JS 2026-06-12
-   - タップ固定化パッチの後から、左右スワイプ切替を復活
-   - スクロール方向で上部ロゴ/タブを隠す・戻す
-============================================================ */
-(function(){
-    const modes = ["recommend", "following", "list"];
-    const swipe = document.getElementById("feedSwipe");
-    const tabs = document.getElementById("mobileFeedTabs");
-    const tabButtons = {
-        recommend:document.getElementById("recommendTab"),
-        following:document.getElementById("followingTab"),
-        list:document.getElementById("listTab")
-    };
-
-    function modeToIndex(mode){
-        return mode === "list" ? 2 : (mode === "following" ? 1 : 0);
-    }
-
-    function indexToMode(index){
-        if(index >= 1.5){ return "list"; }
-        if(index >= 0.5){ return "following"; }
-        return "recommend";
-    }
-
-    function getProgress(){
-        if(!swipe || window.innerWidth > 900){
-            return modeToIndex(window.currentFeedMode || document.body?.dataset?.feedMode || "recommend");
-        }
-
-        return Math.max(0, Math.min(2, swipe.scrollLeft / Math.max(1, swipe.clientWidth)));
-    }
-
-    function setActiveFeed(mode, progress = null){
-        if(!modes.includes(mode)){
-            mode = "recommend";
-        }
-
-        window.currentFeedMode = mode;
-        document.body.dataset.feedMode = mode;
-
-        const activeIndex = modeToIndex(mode);
-        const underlineProgress = typeof progress === "number" ? Math.max(0, Math.min(2, progress)) : activeIndex;
-
-        Object.entries(tabButtons).forEach(([key, button]) => {
-            if(!button){ return; }
-            button.classList.toggle("active", key === mode);
-            button.setAttribute("aria-selected", key === mode ? "true" : "false");
-        });
-
-        if(tabs){
-            tabs.dataset.activeFeed = mode;
-            tabs.style.setProperty("--feed-progress", underlineProgress.toFixed(4));
-            tabs.style.setProperty("--recommend-tab-opacity", mode === "recommend" ? "1" : "0.58");
-            tabs.style.setProperty("--following-tab-opacity", mode === "following" ? "1" : "0.58");
-            tabs.style.setProperty("--list-tab-opacity", mode === "list" ? "1" : "0.58");
-        }
-
-        document.querySelectorAll("[data-feed-panel]").forEach((panel) => {
-            panel.classList.toggle("is-visible", panel.dataset.feedPanel === mode);
-        });
-    }
-
-    function updateFromSwipe(){
-        const progress = getProgress();
-        setActiveFeed(indexToMode(progress), progress);
-    }
-
-    function goToFeed(mode, smooth = true){
-        if(!modes.includes(mode)){
-            mode = "recommend";
-        }
-
-        setActiveFeed(mode, modeToIndex(mode));
-
-        if(swipe && window.innerWidth <= 900){
-            swipe.classList.remove("vertical-gesture");
-            swipe.scrollTo({
-                left:swipe.clientWidth * modeToIndex(mode),
-                behavior:smooth ? "smooth" : "auto"
-            });
-        }
-    }
-
-    window.getFeedProgress = getProgress;
-    window.updateFeedTabs = function(progress = null){
-        if(typeof progress === "number"){
-            setActiveFeed(indexToMode(progress), progress);
-        }else{
-            updateFromSwipe();
-        }
-    };
-    window.scrollFeedTo = goToFeed;
-
-    Object.entries(tabButtons).forEach(([mode, button]) => {
-        if(!button){ return; }
-
-        button.addEventListener("click", (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            goToFeed(mode);
-        }, true);
-    });
-
-    if(swipe){
-        let ticking = false;
-
-        swipe.addEventListener("scroll", () => {
-            if(window.innerWidth > 900 || ticking){
-                return;
-            }
-
-            ticking = true;
-            requestAnimationFrame(() => {
-                updateFromSwipe();
-                ticking = false;
-            });
-        }, { passive:true });
-    }
-
-    let lastY = window.scrollY || 0;
-    let headTicking = false;
-
-    function syncHeaderVisibility(){
-        if(window.innerWidth > 900){
-            document.body.classList.remove("mobile-head-hidden");
-            return;
-        }
-
-        const currentY = window.scrollY || document.documentElement.scrollTop || 0;
-        const diff = currentY - lastY;
-
-        if(currentY < 24 || diff < -8){
-            document.body.classList.remove("mobile-head-hidden");
-        }else if(diff > 10 && currentY > 84){
-            document.body.classList.add("mobile-head-hidden");
-        }
-
-        lastY = currentY;
-    }
-
-    window.addEventListener("scroll", () => {
-        if(headTicking){
-            return;
-        }
-
-        headTicking = true;
-        requestAnimationFrame(() => {
-            syncHeaderVisibility();
-            headTicking = false;
-        });
-    }, { passive:true });
-
-    function boot(){
-        if(swipe && window.innerWidth <= 900){
-            const mode = window.currentFeedMode || document.body?.dataset?.feedMode || "recommend";
-            goToFeed(mode, false);
-        }else{
-            setActiveFeed(window.currentFeedMode || document.body?.dataset?.feedMode || "recommend");
-        }
-        syncHeaderVisibility();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => requestAnimationFrame(boot));
-    window.addEventListener("pageshow", () => requestAnimationFrame(boot));
-    window.addEventListener("resize", () => requestAnimationFrame(boot));
-    boot();
-})();
-
-/* ============================================================
-   PATCH MOBILE FEED STABILITY V3 JS 2026-06-12
-   - タブ移動時は必ずページ上部から開始
-   - 既存のおすすめリセットを後から打ち消し、現在タブを維持
-   - ヘッダー/タブはスクロールに即時追従
-   - 観測タブの縦スクロール・上方向の戻りを抑止
-============================================================ */
+/* FINAL MOBILE FEED CLEAN JS 2026-06-12 */
 (function(){
     const modes = ["recommend", "following", "list"];
     const swipe = document.getElementById("feedSwipe");
@@ -14145,146 +12375,67 @@ function resetFeedToRecommendOnOpen(){
         following:document.getElementById("followingTab"),
         list:document.getElementById("listTab")
     };
-    const storageKey = "albumCollectionActiveFeedMode";
-    let activeMode = sessionStorage.getItem(storageKey) || document.body?.dataset?.feedMode || "recommend";
+    let activeMode = document.body?.dataset?.feedMode || "recommend";
     let lastScrollY = window.scrollY || 0;
-    let touchStartY = 0;
+    let ignoreSwipeUntil = 0;
 
-    function modeToIndex(mode){
-        return mode === "list" ? 2 : (mode === "following" ? 1 : 0);
-    }
+    function clampMode(mode){ return modes.includes(mode) ? mode : "recommend"; }
+    function modeToIndex(mode){ return mode === "list" ? 2 : (mode === "following" ? 1 : 0); }
+    function indexToMode(index){ return index >= 1.5 ? "list" : (index >= 0.5 ? "following" : "recommend"); }
 
-    function indexToMode(index){
-        if(index >= 1.5){ return "list"; }
-        if(index >= 0.5){ return "following"; }
-        return "recommend";
-    }
-
-    function clampMode(mode){
-        return modes.includes(mode) ? mode : "recommend";
-    }
-
-    function rememberMode(mode){
+    function setMode(mode, progress){
         activeMode = clampMode(mode);
-        sessionStorage.setItem(storageKey, activeMode);
         window.currentFeedMode = activeMode;
         document.body.dataset.feedMode = activeMode;
-    }
-
-    function setHeaderHidden(hidden){
-        if(window.innerWidth > 900){
-            document.body.classList.remove("mobile-head-hidden");
-            return;
-        }
-        document.body.classList.toggle("mobile-head-hidden", Boolean(hidden));
-    }
-
-    function syncHeaderNow(){
-        const y = window.scrollY || document.documentElement.scrollTop || 0;
-        const diff = y - lastScrollY;
-
-        if(y <= 2 || diff < 0){
-            setHeaderHidden(false);
-        }else if(diff > 0){
-            setHeaderHidden(true);
-        }
-
-        lastScrollY = y;
-    }
-
-    function setVisualMode(mode, progress = null){
-        mode = clampMode(mode);
-        const previousMode = activeMode;
-        rememberMode(mode);
-
-        if(previousMode !== mode && window.innerWidth <= 900 && window.scrollY > 0){
-            scrollPageTop();
-        }
-
-        const index = modeToIndex(mode);
-        const underline = typeof progress === "number" ? Math.max(0, Math.min(2, progress)) : index;
+        const underline = modeToIndex(activeMode);
 
         Object.entries(buttons).forEach(([key, button]) => {
             if(!button){ return; }
-            const active = key === mode;
+            const active = key === activeMode;
             button.classList.toggle("active", active);
             button.setAttribute("aria-selected", active ? "true" : "false");
         });
 
         if(tabs){
-            tabs.dataset.activeFeed = mode;
+            tabs.dataset.activeFeed = activeMode;
             tabs.style.setProperty("--feed-progress", underline.toFixed(4));
-            tabs.style.setProperty("--recommend-tab-opacity", mode === "recommend" ? "1" : "0.58");
-            tabs.style.setProperty("--following-tab-opacity", mode === "following" ? "1" : "0.58");
-            tabs.style.setProperty("--list-tab-opacity", mode === "list" ? "1" : "0.58");
+            tabs.style.setProperty("--recommend-tab-opacity", activeMode === "recommend" ? "1" : "0.58");
+            tabs.style.setProperty("--following-tab-opacity", activeMode === "following" ? "1" : "0.58");
+            tabs.style.setProperty("--list-tab-opacity", activeMode === "list" ? "1" : "0.58");
         }
-
-        document.querySelectorAll("[data-feed-panel]").forEach((panel) => {
-            panel.classList.toggle("is-visible", panel.dataset.feedPanel === mode);
-        });
     }
 
-    function scrollPageTop(){
+    function pageTop(){
         window.scrollTo({ top:0, left:0, behavior:"auto" });
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
         lastScrollY = 0;
-        setHeaderHidden(false);
+        document.body.classList.remove("mobile-head-hidden");
     }
 
-    function moveSwipeTo(mode, smooth){
-        if(!swipe || window.innerWidth > 900){
-            return;
-        }
-
-        swipe.classList.remove("vertical-gesture");
-        swipe.scrollTo({
-            left:swipe.clientWidth * modeToIndex(mode),
-            behavior:smooth ? "smooth" : "auto"
-        });
-    }
-
-    function go(mode, options = {}){
+    function moveTo(mode, smooth){
         mode = clampMode(mode);
-        const smooth = options.smooth !== false;
-        const shouldResetTop = options.resetTop !== false;
-
-        setVisualMode(mode);
-
-        if(shouldResetTop){
-            scrollPageTop();
+        setMode(mode);
+        pageTop();
+        if(swipe && window.innerWidth <= 900){
+            ignoreSwipeUntil = Date.now() + 320;
+            swipe.scrollTo({ left:swipe.clientWidth * modeToIndex(mode), behavior:smooth ? "smooth" : "auto" });
         }
-
-        moveSwipeTo(mode, smooth);
     }
 
-    function progressFromSwipe(){
-        if(!swipe || window.innerWidth > 900){
-            return modeToIndex(activeMode);
-        }
-
-        return Math.max(0, Math.min(2, swipe.scrollLeft / Math.max(1, swipe.clientWidth)));
-    }
-
-    function updateFromSwipe(){
-        const progress = progressFromSwipe();
-        setVisualMode(indexToMode(progress), progress);
-    }
-
-    window.scrollFeedTo = function(mode){
-        go(mode, { smooth:true, resetTop:true });
-    };
-
-    window.updateFeedTabs = function(progress = null){
+    window.scrollFeedTo = function(mode){ moveTo(mode, true); };
+    window.resetFeedToRecommendOnOpen = function(){ setMode(activeMode); };
+    window.updateFeedTabs = function(progress){
         if(typeof progress === "number"){
-            setVisualMode(indexToMode(progress), progress);
+            setMode(indexToMode(progress), progress);
             return;
         }
-        updateFromSwipe();
-    };
-
-    window.resetFeedToRecommendOnOpen = function(){
-        go(activeMode, { smooth:false, resetTop:false });
+        if(!swipe || window.innerWidth > 900){
+            setMode(activeMode);
+            return;
+        }
+        const p = Math.max(0, Math.min(2, swipe.scrollLeft / Math.max(1, swipe.clientWidth)));
+        setMode(indexToMode(p), p);
     };
 
     Object.entries(buttons).forEach(([mode, button]) => {
@@ -14292,71 +12443,46 @@ function resetFeedToRecommendOnOpen(){
         button.addEventListener("click", (event) => {
             event.preventDefault();
             event.stopImmediatePropagation();
-            go(mode, { smooth:true, resetTop:true });
+            moveTo(mode, true);
         }, true);
     });
 
     if(swipe){
-        let swipeTicking = false;
-
+        let ticking = false;
         swipe.addEventListener("scroll", () => {
-            if(window.innerWidth > 900 || swipeTicking){
-                return;
-            }
-
-            swipeTicking = true;
+            if(window.innerWidth > 900 || ticking || Date.now() < ignoreSwipeUntil){ return; }
+            ticking = true;
             requestAnimationFrame(() => {
-                updateFromSwipe();
-                swipeTicking = false;
+                const p = Math.max(0, Math.min(2, swipe.scrollLeft / Math.max(1, swipe.clientWidth)));
+                setMode(indexToMode(p), p);
+                ticking = false;
             });
         }, { passive:true });
-
-        swipe.addEventListener("touchstart", (event) => {
-            touchStartY = event.touches?.[0]?.clientY || 0;
-        }, { passive:true });
-
-        swipe.addEventListener("touchmove", (event) => {
-            if(window.innerWidth > 900){
-                return;
-            }
-
-            const mode = document.body.dataset.feedMode || activeMode;
-            const currentY = event.touches?.[0]?.clientY || touchStartY;
-            const pullingDown = currentY > touchStartY + 4;
-
-            if((mode === "following" || mode === "list") && window.scrollY <= 0 && pullingDown){
-                event.preventDefault();
-                event.stopPropagation();
-            }
-        }, { passive:false });
     }
 
-    window.addEventListener("scroll", syncHeaderNow, { passive:true });
-
-    function bootStable(){
-        const saved = sessionStorage.getItem(storageKey);
-        const mode = clampMode(saved || activeMode || document.body?.dataset?.feedMode || "recommend");
-        activeMode = mode;
-        setVisualMode(mode);
-        moveSwipeTo(mode, false);
-        syncHeaderNow();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => requestAnimationFrame(bootStable));
-    window.addEventListener("pageshow", () => requestAnimationFrame(bootStable));
-    window.addEventListener("resize", () => requestAnimationFrame(bootStable));
-
-    setInterval(() => {
-        const mode = clampMode(sessionStorage.getItem(storageKey) || activeMode);
-        if((document.body.dataset.feedMode || "recommend") !== mode){
-            setVisualMode(mode);
-            moveSwipeTo(mode, false);
+    window.addEventListener("scroll", () => {
+        if(window.innerWidth > 900){ return; }
+        const y = window.scrollY || document.documentElement.scrollTop || 0;
+        if(y > lastScrollY && y > 2){
+            document.body.classList.add("mobile-head-hidden");
+        }else if(y < lastScrollY){
+            document.body.classList.remove("mobile-head-hidden");
         }
-    }, 1200);
+        lastScrollY = y;
+    }, { passive:true });
 
-    bootStable();
+    function boot(){
+        setMode(activeMode);
+        if(swipe && window.innerWidth <= 900){
+            swipe.scrollTo({ left:swipe.clientWidth * modeToIndex(activeMode), behavior:"auto" });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", boot);
+    window.addEventListener("pageshow", boot);
+    window.addEventListener("resize", boot);
+    boot();
 })();
-
 
 </script>
 
