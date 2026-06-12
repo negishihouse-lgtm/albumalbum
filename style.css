@@ -9730,3 +9730,195 @@ body[data-feed-mode="following"] .observation-planet-core.observation-planet-ava
         min-height:410px !important;
     }
 }
+
+
+/* ============================================================
+   FINAL HARD FIX 02 2026-06-13
+   - 凡例を完全にマップ外へ分離
+   - モバイルで観測エリアの横幅を広く使用
+   - アイコン周囲の黒い空間をさらに削減
+============================================================ */
+body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
+    padding-left:10px !important;
+    padding-right:10px !important;
+}
+
+body[data-feed-mode="following"] .observation-map{
+    padding:18px 12px 16px !important;
+    border-radius:24px !important;
+}
+
+body[data-feed-mode="following"] .observation-top-row{
+    position:relative !important;
+    z-index:40 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:10px !important;
+    margin-bottom:10px !important;
+}
+
+body[data-feed-mode="following"] .observation-head{
+    width:100% !important;
+    margin:0 !important;
+}
+
+body[data-feed-mode="following"] .observation-head-text{
+    width:100% !important;
+}
+
+body[data-feed-mode="following"] .observation-legend{
+    position:relative !important;
+    inset:auto !important;
+    left:auto !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:auto !important;
+    z-index:41 !important;
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding:10px 12px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:14px !important;
+    flex-wrap:wrap !important;
+    border-radius:18px !important;
+    background:rgba(5,8,18,0.68) !important;
+    border:1px solid rgba(169,112,255,0.22) !important;
+    box-shadow:0 10px 28px rgba(0,0,0,0.22), 0 0 18px rgba(169,112,255,0.08) !important;
+    backdrop-filter:blur(16px) saturate(1.12) !important;
+    -webkit-backdrop-filter:blur(16px) saturate(1.12) !important;
+    pointer-events:none !important;
+}
+
+body[data-feed-mode="following"] .observation-space{
+    margin-top:0 !important;
+    height:clamp(430px, calc(100svh - var(--ac-topbar-h, 58px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 212px), 500px) !important;
+    min-height:430px !important;
+    margin-left:-2px !important;
+    margin-right:-2px !important;
+}
+
+body[data-feed-mode="following"] .observation-orbit.o1{ width:112% !important; left:-7% !important; top:84px !important; }
+body[data-feed-mode="following"] .observation-orbit.o2{ width:92% !important; left:4% !important; top:214px !important; }
+body[data-feed-mode="following"] .observation-orbit.o3{ width:110% !important; left:-5% !important; top:344px !important; }
+
+body[data-feed-mode="following"] .observation-planet-wrap{
+    z-index:10 !important;
+}
+
+body[data-feed-mode="following"] .observation-planet{
+    padding:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    overflow:visible !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-core{
+    position:absolute !important;
+    inset:-5px !important;
+    width:auto !important;
+    height:auto !important;
+    border-radius:50% !important;
+    overflow:hidden !important;
+    border:0 !important;
+    padding:0 !important;
+    background:transparent !important;
+    box-shadow:
+        0 0 0 2px rgba(244,248,255,0.92),
+        0 0 0 6px rgba(12,15,30,0.20),
+        0 0 18px color-mix(in srgb, var(--signal-color) 58%, transparent),
+        0 0 42px color-mix(in srgb, var(--signal-color) 28%, transparent) !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-avatar{
+    position:absolute !important;
+    left:-8% !important;
+    top:-8% !important;
+    width:116% !important;
+    height:116% !important;
+    display:block !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border-radius:50% !important;
+    transform:none !important;
+    transform-origin:center !important;
+    background:transparent !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
+    inset:-5px !important;
+}
+
+@media (max-width:430px){
+    body[data-feed-mode="following"] .feed-panel[data-feed-panel="following"]{
+        padding-left:8px !important;
+        padding-right:8px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-map{
+        padding:16px 10px 14px !important;
+        border-radius:22px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-title{
+        font-size:14px !important;
+        line-height:1.12 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-subtitle{
+        font-size:10px !important;
+        line-height:1.2 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend{
+        padding:9px 10px !important;
+        gap:10px !important;
+        border-radius:16px !important;
+        overflow:visible !important;
+        pointer-events:none !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-title{
+        font-size:10px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-row{
+        font-size:9.5px !important;
+        gap:5px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space{
+        height:clamp(410px, calc(100svh - var(--ac-topbar-h, 54px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 214px), 470px) !important;
+        min-height:410px !important;
+        margin-left:-4px !important;
+        margin-right:-4px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-wrap{
+        transform:translate(-50%,-50%) scale(0.82) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-orbit.o1{ width:116% !important; left:-9% !important; top:80px !important; }
+    body[data-feed-mode="following"] .observation-orbit.o2{ width:96% !important; left:2% !important; top:206px !important; }
+    body[data-feed-mode="following"] .observation-orbit.o3{ width:114% !important; left:-7% !important; top:334px !important; }
+
+    body[data-feed-mode="following"] .observation-planet-core{
+        inset:-6px !important;
+        box-shadow:
+            0 0 0 2px rgba(244,248,255,0.92),
+            0 0 0 5px rgba(12,15,30,0.16),
+            0 0 16px color-mix(in srgb, var(--signal-color) 56%, transparent),
+            0 0 34px color-mix(in srgb, var(--signal-color) 26%, transparent) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-avatar{
+        left:-10% !important;
+        top:-10% !important;
+        width:120% !important;
+        height:120% !important;
+    }
+}
