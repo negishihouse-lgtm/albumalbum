@@ -8818,3 +8818,148 @@ body::after{
         pointer-events:auto !important;
     }
 }
+
+/* FINAL OBSERVATION / METEOR / BACKGROUND STABILITY 2026-06-13 */
+:root{
+    --daily-meteor-opacity:1;
+    --daily-meteor-offset:0px;
+}
+
+@keyframes acGalaxyImageFloat{
+    0%{
+        background-position:
+            center center,
+            center 0,
+            center 140vh;
+    }
+    100%{
+        background-position:
+            center center,
+            center -140vh,
+            center 0;
+    }
+}
+
+body::before{
+    background-image:
+        linear-gradient(180deg, rgba(3,8,20,0.12) 0%, rgba(3,8,20,0.30) 46%, rgba(3,8,20,0.66) 100%),
+        url("./milkyway_bg.png"),
+        url("./milkyway_bg.png") !important;
+    background-size:
+        100% 100%,
+        100% 140vh,
+        100% 140vh !important;
+    background-repeat:no-repeat, no-repeat, no-repeat !important;
+    background-attachment:scroll, scroll, scroll !important;
+    background-position:
+        center center,
+        center 0,
+        center 140vh !important;
+    animation:acGalaxyImageFloat 420s linear infinite !important;
+    transform:translate3d(0,0,0) !important;
+    will-change:background-position !important;
+}
+
+@media (prefers-reduced-motion: reduce){
+    body::before{
+        animation:none !important;
+    }
+}
+
+@media (max-width:900px){
+    .daily-meteor-box{
+        opacity:var(--daily-meteor-opacity) !important;
+        transform:translate3d(0, calc(-1 * var(--daily-meteor-offset)), 0) !important;
+        transition:opacity .08s linear, transform .08s linear !important;
+        pointer-events:auto !important;
+    }
+
+    body[data-meteor-hidden="true"] .daily-meteor-box{
+        pointer-events:none !important;
+    }
+
+    .mobile-top-mypage,
+    .mobile-top-mypage .top-avatar,
+    .mobile-top-mypage .top-mypage-fallback{
+        aspect-ratio:1 / 1 !important;
+        border-radius:50% !important;
+        clip-path:circle(50% at 50% 50%) !important;
+        flex:0 0 auto !important;
+    }
+
+    .mobile-top-mypage .top-avatar{
+        min-width:100% !important;
+        min-height:100% !important;
+        max-width:100% !important;
+        max-height:100% !important;
+        object-fit:cover !important;
+    }
+
+    .mobile-tabbar a[href="observation.html"] .icon{
+        position:relative !important;
+        background:transparent !important;
+        box-shadow:none !important;
+        border:0 !important;
+        overflow:visible !important;
+    }
+
+    .mobile-tabbar a[href="observation.html"] .icon::before,
+    .mobile-tabbar a[href="observation.html"] .icon::after{
+        display:none !important;
+        content:none !important;
+    }
+
+    body[data-feed-mode="following"] .feed-swipe{
+        margin-top:calc(var(--ac-topbar-h) + env(safe-area-inset-top) + 8px) !important;
+        height:calc(100dvh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8px) !important;
+        overflow:hidden !important;
+    }
+
+    body[data-feed-mode="following"] #followingGrid.observation-map{
+        height:100% !important;
+        max-height:100% !important;
+        padding:9px 12px 10px !important;
+        border-radius:18px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space{
+        height:calc(100% - 48px) !important;
+        min-height:0 !important;
+        margin-top:2px !important;
+        padding-bottom:82px !important;
+        box-sizing:border-box !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-wrap{
+        transform:translate(-50%,-50%) scale(0.70) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend{
+        display:block !important;
+        left:10px !important;
+        bottom:8px !important;
+        width:132px !important;
+        padding:7px 8px !important;
+        border-radius:13px !important;
+        transform:none !important;
+        transform-origin:left bottom !important;
+        z-index:4 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-title{
+        margin:0 0 6px !important;
+        font-size:10px !important;
+        line-height:1 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-row{
+        font-size:9px !important;
+        line-height:1.1 !important;
+        gap:5px !important;
+        margin-bottom:5px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-row:last-child{
+        margin-bottom:0 !important;
+    }
+}
