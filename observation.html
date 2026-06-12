@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -80,12 +81,6 @@
         <span class="icon">♡</span>
         <span class="label">通知</span>
     </a>
-
-    <a id="mobileMyPageLink" href="login.html">
-        <img id="mobileMyPageAvatar" class="tab-avatar" src="" alt="">
-        <span id="mobileMyPageFallback" class="mypage-icon-text">◯</span>
-        <span class="label">惑星</span>
-    </a>
 </nav>
 
 <a href="editor.html" class="fab">＋</a>
@@ -94,6 +89,11 @@
 
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
+
+    <a id="mobileMyPageLink" class="mobile-top-mypage" href="login.html" aria-label="マイページ">
+        <img id="mobileMyPageAvatar" class="top-avatar" src="" alt="">
+        <span id="mobileMyPageFallback" class="top-mypage-fallback">◯</span>
+    </a>
 
     <div class="home-sortbar" hidden>
         <div class="sort-filter-wrap">
@@ -2823,20 +2823,8 @@ window.addEventListener("scroll", () => {
         return;
     }
 
-    if((document.body?.dataset?.feedMode || currentFeedMode) === "following"){
-        document.body.classList.remove("mobile-head-hidden");
-        return;
-    }
-
     const currentY = window.scrollY || document.documentElement.scrollTop || 0;
-    const previousY = Number(document.body.dataset.lastScrollY || 0);
-
-    if(currentY > previousY && currentY > 2){
-        document.body.classList.add("mobile-head-hidden");
-    }else if(currentY < previousY){
-        document.body.classList.remove("mobile-head-hidden");
-    }
-
+    document.body.classList.remove("mobile-head-hidden");
     document.body.dataset.lastScrollY = String(currentY);
 }, { passive:true });
 
