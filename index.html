@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>観測 - Album Collection</title>
+<title>Album Collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="./style.css">
 </head>
 
-<body data-feed-mode="following">
+<body data-feed-mode="recommend">
 
 <!-- メンテナンス用パスワード制限 -->
 <script>
@@ -56,7 +56,7 @@
 
 <!-- スマホ用下部タブバー -->
 <nav class="mobile-tabbar">
-    <a href="index.html">
+    <a href="index.html" class="active">
         <span class="icon">⌂</span>
         <span class="label">おすすめ</span>
     </a>
@@ -66,7 +66,7 @@
         <span class="label">検索</span>
     </a>
 
-    <a href="observation.html" class="active">
+    <a href="observation.html">
         <span class="icon">⌕</span>
         <span class="label">観測</span>
     </a>
@@ -84,7 +84,11 @@
 
 <a href="editor.html" class="fab">＋</a>
 
-<!-- 観測は下部タブバーから開く独立ページ -->
+<!-- スマホ用：おすすめ / リスト タブ -->
+<div class="mobile-feed-tabs" id="mobileFeedTabs">
+    <button type="button" class="feed-tab active" id="recommendTab">おすすめ</button>
+    <button type="button" class="feed-tab" id="listTab">リスト</button>
+</div>
 
 <div class="topbar">
     <h1 class="page-title">Album Collection</h1>
@@ -94,7 +98,7 @@
         <span id="mobileMyPageFallback" class="top-mypage-fallback">◯</span>
     </a>
 
-    <div class="home-sortbar" hidden>
+    <div class="home-sortbar">
         <div class="sort-filter-wrap">
             <button
                 type="button"
@@ -124,8 +128,11 @@
 <section class="daily-meteor-box" id="dailyMeteorBox" aria-label="今日の流れ星"></section>
 
 <div class="feed-swipe" id="feedSwipe">
-    <section class="feed-panel" data-feed-panel="following">
-        <div class="album-grid" id="followingGrid"></div>
+    <section class="feed-panel" data-feed-panel="recommend">
+        <div class="album-grid" id="recommendGrid"></div>
+    </section>
+    <section class="feed-panel" data-feed-panel="list">
+        <div class="album-grid" id="listGrid"></div>
     </section>
 </div>
 
@@ -251,7 +258,7 @@ const sortFilterButton = document.getElementById("sortFilterButton");
 const sortFilterMenu = document.getElementById("sortFilterMenu");
 const sortFilterCurrentLabel = document.getElementById("sortFilterCurrentLabel");
 
-let currentFeedMode = "following";
+let currentFeedMode = "recommend";
 let allAlbums = [];
 let allLists = [];
 let followingIds = new Set();
