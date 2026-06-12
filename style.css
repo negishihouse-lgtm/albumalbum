@@ -9547,3 +9547,186 @@ body::before{
         flex-basis:10px !important;
     }
 }
+
+
+/* ============================================================
+   FINAL HARD FIX 2026-06-13
+   - 凡例を惑星マップ上に重ねず、タイトル直下の横並びパネルにする
+   - 観測アイコンの黒い内側余白を消し、画像を円いっぱいに表示する
+============================================================ */
+body[data-feed-mode="following"] .observation-map{
+    overflow:hidden !important;
+}
+
+body[data-feed-mode="following"] .observation-head{
+    position:relative !important;
+    z-index:40 !important;
+    margin-bottom:0 !important;
+}
+
+body[data-feed-mode="following"] .observation-head-text{
+    min-width:0 !important;
+}
+
+body[data-feed-mode="following"] .observation-legend{
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:auto !important;
+    z-index:42 !important;
+    width:max-content !important;
+    max-width:100% !important;
+    margin:12px 0 6px !important;
+    padding:8px 10px !important;
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+    border-radius:999px !important;
+    background:rgba(5,8,18,0.68) !important;
+    border:1px solid rgba(169,112,255,0.22) !important;
+    box-shadow:0 10px 28px rgba(0,0,0,0.22), 0 0 18px rgba(169,112,255,0.08) !important;
+    backdrop-filter:blur(16px) saturate(1.12) !important;
+    -webkit-backdrop-filter:blur(16px) saturate(1.12) !important;
+    transform:none !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:none !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-title{
+    display:block !important;
+    margin:0 2px 0 0 !important;
+    color:rgba(255,255,255,0.90) !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-row{
+    display:flex !important;
+    align-items:center !important;
+    gap:5px !important;
+    margin:0 !important;
+    color:rgba(255,255,255,0.72) !important;
+    font-size:10.5px !important;
+    font-weight:700 !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+}
+
+body[data-feed-mode="following"] .observation-legend-dot{
+    width:10px !important;
+    height:10px !important;
+    flex:0 0 10px !important;
+    border-radius:50% !important;
+    background:var(--legend-color) !important;
+    box-shadow:0 0 12px color-mix(in srgb, var(--legend-color) 76%, transparent) !important;
+}
+
+body[data-feed-mode="following"] .observation-space{
+    margin-top:0 !important;
+    height:clamp(430px, calc(100svh - var(--ac-topbar-h, 58px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 164px), 500px) !important;
+    min-height:430px !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-wrap{
+    z-index:10 !important;
+}
+
+body[data-feed-mode="following"] .observation-planet{
+    padding:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    overflow:visible !important;
+}
+
+body[data-feed-mode="following"] .observation-planet::before,
+body[data-feed-mode="following"] .observation-planet::after{
+    display:none !important;
+    content:none !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-core{
+    position:absolute !important;
+    inset:-1px !important;
+    width:auto !important;
+    height:auto !important;
+    border-radius:50% !important;
+    overflow:hidden !important;
+    border:0 !important;
+    padding:0 !important;
+    background:transparent !important;
+    box-shadow:
+        0 0 0 2px rgba(244,248,255,0.92),
+        0 0 0 5px rgba(12,15,30,0.56),
+        0 0 18px color-mix(in srgb, var(--signal-color) 58%, transparent),
+        0 0 42px color-mix(in srgb, var(--signal-color) 28%, transparent) !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-avatar{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    display:block !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border-radius:50% !important;
+    transform:scale(1.18) !important;
+    transform-origin:center !important;
+    background:transparent !important;
+}
+
+body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
+    inset:-1px !important;
+    display:grid !important;
+    place-items:center !important;
+    color:rgba(255,255,255,0.96) !important;
+    background:radial-gradient(circle at 50% 42%, rgba(13,17,34,0.95), rgba(4,6,15,0.95)) !important;
+    font-size:22px !important;
+    font-weight:800 !important;
+    line-height:1 !important;
+    text-align:center !important;
+    padding:0 !important;
+}
+
+@media (max-width:430px){
+    body[data-feed-mode="following"] .observation-legend{
+        width:100% !important;
+        justify-content:flex-start !important;
+        gap:8px !important;
+        padding:8px 9px !important;
+        border-radius:16px !important;
+        overflow-x:auto !important;
+        scrollbar-width:none !important;
+        pointer-events:auto !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend::-webkit-scrollbar{
+        display:none !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-title{
+        font-size:10px !important;
+        flex:0 0 auto !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-row{
+        font-size:9.6px !important;
+        flex:0 0 auto !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-dot{
+        width:9px !important;
+        height:9px !important;
+        flex-basis:9px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space{
+        height:clamp(410px, calc(100svh - var(--ac-topbar-h, 58px) - var(--ac-mobile-tabbar-h, 76px) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 168px), 480px) !important;
+        min-height:410px !important;
+    }
+}
