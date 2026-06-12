@@ -3021,13 +3021,13 @@ function getObservationSignalState(group){
 
 function getObservationPlanetStyle(index){
     const styles = [
-        { x:"50%", y:"17%", size:"88px", bg:"radial-gradient(circle at 34% 28%, #bc79ff, transparent 20%), radial-gradient(circle at 62% 64%, #321256, #080616 70%)", glow:"rgba(176,108,255,0.82)" },
-        { x:"15%", y:"35%", size:"82px", bg:"radial-gradient(circle at 34% 30%, #ff725f, transparent 21%), radial-gradient(circle at 64% 66%, #521206, #090305 70%)", glow:"rgba(255,108,85,0.62)" },
-        { x:"86%", y:"37%", size:"82px", bg:"radial-gradient(circle at 34% 30%, #73f2ff, transparent 22%), radial-gradient(circle at 63% 66%, #0a5060, #03151e 70%)", glow:"rgba(120,217,255,0.65)" },
-        { x:"14%", y:"63%", size:"78px", bg:"radial-gradient(circle at 34% 30%, #609cff, transparent 22%), radial-gradient(circle at 64% 66%, #132a5b, #050a18 70%)", glow:"rgba(89,145,255,0.42)" },
-        { x:"86%", y:"68%", size:"80px", bg:"radial-gradient(circle at 32% 28%, #74c7ff, transparent 20%), radial-gradient(circle at 44% 50%, #2a854d, transparent 18%), radial-gradient(circle at 62% 66%, #0f3769, #061227 70%)", glow:"rgba(105,180,255,0.72)" },
-        { x:"50%", y:"84%", size:"78px", bg:"radial-gradient(circle at 34% 28%, #ffc06b, transparent 22%), radial-gradient(circle at 63% 66%, #5b3614, #100802 70%)", glow:"rgba(255,190,107,0.55)" },
-        { x:"84%", y:"83%", size:"74px", bg:"radial-gradient(circle at 32% 28%, #a85cff, transparent 22%), radial-gradient(circle at 62% 66%, #1e0d3c, #05030d 70%)", glow:"rgba(176,108,255,0.50)" }
+        { x:"50%", y:"18%", size:"86px", bg:"radial-gradient(circle at 34% 28%, #bc79ff, transparent 20%), radial-gradient(circle at 62% 64%, #321256, #080616 70%)", glow:"rgba(176,108,255,0.82)" },
+        { x:"13%", y:"38%", size:"80px", bg:"radial-gradient(circle at 34% 30%, #ff725f, transparent 21%), radial-gradient(circle at 64% 66%, #521206, #090305 70%)", glow:"rgba(255,108,85,0.62)" },
+        { x:"87%", y:"39%", size:"80px", bg:"radial-gradient(circle at 34% 30%, #73f2ff, transparent 22%), radial-gradient(circle at 63% 66%, #0a5060, #03151e 70%)", glow:"rgba(120,217,255,0.65)" },
+        { x:"18%", y:"65%", size:"76px", bg:"radial-gradient(circle at 34% 30%, #609cff, transparent 22%), radial-gradient(circle at 64% 66%, #132a5b, #050a18 70%)", glow:"rgba(89,145,255,0.42)" },
+        { x:"82%", y:"69%", size:"76px", bg:"radial-gradient(circle at 32% 28%, #74c7ff, transparent 20%), radial-gradient(circle at 44% 50%, #2a854d, transparent 18%), radial-gradient(circle at 62% 66%, #0f3769, #061227 70%)", glow:"rgba(105,180,255,0.72)" },
+        { x:"50%", y:"84%", size:"74px", bg:"radial-gradient(circle at 34% 28%, #ffc06b, transparent 22%), radial-gradient(circle at 63% 66%, #5b3614, #100802 70%)", glow:"rgba(255,190,107,0.55)" },
+        { x:"84%", y:"16%", size:"70px", bg:"radial-gradient(circle at 32% 28%, #a85cff, transparent 22%), radial-gradient(circle at 62% 66%, #1e0d3c, #05030d 70%)", glow:"rgba(176,108,255,0.50)" }
     ];
 
     return styles[index % styles.length];
@@ -3184,11 +3184,11 @@ async function renderObservationPanel(){
 
         <div class="observation-space observation-space-modern">
             <div class="observation-core-galaxy"></div>
+            <div class="observation-core-radio">⌁</div>
             <div class="observation-orbit o1"></div>
             <div class="observation-orbit o2"></div>
             <div class="observation-orbit o3"></div>
             <div class="observation-orbit o4"></div>
-            ${observationSelfPlanetHTML()}
             ${observationGroups.map((group, index) => observationPlanetHTML(group, index)).join("")}
 
             <div class="observation-legend observation-legend-modern" aria-label="投稿時間の説明">
@@ -3196,11 +3196,6 @@ async function renderObservationPanel(){
                 <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>24時間以内の信号</div>
                 <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>1日以上前の信号</div>
                 <div class="observation-legend-row"><span class="observation-legend-dot number" style="--legend-color:#a970ff">2</span>複数の新しい信号</div>
-            </div>
-
-            <div class="observation-tools">
-                <button type="button" class="observation-tool-btn" aria-label="位置を整える">⌖</button>
-                <button type="button" class="observation-tool-btn" aria-label="並びを調整">⟲</button>
             </div>
         </div>
     `;
