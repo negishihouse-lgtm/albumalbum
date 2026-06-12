@@ -1,5 +1,5 @@
 /* ============================================================
-   Album Collection iあndex.html
+   Album Collection index.html
    CSS整理版
    - 既存の多重 <style> を1つに統合
    - 同一セレクタ内の重複プロパティは最後の指定だけ残す
@@ -8978,5 +8978,168 @@ body::before{
 
     body[data-feed-mode="following"] .observation-legend-row:last-child{
         margin-bottom:0 !important;
+    }
+}
+
+/* FINAL OBSERVATION RESTORE / SAFE BACKGROUND MOTION 2026-06-13 */
+@keyframes acGalaxySafeFloat{
+    0%{ transform:translate3d(0,-7vh,0) scale(1.02); }
+    100%{ transform:translate3d(0,-21vh,0) scale(1.02); }
+}
+
+body::before{
+    top:-72vh !important;
+    height:244vh !important;
+    background-image:
+        linear-gradient(180deg, rgba(3,8,20,0.14) 0%, rgba(3,8,20,0.28) 44%, rgba(3,8,20,0.66) 100%),
+        url("./milkyway_bg.png") !important;
+    background-size:
+        100% 100%,
+        100% auto !important;
+    background-repeat:no-repeat, repeat-y !important;
+    background-position:center center, center top !important;
+    animation:acGalaxySafeFloat 160s ease-in-out infinite alternate !important;
+    will-change:transform !important;
+}
+
+@media (max-width:900px){
+    body[data-feed-mode="following"] .feed-swipe{
+        margin-top:calc(var(--ac-topbar-h) + env(safe-area-inset-top) + 6px) !important;
+        height:calc(100dvh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 10px) !important;
+        max-height:calc(100dvh - var(--ac-topbar-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 10px) !important;
+        padding:0 14px !important;
+        box-sizing:border-box !important;
+        overflow:hidden !important;
+    }
+
+    body[data-feed-mode="following"] #followingGrid.observation-map{
+        height:100% !important;
+        max-height:100% !important;
+        min-height:0 !important;
+        padding:18px 18px 18px !important;
+        border-radius:24px !important;
+        overflow:hidden !important;
+    }
+
+    body[data-feed-mode="following"] .observation-head{
+        min-height:48px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-title{
+        font-size:20px !important;
+        line-height:1.16 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-subtitle{
+        margin-top:4px !important;
+        font-size:12px !important;
+        line-height:1.24 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space{
+        height:calc(100% - 52px) !important;
+        min-height:0 !important;
+        margin-top:4px !important;
+        padding-bottom:92px !important;
+        box-sizing:border-box !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-wrap{
+        transform:translate(-50%,-50%) scale(0.78) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet{
+        overflow:visible !important;
+        border-width:1px !important;
+        background:rgba(8,12,26,0.86) !important;
+        box-shadow:
+            0 0 18px color-mix(in srgb, var(--signal-color) 52%, transparent),
+            0 0 42px rgba(170,190,220,0.16),
+            inset 0 0 0 1px rgba(255,255,255,0.08) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet::before{
+        display:block !important;
+        content:"" !important;
+        left:-14% !important;
+        right:-14% !important;
+        top:48% !important;
+        height:9px !important;
+        border-top:1px solid rgba(205,215,238,0.34) !important;
+        border-bottom:1px solid rgba(205,215,238,0.18) !important;
+        opacity:.62 !important;
+        z-index:1 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet::after{
+        display:block !important;
+        content:"" !important;
+        position:absolute !important;
+        inset:-5px !important;
+        border-radius:50% !important;
+        border:1px solid color-mix(in srgb, var(--signal-color) 58%, rgba(210,222,240,0.38)) !important;
+        box-shadow:0 0 20px color-mix(in srgb, var(--signal-color) 46%, transparent) !important;
+        pointer-events:none !important;
+        z-index:0 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-core{
+        position:absolute !important;
+        inset:7px !important;
+        width:auto !important;
+        height:auto !important;
+        border-radius:50% !important;
+        overflow:hidden !important;
+        border:0 !important;
+        background:rgba(5,8,18,0.96) !important;
+        z-index:2 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-avatar{
+        position:absolute !important;
+        inset:0 !important;
+        width:100% !important;
+        height:100% !important;
+        object-fit:cover !important;
+        border-radius:50% !important;
+        z-index:2 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-planet-core.observation-planet-avatar-fallback{
+        display:grid !important;
+        place-items:center !important;
+        color:rgba(255,255,255,0.95) !important;
+        font-size:23px !important;
+        font-weight:800 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend{
+        display:block !important;
+        left:18px !important;
+        bottom:18px !important;
+        width:156px !important;
+        padding:10px 12px !important;
+        border-radius:16px !important;
+        background:rgba(5,8,18,0.70) !important;
+        border:1px solid rgba(176,108,255,0.18) !important;
+        box-shadow:0 10px 30px rgba(0,0,0,0.34) !important;
+        z-index:6 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-title{
+        display:none !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-row{
+        font-size:11px !important;
+        line-height:1.15 !important;
+        gap:8px !important;
+        margin-bottom:8px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend-dot{
+        width:14px !important;
+        height:14px !important;
+        box-shadow:0 0 12px var(--legend-color) !important;
     }
 }
