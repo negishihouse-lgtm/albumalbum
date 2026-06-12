@@ -8574,298 +8574,12 @@ body::after{
 /* END PATCH OBSERVATION V6 */
 
 
-/* ============================================================
-   PATCH FINAL STICKY HEADER + METEOR 2026-06-12
-   - スクロールしても Album Collection ロゴ / 並び替えボタンを固定
-   - おすすめ / 観測 / リスト タブはロゴ下に固定
-   - 今日の流れ星バナーもタブ下に固定
-============================================================ */
-@media (max-width:900px){
-    :root{
-        --ac-sticky-topbar-height:88px;
-        --ac-sticky-feed-tabs-height:58px;
-        --ac-sticky-total-height:146px;
-    }
-
-    .topbar{
-        position:sticky !important;
-        top:0 !important;
-        z-index:13000 !important;
-        order:1 !important;
-        margin:0 -16px 0 !important;
-        background:linear-gradient(180deg, rgba(2,8,20,0.92), rgba(2,8,20,0.72)) !important;
-        border-bottom:1px solid rgba(196,215,255,0.08) !important;
-        box-shadow:0 14px 34px rgba(0,0,0,0.20) !important;
-        backdrop-filter:blur(22px) saturate(1.16) !important;
-        -webkit-backdrop-filter:blur(22px) saturate(1.16) !important;
-    }
-
-    .page-title{
-        flex:1 1 auto !important;
-        min-width:0 !important;
-        white-space:nowrap !important;
-    }
-
-    .home-sortbar{
-        position:relative !important;
-        z-index:13020 !important;
-        flex:0 0 auto !important;
-    }
-
-    .sort-filter-wrap,
-    .sort-filter-btn{
-        position:relative !important;
-        z-index:13030 !important;
-    }
-
-    .sort-filter-menu{
-        z-index:13040 !important;
-    }
-
-    .mobile-feed-tabs{
-        position:sticky !important;
-        top:var(--ac-sticky-topbar-height) !important;
-        z-index:12900 !important;
-        order:2 !important;
-        margin:0 -16px 14px !important;
-        background:linear-gradient(180deg, rgba(2,8,20,0.86), rgba(2,8,20,0.66)) !important;
-        border-bottom:1px solid rgba(159,205,217,0.12) !important;
-        box-shadow:0 14px 32px rgba(0,0,0,0.16) !important;
-        backdrop-filter:blur(22px) saturate(1.14) !important;
-        -webkit-backdrop-filter:blur(22px) saturate(1.14) !important;
-    }
-
-    .daily-meteor-box{
-        position:sticky !important;
-        top:calc(var(--ac-sticky-topbar-height) + var(--ac-sticky-feed-tabs-height)) !important;
-        z-index:12800 !important;
-        margin:0 0 12px !important;
-        padding:8px 0 10px !important;
-        background:linear-gradient(180deg, rgba(2,8,20,0.78), rgba(2,8,20,0.22)) !important;
-        backdrop-filter:blur(18px) saturate(1.12) !important;
-        -webkit-backdrop-filter:blur(18px) saturate(1.12) !important;
-    }
-
-    .daily-meteor-card{
-        box-shadow:
-            0 0 0 1px rgba(255,255,255,0.03) inset,
-            0 12px 32px rgba(0,0,0,0.30),
-            0 0 24px rgba(146,112,255,0.16) !important;
-    }
-
-    .feed-swipe{
-        order:3 !important;
-    }
-}
-
-@media (max-width:430px){
-    :root{
-        --ac-sticky-topbar-height:86px;
-        --ac-sticky-feed-tabs-height:58px;
-        --ac-sticky-total-height:144px;
-    }
-
-    .topbar{
-        padding-top:18px !important;
-    }
-
-    .mobile-feed-tabs{
-        top:var(--ac-sticky-topbar-height) !important;
-    }
-
-    .daily-meteor-box{
-        top:calc(var(--ac-sticky-topbar-height) + var(--ac-sticky-feed-tabs-height)) !important;
-    }
-}
-
-/* END PATCH FINAL STICKY HEADER + METEOR 2026-06-12 */
-
-
 
 /* ============================================================
-   PATCH V10: fixed black header + observation avatar center + meteor sticky
-   - 上部バー/ロゴ/タブを半透明ではなく黒に固定
-   - ステータスバーとロゴの間の微妙な隙間を消す
-   - 観測アイコンをリング中央に再固定
-   - 流れ星バナーをヘッダー直下に固定し、スクロールについてくるようにする
-============================================================ */
-
-@media (max-width:900px){
-
-    html,
-    body{
-        background:#02050b !important;
-    }
-
-    /* ロゴ行：黒固定 */
-    .topbar{
-        position:sticky !important;
-        top:0 !important;
-        z-index:9800 !important;
-        margin:0 -16px 0 !important;
-        padding:calc(env(safe-area-inset-top) + 18px) 30px 14px !important;
-        background:#02050b !important;
-        background-image:none !important;
-        border-bottom:1px solid rgba(255,255,255,0.08) !important;
-        backdrop-filter:none !important;
-        -webkit-backdrop-filter:none !important;
-        box-shadow:none !important;
-    }
-
-    .page-title{
-        margin-top:0 !important;
-    }
-
-    /* おすすめ/観測/リスト：黒固定 */
-    .mobile-feed-tabs{
-        position:sticky !important;
-        top:calc(env(safe-area-inset-top) + 82px) !important;
-        z-index:9700 !important;
-        margin:0 -16px 0 !important;
-        height:62px !important;
-        padding:0 26px !important;
-        background:#02050b !important;
-        background-image:none !important;
-        border-top:none !important;
-        border-bottom:1px solid rgba(255,255,255,0.10) !important;
-        backdrop-filter:none !important;
-        -webkit-backdrop-filter:none !important;
-        box-shadow:none !important;
-    }
-
-    /* 流れ星：タブのすぐ下に固定。おすすめ以外では非表示のまま */
-    .daily-meteor-box{
-        position:sticky !important;
-        top:calc(env(safe-area-inset-top) + 144px) !important;
-        z-index:9600 !important;
-        margin:0 -16px 12px !important;
-        padding:10px 16px 8px !important;
-        background:#02050b !important;
-        background-image:none !important;
-        border-bottom:1px solid rgba(255,255,255,0.08) !important;
-        backdrop-filter:none !important;
-        -webkit-backdrop-filter:none !important;
-    }
-
-    /* 観測/リスト表示時に空の流れ星スペースが残らないようにする */
-    .feed-panel:not(.is-visible) .daily-meteor-box,
-    .feed-panel[data-feed-panel="following"] .daily-meteor-box,
-    .feed-panel[data-feed-panel="list"] .daily-meteor-box{
-        display:none !important;
-    }
-
-    .observation-space,
-    .observation-planet,
-    .observation-planet button{
-        -webkit-user-select:none !important;
-        user-select:none !important;
-        touch-action:manipulation !important;
-    }
-}
-
-/* 観測リングとアイコンの中心ズレを根本的に補正 */
-.observation-planet-button,
-.observation-planet-btn,
-.observation-planet-core,
-.observation-planet button,
-.observation-planet-circle{
-    position:relative !important;
-    display:grid !important;
-    place-items:center !important;
-    box-sizing:border-box !important;
-    padding:0 !important;
-    margin:0 auto !important;
-    overflow:visible !important;
-}
-
-/* 中のアイコンはリングより少し小さくして中央へ */
-.observation-planet-avatar,
-.observation-avatar,
-.observation-planet-icon{
-    position:absolute !important;
-    left:50% !important;
-    top:50% !important;
-    width:64% !important;
-    height:64% !important;
-    min-width:0 !important;
-    min-height:0 !important;
-    border-radius:50% !important;
-    overflow:hidden !important;
-    transform:translate(-50%, -50%) !important;
-    display:grid !important;
-    place-items:center !important;
-    box-sizing:border-box !important;
-    z-index:2 !important;
-}
-
-.observation-planet-avatar img,
-.observation-avatar img,
-.observation-planet-icon img{
-    width:100% !important;
-    height:100% !important;
-    object-fit:cover !important;
-    object-position:center center !important;
-    display:block !important;
-    border-radius:50% !important;
-    transform:none !important;
-}
-
-.observation-avatar-fallback,
-.observation-planet-fallback{
-    width:100% !important;
-    height:100% !important;
-    min-width:100% !important;
-    min-height:100% !important;
-    border-radius:50% !important;
-    display:grid !important;
-    place-items:center !important;
-    text-align:center !important;
-    line-height:1 !important;
-    transform:none !important;
-    margin:0 !important;
-    padding:0 !important;
-}
-
-/* バッジはリングの外側右上へ */
-.observation-count-badge,
-.observation-planet-badge,
-.observation-signal-badge{
-    position:absolute !important;
-    right:1px !important;
-    top:1px !important;
-    transform:translate(34%, -34%) !important;
-    z-index:6 !important;
-}
-
-/* 名前と日付をリング中心の真下へ */
-.observation-planet-name,
-.observation-planet-time{
-    text-align:center !important;
-    width:max-content !important;
-    max-width:120px !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
-}
-
-/* 流れ星バナーは黒ヘッダー上でも浮きすぎないように少し小さく */
-@media (max-width:900px){
-    .daily-meteor-card{
-        min-height:66px !important;
-        border-radius:999px !important;
-    }
-}
-
-/* END PATCH V10 */
-
-
-
-
-/* ============================================================
-   PATCH V11: header gap fix + fixed meteor + true centered observation icons
-   - V10のsticky指定をやめて、上部をfixedで完全固定
-   - ロゴ行/タブ行を黒で連結し、隙間を消す
-   - 流れ星バナーをおすすめタブ中だけfixed表示
-   - 観測アイコンの黒い輪/横線ズレを消し、画像を中央に固定
+   PATCH FINAL CLEAN 2026-06-12
+   - 古い sticky / fixed meteor 系CSSを整理
+   - 流れ星バナーを feed-panel の transform から切り離して固定
+   - 観測の惑星アイコンと下タブ観測アイコンの中心ズレを補正
 ============================================================ */
 
 @media (max-width:900px){
@@ -8874,27 +8588,27 @@ body::after{
         --ac-feed-tabs-h:62px;
         --ac-fixed-head-h:calc(var(--ac-topbar-h) + var(--ac-feed-tabs-h));
         --ac-meteor-h:86px;
+        --ac-mobile-tabbar-h:76px;
     }
 
     html,
     body{
         background:#02050b !important;
         background-color:#02050b !important;
+        overflow-x:hidden !important;
     }
 
     body{
         padding-top:0 !important;
-        overflow-x:hidden !important;
     }
 
-    /* ロゴ＋並び替え：半透明ではなく黒、fixedで完全固定 */
     .topbar{
         position:fixed !important;
         top:0 !important;
         left:0 !important;
         right:0 !important;
         height:var(--ac-topbar-h) !important;
-        z-index:9800 !important;
+        z-index:12000 !important;
         margin:0 !important;
         padding:0 30px 25px !important;
         display:flex !important;
@@ -8919,16 +8633,16 @@ body::after{
         margin:0 !important;
         align-self:flex-end !important;
         padding-bottom:3px !important;
+        z-index:12100 !important;
     }
 
-    /* おすすめ/観測/リスト：ロゴの直下に黒で連結 */
     .mobile-feed-tabs{
         position:fixed !important;
         top:var(--ac-topbar-h) !important;
         left:0 !important;
         right:0 !important;
         height:var(--ac-feed-tabs-h) !important;
-        z-index:9700 !important;
+        z-index:11900 !important;
         margin:0 !important;
         padding:0 26px !important;
         display:grid !important;
@@ -8952,25 +8666,43 @@ body::after{
         bottom:0 !important;
     }
 
-    /* fixedになったヘッダー分だけ本文を下げる */
     .feed-swipe{
         margin-top:var(--ac-fixed-head-h) !important;
         order:3 !important;
+        transform:none !important;
+        will-change:auto !important;
     }
 
-    /* 流れ星：おすすめ中だけ、タブ直下に固定 */
+    .feed-panel{
+        display:none !important;
+        width:100% !important;
+        min-width:0 !important;
+        padding:0 !important;
+        opacity:1 !important;
+        transform:none !important;
+        transition:none !important;
+        will-change:auto !important;
+    }
+
+    .feed-panel.is-visible{
+        display:block !important;
+        opacity:1 !important;
+        transform:none !important;
+    }
+
     .daily-meteor-box{
         position:fixed !important;
         top:var(--ac-fixed-head-h) !important;
         left:0 !important;
         right:0 !important;
-        z-index:9600 !important;
-        display:flex !important;
+        z-index:11800 !important;
+        display:none !important;
         justify-content:center !important;
+        align-items:center !important;
         margin:0 !important;
         padding:10px 16px 8px !important;
         min-height:var(--ac-meteor-h) !important;
-        background:#02050b !important;
+        background:linear-gradient(180deg, #02050b 0%, rgba(2,5,11,0.98) 72%, rgba(2,5,11,0.88) 100%) !important;
         background-image:none !important;
         border-bottom:1px solid rgba(255,255,255,0.08) !important;
         backdrop-filter:none !important;
@@ -8978,6 +8710,11 @@ body::after{
         pointer-events:auto !important;
     }
 
+    body[data-feed-mode="recommend"] .daily-meteor-box:not(:empty){
+        display:flex !important;
+    }
+
+    body:not([data-feed-mode="recommend"]) .daily-meteor-box,
     .daily-meteor-box:empty{
         display:none !important;
         min-height:0 !important;
@@ -8985,139 +8722,29 @@ body::after{
         border-bottom:none !important;
     }
 
-    /* おすすめの投稿カードが固定流れ星に隠れないようにする */
-    .feed-panel[data-feed-panel="recommend"].is-visible #recommendGrid{
+    body[data-feed-mode="recommend"] #recommendGrid{
         padding-top:var(--ac-meteor-h) !important;
     }
 
-    /* 観測/リストでは流れ星を出さない */
-    .feed-panel:not(.is-visible) .daily-meteor-box,
-    .feed-panel[data-feed-panel="following"] .daily-meteor-box,
-    .feed-panel[data-feed-panel="list"] .daily-meteor-box{
-        display:none !important;
+    body:not([data-feed-mode="recommend"]) #recommendGrid{
+        padding-top:0 !important;
     }
 
     .daily-meteor-card{
         width:min(100%, 392px) !important;
         min-height:66px !important;
         border-radius:999px !important;
+        box-shadow:
+            0 0 0 1px rgba(255,255,255,0.035) inset,
+            0 12px 32px rgba(0,0,0,0.32),
+            0 0 24px rgba(176,108,255,0.18) !important;
     }
 
-    /* 観測画面の高さをfixedヘッダー基準で再計算 */
     #followingGrid.observation-map{
-        height:calc(100dvh - var(--ac-fixed-head-h) - 76px) !important;
+        height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h)) !important;
         min-height:0 !important;
         margin-bottom:0 !important;
     }
-}
-
-/* 観測アイコン：黒い横線/球体リングのズレを消す */
-.observation-planet{
-    position:relative !important;
-    display:grid !important;
-    place-items:center !important;
-    padding:0 !important;
-    margin:0 auto !important;
-    overflow:visible !important;
-    background:rgba(5,8,18,0.94) !important;
-    border:1px solid rgba(213,168,255,0.42) !important;
-    box-shadow:
-        0 0 18px var(--planet-glow),
-        0 0 34px rgba(176,108,255,0.16),
-        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-}
-
-/* 惑星の横線は不要。画像ズレの原因なので完全に消す */
-.observation-planet::before{
-    display:none !important;
-    content:none !important;
-}
-
-/* 外側の発光リングだけ残す */
-.observation-planet::after{
-    content:"" !important;
-    position:absolute !important;
-    inset:-5px !important;
-    border-radius:50% !important;
-    border:1px solid rgba(213,168,255,0.18) !important;
-    box-shadow:0 0 18px rgba(176,108,255,0.22) !important;
-    pointer-events:none !important;
-    z-index:0 !important;
-}
-
-/* 中央のアイコン枠 */
-.observation-planet-core{
-    position:absolute !important;
-    left:50% !important;
-    top:50% !important;
-    width:66% !important;
-    height:66% !important;
-    inset:auto !important;
-    transform:translate(-50%, -50%) !important;
-    z-index:2 !important;
-    display:grid !important;
-    place-items:center !important;
-    border-radius:50% !important;
-    overflow:hidden !important;
-    background:rgba(8,12,26,0.92) !important;
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,0.10),
-        0 0 14px rgba(255,255,255,0.08) !important;
-}
-
-/* 画像は中央アイコン枠いっぱいに固定 */
-.observation-planet-core .observation-planet-avatar,
-.observation-planet-avatar{
-    position:absolute !important;
-    inset:0 !important;
-    left:0 !important;
-    top:0 !important;
-    width:100% !important;
-    height:100% !important;
-    min-width:100% !important;
-    min-height:100% !important;
-    max-width:100% !important;
-    max-height:100% !important;
-    transform:none !important;
-    object-fit:cover !important;
-    object-position:center center !important;
-    display:block !important;
-    border-radius:50% !important;
-    z-index:1 !important;
-}
-
-/* 頭文字アイコンも中央固定 */
-.observation-planet-avatar-fallback{
-    position:absolute !important;
-    left:50% !important;
-    top:50% !important;
-    width:66% !important;
-    height:66% !important;
-    inset:auto !important;
-    transform:translate(-50%, -50%) !important;
-    z-index:2 !important;
-    display:grid !important;
-    place-items:center !important;
-    border-radius:50% !important;
-    overflow:hidden !important;
-    background:rgba(8,12,26,0.92) !important;
-    color:rgba(255,255,255,0.88) !important;
-    font-size:22px !important;
-    font-weight:600 !important;
-    line-height:1 !important;
-    letter-spacing:-0.05em !important;
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,0.10),
-        0 0 14px rgba(255,255,255,0.08) !important;
-}
-
-/* 新着色バッジ */
-.observation-signal-dot{
-    position:absolute !important;
-    right:2px !important;
-    top:2px !important;
-    transform:translate(34%, -34%) !important;
-    z-index:6 !important;
 }
 
 @media (max-width:430px){
@@ -9144,13 +8771,127 @@ body::after{
     }
 }
 
-/* END PATCH V11 */
+/* 観測マップの惑星アイコン：リングと画像の中心を完全一致 */
+.observation-planet{
+    position:relative !important;
+    display:grid !important;
+    place-items:center !important;
+    padding:0 !important;
+    margin:0 auto !important;
+    overflow:visible !important;
+    border-radius:50% !important;
+    background:rgba(5,8,18,0.94) !important;
+    border:1px solid rgba(213,168,255,0.42) !important;
+    box-shadow:
+        0 0 18px var(--planet-glow),
+        0 0 34px rgba(176,108,255,0.16),
+        inset 0 0 0 1px rgba(255,255,255,0.08) !important;
+}
+
+.observation-planet::before{
+    display:none !important;
+    content:none !important;
+}
+
+.observation-planet::after{
+    content:"" !important;
+    position:absolute !important;
+    inset:-5px !important;
+    border-radius:50% !important;
+    border:1px solid rgba(213,168,255,0.18) !important;
+    box-shadow:0 0 18px rgba(176,108,255,0.22) !important;
+    pointer-events:none !important;
+    z-index:0 !important;
+}
+
+.observation-planet-core{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    width:68% !important;
+    height:68% !important;
+    inset:auto !important;
+    transform:translate(-50%, -50%) !important;
+    z-index:2 !important;
+    display:grid !important;
+    place-items:center !important;
+    border-radius:50% !important;
+    overflow:hidden !important;
+    background:rgba(8,12,26,0.92) !important;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.10),
+        0 0 14px rgba(255,255,255,0.08) !important;
+    box-sizing:border-box !important;
+}
+
+.observation-planet-core .observation-planet-avatar,
+.observation-planet-avatar{
+    position:absolute !important;
+    inset:0 !important;
+    left:0 !important;
+    top:0 !important;
+    width:100% !important;
+    height:100% !important;
+    min-width:100% !important;
+    min-height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    transform:none !important;
+    object-fit:cover !important;
+    object-position:center center !important;
+    display:block !important;
+    border-radius:50% !important;
+    z-index:1 !important;
+}
+
+.observation-planet-core.observation-planet-avatar-fallback{
+    color:rgba(255,255,255,0.88) !important;
+    font-size:22px !important;
+    font-weight:600 !important;
+    line-height:1 !important;
+    letter-spacing:-0.05em !important;
+    text-align:center !important;
+}
+
+.observation-signal-dot{
+    position:absolute !important;
+    right:2px !important;
+    top:2px !important;
+    transform:translate(34%, -34%) !important;
+    z-index:6 !important;
+}
+
+/* 下タブの観測アイコン：視覚中心を補正 */
+.mobile-tabbar a[href="search.html"]{
+    align-items:center !important;
+    justify-content:center !important;
+}
+
+.mobile-tabbar a[href="search.html"] .icon{
+    display:block !important;
+    width:27px !important;
+    height:27px !important;
+    min-width:27px !important;
+    min-height:27px !important;
+    margin:0 auto 3px !important;
+    transform:translateY(1px) !important;
+    transform-origin:center center !important;
+    background:currentColor !important;
+    background-color:currentColor !important;
+    background-position:center center !important;
+    background-repeat:no-repeat !important;
+    background-size:contain !important;
+}
+
+.mobile-tabbar a[href="search.html"] .label{
+    line-height:1 !important;
+}
 
 
 </style>
 </head>
 
-<body>
+<body data-feed-mode="recommend">
 
 <!-- メンテナンス用パスワード制限 -->
 <script>
@@ -9257,9 +8998,10 @@ body::after{
     </div>
 </div>
 
+<section class="daily-meteor-box" id="dailyMeteorBox" aria-label="今日の流れ星"></section>
+
 <div class="feed-swipe" id="feedSwipe">
     <section class="feed-panel" data-feed-panel="recommend">
-        <section class="daily-meteor-box" id="dailyMeteorBox" aria-label="今日の流れ星"></section>
         <div class="album-grid" id="recommendGrid"></div>
     </section>
     <section class="feed-panel" data-feed-panel="following">
@@ -11792,6 +11534,7 @@ function updateFeedTabs(progress = null){
     }
 
     currentFeedMode = nextMode;
+    if(document.body){ document.body.dataset.feedMode = nextMode; }
 
     recommendTab.classList.toggle("active", nextMode === "recommend");
     followingTab.classList.toggle("active", nextMode === "following");
@@ -12908,6 +12651,15 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 
 
+
+/* PATCH FINAL CLEAN JS GUARD 2026-06-12
+   - 既存の通常<script>側パッチが module 内の変数に触れて落ちないようにする */
+window.currentFeedMode = window.currentFeedMode || document.body?.dataset?.feedMode || "recommend";
+var feedSwipe = window.feedSwipe || document.getElementById("feedSwipe");
+var recommendTab = window.recommendTab || document.getElementById("recommendTab");
+var followingTab = window.followingTab || document.getElementById("followingTab");
+var listTab = window.listTab || document.getElementById("listTab");
+
 /* ============================================================
    PATCH OBSERVATION V4 JS
    - モバイルのおすすめ/観測/リストを横スクロールさせず、タブ押下で即時切替
@@ -12987,6 +12739,7 @@ function resetFeedToRecommendOnOpen(){
         }
 
         currentFeedMode = nextMode;
+        if(document.body){ document.body.dataset.feedMode = nextMode; }
 
         const panelIndex = feedModeToIndex(nextMode);
         const tabs = document.getElementById("mobileFeedTabs");
@@ -13135,6 +12888,51 @@ function resetFeedToRecommendOnOpen(){
 })();
 
 /* END PATCH OBSERVATION V5 JS */
+
+
+/* ============================================================
+   PATCH FINAL CLEAN JS 2026-06-12
+   - 流れ星バナーが feed-panel 内に戻っても body 直下へ逃がす
+   - 現在のタブ状態を body[data-feed-mode] に同期
+============================================================ */
+(function(){
+    function syncMeteorAndFeedMode(){
+        const box = document.getElementById("dailyMeteorBox");
+        const topbar = document.querySelector(".topbar");
+        const swipe = document.getElementById("feedSwipe");
+
+        if(box && box.parentElement && box.parentElement.closest(".feed-panel")){
+            if(swipe){
+                swipe.parentNode.insertBefore(box, swipe);
+            }else if(topbar && topbar.parentNode){
+                topbar.parentNode.insertBefore(box, topbar.nextSibling);
+            }else{
+                document.body.prepend(box);
+            }
+        }
+
+        const mode = (window.currentFeedMode || document.getElementById("mobileFeedTabs")?.dataset?.activeFeed || "recommend");
+        document.body.dataset.feedMode = mode;
+    }
+
+    const originalUpdateFeedTabs = window.updateFeedTabs;
+    if(typeof originalUpdateFeedTabs === "function"){
+        window.updateFeedTabs = function(){
+            const result = originalUpdateFeedTabs.apply(this, arguments);
+            syncMeteorAndFeedMode();
+            return result;
+        };
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        syncMeteorAndFeedMode();
+        requestAnimationFrame(syncMeteorAndFeedMode);
+    });
+
+    window.addEventListener("pageshow", () => requestAnimationFrame(syncMeteorAndFeedMode));
+    window.addEventListener("resize", () => requestAnimationFrame(syncMeteorAndFeedMode));
+})();
+
 
 </script>
 
