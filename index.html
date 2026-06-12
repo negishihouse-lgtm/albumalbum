@@ -8493,10 +8493,16 @@ body::after{
         border:0 !important;
         box-shadow:none !important;
         z-index:11880 !important;
+        transition:transform .12s linear, opacity .12s linear !important;
     }
 
     body[data-feed-mode="recommend"] .daily-meteor-box:not(:empty){ display:flex !important; }
     body:not([data-feed-mode="recommend"]) .daily-meteor-box{ display:none !important; }
+    body.mobile-head-hidden .daily-meteor-box{
+        transform:translateY(calc(-1 * (var(--ac-fixed-head-h) + env(safe-area-inset-top) + 18px))) !important;
+        opacity:0 !important;
+        pointer-events:none !important;
+    }
 
     .daily-meteor-card{
         width:auto !important;
@@ -8516,18 +8522,19 @@ body::after{
     .daily-meteor-card::after{ display:none !important; }
 
     #followingGrid.observation-map{
-        height:auto !important;
-        min-height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8px) !important;
-        overflow:visible !important;
-        padding:14px 14px 30px !important;
-        margin-bottom:18px !important;
+        height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        min-height:0 !important;
+        max-height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        overflow:hidden !important;
+        padding:12px 14px 18px !important;
+        margin-bottom:0 !important;
         border-radius:20px !important;
     }
 
     .observation-space{
-        height:520px !important;
-        min-height:520px !important;
-        margin-top:8px !important;
+        height:calc(100% - 56px) !important;
+        min-height:0 !important;
+        margin-top:6px !important;
         overflow:visible !important;
     }
 
@@ -8565,6 +8572,18 @@ body::after{
         overflow:hidden !important;
         background:rgba(8,12,26,0.96) !important;
         box-shadow:none !important;
+    }
+
+    .observation-planet-core.observation-planet-avatar-fallback{
+        display:grid !important;
+        place-items:center !important;
+        color:rgba(255,255,255,0.94) !important;
+        font-size:22px !important;
+        font-weight:700 !important;
+        line-height:1 !important;
+        text-align:center !important;
+        letter-spacing:0 !important;
+        padding:0 !important;
     }
 
     .observation-planet-avatar{
@@ -12308,7 +12327,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /* 背景画像を縦ループで自動アニメーションさせる。スクロール同期はしない */
 (function(){
     const BG_SRC = "./milkyway_bg.png";
-    const BASE_SPEED = 14; // 背景画像そのものが流れる速度 px/秒。ページスクロールとは同期しない
+    const BASE_SPEED = 140; // 背景画像そのものが流れる速度 px/秒。ページスクロールとは同期しない
 
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if(reduceMotion){
@@ -12387,6 +12406,13 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMode = clampMode(mode);
         window.currentFeedMode = activeMode;
         document.body.dataset.feedMode = activeMode;
+        if(activeMode === "following" && window.innerWidth <= 900){
+            window.scrollTo({ top:0, left:0, behavior:"auto" });
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            lastScrollY = 0;
+            document.body.classList.remove("mobile-head-hidden");
+        }
         const underline = modeToIndex(activeMode);
 
         Object.entries(buttons).forEach(([key, button]) => {
@@ -12462,6 +12488,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("scroll", () => {
         if(window.innerWidth > 900){ return; }
+        if((document.body.dataset.feedMode || activeMode) === "following"){
+            if(window.scrollY !== 0){
+                window.scrollTo({ top:0, left:0, behavior:"auto" });
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            }
+            lastScrollY = 0;
+            document.body.classList.remove("mobile-head-hidden");
+            return;
+        }
         const y = window.scrollY || document.documentElement.scrollTop || 0;
         if(y > lastScrollY && y > 2){
             document.body.classList.add("mobile-head-hidden");
