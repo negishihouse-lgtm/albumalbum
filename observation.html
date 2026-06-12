@@ -3147,10 +3147,17 @@ async function renderObservationPanel(){
 
     followingGrid.innerHTML = `
         <div class="observation-head">
-            <div>
+            <div class="observation-head-text">
                 <h2 class="observation-title">観測中の惑星たち</h2>
                 <p class="observation-subtitle">フォロー中の新しい投稿を観測できます</p>
             </div>
+        </div>
+
+        <div class="observation-legend" aria-label="投稿時間の説明">
+            <div class="observation-legend-title">色の説明</div>
+            <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>6時間以内</div>
+            <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>24時間以内</div>
+            <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>1日以上前</div>
         </div>
 
         <div class="observation-space">
@@ -3158,13 +3165,6 @@ async function renderObservationPanel(){
             <div class="observation-orbit o2"></div>
             <div class="observation-orbit o3"></div>
             ${observationGroups.map((group, index) => observationPlanetHTML(group, index)).join("")}
-
-            <div class="observation-legend" aria-label="投稿時間の説明">
-                <div class="observation-legend-title">色の説明</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#a970ff"></span>6時間以内</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#6ed8ff"></span>24時間以内</div>
-                <div class="observation-legend-row"><span class="observation-legend-dot" style="--legend-color:#788194"></span>1日以上前</div>
-            </div>
         </div>
     `;
 }
