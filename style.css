@@ -9693,3 +9693,152 @@ body::after{
         animation:none !important;
     }
 }
+
+
+
+/* ============================================================
+   GALAXY BACKGROUND REAL DOM MOTION 2026-06-13
+   - PCでは動くがスマホで動かない問題への対策
+   - body::before の疑似要素ではなく、#acGalaxyMotionBg を実DOMとして固定
+   - 既存の body::before 背景は透明化して干渉を止める
+============================================================ */
+
+html{
+    background:#030814 !important;
+}
+
+body{
+    background:#030814 !important;
+    overflow-x:hidden !important;
+}
+
+/* 古い疑似要素背景は残っていても見えないようにする */
+body::before{
+    opacity:0 !important;
+    animation:none !important;
+    transform:none !important;
+}
+
+body::after{
+    opacity:0 !important;
+    animation:none !important;
+    transform:none !important;
+}
+
+/* 実DOMの背景レイヤー */
+#acGalaxyMotionBg{
+    position:fixed !important;
+    inset:0 !important;
+    z-index:-10 !important;
+    pointer-events:none !important;
+    overflow:hidden !important;
+    background:#030814 !important;
+    isolation:isolate !important;
+}
+
+#acGalaxyMotionBg .ac-galaxy-layer{
+    position:absolute !important;
+    pointer-events:none !important;
+    will-change:transform !important;
+    backface-visibility:hidden !important;
+    -webkit-backface-visibility:hidden !important;
+    transform:translate3d(0,0,0) scale(1.08);
+}
+
+#acGalaxyMotionBg .ac-galaxy-image-layer{
+    left:-12vw !important;
+    right:-12vw !important;
+    top:-24vh !important;
+    bottom:-24vh !important;
+    z-index:1 !important;
+
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(3,8,20,0.10) 0%,
+            rgba(3,8,20,0.28) 44%,
+            rgba(3,8,20,0.66) 100%
+        ),
+        url("./milkyway_bg.png") !important;
+
+    background-size:
+        100% 100%,
+        cover !important;
+
+    background-position:
+        center center,
+        center center !important;
+
+    background-repeat:
+        no-repeat,
+        no-repeat !important;
+
+    filter:saturate(1.04) brightness(0.92) contrast(1.06) !important;
+    opacity:1 !important;
+}
+
+#acGalaxyMotionBg .ac-galaxy-star-layer{
+    inset:-8vh -8vw !important;
+    z-index:2 !important;
+
+    background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.38) 0 1px, transparent 1.6px),
+        radial-gradient(circle at 28% 68%, rgba(159,205,217,0.32) 0 1px, transparent 1.6px),
+        radial-gradient(circle at 74% 24%, rgba(255,255,255,0.30) 0 1px, transparent 1.6px),
+        radial-gradient(circle at 88% 76%, rgba(159,205,217,0.26) 0 1px, transparent 1.6px),
+        linear-gradient(90deg, rgba(0,0,0,0.16), transparent 16%, transparent 84%, rgba(0,0,0,0.18)),
+        linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.16)) !important;
+
+    background-size:
+        240px 240px,
+        310px 310px,
+        380px 380px,
+        460px 460px,
+        100% 100%,
+        100% 100% !important;
+
+    opacity:.92 !important;
+}
+
+/* iPhone Safariで背景が本文より下に潜りすぎないように、主要UIは明示的に前面へ */
+.sidebar,
+.topbar,
+.mobile-feed-tabs,
+.feed-swipe,
+.mobile-tabbar,
+.fab,
+.share-sheet,
+.listen-sheet,
+.tutorial-overlay{
+    position:relative;
+    z-index:1;
+}
+
+.mobile-tabbar,
+.share-sheet,
+.listen-sheet,
+.tutorial-overlay{
+    z-index:9999 !important;
+}
+
+@media (max-width:900px){
+    #acGalaxyMotionBg{
+        position:fixed !important;
+        inset:0 !important;
+        z-index:-10 !important;
+    }
+
+    #acGalaxyMotionBg .ac-galaxy-image-layer{
+        left:-18vw !important;
+        right:-18vw !important;
+        top:-22vh !important;
+        bottom:-22vh !important;
+        background-size:
+            100% 100%,
+            cover !important;
+    }
+
+    #acGalaxyMotionBg .ac-galaxy-star-layer{
+        inset:-6vh -12vw !important;
+    }
+}
