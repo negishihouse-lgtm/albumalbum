@@ -9718,6 +9718,201 @@ body::after{
     }
 }
 
+/* ============================================================
+   PATCH MOBILE FEED STABILITY V3 2026-06-12
+   - 上部タブをスクロールと同時に消す
+   - 観測タブは縦スクロールなしで一画面完結
+   - 背景を本文スクロールから完全に独立
+   - 流れ星通知の全文が見える幅へ調整
+============================================================ */
+
+body::before{
+    position:fixed !important;
+    inset:-8vh 0 auto 0 !important;
+    height:116vh !important;
+    z-index:-3 !important;
+    background-image:
+        radial-gradient(ellipse at 50% 18%, rgba(132,83,255,0.26) 0%, rgba(132,83,255,0.10) 24%, transparent 52%),
+        radial-gradient(ellipse at 38% 42%, rgba(86,142,255,0.20) 0%, transparent 48%),
+        radial-gradient(circle at 72% 24%, rgba(255,255,255,0.18) 0 1px, transparent 1.6px),
+        radial-gradient(circle at 22% 38%, rgba(197,140,255,0.34) 0 1px, transparent 1.7px),
+        radial-gradient(circle at 64% 66%, rgba(120,220,255,0.24) 0 1px, transparent 1.8px),
+        linear-gradient(180deg, #02040a 0%, #050815 48%, #02040a 100%) !important;
+    background-size:
+        120% 86%,
+        110% 92%,
+        72px 72px,
+        118px 118px,
+        164px 164px,
+        100% 100% !important;
+    background-position:
+        center 0,
+        center 22%,
+        0 0,
+        28px 18px,
+        52px 44px,
+        center center !important;
+    background-repeat:no-repeat, no-repeat, repeat, repeat, repeat, no-repeat !important;
+    background-attachment:fixed, fixed, fixed, fixed, fixed, fixed !important;
+    transform:none !important;
+    will-change:auto !important;
+    animation:acIndependentGalaxy 42s linear infinite !important;
+}
+
+@keyframes acIndependentGalaxy{
+    0%{
+        background-position:
+            center 0,
+            center 22%,
+            0 0,
+            28px 18px,
+            52px 44px,
+            center center;
+    }
+    100%{
+        background-position:
+            center 0,
+            center 22%,
+            -72px 72px,
+            146px -100px,
+            -112px 208px,
+            center center;
+    }
+}
+
+@media (max-width:900px){
+    body{
+        background:#02040a !important;
+        background-image:none !important;
+        background-attachment:fixed !important;
+    }
+
+    .topbar,
+    .mobile-feed-tabs{
+        transition:none !important;
+    }
+
+    body.mobile-head-hidden .topbar{
+        transform:translateY(calc(-1 * (var(--ac-topbar-h) + env(safe-area-inset-top)))) !important;
+        opacity:0 !important;
+    }
+
+    body.mobile-head-hidden .mobile-feed-tabs{
+        transform:translateY(calc(-1 * (var(--ac-fixed-head-h) + env(safe-area-inset-top)))) !important;
+        opacity:0 !important;
+    }
+
+    body.mobile-head-hidden .feed-swipe{
+        margin-top:0 !important;
+    }
+
+    body[data-feed-mode="following"],
+    body[data-feed-mode="list"]{
+        overscroll-behavior-y:none !important;
+    }
+
+    body[data-feed-mode="following"]{
+        overflow:hidden !important;
+        height:100dvh !important;
+    }
+
+    body[data-feed-mode="following"] .feed-swipe{
+        height:calc(100dvh - var(--ac-mobile-tabbar-h) - env(safe-area-inset-bottom)) !important;
+        overflow-y:hidden !important;
+    }
+
+    body[data-feed-mode="following"] .feed-panel{
+        height:100% !important;
+        overflow:hidden !important;
+    }
+
+    body[data-feed-mode="following"] #followingGrid.observation-map{
+        height:calc(100dvh - var(--ac-fixed-head-h) - var(--ac-mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        min-height:0 !important;
+        max-height:none !important;
+        overflow:hidden !important;
+        margin:0 !important;
+        padding:12px 14px !important;
+        border-radius:0 !important;
+    }
+
+    body.mobile-head-hidden[data-feed-mode="following"] #followingGrid.observation-map{
+        height:calc(100dvh - var(--ac-mobile-tabbar-h) - env(safe-area-inset-bottom)) !important;
+    }
+
+    body[data-feed-mode="following"] .observation-head{
+        min-height:44px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-title{
+        font-size:16px !important;
+        line-height:1.16 !important;
+    }
+
+    body[data-feed-mode="following"] .observation-subtitle{
+        font-size:10.5px !important;
+        margin-top:3px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-new-btn{
+        padding:7px 9px !important;
+        font-size:10.5px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-space{
+        height:calc(100% - 50px) !important;
+        margin-top:4px !important;
+    }
+
+    body[data-feed-mode="following"] .observation-legend{
+        display:none !important;
+    }
+
+    .daily-meteor-card{
+        max-width:266px !important;
+        min-height:40px !important;
+        padding:7px 10px !important;
+    }
+
+    .daily-meteor-copy{
+        max-width:190px !important;
+    }
+
+    .daily-meteor-title{
+        max-width:190px !important;
+        font-size:11.5px !important;
+        overflow:visible !important;
+        text-overflow:clip !important;
+    }
+
+    body.mobile-head-hidden .topbar{
+        transform:none !important;
+        opacity:1 !important;
+        background:transparent !important;
+        border-bottom-color:transparent !important;
+        pointer-events:none !important;
+    }
+
+    body.mobile-head-hidden .page-title{
+        opacity:0 !important;
+    }
+
+    body.mobile-head-hidden .topbar .home-sortbar{
+        pointer-events:auto !important;
+    }
+}
+
+@media (max-width:430px){
+    .daily-meteor-card{
+        max-width:244px !important;
+    }
+
+    .daily-meteor-copy,
+    .daily-meteor-title{
+        max-width:172px !important;
+    }
+}
+
 /* END PATCH UI TUNE */
 
 </style>
@@ -13932,6 +14127,234 @@ function resetFeedToRecommendOnOpen(){
     window.addEventListener("pageshow", () => requestAnimationFrame(boot));
     window.addEventListener("resize", () => requestAnimationFrame(boot));
     boot();
+})();
+
+/* ============================================================
+   PATCH MOBILE FEED STABILITY V3 JS 2026-06-12
+   - タブ移動時は必ずページ上部から開始
+   - 既存のおすすめリセットを後から打ち消し、現在タブを維持
+   - ヘッダー/タブはスクロールに即時追従
+   - 観測タブの縦スクロール・上方向の戻りを抑止
+============================================================ */
+(function(){
+    const modes = ["recommend", "following", "list"];
+    const swipe = document.getElementById("feedSwipe");
+    const tabs = document.getElementById("mobileFeedTabs");
+    const buttons = {
+        recommend:document.getElementById("recommendTab"),
+        following:document.getElementById("followingTab"),
+        list:document.getElementById("listTab")
+    };
+    const storageKey = "albumCollectionActiveFeedMode";
+    let activeMode = sessionStorage.getItem(storageKey) || document.body?.dataset?.feedMode || "recommend";
+    let lastScrollY = window.scrollY || 0;
+    let touchStartY = 0;
+
+    function modeToIndex(mode){
+        return mode === "list" ? 2 : (mode === "following" ? 1 : 0);
+    }
+
+    function indexToMode(index){
+        if(index >= 1.5){ return "list"; }
+        if(index >= 0.5){ return "following"; }
+        return "recommend";
+    }
+
+    function clampMode(mode){
+        return modes.includes(mode) ? mode : "recommend";
+    }
+
+    function rememberMode(mode){
+        activeMode = clampMode(mode);
+        sessionStorage.setItem(storageKey, activeMode);
+        window.currentFeedMode = activeMode;
+        document.body.dataset.feedMode = activeMode;
+    }
+
+    function setHeaderHidden(hidden){
+        if(window.innerWidth > 900){
+            document.body.classList.remove("mobile-head-hidden");
+            return;
+        }
+        document.body.classList.toggle("mobile-head-hidden", Boolean(hidden));
+    }
+
+    function syncHeaderNow(){
+        const y = window.scrollY || document.documentElement.scrollTop || 0;
+        const diff = y - lastScrollY;
+
+        if(y <= 2 || diff < 0){
+            setHeaderHidden(false);
+        }else if(diff > 0){
+            setHeaderHidden(true);
+        }
+
+        lastScrollY = y;
+    }
+
+    function setVisualMode(mode, progress = null){
+        mode = clampMode(mode);
+        const previousMode = activeMode;
+        rememberMode(mode);
+
+        if(previousMode !== mode && window.innerWidth <= 900 && window.scrollY > 0){
+            scrollPageTop();
+        }
+
+        const index = modeToIndex(mode);
+        const underline = typeof progress === "number" ? Math.max(0, Math.min(2, progress)) : index;
+
+        Object.entries(buttons).forEach(([key, button]) => {
+            if(!button){ return; }
+            const active = key === mode;
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-selected", active ? "true" : "false");
+        });
+
+        if(tabs){
+            tabs.dataset.activeFeed = mode;
+            tabs.style.setProperty("--feed-progress", underline.toFixed(4));
+            tabs.style.setProperty("--recommend-tab-opacity", mode === "recommend" ? "1" : "0.58");
+            tabs.style.setProperty("--following-tab-opacity", mode === "following" ? "1" : "0.58");
+            tabs.style.setProperty("--list-tab-opacity", mode === "list" ? "1" : "0.58");
+        }
+
+        document.querySelectorAll("[data-feed-panel]").forEach((panel) => {
+            panel.classList.toggle("is-visible", panel.dataset.feedPanel === mode);
+        });
+    }
+
+    function scrollPageTop(){
+        window.scrollTo({ top:0, left:0, behavior:"auto" });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        lastScrollY = 0;
+        setHeaderHidden(false);
+    }
+
+    function moveSwipeTo(mode, smooth){
+        if(!swipe || window.innerWidth > 900){
+            return;
+        }
+
+        swipe.classList.remove("vertical-gesture");
+        swipe.scrollTo({
+            left:swipe.clientWidth * modeToIndex(mode),
+            behavior:smooth ? "smooth" : "auto"
+        });
+    }
+
+    function go(mode, options = {}){
+        mode = clampMode(mode);
+        const smooth = options.smooth !== false;
+        const shouldResetTop = options.resetTop !== false;
+
+        setVisualMode(mode);
+
+        if(shouldResetTop){
+            scrollPageTop();
+        }
+
+        moveSwipeTo(mode, smooth);
+    }
+
+    function progressFromSwipe(){
+        if(!swipe || window.innerWidth > 900){
+            return modeToIndex(activeMode);
+        }
+
+        return Math.max(0, Math.min(2, swipe.scrollLeft / Math.max(1, swipe.clientWidth)));
+    }
+
+    function updateFromSwipe(){
+        const progress = progressFromSwipe();
+        setVisualMode(indexToMode(progress), progress);
+    }
+
+    window.scrollFeedTo = function(mode){
+        go(mode, { smooth:true, resetTop:true });
+    };
+
+    window.updateFeedTabs = function(progress = null){
+        if(typeof progress === "number"){
+            setVisualMode(indexToMode(progress), progress);
+            return;
+        }
+        updateFromSwipe();
+    };
+
+    window.resetFeedToRecommendOnOpen = function(){
+        go(activeMode, { smooth:false, resetTop:false });
+    };
+
+    Object.entries(buttons).forEach(([mode, button]) => {
+        if(!button){ return; }
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            go(mode, { smooth:true, resetTop:true });
+        }, true);
+    });
+
+    if(swipe){
+        let swipeTicking = false;
+
+        swipe.addEventListener("scroll", () => {
+            if(window.innerWidth > 900 || swipeTicking){
+                return;
+            }
+
+            swipeTicking = true;
+            requestAnimationFrame(() => {
+                updateFromSwipe();
+                swipeTicking = false;
+            });
+        }, { passive:true });
+
+        swipe.addEventListener("touchstart", (event) => {
+            touchStartY = event.touches?.[0]?.clientY || 0;
+        }, { passive:true });
+
+        swipe.addEventListener("touchmove", (event) => {
+            if(window.innerWidth > 900){
+                return;
+            }
+
+            const mode = document.body.dataset.feedMode || activeMode;
+            const currentY = event.touches?.[0]?.clientY || touchStartY;
+            const pullingDown = currentY > touchStartY + 4;
+
+            if((mode === "following" || mode === "list") && window.scrollY <= 0 && pullingDown){
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }, { passive:false });
+    }
+
+    window.addEventListener("scroll", syncHeaderNow, { passive:true });
+
+    function bootStable(){
+        const saved = sessionStorage.getItem(storageKey);
+        const mode = clampMode(saved || activeMode || document.body?.dataset?.feedMode || "recommend");
+        activeMode = mode;
+        setVisualMode(mode);
+        moveSwipeTo(mode, false);
+        syncHeaderNow();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => requestAnimationFrame(bootStable));
+    window.addEventListener("pageshow", () => requestAnimationFrame(bootStable));
+    window.addEventListener("resize", () => requestAnimationFrame(bootStable));
+
+    setInterval(() => {
+        const mode = clampMode(sessionStorage.getItem(storageKey) || activeMode);
+        if((document.body.dataset.feedMode || "recommend") !== mode){
+            setVisualMode(mode);
+            moveSwipeTo(mode, false);
+        }
+    }, 1200);
+
+    bootStable();
 })();
 
 
