@@ -9446,3 +9446,137 @@ body::after{
         transform:translate3d(0, -8px, 0);
     }
 }
+
+
+
+/* ============================================================
+   GALAXY BACKGROUND MOTION FIX 2026-06-13
+   - 前回版は transform に !important が付いていたため、
+     keyframes の transform が上書きできず動かなかった
+   - 今回は CSS変数を keyframes で動かし、
+     transform: ... !important の中でその変数を使う
+============================================================ */
+
+@property --album-galaxy-y{
+    syntax:"<length>";
+    inherits:false;
+    initial-value:-34px;
+}
+
+@property --album-star-y{
+    syntax:"<length>";
+    inherits:false;
+    initial-value:-12px;
+}
+
+body{
+    --album-galaxy-y:-34px;
+    --album-star-y:-12px;
+}
+
+/* transform自体は!importantのままでも、内部の変数が動く */
+body::before{
+    transform:translate3d(0, var(--album-galaxy-y), 0) scale(1.045) !important;
+    animation:albumGalaxyFloatByVar 140s ease-in-out infinite !important;
+}
+
+body::after{
+    transform:translate3d(0, var(--album-star-y), 0) !important;
+    animation:albumStarFloatByVar 180s ease-in-out infinite !important;
+}
+
+@keyframes albumGalaxyFloatByVar{
+    0%{
+        --album-galaxy-y:-34px;
+    }
+
+    50%{
+        --album-galaxy-y:34px;
+    }
+
+    100%{
+        --album-galaxy-y:-34px;
+    }
+}
+
+@keyframes albumStarFloatByVar{
+    0%{
+        --album-star-y:-12px;
+    }
+
+    50%{
+        --album-star-y:18px;
+    }
+
+    100%{
+        --album-star-y:-12px;
+    }
+}
+
+@media (max-width:900px){
+    @property --album-galaxy-y{
+        syntax:"<length>";
+        inherits:false;
+        initial-value:-22px;
+    }
+
+    @property --album-star-y{
+        syntax:"<length>";
+        inherits:false;
+        initial-value:-8px;
+    }
+
+    body{
+        --album-galaxy-y:-22px;
+        --album-star-y:-8px;
+    }
+
+    body::before{
+        transform:translate3d(0, var(--album-galaxy-y), 0) scale(1.055) !important;
+        animation:albumGalaxyFloatMobileByVar 120s ease-in-out infinite !important;
+    }
+
+    body::after{
+        transform:translate3d(0, var(--album-star-y), 0) !important;
+        animation:albumStarFloatMobileByVar 150s ease-in-out infinite !important;
+    }
+}
+
+@keyframes albumGalaxyFloatMobileByVar{
+    0%{
+        --album-galaxy-y:-22px;
+    }
+
+    50%{
+        --album-galaxy-y:22px;
+    }
+
+    100%{
+        --album-galaxy-y:-22px;
+    }
+}
+
+@keyframes albumStarFloatMobileByVar{
+    0%{
+        --album-star-y:-8px;
+    }
+
+    50%{
+        --album-star-y:12px;
+    }
+
+    100%{
+        --album-star-y:-8px;
+    }
+}
+
+/* 念のため、モーション許可時は止めない */
+@media (prefers-reduced-motion: no-preference){
+    body::before{
+        animation-play-state:running !important;
+    }
+
+    body::after{
+        animation-play-state:running !important;
+    }
+}
