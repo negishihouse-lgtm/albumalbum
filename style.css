@@ -5757,7 +5757,7 @@ body{
    PATCH FINAL 2026-06-11
    - Zen Kaku Gothic New を全体に適用
    - ページ上部にCSS文字列が表示される問題を解消
-   - 観測(search.html) / 発信(editor.html) の下タブアイコンをCSSマスクで表示
+   - 検索(search.html) / 発信(editor.html) の下タブアイコンをCSSマスクで表示
 ============================================================ */
 
 /* フォント */
@@ -8659,4 +8659,57 @@ body::after{
     margin:0 auto 3px !important;
     transform:translateY(1px) !important;
     color:currentColor !important;
+}
+
+
+/* FINAL NAV SPLIT 2026-06-12 */
+@media (max-width:900px){
+    .mobile-tabbar{
+        grid-template-columns:repeat(6, 1fr) !important;
+    }
+
+    .mobile-tabbar a{
+        font-size:10.5px !important;
+        min-width:0 !important;
+    }
+
+    .mobile-tabbar .icon,
+    .mobile-tabbar a[href="search.html"] .icon,
+    .mobile-tabbar a[href="observation.html"] .icon{
+        width:24px !important;
+        height:24px !important;
+        min-width:24px !important;
+        min-height:24px !important;
+        margin:0 auto 3px !important;
+    }
+
+    .mobile-feed-tabs{
+        grid-template-columns:repeat(2, 1fr) !important;
+    }
+
+    .mobile-feed-tabs::after{
+        left:calc(25% + (50% * var(--feed-progress, 0))) !important;
+        width:78px !important;
+    }
+
+    body[data-feed-mode="following"] .mobile-feed-tabs{
+        display:none !important;
+    }
+
+    body[data-feed-mode="following"] .topbar .home-sortbar{
+        display:none !important;
+    }
+
+    body[data-feed-mode="recommend"] .topbar .home-sortbar,
+    body[data-feed-mode="list"] .topbar .home-sortbar{
+        position:fixed !important;
+        right:16px !important;
+        bottom:calc(var(--ac-mobile-tabbar-h) + env(safe-area-inset-bottom) + 18px) !important;
+        top:auto !important;
+        display:flex !important;
+        visibility:visible !important;
+        opacity:1 !important;
+        pointer-events:auto !important;
+        z-index:12220 !important;
+    }
 }
